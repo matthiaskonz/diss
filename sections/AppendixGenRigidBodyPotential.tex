@@ -1,0 +1,66 @@
+\section{A possible generalization of the rigid body energies}\label{sec:GenRigidBodyPotential}
+Note that any symmetric, positive matrix $\protoK \in \SymMatP(6)$ can be decomposed into
+\begin{align}
+ \protoK
+ = \begin{bmatrix} \idMat[3] & \mat{0} \\ \protoH & \idMat[3] \end{bmatrix}
+   \begin{bmatrix} \protoKr & \mat{0} \\ \mat{0} & \protoKR \end{bmatrix}
+   \begin{bmatrix} \idMat[3] & \protoH^\top \\ \mat{0} & \idMat[3] \end{bmatrix}
+ = \begin{bmatrix} \protoKr & \protoKr \protoH^\top\\ \protoH \protoKr & \protoKR + \protoH \protoKr \protoH^\top \end{bmatrix}
+\end{align}
+where $\protoKr, \protoKR \in \SymMatP(3)$ and $\protoH \in \RealNum^{3\times3}$.
+For variables $\protox_i \in \RealNum^3$ and $\protoY_i \in \RealNum^{3\times3}$ collected in the square matrix $\protoXi_i = \left[\begin{smallmatrix} \protoY_i & \protox_i \\ \mat{0} & 0 \end{smallmatrix}\right]$ define the inner product as
+\begin{align}\label{eq:DefGenRogodBodyInnerProduct}
+ \sProd[\protoK]{\protoXi_1}{\protoXi_2} &= \tilde{\protox}_1^\top \protoKr \tilde{\protox}_2 + \tr(\protoY_1 \veeMatOp(\protoKR) \protoY_2^\top),
+\end{align}
+where $\tilde{\protox}_i = \protox_i + \tfrac{1}{2} \protoY_i\veeTwoOp(\protoH) + \tfrac{1}{4}(\protoH+\protoH^\top)\veeTwoOp(\protoY_i)$.
+To prove that this is indeed an inner product one can use the same argument as in \autoref{sec:RBSMathInnerProduct} and note that positive definiteness of $\protoKR$ implies positive definiteness of $\veeMatOp(\protoKR)$.
+For the special parameters $\protoKr = k\idMat[3]$ and $\protoH = \wedOp(\tuple{h}), \tuple{h}\in\RealNum^3$ this inner product coincides with the definition of \eqref{eq:DefMatrixInnerProduct}.
+For the special arguments $\protoY_i = \wedOp(\protoy_i), \protoy_i\in \RealNum^3$ we have the following simplifications $\tilde{\protox}_i = \protox_i + \protoH^\top \protoy_i$ and $\tr(\wedOp(\protoy_1) \veeMatOp(\protoKR) \wedOp(\protoy_2)^\top) = \protoy_1^\top \protoKR \protoy_2$.
+% \begin{subequations}
+% \begin{align}
+%  \tilde{\protox}_i = \protox_i - \tfrac{1}{2}(\protoH - \protoH^\top) \protoy_i  + \tfrac{1}{2}(\protoH + \protoH^\top) \protoy_i = \protox_i + \protoH^\top \protoy_i,
+% \\
+%  \tr(\wedOp(\protoy_1) \veeMatOp(\protoKR) \wedOp(\protoy_2)^\top) = \protoy_1^\top \protoKR \protoy_2.
+% \end{align}
+% \end{subequations}
+So, for the case $\protoXi_i = \wedOp(\protoxi_i), \protoxi_i = [\protox_i^\top, \protoy_i^\top]^\top$ the inner product \eqref{eq:DefGenRogodBodyInnerProduct} simplifies to
+\begin{align}
+ \sProd[\protoK]{\wedOp(\protoxi_1)}{\wedOp(\protoxi_2)} = \protoxi_1^\top \protoK \protoxi_2.
+\end{align}
+For any inner product we may define an induced norm and metric as
+\begin{align}
+ \norm[\protoK]{\protoXi} &= \sqrt{\sProd[\protoK]{\protoXi}{\protoXi}},&
+ d_{\protoK} (\protoXi_1, \protoXi_2) = \norm[\protoK]{\protoXi_1 - \protoXi_2}.
+\end{align}
+Note that the same inner product, norm and metric can also be defined for elements of the form $\protoXi_i = \left[\begin{smallmatrix} \protoY_i & \protox_i \\ \mat{0} & 1 \end{smallmatrix}\right]$.
+
+With this we may define the following energies as the square of the metrics
+\begin{subequations}
+\begin{alignat}{2}
+ \potentialEnergy &= \tfrac{1}{2} d_{\bodyStiffMat{}{}}^2 (\bodyHomoCoord{}{}, \bodyHomoCoordR{}{}),&
+ \qquad \bodyStiffMat{}{} &\in \SymMatP(6),
+\\
+ \dissFkt &= \tfrac{1}{2} d_{\bodyDissMat{}{}}^2 (\bodyHomoCoordd{}{}, \bodyHomoCoordRd{}{}),&
+ \bodyDissMat{}{} &\in \SymMatP(6),
+\\
+ \kineticEnergy &= \tfrac{1}{2} d_{\bodyInertiaMat{}{}}^2 (\bodyHomoCoorddd{}{}, \bodyHomoCoordRdd{}{}),&
+ \bodyInertiaMat{}{} &\in \SymMatP(6).
+\end{alignat} 
+\end{subequations}
+For the special parameters $\protoKr = k\idMat[3]$ and $\protoH = \wedOp(\tuple{h}), \tuple{h}\in\RealNum^3$ this coincides with the energies defined in \eqref{eq:RBCtrlEnergiesParticles}.
+Alternatively, using $\bodyHomoCoordE{}{} = \bodyHomoCoordR{}{}^{-1} \bodyHomoCoord{}{}$, we may define
+\begin{subequations}
+\begin{align}
+ \potentialEnergy &= \tfrac{1}{2} d_{\bodyStiffMat{}{}}^2 (\bodyHomoCoordE{}{}, \idMat[4]), \quad \bodyStiffMat{}{} \in \SymMatP(6),
+\\
+ \dissFkt &= \tfrac{1}{2} d_{\bodyDissMat{}{}}^2 (\bodyHomoCoordEd{}{}, \mat{0}), \quad \bodyDissMat{}{} \in \SymMatP(6),
+\\
+ \kineticEnergy &= \tfrac{1}{2} d_{\bodyInertiaMat{}{}}^2 (\bodyHomoCoordEdd{}{}, \mat{0}), \quad \bodyInertiaMat{}{} \in \SymMatP(6),
+\end{align} 
+\end{subequations}
+For the special parameters mentioned above, this coincides with the energies defined in \eqref{eq:RBCtrlEnergiesBody}.
+
+The inner product and its induced norm and metric can be regarded as a generalization of the inner product (with 10 parameters) proposed in \autoref{sec:RBSMathInnerProduct} in the sense that it incorporates all 21 independent coefficients of the symmetric matrix $\protoK\in\SymMatP(6)$.
+This results in more tuning parameters for the control design.
+On the downside, the translation invariance \eqref{eq:InnerProductSE3Translation} and the physical interpretation of the parameters are lost for the general case.
+

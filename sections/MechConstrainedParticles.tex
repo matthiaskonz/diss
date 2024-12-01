@@ -1,0 +1,543 @@
+\section{Systems of constrained particles}
+
+\paragraph{System under consideration.} For this section we consider a system of $\numParticles$ particles under geometric constraints:
+The \textit{position} of a particle with respect to a given inertial frame at a given time $t$ is $\particlePos{\PidxI}(t) \in \RealNum^3, \PidxI = 1,\ldots,\numParticles$ and the collection of all particle positions is $\particleCoord = [\particlePos{1}^\top,\ldots,\particlePos{\numParticles}^\top]^\top \in \RealNum^{3\numParticles}$.
+\textit{Geometric constraints} on the particles are captured in $\numParticleConstraints \geq 0$ smooth functions of the form $\particleGeoConstraint(\particleCoord) = [\particleGeoConstraintCoeff{1}(\particleCoord), \ldots, \particleGeoConstraintCoeff{\numParticleConstraints}(\particleCoord)]^\top = \tuple{0}$.
+The set of all mutually admissible particle positions 
+\begin{align}
+\particleConfigSpace = \{ \particleCoord \in \RealNum^{3\numParticles} \, | \, \particleGeoConstraint(\particleCoord) = \tuple{0} \} 
+\end{align}
+is called the \textit{configuration space}.
+We require $\pdiff[\particleGeoConstraint]{\particleCoord}(\particleCoord)$ to have a constant, though not necessarily full rank.
+%The dimension of the configuration space is $\dim\particleConfigSpace = 3\numParticles - \rank\pdiff[\particleGeoConstraint]{\particleCoord} = \dimConfigSpace$.
+
+\subsection{First principles}
+\paragraph{Principle of constraint release.} 
+The principle of constraint release (see e.g.\ \cite[sec.\ 32]{Hamel:TheoretischeMechanik} or \cite[sec.\ 6.1]{Lurie:AnalyticalMechanics}) states that the motion of system of geometrically constrained particles is governed by
+\begin{align}\label{eq:ConstraintRelease}
+ \particleGeoConstraint(\particleCoord) = \tuple{0}, 
+\quad
+ \particleMass{\PidxI} \particlePosdd{\PidxI} = \particleForceImpressed{\PidxI} + \LagrangeMultCoeff{\CidxI} \pdiff[\particleGeoConstraintCoeff{\CidxI}]{\particlePos{\PidxI}},
+\quad \PidxI = 1,\ldots,\numParticles.
+\end{align}
+
+\paragraph{Lagrange-d'Alembert principle.} 
+for a system of geometrically constrained particles states (e.g.\ \cite[sec.\,1.4]{Goldstein:ClassicalMechanics} or \cite[sec.\,6.3]{Lurie:AnalyticalMechanics}):
+\begin{align}\label{eq:DAlembertPrinciple}
+ \sumParticlesFull \sProd{\delta \particlePos{\PidxI}}{\particleForceImpressed{\PidxI} - \particleMass{\PidxI}\particlePosdd{\PidxI}} = 0 
+\qquad \forall \quad \pdiff[\particleGeoConstraint]{\particleCoord} \delta\particleCoord = \tuple{0}.
+\end{align}
+The \textit{virtual displacements} $\delta \particlePos{\PidxI}$ are tangents to possible motions:
+For particle positions constrained by $\particleGeoConstraint(\particleCoord) = \tuple{0}$ the displacements have to fulfill $\pdiff[\particleGeoConstraint]{\particleCoord} \delta\particleCoord = \tuple{0}$.
+
+\paragraph{Gauß principle.}
+Gauss's principle of least constraint was originally described in \cite{Gauss:Principle} in words rather than equations.
+Maybe because of this, one finds somewhat different mathematical formulations in more contemporary sources, e.g.\ \cite[sec.\ 7]{Paesler:PrinzipeDerMechanik}, \cite[sec.\,IV.8]{Lanczos:Variational}, \cite[sec.\,2.2]{Bremer:ElasticMultibodyDynamics}. %\cite[sec.\,VII.8]{Hamel:TheoretischeMechanik} %\cite[p.\,82]{UdwadiaKalaba:AnalyticalDynamics}
+%For some historical background see \cite[§6.6]{Papastavridis:AnalyticalMechanics}.
+
+For the system given above, Gauss' principle states that the particle accelerations $\particlePosdd{\PidxI}, \PidxI=1,\ldots,\numParticles$ minimize the so-called Gaussian constrain $\GaussianConstraint$:
+\begin{align}\label{eq:GaussPrinciple}
+ \begin{array}{rl}
+  \minOp[\particleCoorddd\in\RealNum^{3\numParticles}] & \GaussianConstraint = \tfrac{1}{2} \displaystyle\sumParticlesFull \particleMass{\PidxI} \norm{\particlePosdd{\PidxI} - \particlePosdd{\PidxI}^{\idxText{f}}}^2 \\
+  \text{s.\ t.} & \ddot{\particleGeoConstraint}(\particleCoord, \particleCoordd, \particleCoorddd) = \tuple{0}
+ \end{array}
+\end{align}
+where $\particlePosdd{\PidxI}^{\idxText{f}}$ are the \textit{unconstrained} particle accelerations, i.e.\ Newtons's second law $\particlePosdd{\PidxI}^{\idxText{f}}=\tfrac{\particleForceImpressed{\PidxI}}{\particleMass{\PidxI}}$.
+Its crucial to note that the constraint equations $\ddot{\particleGeoConstraint}(\particleCoord, \particleCoordd, \particleCoorddd) = \tuple{0}$ are \textit{linear} in the accelerations $\particleCoorddd$.
+Consequently, as stressed in \cite{Gauss:Principle}, the principle \eqref{eq:GaussPrinciple} is a (static) quadratic optimization problem with linear constraints.
+
+
+% A system of particles with positions $\particlePos[\PidxI], \PidxI=1,\ldots,\numParticles$ and masses $\particleMass{\PidxI}$, constrainted by 
+% \begin{align}\label{eq:GaussPrinciple}
+%  \begin{array}{rl}
+%   \minOp[\particleCoorddd\in\RealNum^{3\numParticles}] & \GaussianConstraint = \tfrac{1}{2} \displaystyle\sumParticlesFull \particleMass{\PidxI} \norm{\particlePosdd{\PidxI} - \particlePosdd{\PidxI}^{\idxText{f}}}^2 \\
+%   \text{s.\ t.} & \ddot{\particleGeoConstraint}(\particleCoord, \particleCoordd, \particleCoorddd) = \tuple{0}
+%  \end{array}
+% \end{align}
+% where $\particleCoord = [\particlePos{1}^\top, \ldots,\particlePos{\numParticles}^\top]^\top$ and $\particlePosdd{\PidxI}^{\idxText{f}}$ are the particle accelerations of the unconstrained system and we call $\GaussianConstraint$ the Gaussian constraint.
+% Its crucial to note that the constraint equations $\ddot{\particleGeoConstraint}(\particleCoord, \particleCoordd, \particleCoorddd) = \tuple{0}$ are \textit{linear} in the accelerations $\particleCoorddd$.
+% Consequently, as stressed in \cite{Gauss:Principle}, the principle \eqref{eq:GaussPrinciple} can be regarded as a (static) quadratic optimization problem with linear constraints. 
+
+
+\paragraph{Hamilton's principle.}
+%E.g. \cite[ch.\,V.1]{Lanczos:Variational}: \textit{Hamilton's principle} states that the trajectories of a mechanical system are such that the action functional $\mathcal{A} = \int_{t_0}^{t_1} \Lagrangian\, \d t$ is stationary in the sense of the calculus of variations \autoref{sec:CalculusOfVariations}.
+\cite[p.\,113]{Lanczos:Variational}: \textit{Hamilton's principle states that the motion of a mechanical system occurs in such a way that the action} $\mathcal{A} = \int_{t_0}^{t_1} \Lagrangian\, \d t$ \textit{becomes stationary for arbitrary possible variations of the configuration of the system, provided the initial and final conditions are prescribed}.
+\textit{The Lagrangian $\Lagrangian=\kineticEnergy-\potentialEnergy$ is the excess of kinetic energy $\kineticEnergy$ over potential energy $\potentialEnergy$.}
+For the system considered here, the kinetic energy is $\kineticEnergy = \tfrac{1}{2} \sumParticlesFull \particleMass{\PidxI} \norm{\particlePosd{\PidxI}}^2$.
+The potential energy may have various origins, some of them will be discussed later.
+
+%For this context of mechanics it can be derived from Lagrange-d'Alembert's principle \eqref{eq:DAlembertPrinciple}, see \eg \cite[ch.\,V.1]{Lanczos:Variational}.
+%However, the remarkable quality of the principle of stationary action is that it is used interdisciplinary:
+
+The remarkable quality of the principle of stationary action is that it is used interdisciplinary:
+With appropriate formulation of the Lagrangian $\Lagrangian$ it has applications in all branches of physics \eg general relativity \cite{Einstein:HamiltonsPrinciple}, electromagnetic field theory \cite[ch.\,4]{Landau:Fields} or optics, the original context of Hamilton \cite[p.\,192]{Klein:EntwicklungDerMathematik}.
+Apart form physics, there is optimal control that builds up on essentially the same idea \eg \cite{Bryson:AppliedOptimalControl}.
+
+% \cite[S.\ 233]{Hamel:TheoretischeMechanik} Prinzip der kleinsten Wirkung
+% \cite[S.61]{Szabo:HM},
+% \cite[p.\ 136]{Shabana:MultibodySystems},
+% \cite[p.\,113]{Lanczos:Variational} Hamilton's principle, some history, excellent!
+% \cite[p.\,92]{Arnold:MathematicalMethodsOfClassicalMechanics} In mechanics, tangent vectors to the configuration manifold are called virtual variations.
+
+For the context of this work, the statement above is actually not that useful since it does not allow for generic impressed forces $\particleForceImpressed{\PidxI}$.
+To mend this one finds a similar statement in e.g.\ \cite[eq.\,12.2.14]{Lurie:AnalyticalMechanics} or \cite[sec.\ I.3]{Szabo:HM}:
+\begin{align}\label{eq:HamiltonPrinciple}
+ \delta'\mathcal{A} = \int_{t_1}^{t_2} \big( \delta \kineticEnergy - \delta'\mathcal{W} \big) \d t = 0, 
+\qquad
+ \kineticEnergy = \tfrac{1}{2} \sumParticles \particleMass{\PidxI} \norm{\particlePosd{\PidxI}}^2, \ \delta'\mathcal{W} = \sProd{\delta \particlePos{\PidxI}}{\particleForceImpressed{\PidxI}}.
+\end{align}
+Here $\delta'\mathcal{W}$ is an variational quantity, but in general, there is no $\mathcal{W}$ that it is the variation of, unless the impressed forces $\particleForceImpressed{\PidxI}$ may be derived from a potential.
+Consequently, there is generally no quantity $\mathcal{A}$ which becomes stationary, thus the naming is not suitable here.
+
+\subsection{Coordinates}
+\paragraph{Generalized coordinates.} 
+In most cases we are not really interested in the motion of the individual particles but rather in the system as a whole.
+Using the constraint equations it is possible to capture the configuration of the system by $\dim\particleConfigSpace = 3\numParticles - \rank\pdiff[\particleGeoConstraint]{\particleCoord} = \dimConfigSpace$ coordinates, commonly called \textit{generalized coordinates} and commonly denoted by $\genCoord$.
+Its components, in contrast to the Cartesian particle coordinates, may be lengths, angles or some completely generic quantity stressed by the term ``generalized``.
+What is more crucial but usually implicit is that they have to be independent from another to parameterize the $\dimConfigSpace$ dimensional configuration space with its $\dimConfigSpace$ components.
+Whenever used in this work, these coordinates are referred to as \textit{minimal} generalized coordinates $\genCoord\in\RealNum^\dimConfigSpace$.
+
+\paragraph{Redundant generalized coordinates.} 
+As shown in the introduction \fixme{[link]}, in some cases it might be useful to use a slightly larger number of \textit{redundant} generalized coordinates $\sysCoord\in\RealNum^{\numCoord}, \numCoord\geq\dimConfigSpace$.
+For $\numCoord>\dimConfigSpace$ the components cant be independent, but are themselves constrained by smooth equations of the form $\geoConstraint(\sysCoord)=\tuple{0}$.
+The set of all mutually admissible coordinates is
+\begin{align}
+ \configSpace = \{ \sysCoord \in \RealNum^{\numCoord} \, | \, \geoConstraint(\sysCoord) = \tuple{0} \}. 
+\end{align}
+As discussed in the previous chapter, it is always possible to choose coordinates such that $\configSpace$ is isomorphic to $\particleConfigSpace$.
+
+\paragraph{Velocity coordinates.}
+As discussed in the previous chapter \fixme{[link]}, we assume that the derivative of the possible redundant configuration coordinates $\sysCoord(t)\in\configSpace$ may be parameterized by a minimal set of velocity coordinates $\sysVel(t)\in\RealNum^{\dimConfigSpace}$ through the relations
+\begin{align}
+ \sysCoordd(t) = \kinMat(\sysCoord(t)) \sysVel(t),
+\end{align}
+where $\kinMat\in\RealNum^{\numCoord\times\dimConfigSpace}$ with $\pdiff[\geoConstraint]{\sysCoord}\kinMat \equiv \mat{0}$ and $\rank\kinMat=\dimConfigSpace$.
+
+Note that the common minimal parameterization $\sysCoord = \genCoord \in \RealNum^{\dimConfigSpace}$ and $\sysVel=\genCoordd \in \RealNum^{\dimConfigSpace}$ is of course included as the special case $\configSpace=\RealNum^{\dimConfigSpace}$ and $\kinMat=\idMat[\dimConfigSpace]$.
+
+\paragraph{Particle parameterization.}
+Let the admissible particle positions $\particleCoord \in \particleConfigSpace$ be parameterized $\particlePos{\PidxI} = \particlePos{\PidxI}(\sysCoord, t)$ by possibly redundant coordinates $\sysCoord \in \configSpace$.
+This means $\geoConstraint(\sysCoord) = \tuple{0}\,\Rightarrow\,\particleGeoConstraint(\particleCoord(\sysCoord,t)) = \tuple{0}$ and consequently $\sysCoord \in \configSpace \, \Rightarrow \, \particleCoord(\sysCoord) \in \particleConfigSpace$.
+The particle velocities and accelerations in terms of the coordinates we have 
+\begin{subequations}\label{eq:particleVelAcc}
+\begin{align}
+ \particlePosd{\PidxI} &= \dirDiff{\LidxI}\particlePos{\PidxI} \sysVelCoeff{\LidxI} + \pdiff[\particlePos{\PidxI}]{t}
+\\
+ \particlePosdd{\PidxI} &= \dirDiff{\LidxI}\particlePos{\PidxI} \sysVelCoeffd{\LidxI} + \dirDiff{\LidxII}\dirDiff{\LidxI}\particlePos{\PidxI} \sysVelCoeff{\LidxI} \sysVelCoeff{\LidxII}
+  + \underbrace{\Big( \dirDiff{\LidxI} \pdiff[\particlePos{\PidxI}]{t} + \pdiff{t}\dirDiff{i}\particlePos{\PidxI} \Big) \sysVelCoeff{\LidxI} + \frac{\partial^2 \particlePos{\PidxI}}{\partial t^2}}_{\particleAccTime{\PidxI}}.
+\label{eq:particleAcc}
+\end{align}
+\end{subequations}
+
+There are several relations which may be directly deduced from this parameterization and will be useful in the following:
+From \eqref{eq:particleVelAcc} it is evident that
+\begin{align}\label{eq:IdentityDifferentials}
+ \dirDiff{\LidxI} \particlePos{\PidxI} = \pdiff[\particlePosd{\PidxI}]{\sysVelCoeff{\LidxI}} = \pdiff[\particlePosdd{\PidxI}]{\sysVelCoeffd{\LidxI}}.
+\end{align}
+With the small calculation\footnote{
+side calculation:
+$
+ \diff{t} \dirDiff{\LidxI} \particlePos{\PidxI}
+ = \dirDiff{\LidxII} \dirDiff{\LidxI} \particlePos{\PidxI} \sysVelCoeff{\LidxII} + \pdiff{t} \dirDiff{\LidxI} \particlePos{\PidxI}
+ = (\dirDiff{\LidxI} \dirDiff{\LidxII} - \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \dirDiff{\LidxIII}) \particlePos{\PidxI} \sysVelCoeff{\LidxII} + \dirDiff{\LidxI} \pdiff[\particlePos{\PidxI}]{t}
+ = \dirDiff{\LidxI} \particlePosd{\PidxI} - \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \dirDiff{\LidxIII} \particlePos{\PidxI} \sysVelCoeff{\LidxII}
+$
+}
+we obtain
+\begin{align}\label{eq:CommutationParticleVel}
+ \dirDiff{\LidxI} \particlePosd{\PidxI} - \diff{t} \dirDiff{\LidxI} \particlePos{\PidxI} = \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \dirDiff{\LidxIII} \particlePos{\PidxI} \sysVelCoeff{\LidxII}.
+\end{align}
+with the commutation coefficients $\BoltzSym{\LidxIII}{\LidxI}{\LidxII}$ established in \autoref{sec:CommutationCoeff}.
+Furthermore, taking the time derivative of the constraint equations we have 
+\begin{align}
+ \tdiff{t} \particleGeoConstraintCoeff{\CidxI}
+ = \sumParticles \pdiff[\particleGeoConstraintCoeff{\CidxI}]{\particlePos{\PidxI}} \particlePosd{\PidxI}
+ = \sumParticles \pdiff[\particleGeoConstraintCoeff{\CidxI}]{\particlePos{\PidxI}} \Big( \dirDiff{\LidxI}\particlePos{\PidxI} \sysVelCoeff{\LidxI} + \pdiff[\particlePos{\PidxI}]{t} \Big)
+ = 0,
+\qquad 
+ \CidxI=1,\ldots,\numParticleConstraints.
+\end{align}
+Since this has to hold for any $\sysVel$ we have
+\begin{align}\label{eq:ParticleConstraintIdentity}
+ \sumParticles \pdiff[\particleGeoConstraintCoeff{\CidxI}]{\particlePos{\PidxI}} \dirDiff{\LidxI}\particlePos{\PidxI} = 0,
+\qquad
+ \sumParticles \pdiff[\particleGeoConstraintCoeff{\CidxI}]{\particlePos{\PidxI}} \pdiff[\particlePos{\PidxI}]{t} = 0, 
+\qquad 
+ \CidxI=1,\ldots,\numParticleConstraints, \ \LidxI=1,\ldots,\dimConfigSpace.
+\end{align}
+
+
+
+\paragraph{Application to the principle of constraint release.}
+Summing up the projections of \eqref{eq:ConstraintRelease} on $\dirDiff{\LidxI}\particlePos{\PidxI}$ eliminates the constraint forces $\LagrangeMult$ due to \eqref{eq:ParticleConstraintIdentity}:
+\begin{align}\label{eq:ConstraintReleaseEliminated}
+ \underbrace{\sumParticles \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\particleMass{\PidxI} \particlePosdd{\PidxI}}}_{-\genForceInertiaCoeff{\LidxI}}
+ = \underbrace{\sumParticles \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\particleForceImpressed{\PidxI}}}_{\genForceImpressedCoeff{\LidxI}}
+ + \LagrangeMultCoeff{\CidxI} \underbrace{\sumParticles \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\pdiff[\particleGeoConstraintCoeff{\CidxI}]{\particlePos{\PidxI}}}}_{0},
+ \quad \LidxI = 1,\ldots,\dimConfigSpace.
+\end{align}
+We call $\genForceInertia$ the generalized inertia force and $\genForceImpressed$ the generalized applied force.
+
+Parameterizing the particle accelerations $\particlePosdd{\PidxI}$ in terms of the chosen coordinates \eqref{eq:particleAcc} yields 
+\begin{align}
+ \sumParticles \particleMass{\PidxI} \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\overbrace{\dirDiff{\LidxII} \particlePos{\PidxI} \sysVelCoeffd{\LidxII} + \dirDiff{\LidxIII} \dirDiff{\LidxII} \particlePos{\PidxI} \sysVelCoeff{\LidxIII} \sysVelCoeff{\LidxII} + \particleAccTime{\PidxI}}^{\particlePosdd{\PidxI}}}
+ = \sumParticles \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\particleForceImpressed{\PidxI}},
+ \quad \LidxI = 1,\ldots,\dimConfigSpace
+\nonumber\\
+\Leftrightarrow \qquad
+ \underbrace{\sumParticles \particleMass{\PidxI} \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\dirDiff{\LidxII} \particlePos{\PidxI}}}_{\sysInertiaMatCoeff{\LidxI\LidxII}} \sysVelCoeffd{\LidxII}
+ = \underbrace{\sumParticles \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\particleForceImpressed{\PidxI} - \particleMass{\PidxI} \big(\dirDiff{\LidxIII} \dirDiff{\LidxII} \particlePos{\PidxI} \sysVelCoeff{\LidxIII} \sysVelCoeff{\LidxII} + \particleAccTime{\PidxI}}\big)}_{\sysForceCoeff{\LidxI}},
+ \quad \LidxI = 1,\ldots,\dimConfigSpace.
+\end{align}
+Mathematically, the matrix $\sysInertiaMat$ is symmetric and assuming $\particleMass{\PidxI} \geq 0$ is positive semidefinite.
+Physically, we may assume that $\sysInertiaMat$ is actually positive definite, otherwise there is a degree of freedom with no inertia attached which would rather be an error in modeling.
+For this work we will assume that $\sysInertiaMat$ is symmetric positive definite and consequently invertible.
+Then the acceleration coordinates can be expressed as 
+\begin{align}
+ \sysVeld = \sysInertiaMat^{-1} \sysForce.
+\end{align}
+
+\paragraph{Application to the Lagrange-d'Alembert principle.}
+Analog to the velocity, we may parameterize virtual displacements as $\delta \particlePos{\PidxI} = \dirDiff{\LidxI} \particlePos{\PidxI} \varCoordCoeff{\LidxI}, \PidxI = 1,\ldots,\numParticles$ in terms of \textit{displacements coordinates} $\varCoord\in\RealNum^\dimConfigSpace$.
+Plugging this into \eqref{eq:DAlembertPrinciple} we get
+\begin{align}\label{eq:DAlembertPrincipleBasis}
+ \varCoordCoeff{\LidxI} \sumParticles \sProd{\dirDiff{\LidxI} \particlePos{\PidxI} }{\particleForceImpressed{\PidxI} - \particleMass{\PidxI}\particlePosdd{\PidxI}} = 0 \qquad \forall \quad \varCoord\in\RealNum^\dimConfigSpace.
+\end{align}
+Since this has to hold for any $\varCoord$ we have the identical result as above \eqref{eq:ConstraintReleaseEliminated}.
+
+\paragraph{Application to the Gauß principle.}
+Parameterizing the particle accelerations $\particlePosdd{\PidxI} = \particlePosdd{\PidxI}(\sysCoord, \sysVel, \sysVeld)$ in terms of the chosen coordinates \eqref{eq:particleAcc} in Gauß' principle \eqref{eq:GaussPrinciple} eliminates the constraints.
+So it essentially transforms it to an \textit{unconstrained} minimization problem.
+The Gaussian constraint now reads
+\begin{align}
+ \GaussianConstraint &= \tfrac{1}{2} \sumParticles \particleMass{\PidxI} \norm{\overbrace{\dirDiff{\LidxII} \particlePos{\PidxI} \sysVelCoeffd{\LidxII} + \dirDiff{\LidxIII} \dirDiff{\LidxII} \particlePos{\PidxI} \sysVelCoeff{\LidxIII} \sysVelCoeff{\LidxII} + \particleAccTime{\PidxI}}^{\particlePosdd{\PidxI}} - \tfrac{\particleForceImpressed{\PidxI}}{\particleMass{\PidxI}}}^2
+\nonumber\\
+ &= \tfrac{1}{2} \underbrace{\sumParticles \particleMass{\PidxI} \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\dirDiff{\LidxII} \particlePos{\PidxI}}}_{\sysInertiaMatCoeff{\LidxI\LidxII}} \sysVelCoeffd{\LidxI}\sysVelCoeffd{\LidxII}
+ - \underbrace{\sumParticles \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\particleForceImpressed{\PidxI} - \particleMass{\PidxI} (\dirDiff{\LidxIII} \dirDiff{\LidxII} \particlePos{\PidxI} \sysVelCoeff{\LidxIII} \sysVelCoeff{\LidxII} + \particleAccTime{\PidxI})}}_{\sysForceCoeff{\LidxI}} \sysVelCoeffd{\LidxI}
+\nonumber\\
+ &\qquad + \underbrace{\tfrac{1}{2} \sumParticles \tfrac{1}{\particleMass{\PidxI}}\norm{\particleForceImpressed{\PidxI} - \particleMass{\PidxI} (\dirDiff{\LidxIII} \dirDiff{\LidxII} \particlePos{\PidxI} \sysVelCoeff{\LidxIII} \sysVelCoeff{\LidxII} + \particleAccTime{\PidxI})}^2}_{\GaussianConstraint_0}
+\nonumber\\
+ &= \tfrac{1}{2} \sysVel^\top \sysInertiaMat \sysVel - \sysVel^\top \sysForce + \GaussianConstraint_0.
+\end{align}
+The necessary condition for a critical point is
+\begin{align}
+ \pdiff[\GaussianConstraint]{\sysVeld} = \tuple{0}
+\qquad\Leftrightarrow\qquad
+ \sysInertiaMat \sysVeld = \sysForce.
+\end{align}
+Which is, again, the same result as above.
+Since $\sfrac{\partial^2 \GaussianConstraint}{\partial\sysVeld \partial \sysVeld} = \sysInertiaMat$ is positive definite, the solution $\sysVeld = \sysInertiaMat^{-1}\sysForce$ is a minimum of the Gaussian constraint $\GaussianConstraint$.
+
+\paragraph{Application to Hamilton's principle.}
+As discussed above, Hamilton's principle of stationary action is not applicable for generic forces as assumed here.
+However, it might still be instructive to apply it to our system when setting $\genForceImpressed=\tuple{0}$ and $\Lagrangian = \kineticEnergy$.
+
+The kinetic energy $\kineticEnergy$ in terms of the chosen coordinates is
+\begin{align}
+ \kineticEnergy(\sysCoord, \sysVel, t)
+% = \tfrac{1}{2} \sumParticles \particleMass{\PidxI} \norm{\particlePosd{\PidxI}(\sysCoord, \sysVel, t)}^2
+ = \tfrac{1}{2} \sumParticles \particleMass{\PidxI} \norm{\particlePosd{\PidxI}(\sysCoord, \sysVel, t)}^2,
+\qquad
+ \particlePosd{\PidxI}(\sysCoord, \sysVel, t) = \dirDiff{\LidxI} \particlePos{\PidxI}(\sysCoord) \sysVelCoeff{\LidxI} + \pdiff[\particlePos{\PidxI}]{t}(\sysCoord, t)
+% \nonumber\\
+%  &= \tfrac{1}{2} \underbrace{\sumParticles \particleMass{\PidxI} \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}(\sysCoord)}{\dirDiff{\LidxII} \particlePos{\PidxI}(\sysCoord)}}_{\sysInertiaMatCoeff{\LidxI\LidxII}(\sysCoord)} \sysVelCoeff{\LidxI} \sysVelCoeff{\LidxII}
+%  + \sumParticles \particleMass{\PidxI} \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}(\sysCoord)}{\pdiff[\particlePos{\PidxI}]{t}(\sysCoord, t)}
+%  + \tfrac{1}{2} \sumParticles \particleMass{\PidxI} \norm{\pdiff[\particlePos{\PidxI}]{t}(\sysCoord, t)}^2
+\end{align}
+As this is the structure assumed in \eqref{eq:Functional} we may use the result \eqref{eq:MyEulerLagrange} from the calculus of variations to obtain
+\begin{align}\label{eq:ResHamiltonPrinciple}
+ \genForceInertiaCoeff{\LidxI} 
+ = \diff{t} \pdiff[\kineticEnergy]{\sysVelCoeff{\LidxI}} + \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \sysVelCoeff{\LidxII} \pdiff[\kineticEnergy]{\sysVelCoeff{\LidxIII}} - \dirDiff{\LidxI} \kineticEnergy
+ = 0
+% = \underbrace{\sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\particleForceImpressed{\PidxI}}}_{\genForceImpressedCoeff{\LidxI}},
+ \quad \LidxI = 1,\ldots,\dimConfigSpace.
+\end{align}
+Evaluation and some rearrangement using the identities \eqref{eq:IdentityDifferentials} and \eqref{eq:CommutationParticleVel} yields
+\begin{multline}\label{eq:ResHamiltonPrinciple2}
+ \genForceInertiaCoeff{\LidxI} = \sumParticles \particleMass{\PidxI} \Big(
+ \diff{t} \sProd{\pdiff[\particlePosd{\PidxI}]{\sysVelCoeff{\LidxI}}}{\particlePosd{\PidxI}}
+ + \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \sysVelCoeff{\LidxII} \sProd{\pdiff[\particlePosd{\PidxI}]{\sysVelCoeff{\LidxIII}}}{\particlePosd{\PidxI}}
+ - \sProd{\dirDiff{\LidxI} \particlePosd{\PidxI}}{\particlePosd{\PidxI}} \Big)
+\\
+ = \sumParticles \particleMass{\PidxI} \Big(
+ \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\particlePosdd{\PidxI}}
+ + \sProd{\underbrace{\diff{t} \dirDiff{\LidxI} \particlePos{\PidxI} + \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \sysVelCoeff{\LidxII} \dirDiff{\LidxIII} \particlePos{\PidxI} - \dirDiff{\LidxI} \particlePosd{\PidxI}}_{0}}{\particlePosd{\PidxI}} \Big)
+\end{multline}
+Which matches the generalized inertial force derived above \eqref{eq:ConstraintReleaseEliminated}.
+
+% \paragraph{Conclusion}
+% Evaluation of the principles above with the coordinates leads to 
+% \begin{align}
+%  \underbrace{\sumParticles \particleMass{\PidxI} \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\dirDiff{\LidxII} \particlePos{\PidxI}}}_{\sysInertiaMatCoeff{\LidxI\LidxII}} \sysVelCoeffd{\LidxII}
+%  = \underbrace{\sumParticles \sProd{\particleForceImpressed{\PidxI} - \particleMass{\PidxI} \big( \dirDiff{\LidxI} \particlePos{\PidxI}}{\dirDiff{\LidxIII} \dirDiff{\LidxII} \particlePos{\PidxI} \sysVelCoeff{\LidxIII} \sysVelCoeff{\LidxII} + \particleAccTime{\PidxI} \big)}}_{\sysForceCoeff{\LidxI}}&,&
+%  \LidxI &= 1,\ldots, \dimConfigSpace
+% \end{align}
+
+
+\subsection{Inertia}
+In \eqref{eq:ConstraintReleaseEliminated} we have introduced the generalized inertia force $\genForceInertia$ as the sum of the projections of the particle inertia forces $\particleForceInertia{\PidxI} = -\particleMass{\PidxI} \particlePosdd{\PidxI}$:
+\begin{align}
+ \genForceInertiaCoeff{\LidxI} = \sumParticles \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{-\particleMass{\PidxI} \particlePosdd{\PidxI}},
+ \qquad
+ \LidxI = 1,\ldots,\dimConfigSpace.
+\end{align}
+The negative sign follows the convention that the inertial force resists the acceleration.
+
+\paragraph{Gibbs-Appell formulation.}
+Using the identity of the differentials \eqref{eq:IdentityDifferentials} we may formulate
+\begin{align}
+ \genForceInertiaCoeff{\LidxI}
+ = \sumParticles \sProd{\pdiff[\particlePosdd{\PidxI}]{\sysVelCoeffd{\LidxI}}}{-\particleMass{\PidxI} \particlePosdd{\PidxI}}
+ = -\pdiff{\sysVelCoeffd{\LidxI}} \underbrace{\Big(\tfrac{1}{2} \sumParticles \particleMass{\PidxI} \norm{\particlePosdd{\PidxI}}^2\Big)}_{\accEnergy},
+ \qquad
+ \LidxI = 1,\ldots,\dimConfigSpace.
+\label{eq:InertiaForceAccEnergy}
+\end{align}
+So the generalized inertia force $\genForceInertia$ may be derived from the function $\accEnergy = \accEnergy(\sysCoord, \sysVel, \sysVeld, t)$ which is commonly called the \textit{acceleration energy} though its dimension is \textit{not} that of energy.
+
+This formulation was first proposed by \cite{Gibbs:FundamentalFormulaeOfDynamics} for Cartesian, minimal coordinates and by \cite{Appell:formeGenerale} also using nonholonomic velocity coordinates.
+Some historic overview is given in \cite[sec. 1]{Lewis:GaussPrinciple}.
+
+\paragraph{Euler-Lagrange formulation.}
+Using the identity of the differentials \eqref{eq:IdentityDifferentials}, \eqref{eq:CommutationParticleVel} and the product rule of differentiation we may formulate
+\begin{align}
+ \genForceInertiaCoeff{\LidxI}
+ &= \sumParticles \sProd{\pdiff[\particlePosd{\PidxI}]{\sysVelCoeff{\LidxI}}}{\diff{t}\big(\particleMass{\PidxI} \particlePosd{\PidxI}\big)}
+\nonumber\\
+ &= \sumParticles \particleMass{\PidxI}  \Big( \diff{t} \sProd{\pdiff[\particlePosd{\PidxI}]{\sysVelCoeff{\LidxI}}}{\particlePosd{\PidxI}} - \sProd{\diff{t} \pdiff[\particlePosd{\PidxI}]{\sysVelCoeff{\LidxI}}}{\particlePosd{\PidxI}}\Big)
+\nonumber\\
+ &= \sumParticles \particleMass{\PidxI}  \Big( \diff{t} \sProd{\pdiff[\particlePosd{\PidxI}]{\sysVelCoeff{\LidxI}}}{\particlePosd{\PidxI}} - \sProd{\dirDiff{\LidxI} \particlePosd{\PidxI} - \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \pdiff[\particlePosd{\PidxI}]{\sysVelCoeff{\LidxIII}} \sysVelCoeff{\LidxII}}{\particlePosd{\PidxI}}\Big)
+\nonumber\\
+ &= \Big(\diff{t} \pdiff{\sysVelCoeff{\LidxI}} + \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \sysVelCoeff{\LidxII} \pdiff{\sysVelCoeff{\LidxIII}} - \dirDiff{\LidxI} \Big)
+ \underbrace{\Big( \tfrac{1}{2} \sumParticles \particleMass{\PidxI} \norm{\particlePosd{\PidxI}}^2 \Big)}_{\kineticEnergy},
+ \qquad
+ \LidxI = 1,\ldots,\dimConfigSpace.
+\label{eq:InertiaForceKinEnergy}
+\end{align}
+% The second step which introduced the commutation coefficients $\BoltzSym{\LidxIII}{\LidxI}{\LidxII}$ is due to
+% \begin{align}
+%  \diff{t} \dirDiff{\LidxI} \particlePos{\PidxI}
+%  = \dirDiff{\LidxII} \dirDiff{\LidxI} \particlePos{\PidxI} \sysVelCoeff{\LidxII} + \pdiff{t} \dirDiff{\LidxI} \particlePos{\PidxI}
+%  = (\dirDiff{\LidxI} \dirDiff{\LidxII} - \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \dirDiff{\LidxIII}) \particlePos{\PidxI} \sysVelCoeff{\LidxII} + \dirDiff{\LidxI} \pdiff[\particlePos{\PidxI}]{t}
+%  = \dirDiff{\LidxI} \particlePosd{\PidxI} - \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \dirDiff{\LidxIII} \particlePos{\PidxI} \sysVelCoeff{\LidxII}.
+% \end{align}
+So the generalized inertia force $\genForceInertia$ may be derived from the \textit{kinetic energy} $\kineticEnergy = \kineticEnergy(\sysCoord, \sysVel, t)$ formulated in terms of the chosen coordinates.
+This has already been shown in \eqref{eq:ResHamiltonPrinciple} and the computation is essentially \eqref{eq:ResHamiltonPrinciple2} backwards.
+
+For the special case of minimal configuration coordinates $\sysCoord=\genCoord$ and the holonomic velocity coordinates $\sysVel=\genCoordd$, which implies $\BoltzSym{}{}{} = 0$, this formulation and its derivation may be found in any graduate textbook on mechanics and is commonly called the \textit{Euler-Lagrange equation}.
+A nearly identical form as \eqref{eq:InertiaForceKinEnergy} can be found in \cite[p.\ 17]{Hamel:LagrangeEuler}.
+The difference is that, in contrast to this work, the directional derivative $\dirDiff{\LidxI}$ and the commutation coefficients $\BoltzSym{\LidxIII}{\LidxI}{\LidxII}$ are therein restricted to minimal configuration coordinates. 
+It is worth noting that $\kineticEnergy$ is called the \textit{living force} in older publications, whereas the modern term \textit{kinetic energy} seems to have established in the early 20th century.
+
+
+%\cite[p.\,480, eq.\,II]{Hamel:HM}.
+
+\paragraph{Levi-Civita formulation.}
+Formulation of the particle accelerations $\particlePosdd{\PidxI}$ explicitly in terms of the chosen coordinates \eqref{eq:particleAcc} yields
+\begin{align}\label{eq:genInertiaForceLeviCivita}
+ \genForceInertiaCoeff{\LidxI} &= \sumParticles \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\particleMass{\PidxI} \overbrace{\big(\dirDiff{\LidxII} \particlePos{\PidxI} \sysVelCoeffd{\LidxII} + \dirDiff{\LidxIII} \dirDiff{\LidxII} \particlePos{\PidxI} \sysVelCoeff{\LidxIII} \sysVelCoeff{\LidxII} + \particleAccTime{\PidxI}\big)}^{\particlePosdd{\PidxI}}}
+\\
+ &= \underbrace{\sumParticles \particleMass{\PidxI} \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\dirDiff{\LidxII} \particlePos{\PidxI}}}_{\sysInertiaMatCoeff{\LidxI\LidxII}} \sysVelCoeffd{\LidxII}
+ + \underbrace{\sumParticles \particleMass{\PidxI} \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\dirDiff{\LidxIII} \dirDiff{\LidxII} \particlePos{\PidxI}}}_{\ConnCoeffL{\LidxI}{\LidxII}{\LidxIII}} \sysVelCoeff{\LidxIII} \sysVelCoeff{\LidxII}
+ + \sumParticles \particleMass{\PidxI} \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\particleAccTime{\PidxI}},
+ \
+ \LidxI = 1,\ldots,\dimConfigSpace.
+\nonumber
+\end{align}
+The inertia matrix $\sysInertiaMat$ was already discussed above.
+Here we are interested in the terms denoted by $\ConnCoeffL{\LidxI}{\LidxII}{\LidxIII}$.
+Based on their definition in \eqref{eq:genInertiaForceLeviCivita} one may validate the following identities
+\begin{subequations}
+\begin{align}
+ \label{eq:ConnCoeffSymOne}
+ \dirDiff{\LidxIII} \sysInertiaMatCoeff{\LidxI\LidxII}
+ &= \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII} + \ConnCoeffL{\LidxII}{\LidxI}{\LidxIII},
+% &= \underbrace{\sumParticles \particleMass{\PidxI} \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\dirDiff{\LidxIII} \dirDiff{\LidxII} \particlePos{\PidxI}}}_{\ConnCoeffL{\LidxI}{\LidxII}{\LidxIII}}
+% + \underbrace{\sumParticles \particleMass{\PidxI} \sProd{\dirDiff{\LidxIII} \dirDiff{\LidxI} \particlePos{\PidxI}}{\dirDiff{\LidxII} \particlePos{\PidxI}}}_{\ConnCoeffL{\LidxII}{\LidxI}{\LidxIII}}
+\\ 
+ \label{eq:ConnCoeffSymTwo}
+ \BoltzSym{\LidxV}{\LidxI}{\LidxII} \sysInertiaMatCoeff{\LidxV\LidxIII}
+ &= \ConnCoeffL{\LidxIII}{\LidxII}{\LidxI} - \ConnCoeffL{\LidxIII}{\LidxI}{\LidxII}.
+% &= \sumParticles \particleMass{\PidxI} \sProd{\BoltzSym{\LidxV}{\LidxI}{\LidxII} \partial_\LidxV \particlePos{\PidxI}}{\dirDiff{\LidxIII} \particlePos{\PidxI}}
+% = \underbrace{\sumParticles \particleMass{\PidxI} \sProd{\dirDiff{\LidxI} \dirDiff{\LidxII} \particlePos{\PidxI}}{\dirDiff{\LidxIII} \particlePos{\PidxI}}}_{\ConnCoeffL{\LidxIII}{\LidxII}{\LidxI}}
+% - \underbrace{\sumParticles \particleMass{\PidxI} \sProd{\dirDiff{\LidxII} \dirDiff{\LidxI} \particlePos{\PidxI}}{\dirDiff{\LidxIII} \particlePos{\PidxI}}}_{\ConnCoeffL{\LidxIII}{\LidxI}{\LidxII}}
+\end{align} 
+\end{subequations}
+Plugging these together while permuting the indices, we find
+\begin{align}
+ \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII} &= \dirDiff{\LidxIII} \sysInertiaMatCoeff{\LidxI\LidxII} - \ConnCoeffL{\LidxII}{\LidxI}{\LidxIII} 
+\nonumber\\
+ &= \dirDiff{\LidxIII} \sysInertiaMatCoeff{\LidxI\LidxII} + \BoltzSym{\LidxV}{\LidxI}{\LidxIII} \sysInertiaMatCoeff{\LidxV\LidxII} - \ConnCoeffL{\LidxII}{\LidxIII}{\LidxI} 
+\nonumber\\
+ &= \dirDiff{\LidxIII} \sysInertiaMatCoeff{\LidxI\LidxII} + \BoltzSym{\LidxV}{\LidxI}{\LidxIII} \sysInertiaMatCoeff{\LidxV\LidxII} - \dirDiff{\LidxI} \sysInertiaMatCoeff{\LidxIII\LidxII} + \ConnCoeffL{\LidxIII}{\LidxII}{\LidxI}
+\nonumber\\
+ &= \dirDiff{\LidxIII} \sysInertiaMatCoeff{\LidxI\LidxII} + \BoltzSym{\LidxV}{\LidxI}{\LidxIII} \sysInertiaMatCoeff{\LidxV\LidxII} - \dirDiff{\LidxI} \sysInertiaMatCoeff{\LidxIII\LidxII} + \BoltzSym{\LidxV}{\LidxI}{\LidxII} \sysInertiaMatCoeff{\LidxV\LidxIII} + \ConnCoeffL{\LidxIII}{\LidxI}{\LidxII}
+\nonumber\\
+ &= \dirDiff{\LidxIII} \sysInertiaMatCoeff{\LidxI\LidxII} + \BoltzSym{\LidxV}{\LidxI}{\LidxIII} \sysInertiaMatCoeff{\LidxV\LidxII} - \dirDiff{\LidxI} \sysInertiaMatCoeff{\LidxIII\LidxII} + \BoltzSym{\LidxV}{\LidxI}{\LidxII} \sysInertiaMatCoeff{\LidxV\LidxIII} + \dirDiff{\LidxII} \sysInertiaMatCoeff{\LidxI\LidxIII} - \ConnCoeffL{\LidxI}{\LidxIII}{\LidxII}
+\nonumber\\
+ &= \dirDiff{\LidxIII} \sysInertiaMatCoeff{\LidxI\LidxII} + \BoltzSym{\LidxV}{\LidxI}{\LidxIII} \sysInertiaMatCoeff{\LidxV\LidxII} - \dirDiff{\LidxI} \sysInertiaMatCoeff{\LidxIII\LidxII} + \BoltzSym{\LidxV}{\LidxI}{\LidxII} \sysInertiaMatCoeff{\LidxV\LidxIII} + \dirDiff{\LidxII} \sysInertiaMatCoeff{\LidxI\LidxIII} - \BoltzSym{\LidxV}{\LidxIII}{\LidxII} \sysInertiaMatCoeff{\LidxV\LidxI} - \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII}
+\\[1ex]
+ \Leftrightarrow \quad
+ \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII} &= \tfrac{1}{2}\big( \dirDiff{\LidxIII} \sysInertiaMatCoeff{\LidxI\LidxII} + \dirDiff{\LidxII} \sysInertiaMatCoeff{\LidxI\LidxIII} - \dirDiff{\LidxI} \sysInertiaMatCoeff{\LidxII\LidxIII} + \BoltzSym{\LidxV}{\LidxI}{\LidxII} \sysInertiaMatCoeff{\LidxV\LidxIII} + \BoltzSym{\LidxV}{\LidxI}{\LidxIII} \sysInertiaMatCoeff{\LidxV\LidxII} - \BoltzSym{\LidxV}{\LidxII}{\LidxIII} \sysInertiaMatCoeff{\LidxV\LidxI} \big).
+\label{eq:DefConnCoeffL}
+\end{align}
+This means the coefficients $\ConnCoeffL{\LidxI}{\LidxII}{\LidxIII}$ are completely determined by the inertia matrix $\sysInertiaMat$ and the geometric matrix $\kinMat$ which determines the directional derivative $\dirDiff{\LidxI}$ and the commutation coefficients $\mat{\BoltzSymSym}$.
+
+A similar, coordinate free derivation can be found in \cite[proof of Theorem 2.7.6]{Abraham:FoundationsOfMechanics} for the proof of the fundamental theorem of Riemannian geometry, i.e.\ the existence and uniqueness of the \textit{Levi-Civita connection}.
+However, all coordinate versions therein are restricted to minimal holonomic coordinates.
+For this \textit{special case}, i.e.\ $\sysCoord = \genCoord$, $\sysVel = \genCoordd$, $\kinMat=\idMat[\dimConfigSpace]$ and consequently $\BoltzSym{}{}{} = 0$, \eqref{eq:DefConnCoeffL} simplifies to the familiar definition of the \textit{Christoffel symbols}, see e.g.\ \cite[p.\,145]{Abraham:FoundationsOfMechanics} or \cite[Vol.\,2, p.\,221]{Spivak:DiffGeo}
+\begin{align}
+ \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII} &= \tfrac{1}{2}\Big( \pdiff[\sysInertiaMatCoeff{\LidxI\LidxII}]{\genCoordCoeff{\LidxIII}} + \pdiff[\sysInertiaMatCoeff{\LidxI\LidxIII}]{\genCoordCoeff{\LidxII}} - \pdiff[\sysInertiaMatCoeff{\LidxII\LidxIII}]{\genCoordCoeff{\LidxI}} \Big).
+\end{align}
+In \cite[sec.\,9.2]{Frankel:GeometryOfPhysics} it is pointed out that the name Christoffel symbols is exclusive for the holonomic case, whereas in general $\ConnCoeffL{\LidxI}{\LidxII}{\LidxIII}$ are referred to as the \textit{(Levi-Civita) connection coefficients}.
+To the best of the authors knowledge, the only popular source that states the coordinate version \eqref{eq:DefConnCoeffL} explicitly is \cite[eq.\ 8.24]{Misner:Gravitation}, though restricted to minimal coordinates and in a rather different context of relativistic point masses.
+Since the directional derivative $\dirDiff{\LidxI}$ and the commutation coefficients $\BoltzSym{\LidxV}{\LidxI}{\LidxII}$ are defined in a setting supporting redundant coordinates, so does \eqref{eq:DefConnCoeffL} as definition of the connection coefficients.
+
+% In \cite[eq.\,4.10.9]{Lurie:AnalyticalMechanics} only the first three terms of \eqref{eq:DefConnCoeffLeviCivita} are introduced as the ``generalized Christoffel symbols'' in the context of minimal coordinates and non-coordinate basis vectors.
+% This might be misleading since these quantities do not obey the transformation rule \eqref{eq:TrafoRuleConnCoeff}, so do not define a connection.
+
+
+
+\subsection{Gravitation}\label{sec:ParticleSysGravitation}
+Earth's gravity acts on a system of particles just as on a single particle \eqref{eq:ParticleGravity}, i.e.\ with a force $\particleForceGravity{} = \particleMass{} \gravityAcc$ on each particle.
+The resulting generalized force on the system is
+\begin{align}
+ \genForceGravityCoeff{\LidxI}
+ = \sumParticles \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\particleForceGravity{\PidxI}}
+ = \sumParticles \particleMass{\PidxI} \sProd{\dirDiff{\LidxI}\particlePos{\PidxI}}{\gravityAcc}.
+ = -\dirDiff{\LidxI} \underbrace{\sumParticles \particleMass{\PidxI} \sProd{\particlePos{\PidxI}}{-\gravityAcc}}_{\potentialGravity}.
+\label{eq:ParticleSysGravity}
+\end{align}
+The force may also be derived from the \textit{gravitational potential} $\potentialGravity$ of the system which is simply the sum of the potentials of the individual particles.
+%Since it can be derived from a potential $\potentialGravity:\configSpace\rightarrow\RealNum$, it is called a \textit{conservative force}.
+
+
+\subsection{Stiffness}\label{sec:ParticleSysStiffness}
+Consider that \textit{one} particle $\particlePos{\PidxI}$ of the system is connected by a linear spring with stiffness $\particleStiffness{\PidxI}$ to a position $\springHubPos{\PidxI}$.
+The force on this one particle, as proposed in \eqref{eq:ParticleStiffness}, is $\particleForceStiff{\PidxI} = \particleStiffness{\PidxI} (\springHubPos{\PidxI} - \particlePos{\PidxI})$.
+The generalized force on the system is
+\begin{align}
+ \genForceStiffCoeff{\LidxI} 
+ = \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\particleForceStiff{\PidxI}} 
+ = \particleStiffness{\PidxI} \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\springHubPos{\PidxI} - \particlePos{\PidxI}}
+ = -\dirDiff{\LidxI} \underbrace{\big( \tfrac{1}{2} \particleStiffness{\PidxI} \norm{\particlePos{\PidxI} - \springHubPos{\PidxI}}^2 \big)}_{\potentialStiff_{\PidxI}}.
+\end{align}
+
+We may also consider a spring with stiffness $\particleStiffness{\PidxI\PidxII}$ between two particles of the system:
+Then we have the force $\particleForceStiff{\PidxI} = \particleStiffness{\PidxI\PidxII} (\particlePos{\PidxII} - \particlePos{\PidxI})$ on particle $\particlePos{\PidxI}$ and the opposite force $\particleForceStiff{\PidxII} = \particleStiffness{\PidxI\PidxII} (\particlePos{\PidxI} - \particlePos{\PidxII})$ on particle $\particlePos{\PidxII}$.
+The generalized force on the system is
+\begin{align}
+ \genForceStiffCoeff{\LidxI} &= \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\particleForceStiff{\PidxI}} + \sProd{\dirDiff{\LidxI} \particlePos{\PidxII}}{\particleForceStiff{\PidxII}} 
+% &= \particleStiffness{\PidxI\PidxII} \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\particlePos{\PidxII} - \particlePos{\PidxI}} + \particleStiffness{\PidxI\PidxII} \sProd{\dirDiff{\LidxI} \particlePos{\PidxII}}{\particlePos{\PidxI} - \particlePos{\PidxII}}
+ = -\particleStiffness{\PidxI\PidxII} \sProd{\dirDiff{\LidxI} (\particlePos{\PidxI} - \particlePos{\PidxII})}{\particlePos{\PidxI} - \particlePos{\PidxII}}
+ = -\dirDiff{\LidxI} \underbrace{\big( \tfrac{1}{2} \particleStiffness{\PidxI\PidxII} \norm{\particlePos{\PidxI} - \particlePos{\PidxII}}^2 \big)}_{\potentialStiff_{\PidxI\PidxII}}.
+\end{align}
+In both cases the generalized force can be derived from a potential $\potentialStiff$.
+For a system with an arbitrary number of linear springs, one may simply sum up the individual potentials to obtain the stiffness potential $\potentialStiff$ and derive the corresponding generalized force $\genForceStiff = \differential \potentialStiff$. 
+Note that non-negativity of the spring constants $\particleStiffness{} \geq 0$ implies non-negativity of the potential $\potentialStiff \geq 0$.
+
+
+
+%\cite[p.\ 24]{Goldstein:ClassicalMechanics} ''Frictional forces of this type may be derived in terms of a function, known as Rayleigh's dissipation function``
+%\cite[p.\ 519]{Papastavridis:AnalyticalMechanics} same as above
+%\cite[§81]{Rayleigh:TheoryOfSound}: ''Suppose that each particle of the system is retarded by forces proportional to its component velocities``.
+\subsection{Dissipation}
+Let the system of particles move within a viscous fluid with velocities $\fluidVel{\PidxI}$ at the positions $\particlePos{\PidxI}$ of the particles.
+Then, as proposed in \eqref{eq:ParticleDamping}, each particle is subject to a friction force $\particleForceDiss{\PidxI} = -\particleDamping{\PidxI} (\particlePosd{\PidxI} - \fluidVel{\PidxI})$.
+The generalized force on the the system is
+\begin{align}
+ \genForceDissCoeff{\LidxI}
+ = \sumParticles \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\particleForceDiss{\PidxI}}
+ = -\sumParticles \particleDamping{\PidxI} \sProd{\pdiff[\particlePosd{\PidxI}]{\sysVelCoeff{\LidxI}}}{\particlePosd{\PidxI} - \fluidVel{\PidxI}}
+ = -\pdiff{\sysVelCoeff{\LidxI}} \underbrace{\Big( \tfrac{1}{2} \sumParticles \particleDamping{\PidxI} \norm{\particlePosd{\PidxI} - \fluidVel{\PidxI}}^2 \Big)}_{\dissFkt}.
+\end{align}
+This dissipative force may be derived from $\dissFkt$, which is commonly called \textit{Rayleigh dissipation function}, e.g.\ \cite[p.\ 24]{Goldstein:ClassicalMechanics}.
+Its dimension is that of power, i.e.\ watts.
+Note that non-negativity of the damping parameters $\particleStiffness{} \geq 0$ implies non-negativity of the dissipation function $\potentialStiff \geq 0$.
+
+
+\subsection{Energy}
+\paragraph{Total energy.}
+The time derivative of the kinetic energy may be formulated as
+\begin{align}
+ \dot{\kineticEnergy} = \sumParticles \particleMass{\PidxI} \sProd{\particlePosd{\PidxI}}{\particlePosdd{\PidxI}} 
+ = \sysVelCoeff{\LidxI} \underbrace{\sumParticles \particleMass{\PidxI} \sProd{\dirDiff{\LidxI}\particlePos{\PidxI}}{\particlePosdd{\PidxI}}}_{\genForceInertiaCoeff{\LidxI}}
+ + \sumParticles \particleMass{\PidxI} \sProd{\pdiff[\particlePos{\PidxI}]{t}}{\particlePosdd{\PidxI}}.
+\end{align}	
+In \autoref{sec:ParticleSysGravitation} and \autoref{sec:ParticleSysGravitation} we have seen potentials of the form $\potentialEnergy(\sysCoord, t)$ and their associated generalized force $\genForcePotentialCoeff{\LidxI} = \dirDiff{\LidxI} \potentialEnergy$.
+The time derivative of this potential is
+\begin{align}
+ \dot{\potentialEnergy} &= \sysVelCoeff{\LidxI} \underbrace{\dirDiff{\LidxI} \potentialEnergy}_{\genForcePotentialCoeff{\LidxI}} + \pdiff[\potentialEnergy]{t}.
+\end{align}
+
+The sum $\totalEnergy = \kineticEnergy + \potentialEnergy$ is commonly called the \textit{total energy}.
+Its time derivative is
+\begin{align}
+ \dot{\totalEnergy} = \sysVel^\top \big( \genForceInertia + \genForcePotential \big) + \sumParticles \particleMass{\PidxI} \sProd{\pdiff[\particlePos{\PidxI}]{t}}{\particlePosdd{\PidxI}} + \pdiff[\potentialEnergy]{t}
+ .
+\end{align}
+Note that the equation of motion implies $\genForceInertia + \genForcePotential = \genForceEx - \genForceDiss$.
+
+A mechanical system is called skleronomic (otherwise rheonomic) if it does not contain explicit time dependency. 
+For this important case the change of total energy may be exressed by the external and dissipative forces alone
+\begin{align}
+ \dot{\totalEnergy} = \sysVel^\top \big( \genForceEx - \genForceDiss \big) %+ \sumParticles \particleMass{\PidxI} \sProd{\pdiff[\particlePos{\PidxI}]{t}}{\particlePosdd{\PidxI}} + \pdiff[\potentialEnergy]{t}
+ .
+\end{align}
+
+\paragraph{Lagrangian and Hamiltonian.}
+Define the \textit{Lagrangian} as $\Lagrangian = \kineticEnergy - \potentialEnergy$ which according to \autoref{sec:HamiltonsEquations} implies the generalized momentum and \textit{Hamiltonian} as
+\begin{align}
+ \genMomentumCoeff{\LidxI} &= \pdiff[\Lagrangian]{\sysVelCoeff{\LidxI}} = \sumParticles \particleMass{\PidxI} \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\particlePosd{\PidxI}}, \quad \LidxI = 1,\ldots,\dimConfigSpace,
+\\
+ \Hamiltonian &= \genMomentumCoeff{\LidxI} \sysVelCoeff{\LidxI} - \Lagrangian = \underbrace{\tfrac{1}{2} \sumParticles \particleMass{\PidxI} \norm{\particlePosd{\PidxI}}^2 + \potentialEnergy}_{\totalEnergy} - \sumParticles \particleMass{\PidxI} \sProd{\pdiff[\particlePos{\PidxI}]{t}}{\particlePosd{\PidxI}} 
+ .
+\end{align}
+Extending the derivation from \autoref{sec:HamiltonsEquations} with the nonconservative forces $\genForceDiss$ and $\genForceEx$ we find the change of the Hamiltonian along the solutions of the equations of motion as
+\begin{align}
+ \dot{\Hamiltonian} &=  \sysVel^\top \big( \genForceEx - \genForceDiss \big) - \pdiff[\Lagrangian]{t}
+ = \sysVel^\top \big( \genForceEx - \genForceDiss \big) - \sumParticles \particleMass{\PidxI} \sProd{\pdiff[\particlePosd{\PidxI}]{t}}{\particlePosd{\PidxI}} + \pdiff[\potentialEnergy]{t}
+\end{align}
+Note that for a skleronomic system, the Hamiltonian $\Hamiltonian$ coincides with the total energy $\totalEnergy$. 
+
+%For the important case that the particle positions have no no explicit time dependency, i.e.\ $\spdiff[\particlePos{\PidxI}]{t} = \tuple{0}$, and consequently $\spdiff[\kineticEnergy]{t} = 0$, the Hamiltonian $\Hamiltonian$ coincides with the total energy $\totalEnergy$.
+
+% several forms:
+% \begin{subequations}
+% \begin{align}
+%  \genForceInertiaCoeff{\LidxI}  &= \sumParticles \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\particleMass{\PidxI} \particlePosdd{\PidxI}},&
+%  \LidxI &= 1,\ldots,\dimConfigSpace
+% \\ 
+%  &= \sumParticles \particleMass{\PidxI} \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\dirDiff{\LidxII} \particlePos{\PidxI} \sysVelCoeffd{\LidxII} + \dirDiff{\LidxIII} \dirDiff{\LidxII} \particlePos{\PidxI} \sysVelCoeff{\LidxIII} \sysVelCoeff{\LidxII} + \particleAccTime{\PidxI}}
+% \\
+%  \label{eq:InertiaForceConnCoeff}
+%  &= \sysInertiaMatCoeff{\LidxI\LidxII} \sysVelCoeffd{\LidxII} + \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII} \sysVelCoeff{\LidxII}\sysVelCoeff{\LidxIII} + \sumParticles \particleMass{\PidxI} \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\particleAccTime{\PidxI}},&
+%  \sysInertiaMatCoeff{\LidxI\LidxII} &= \sumParticles \particleMass{\PidxI} \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\dirDiff{\LidxII} \particlePos{\PidxI}}
+% \\
+%  \label{eq:InertiaForceKinEnergy}
+%  &= \diff{t} \pdiff[\kineticEnergy]{\sysVelCoeff{\LidxI}} + \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \sysVelCoeff{\LidxII} \pdiff[\kineticEnergy]{\sysVelCoeff{\LidxIII}} - \dirDiff{\LidxI} \kineticEnergy,& 
+%  \kineticEnergy &= \tfrac{1}{2} \sumParticles \particleMass{\PidxI} \norm{\particlePosd{\PidxI}}^2
+% \\
+%  \label{eq:InertiaForceAccEnergy}
+%  &= \pdiff[\accEnergy]{\sysVelCoeffd{\LidxI}},&
+%  \accEnergy &= \tfrac{1}{2} \sumParticles \particleMass{\PidxI} \norm{\particlePosdd{\PidxI}}^2
+% \end{align} 
+% \end{subequations}
+% 
+% \begin{subequations}
+% \begin{align}
+%  \particleForceInertia{\PidxI} &= \particleMass{\PidxI} \particlePosdd{\PidxI},&
+%  \genForceInertiaCoeff{\LidxI} &= \sumParticles \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\particleMass{\PidxI} \particlePosdd{\PidxI}} = \pdiff[\accEnergy]{\sysVelCoeffd{\LidxI}},&
+%  \accEnergy &= \tfrac{1}{2} \sumParticles \particleMass{\PidxI} \norm{\particlePosdd{\PidxI}}^2
+% \\
+%  \particleForceGravity{\PidxI} &= \particleMass{\PidxI} \gravityAcc,&
+%  \genForceGravityCoeff{\LidxI} &= \sumParticles \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\particleMass{\PidxI} \gravityAcc} = \dirDiff{\LidxI} \potentialGravity,&
+%  \potentialGravity &= \sumParticles \particleMass{\PidxI} \sProd{\particlePos{\PidxI}}{\gravityAcc}
+% \\
+%  \particleForceStiff{\PidxI} &= \particleStiffness{\PidxI} (\particlePos{\PidxI} - \springHubPos{\PidxI}),&
+%  \genForceStiffCoeff{\LidxI} &= \sumParticles \particleStiffness{\PidxI} \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\particlePos{\PidxI} - \springHubPos{\PidxI}} = \dirDiff{\LidxI} \potentialStiff,&
+%  \potentialStiff &= \tfrac{1}{2} \sumParticles \particleStiffness{\PidxI} \norm{\particlePos{\PidxI} - \springHubPos{\PidxI}}^2
+% \\
+%  \particleForceDiss{\PidxI} &= \particleDamping{\PidxI} (\particlePosd{\PidxI} - \tuple{v}_{\mathsf{D}\PidxI})
+% \end{align} 
+% \end{subequations}

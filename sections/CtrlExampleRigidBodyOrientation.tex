@@ -1,0 +1,107 @@
+\subsection{Rigid body orientation}\label{sec:CtrlExampleRigidBodyOrientation}
+\begin{figure}[ht]
+ \centering
+ \input{graphics/RigidBodyOrientation.pdf_tex}
+ \caption{rigid body fixed at one point}
+ \label{fig:RigidBodyOrientation}
+\end{figure}
+
+\paragraph{Model.}
+Consider a rigid body fixed at one point $\bodyPos{}{} = \const$ as illustrated in \autoref{fig:RigidBodyOrientation}.
+Its orientation may be parameterized by the coefficients of the rotation matrix $\R = [\Rx,\Ry,\Rz] \in \SpecialOrthogonalGroup(3)$.
+With the angular velocity $\w = \veeMatOp(\R^\top\Rd)$ as velocity coordinates, the inertia matrix $\J$ and the control torques $\tuple{\tau}$ about the body fixed axes, the equations of motion may be written as
+\begin{align}
+ \Rd = \R \wedOp(\w)
+\qquad
+ \J\wdot + \wedOp(\w) \J \w &= \tuple{\tau}.
+\end{align}
+
+\paragraph{Potential energy.}
+Only the parameters $\Jc$, $\sigc$ and $\bodyMOSC{}{}$ contribute to the closed loop kinetics.
+Using the attitude error $\RE = \RR^\top \R$ the error potential, its differential and Hessian are
+\begin{subequations}
+\begin{align}
+ \potentialEnergyC &= \tr\big( \wedMatOp(\bodyMOSC{}{}) (\idMat[3] - \RE) \big),
+\\
+ \genForceStiffC = \differential \potentialEnergyC &= \veeTwoOp(\wedMatOp(\bodyMOSC{}{}) \RE),
+\\
+ (\differential^2 \potentialEnergyC)|_{\R=\RR} &= \bodyMOSC{}{}.
+\end{align} 
+\end{subequations}
+The potential has the transport map $\sysTransportMap = \RE^\top$, so the velocity error for the energy based approach is $\wE = \w - \RE^\top \wR$ which coincides with the body velocity error.
+
+\paragraph{Particle-based approach.}
+The particle-based approach \eqref{eq:CtrlApproachParticles} leads to
+\begin{subequations}
+\begin{align}
+ \genForceInertiaC &= \Jc \wdot - \veeMatOp(\RE^\top \wedMatOp(\Jc)) \RE^\top \wRd
+\nonumber\\
+ &\hspace{10em}
+ + \wedOp(\w) \Jc \w + \veeTwoOp(\wedMatOp(\Jc)\wedOp(\wR)^2\RE)
+\\
+ \genForceDissC &= \sigc \w - \veeMatOp(\RE^\top \wedMatOp(\sigc)) \RE^\top \wR
+\end{align} 
+\end{subequations}
+
+\paragraph{Body-based approach.}
+The body-based approach \eqref{eq:CtrlApproachBody} leads to 
+\begin{subequations}
+\begin{align}
+ \genForceInertiaC &= \Jc \wEd + \wedOp(\wE) \Jc \wE
+\\
+ \genForceDissC &= \sigc \wE.
+\end{align} 
+\end{subequations}
+The corresponding control law coincides with the one proposed in \cite{Koditschek:TotalEnergy}.
+The total energy $\totalEnergyC = \tfrac{1}{2} \wE^\top \Jc \wE + \potentialEnergyC$ with $\totalEnergyCd = -\wE^\top \sigc \wE$ serves as a Lyapunov function for the closed loop.
+
+\paragraph{Energy-based approach.}
+For the energy-based approach \eqref{eq:desiredErrorKineticsEnergy} leads to
+\begin{subequations}
+\begin{align}
+ \genForceInertiaC &= \Jc \wEd + \wedOp(\wedMatOp(\Jc) \w) \wE
+\\
+ \genForceDissC &= \sigc \wE.
+\end{align} 
+\end{subequations}
+The corresponding control law coincides with one proposed in \cite{Bullo:TrackingAutomatica}.
+The total energy is the same as the one for the body based approach.
+The two approaches only differ in the gyroscopic terms.
+% \begin{align}
+%  \gyroForceC 
+% % &= \big[ \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII} \sysVelCoeff{\LidxIII} \sysVelCoeffE{\LidxII} \big]
+% % = \big[ \tfrac{1}{2}\big( \BoltzSym{\LidxV}{\LidxI}{\LidxII} \sysInertiaMatCoeffC{\LidxV\LidxIII} + \BoltzSym{\LidxV}{\LidxI}{\LidxIII} \sysInertiaMatCoeffC{\LidxV\LidxII} - \BoltzSym{\LidxV}{\LidxII}{\LidxIII} \sysInertiaMatCoeffC{\LidxV\LidxI} \big) \sysVelCoeff{\LidxIII} \sysVelCoeffE{\LidxII} \big]
+% %\nonumber\\
+%  &= \tfrac{1}{2} \big( \wedOp(\wE)\Jc \w + \wedOp(\w) \Jc \wE - \Jc \wedOp(\w) \wE \big)
+%  = \wedOp(\Jpc \w) \wE
+% \end{align}
+% Note that $\wedOp(\Jpc \w) \w = \wedOp(\w) \Jpc \w$.
+
+% The explicit control law can be written as
+% \begin{align}
+%  \tuple{\tau} 
+%  &= \J \wdot + \wedOp(\w) \J \w
+% \nonumber\\
+%  &= \J (\wEd + \RE^\top \wRd - \wedOp(\wE) \RE^\top \wR) + \wedOp(\w) \J \w
+% \nonumber\\
+%  &= \J (\RE^\top \wRd - \wedOp(\wE) \RE^\top \wR - \Jc^{-1}(\wedOp(\Jpc \w) \wE + \sigc \wE + 2 \veeOp(\kappc \RE))) + \wedOp(\w) \J \w
+% \nonumber\\
+%  &= \J \big( \RE^\top \wRd - \wedOp(\w) \RE^\top \wR - \Jc^{-1}\wedOp(\w)\Jc \w + \Jc^{-1}\wedOp(\Jpc \w) \RE^\top \wR \big) + \wedOp(\w) \J \w
+% \nonumber\\ 
+%  &\qquad - \J \Jc^{-1} \big( \sigc \wE + 2 \veeOp(\kappc \RE) \big)
+% % \nonumber\\
+% %  &= \Jc \R^\top \RR \wRd - \big(\Jc \wedOp(\w) + \wedOp(\Jpc \w)\big) \R^\top \RR \wR
+% % \nonumber\\
+% %  &\qquad- \sigc (\w - \R^\top \RR \wR) - 2 \veeOp(\kappc \RR^\top \R)
+% \end{align}
+
+
+\paragraph{Linearization.}
+For a small error to the reference we have
+\begin{align}
+ \R = \RR + \RR \wedOp(\LinErrorCoord),
+\qquad
+ \w = \wR + \LinErrorCoordd,
+\qquad
+ \Jc \LinErrorCoorddd + \sigc \LinErrorCoordd + \kapc \LinErrorCoord = 0.
+\end{align}

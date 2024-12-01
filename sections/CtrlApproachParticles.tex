@@ -1,0 +1,394 @@
+% \newcommand{\blubbMat}[2]{\JokerTensor[^{#1}_{#2}]{\mat{B}}{}}
+% \newcommand{\blubbMatd}[2]{\JokerTensor[^{#1}_{#2}]{\dot{\mat{B}}}{}}
+% \newcommand{\blahMat}[2]{\JokerTensor[^{#1}_{#2}]{\mat{L}}{}}
+
+\section{Approach 1: Inspired by particle distribution}\label{sec:CtrlApproachParticles}
+
+\subsection{Particle system}\label{sec:CtrlParticleSystem}
+
+\paragraph{The basic idea.}
+Consider a system of \textit{free} particles with the equations of motion $\particleMass{\PidxI} \particlePosdd{\PidxI} = \particleForceImpressed{\PidxI}, \PidxI=1,\ldots,\numParticles$ and the control inputs $\particleForceImpressed{\PidxI}$.
+We want the system to track a smooth reference trajectory $t\mapsto(\particlePosR{1},\ldots,\particlePosR{\numParticles})(t)$.
+Probably the simplest solution is the control law $\particleForceImpressed{\PidxI} = \particleMass{\PidxI} \particlePosRdd{\PidxI} - \particleDampingC{\PidxI} \particlePosEd{\PidxI} - \particleStiffnessC{\PidxI} \particlePosE{\PidxI}$ with the position error $\particlePosE{\PidxI} = \particlePos{\PidxI} - \particlePosR{\PidxI}$ and the design parameters $\particleStiffnessC{\PidxI}, \particleDampingC{\PidxI} \in \RealNum > 0$.
+The resulting closed loop is
+\begin{align}\label{eq:MotivationGaussianCtrl}
+ \particleMass{\PidxI} \particlePosEdd{\PidxI} + \particleDampingC{\PidxI} \particlePosEd{\PidxI} + \particleStiffnessC{\PidxI} \particlePosE{\PidxI} = \tuple{0},
+\qquad
+ \PidxI = 1\ldots\numParticles.
+\end{align}
+It is clearly exponentially stable and the \textit{desired stiffness} $\particleStiffnessC{\PidxI}$ and \textit{desired damping} $\particleDampingC{\PidxI}$ are intuitive tuning parameters.
+
+For a system of particles with geometric constraints $\particleGeoConstraint(\particlePos{1},\ldots,\particlePos{\numParticles}) = \tuple{0}$ we cannot achieve \eqref{eq:MotivationGaussianCtrl} in general.
+As the next best thing we can get as close as possible by formulation of the following constrained optimization problem
+\begin{align}\label{eq:CtrlGaussPrinciple}
+ \begin{array}{rl}
+  \underset{\particleCoorddd \in \RealNum^{3\numParticles}}{\text{minimize}} & \GaussianConstraintC
+%  = \tfrac{1}{2} \displaystyle \sumParticles \tfrac{1}{\particleMassC{\PidxI}} \norm{\particleMassC{\PidxI} \particlePosdd{\PidxI} - \particleForceImpressed{\PidxI}}^2
+  = \tfrac{1}{2} \displaystyle \sumParticles \tfrac{1}{\particleMassC{\PidxI}} \norm{\particleMassC{\PidxI} \particlePosEdd{\PidxI} + \particleDampingC{\PidxI} \particlePosEd{\PidxI} + \particleStiffnessC{\PidxI} \particlePosE{\PidxI}}^2
+  \\[1ex]
+  \text{subject to} & \particleGeoConstraint(\particlePos{1},\ldots,\particlePos{\numParticles}) = \tuple{0}
+ \end{array}.
+\end{align}
+Note that we also replaced the particle masses $\particleMass{\PidxI}$ by \textit{desired masses} $\particleMassC{\PidxI}$ as a additional design parameters.
+This will turn out crucial for control of underactuated systems.
+
+% But we can get as close as possible in the sense of minimizing the corresponding Gaussian with the free particle acceleration $\particlePosdd{\PidxI}^{\idxText{F}}$ given by \eqref{eq:MotivationGaussianCtrl}.
+% The desired closed loop is then completely determined by the minimization problem
+
+\paragraph{The controlled system.}
+The constrained problem \eqref{eq:CtrlGaussPrinciple} can be transformed to an unconstrained one by formulating the particle accelerations $\particlePosdd{\PidxI} = \particlePosdd{\PidxI}(\sysCoord, \sysVel, \sysVeld)$, $\PidxI=1\ldots\numParticles$ in terms of minimal acceleration coordinates $\sysVeld$.
+Analogous, let the reference particle positions be formulated in terms of the reference coordinates $\sysCoordR, \sysVelR, \sysVelRd$, i.e.\ $\particlePosR{\PidxI} = \particlePos{\PidxI}(\sysCoordR)$, $\particlePosRd{\PidxI} = \particlePosd{\PidxI}(\sysCoordR, \sysVelR)$, $\particlePosRdd{\PidxI} = \particlePosdd{\PidxI}(\sysCoordR, \sysVelR, \sysVelRd)$, and the position error $\particlePosE{\PidxI} = \particlePosE{\PidxI}(\sysCoord, \sysCoordR) = \particlePos{\PidxI}(\sysCoord) - \particlePos{\PidxI}(\sysCoordR)$, etc..
+With this, the solution of \eqref{eq:CtrlGaussPrinciple} can be computed from
+\begin{align}
+ \pdiff[\GaussianConstraintC]{\sysVelCoeffd{\LidxI}}
+ &= \sumParticles \sProd{\particleMassC{\PidxI} \particlePosEdd{\PidxI} + \particleDampingC{\PidxI} \particlePosEd{\PidxI} + \particleStiffnessC{\PidxI} \particlePosE{\PidxI}}{\pdiff[\particlePosdd{\PidxI}]{\sysVelCoeffd{\LidxI}}}
+\nonumber\\
+ &= \sumParticles \particleMassC{\PidxI} \sProd{\particlePosEdd{\PidxI}}{\pdiff[\particlePosdd{\PidxI}]{\sysVelCoeffd{\LidxI}}}
+  + \sumParticles \particleDampingC{\PidxI} \sProd{\particlePosEd{\PidxI}}{\pdiff[\particlePosd{\PidxI}]{\sysVelCoeff{\LidxI}}}
+  + \sumParticles \particleStiffnessC{\PidxI} \sProd{\particlePosE{\PidxI}}{\dirDiff{\LidxI} \particlePos{\PidxI}}
+\nonumber\\
+ &= \underbrace{\pdiff{\sysVelCoeffd{\LidxI}} \underbrace{\sumParticles \tfrac{1}{2} \particleMassC{\PidxI}      \norm{\particlePosEdd{\PidxI}}^2}_{\accEnergyC}}_{\genForceInertiaCoeffC{\LidxI}}
+  + \underbrace{\pdiff{\sysVelCoeff{\LidxI}}  \underbrace{\sumParticles \tfrac{1}{2} \particleDampingC{\PidxI}   \norm{\particlePosEd{\PidxI}}^2}_{\dissFktC}}_{\genForceDissCoeffC{\LidxI}}
+  + \underbrace{\dirDiff{\LidxI}              \underbrace{\sumParticles \tfrac{1}{2} \particleStiffnessC{\PidxI} \norm{\particlePosE{\PidxI}}^2}_{\potentialEnergyC}}_{\genForceStiffCoeffC{\LidxI}}
+  = 0, \quad \LidxI = 1,\ldots,\dimConfigSpace.
+\nonumber\\[-5ex]
+\label{eq:SolCtrlGaussPrinciple}
+\end{align}
+Here we introduced formulations for the \textit{controlled acceleration energy} $\accEnergyC(\sysCoord, \sysVel, \sysVeld, \sysCoordR, \sysVelR, \sysVelRd)$, the \textit{controlled dissipation function} $\dissFktC(\sysCoord, \sysVel, \sysCoordR, \sysVelR)$ and the \textit{controlled potential energy} $\potentialEnergyC(\sysCoord, \sysCoordR)$.
+It is worth noting that the inertia force $\genForceInertiaC$ could also be derived from the \textit{controlled kinetic energy} $\kineticEnergyC(\sysCoord, \sysVel, \sysCoordR, \sysVelR)$ as
+\begin{align}
+ \genForceInertiaCoeffC{\LidxI} &= \diff{t} \pdiff[\kineticEnergyC]{\sysVelCoeff{\LidxI}} + \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \sysVelCoeff{\LidxII} \pdiff[\kineticEnergyC]{\sysVelCoeff{\LidxIII}} - \dirDiff{\LidxI} \kineticEnergyC,&
+ \kineticEnergyC &= \tfrac{1}{2} \sumParticles \particleMassC{\PidxI} \norm{\particlePosEd{\PidxI}}^2.
+\end{align}
+Also note that all the defined ``energies'' are symmetric in the sense that $\potentialEnergy(\sysCoord, \sysCoordR) = \potentialEnergyC(\sysCoordR, \sysCoord)$, etc..
+
+The corresponding forces expressed more explicitly are 
+\begin{subequations}\label{eq:CtrlGaussPrincipleForces}
+\begin{align}
+ \genForceInertiaCoeffC{\LidxI} = \pdiff[\accEnergyC]{\sysVelCoeffd{\LidxI}} &= 
+   \underbrace{\sumParticles \particleMassC{\PidxI} \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}(\sysCoord)}{\dirDiff{\LidxII} \particlePos{\PidxI}(\sysCoord)}}_{\sysInertiaMatCoeffC{\LidxI\LidxII}(\sysCoord)} \sysVelCoeffd{\LidxII}
+ + \underbrace{\sumParticles \particleMassC{\PidxI} \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}(\sysCoord)}{\dirDiff{\LidxIII} \dirDiff{\LidxII} \particlePos{\PidxI}(\sysCoord)}}_{\ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII}(\sysCoord)} \sysVelCoeff{\LidxII} \sysVelCoeff{\LidxIII}
+\nonumber\\
+ &- \underbrace{\sumParticles \particleMassC{\PidxI} \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}(\sysCoord)}{\dirDiff{\LidxII} \particlePos{\PidxI}(\sysCoordR)}}_{\sysInertiaMatCoeffC{\LidxI\LidxII}'(\sysCoord,\sysCoordR)} \sysVelCoeffRd{\LidxII}
+ - \underbrace{\sumParticles \particleMassC{\PidxI} \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}(\sysCoord)}{\dirDiff{\LidxIII} \dirDiff{\LidxII} \particlePos{\PidxI}(\sysCoordR)}}_{\ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII}'(\sysCoord, \sysCoordR)} \sysVelCoeffR{\LidxII} \sysVelCoeffR{\LidxIII},
+\\
+ \genForceDissCoeffC{\LidxI} = \pdiff[\dissFktC]{\sysVelCoeff{\LidxI}} &=
+ \underbrace{\sumParticles \particleDampingC{\PidxI} \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}(\sysCoord)}{\dirDiff{\LidxII} \particlePos{\PidxI}(\sysCoord)}}_{\sysDissMatCoeffC{\LidxI\LidxII}(\sysCoord)} \sysVelCoeff{\LidxII}
+ - \underbrace{\sumParticles \particleDampingC{\PidxI} \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}(\sysCoord)}{\dirDiff{\LidxII} \particlePos{\PidxI}(\sysCoordR)}}_{\sysDissMatCoeffC{\LidxI\LidxII}'(\sysCoord, \sysCoordR)} \sysVelCoeffR{\LidxII},
+\\
+ \genForceStiffCoeffC{\LidxI} = \dirDiff{\LidxI} \potentialEnergyC &= \sumParticles \particleStiffnessC{\PidxI} \sProd{\partial_\LidxI \particlePos{\PidxI}(\sysCoord)}{\particlePos{\PidxI}(\sysCoord) - \particlePos{\PidxI}(\sysCoordR)}
+ .
+\end{align}
+\end{subequations}
+So we can rewrite \eqref{eq:SolCtrlGaussPrinciple} as
+\begin{multline}\label{eq:SolCtrlGaussPrincipleExplicit}
+ \sysInertiaMatCoeffC{\LidxI\LidxII}(\sysCoord) \sysVelCoeffd{\LidxII}
+ - \sysInertiaMatCoeffC{\LidxI\LidxII}'(\sysCoord,\sysCoordR) \sysVelCoeffRd{\LidxII}
+ + \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII}(\sysCoord) \sysVelCoeff{\LidxII} \sysVelCoeff{\LidxIII}
+ - \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII}'(\sysCoord, \sysCoordR) \sysVelCoeffR{\LidxII} \sysVelCoeffR{\LidxIII}
+\\
+ + \sysDissMatCoeffC{\LidxI\LidxII}(\sysCoord) \sysVelCoeff{\LidxII}
+ - \sysDissMatCoeffC{\LidxI\LidxII}'(\sysCoord, \sysCoordR) \sysVelCoeffR{\LidxII}
+ + \dirDiff{\LidxI} \potentialEnergyC(\sysCoord, \sysCoordR)
+ = 0,\quad \LidxI = 1,\ldots,\dimConfigSpace.
+\end{multline}
+
+\paragraph{Total energy.}
+Having a definition for a kinetic energy $\kineticEnergyC$ and a potential energy $\potentialEnergyC$ it is worth investigating the total energy $\totalEnergyC = \kineticEnergyC + \potentialEnergyC$ and its change along the solutions of closed loop \eqref{eq:SolCtrlGaussPrincipleExplicit}.
+Using the substitutions defined in \eqref{eq:CtrlGaussPrincipleForces} and $\mat{\varPsi}(\sysCoord, \sysCoordR) \in \RealNum^{\dimConfigSpace\times\dimConfigSpace}$ defined through $\sysInertiaMatCoeffC{\LidxI\LidxII}'(\sysCoord, \sysCoordR) = \varPsi_{\LidxI}^{\LidxV}(\sysCoord, \sysCoordR) \sysInertiaMatCoeffC{\LidxV\LidxII}(\sysCoord)$ we have
+\begin{align}
+ \totalEnergyC &= \overbrace{\tfrac{1}{2} \sysInertiaMatCoeffC{\LidxI\LidxII}(\sysCoord) \sysVelCoeff{\LidxI} \sysVelCoeff{\LidxII}
+ - \sysInertiaMatCoeffC{\LidxI\LidxII}'(\sysCoord, \sysCoordR) \sysVelCoeff{\LidxI} \sysVelCoeffR{\LidxII}
+ + \tfrac{1}{2} \sysInertiaMatCoeffC{\LidxI\LidxII}(\sysCoordR) \sysVelCoeffR{\LidxI} \sysVelCoeffR{\LidxII}}^{\kineticEnergyC(\sysCoord, \sysVel, \sysCoordR, \sysVelR)}
+ \ + \ \potentialEnergyC(\sysCoord, \sysCoordR)
+% \\
+%  &= \tfrac{1}{2} \big( \sysVel + \sysInertiaMatC^{-1}(\sysCoord) \sysInertiaMatC'(\sysCoord, \sysCoordR)\sysVelR \big)^\top \sysInertiaMatC \big( \sysVel + \sysInertiaMatC^{-1}(\sysCoord) \sysInertiaMatC'(\sysCoord, \sysCoordR)\sysVelR \big) 
+% \nonumber\\
+%  &+ \tfrac{1}{2} \sysVelR^\top \big( \sysInertiaMatC(\sysCoordR) - \sysInertiaMatC'^\top (\sysCoord, \sysCoordR) \sysInertiaMatC^{-1}(\sysCoord) \sysInertiaMatC'(\sysCoord, \sysCoordR) \big) \sysVelR
+\\[2ex]
+%  \totalEnergyCd &= \sysInertiaMatCoeffC{\LidxI\LidxII}(\sysCoord) \sysVelCoeff{\LidxI} \sysVelCoeffd{\LidxII}
+%  + \tfrac{1}{2} \dirDiff{\LidxIII} \sysInertiaMatCoeffC{\LidxI\LidxII}(\sysCoord) \sysVelCoeff{\LidxI} \sysVelCoeff{\LidxII} \sysVelCoeff{\LidxIII}
+%  + \sysInertiaMatCoeffC{\LidxI\LidxII}(\sysCoordR) \sysVelCoeffR{\LidxI} \sysVelCoeffRd{\LidxII}
+%  + \tfrac{1}{2} \dirDiffR{\LidxIII} \sysInertiaMatCoeffC{\LidxI\LidxII}(\sysCoordR) \sysVelCoeffR{\LidxI} \sysVelCoeffR{\LidxII} \sysVelCoeffR{\LidxIII}
+% \nonumber\\
+%  &+ \sysInertiaMatCoeffC{\LidxI\LidxII}'(\sysCoord, \sysCoordR) \sysVelCoeffd{\LidxI} \sysVelCoeffR{\LidxII}
+%  + \sysInertiaMatCoeffC{\LidxI\LidxII}'(\sysCoord, \sysCoordR) \sysVelCoeff{\LidxI} \sysVelCoeffRd{\LidxII}
+%  + \dirDiff{\LidxIII} \sysInertiaMatCoeffC{\LidxI\LidxII}'(\sysCoord, \sysCoordR) \sysVelCoeff{\LidxI} \sysVelCoeffR{\LidxII} \sysVelCoeff{\LidxIII}
+%  + \dirDiffR{\LidxIII} \sysInertiaMatCoeffC{\LidxI\LidxII}'(\sysCoord, \sysCoordR) \sysVelCoeff{\LidxI} \sysVelCoeffR{\LidxII} \sysVelCoeffR{\LidxIII}
+% \nonumber\\
+%  &+ \dirDiff{\LidxI} \potentialEnergyC \sysVelCoeff{\LidxI} + \dirDiffR{\LidxI} \potentialEnergyC \sysVelCoeffR{\LidxI}
+% \\
+ \totalEnergyCd &= \sysVelCoeff{\LidxI} \big( \sysInertiaMatCoeffC{\LidxI\LidxII}(\sysCoord) \sysVelCoeffd{\LidxII}
+ + \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII}(\sysCoord) \sysVelCoeff{\LidxII} \sysVelCoeff{\LidxIII}
+ - \sysInertiaMatCoeffC{\LidxI\LidxII}'(\sysCoord, \sysCoordR) \sysVelCoeffRd{\LidxII}
+ - \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII}'(\sysCoord, \sysCoordR) \sysVelCoeffR{\LidxII} \sysVelCoeffR{\LidxIII}
+ + \dirDiff{\LidxI} \potentialEnergyC(\sysCoord, \sysCoordR) \big)
+\nonumber\\
+ & \
+ + \sysVelCoeffR{\LidxI} \big( \sysInertiaMatCoeffC{\LidxI\LidxII}(\sysCoordR) \sysVelCoeffRd{\LidxII}
+ + \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII}(\sysCoordR) \sysVelCoeffR{\LidxII} \sysVelCoeffR{\LidxIII}
+ - \sysInertiaMatCoeffC{\LidxI\LidxII}'(\sysCoordR, \sysCoord) \sysVelCoeffd{\LidxII}
+ - \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII}'(\sysCoordR, \sysCoord) \sysVelCoeff{\LidxII} \sysVelCoeff{\LidxIII}
+ + \dirDiff{\LidxI} \potentialEnergyC(\sysCoordR, \sysCoord) \big)
+\nonumber\\[1ex]
+%  &= -\sysVelCoeff{\LidxI} \big( \sysDissMatCoeffC{\LidxI\LidxII}(\sysCoord) \sysVelCoeff{\LidxII} - \sysDissMatCoeffC{\LidxI\LidxII}'(\sysCoord, \sysCoordR) \sysVelCoeffR{\LidxII} \big)
+% \nonumber\\
+%  &+ \sysVelCoeffR{\LidxI} \big( \sysInertiaMatCoeffC{\LidxI\LidxII}(\sysCoordR) \sysVelCoeffRd{\LidxII}
+%  + \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII}(\sysCoordR) \sysVelCoeffR{\LidxII} \sysVelCoeffR{\LidxIII}
+%  - \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII}'(\sysCoordR, \sysCoord) \sysVelCoeff{\LidxII} \sysVelCoeff{\LidxIII}
+%  + \dirDiff{\LidxI} \potentialEnergyC(\sysCoordR, \sysCoord) \big)
+% \nonumber\\
+%  &+ \sysVelCoeffR{\LidxI} \varPsi_{\LidxI}^{\LidxV}(\sysCoord, \sysCoordR) \big(
+%  -\sysInertiaMatCoeffC{\LidxV\LidxII}'(\sysCoord,\sysCoordR) \sysVelCoeffRd{\LidxII}
+%  + \ConnCoeffLC{\LidxV}{\LidxII}{\LidxIII}(\sysCoord) \sysVelCoeff{\LidxII} \sysVelCoeff{\LidxIII}
+%  - \ConnCoeffLC{\LidxV}{\LidxII}{\LidxIII}'(\sysCoord, \sysCoordR) \sysVelCoeffR{\LidxII} \sysVelCoeffR{\LidxIII}
+%  + \sysDissMatCoeffC{\LidxV\LidxII}(\sysCoord) \sysVelCoeff{\LidxII}
+%  - \sysDissMatCoeffC{\LidxV\LidxII}'(\sysCoord, \sysCoordR) \sysVelCoeffR{\LidxII}
+%  + \dirDiff{\LidxV} \potentialEnergyC(\sysCoord, \sysCoordR)
+%  \big)
+% \\
+ &\overset{\eqref{eq:SolCtrlGaussPrincipleExplicit}}{=} -(\sysVelCoeff{\LidxI} - \varPsi_{\LidxV}^{\LidxI}(\sysCoord, \sysCoordR) \sysVelCoeffR{\LidxV}) \big( \sysDissMatCoeffC{\LidxI\LidxII}(\sysCoord) \sysVelCoeff{\LidxII} - \sysDissMatCoeffC{\LidxI\LidxII}'(\sysCoord, \sysCoordR) \sysVelCoeffR{\LidxII} \big)
+\nonumber\\
+ & \
+ + \sysVelCoeffR{\LidxI} \big( \dirDiff{\LidxI} \potentialEnergyC(\sysCoordR, \sysCoord) + \varPsi_{\LidxI}^{\LidxV}(\sysCoord, \sysCoordR) \dirDiff{\LidxV} \potentialEnergyC(\sysCoord, \sysCoordR)
+  + \big( \sysInertiaMatCoeffC{\LidxI\LidxII}(\sysCoordR) - \varPsi_{\LidxI}^{\LidxV}(\sysCoord, \sysCoordR) \sysInertiaMatCoeffC{\LidxV\LidxII}'(\sysCoord,\sysCoordR)          \big) \sysVelCoeffRd{\LidxII}
+\nonumber\\
+ & \
+ + \big( \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII}(\sysCoordR) - \varPsi_{\LidxI}^{\LidxV}(\sysCoord, \sysCoordR) \ConnCoeffLC{\LidxV}{\LidxII}{\LidxIII}'(\sysCoord, \sysCoordR) \big) \sysVelCoeffR{\LidxII} \sysVelCoeffR{\LidxIII}
+  - \big( \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII}'(\sysCoordR, \sysCoord) - \varPsi_{\LidxI}^{\LidxV}(\sysCoord, \sysCoordR) \ConnCoeffLC{\LidxV}{\LidxII}{\LidxIII}(\sysCoord)  \big) \sysVelCoeff{\LidxII} \sysVelCoeff{\LidxIII} \big)
+\end{align}
+Obviously the total energy $\totalEnergyC$ is not a Lyapunov function for a general reference trajectory.
+It is, however, for the very special case of $\sysVelR = \tuple{0}$, i.e.\ proves stability for a constant reference configuration $\sysCoordR = \const$. 
+
+\subsection{Free rigid body}\label{sec:CtrlApproachParticlesSingleBody}
+Consider the free rigid body discussed in \autoref{sec:RB} as a special case of a particle system.
+As motivated there we use the position $\r(t)\in \RealNum^3$ and orientation matrix $\R(t)\in\SpecialOrthogonalGroup(3)$ merged into the configuration matrix $\bodyHomoCoord{}{}(t) = \left[\begin{smallmatrix} \R(t) & \r(t) \\ \mat{0} & 1 \end{smallmatrix}\right] \in \SpecialEuclideanGroup(3)$ as configuration coordinates.
+Expressing the particle positions as $\particlePos{\PidxI} = \bodyPos{}{} + \bodyRot{}{} \particleBodyPos{\PidxI}$ and applying the same calculations as in \autoref{sec:RBMathEnergies} we can write the energies from \eqref{eq:SolCtrlGaussPrinciple} as
+\begin{subequations}\label{eq:RBCtrlEnergiesParticles}
+\begin{align}
+ \potentialEnergyC &= \sumParticles \tfrac{1}{2} \particleStiffnessC{\PidxI} \norm{\particlePos{\PidxI} - \particlePosR{\PidxI}}^2
+ = \tfrac{1}{2} \norm[\bodyStiffMatCp{}{}]{\big(\bodyHomoCoord{}{} - \bodyHomoCoordR{}{}\big)^\top}^2
+\\
+ \dissFktC &= \sumParticles \tfrac{1}{2} \particleDampingC{\PidxI} \norm{\particlePosd{\PidxI} - \particlePosRd{\PidxI}}^2
+ = \tfrac{1}{2} \norm[\bodyDissMatCp{}{}]{\big(\bodyHomoCoordd{}{} - \bodyHomoCoordRd{}{}\big)^\top}^2
+\\
+ \accEnergyC &= \sumParticles \tfrac{1}{2} \particleMassC{\PidxI} \norm{\particlePosdd{\PidxI} - \particlePosRdd{\PidxI}}^2
+ = \tfrac{1}{2} \norm[\bodyInertiaMatCp{}{}]{\big(\bodyHomoCoorddd{}{} - \bodyHomoCoordRdd{}{}\big)^\top}^2
+\\
+ \kineticEnergyC &= \sumParticles \tfrac{1}{2} \particleMassC{\PidxI} \norm{\particlePosd{\PidxI} - \particlePosRd{\PidxI}}^2
+ = \tfrac{1}{2} \norm[\bodyInertiaMatCp{}{}]{\big(\bodyHomoCoordd{}{} - \bodyHomoCoordRd{}{}\big)^\top}^2
+\end{align}
+\end{subequations}
+where
+\begin{subequations}\label{eq:CtrlMDK}
+\begin{align}
+ \bodyStiffMatCp{}{} = \sumParticles \particleStiffnessC{\PidxI} \begin{bmatrix} \particleBodyPos{\PidxI} \particleBodyPos{\PidxI}^\top & \particleBodyPos{\PidxI}^\top \\ \particleBodyPos{\PidxI} & 1 \end{bmatrix} 
+ &= \begin{bmatrix} \bodyMOSCp{}{}{} & \bodyStiffnessC{}{}\bodyCOSC{}{} \\ \bodyStiffnessC{}{}\bodyCOSC{}{}^\top & \bodyStiffnessC{}{} \end{bmatrix},
+\\
+ \bodyDissMatCp{}{} = \sumParticles \particleDampingC{\PidxI} \begin{bmatrix} \particleBodyPos{\PidxI} \particleBodyPos{\PidxI}^\top & \particleBodyPos{\PidxI}^\top \\ \particleBodyPos{\PidxI} & 1 \end{bmatrix} 
+ &= \begin{bmatrix} \bodyMODp{}{}{} & \bodyDampingC{}{}\bodyCODC{}{} \\ \bodyDampingC{}{}\bodyCODC{}{}^\top & \bodyDampingC{}{} \end{bmatrix},
+\\
+ \bodyInertiaMatCp{}{} = \sumParticles \particleMassC{\PidxI} \begin{bmatrix} \particleBodyPos{\PidxI} \particleBodyPos{\PidxI}^\top & \particleBodyPos{\PidxI}^\top \\ \particleBodyPos{\PidxI} & 1 \end{bmatrix} 
+ &= \begin{bmatrix} \bodyMOICp{}{} & \bodyMassC{}{}\bodyCOMC{}{} \\ \bodyMassC{}{}\bodyCOMC{}{}^\top & \bodyMassC{}{} \end{bmatrix}.
+\end{align}
+\end{subequations}
+As before we can interpret the entries of the \textit{desired inertia matrix} $\bodyInertiaMatC{}{} = \veeMatOp(\bodyInertiaMatCp{}{})$ as the \textit{desired total mass} $\bodyMassC{}{}$, \textit{desired center of mass} $\bodyCOMC{}{}$ and the \textit{desired moment of inertia} $\bodyMOIC{}{} = \veeMatOp(\bodyMOICp{}{})$.
+The analog holds for the entries of the \textit{desired damping matrix} $\bodyDissMatC{}{} = \veeMatOp(\bodyDissMatCp{}{})$ and the \textit{desired stiffness matrix} $\bodyStiffMatC{}{} = \veeMatOp(\bodyStiffMatCp{}{})$.
+
+Introduce the translational $\v(t) \in \RealNum^3$ and angular velocity $\w(t)\in \RealNum^3$ merged into $\bodyVel{}{} = [\v^\top, \w^\top]^\top = \veeOp(\bodyHomoCoord{}{}^{-1} \bodyHomoCoordd{}{})$ as velocity coordinates.
+Furthermore, we introduce the \textit{configuration error} $\bodyHomoCoordE{}{} = \bodyHomoCoordR{}{}^{-1} \bodyHomoCoord{}{}$ and exploit the invariance \eqref{eq:InnerProductSE3LeftTranslation} of the norm to left translation of the argument to express the desired energies \eqref{eq:RBCtrlEnergiesParticles} as
+\begin{subequations}
+\begin{align}
+%  \potentialEnergyC(\bodyHomoCoordE{}{}) &= \tfrac{1}{2} \norm[\bodyStiffMatCp{}{}]{\big(\idMat[4] - \bodyHomoCoordE{}{}^{-1}\big)^\top}^2
+% \\
+%  \dissFktC(\bodyHomoCoordE{}{}, \bodyVel{}{}, \bodyVelR{}{}) &= \tfrac{1}{2} \norm[\bodyDissMatCp{}{}]{\big(\wedOp(\bodyVel{}{}) - \bodyHomoCoordE{}{}^{-1} \wedOp(\bodyVelR{}{}) \big)^\top}^2
+% \\
+%  \accEnergyC(\bodyHomoCoordE{}{}, \bodyVel{}{}, \bodyVeld{}{}, \bodyVelR{}{}, \bodyVelRd{}{}) &= \tfrac{1}{2} \norm[\bodyInertiaMatCp{}{}]{\big(\wedOp(\bodyVeld{}{}) + \wedOp(\bodyVel{}{})^2 - \bodyHomoCoordE{}{}^{-1} \big( \wedOp(\bodyVelRd{}{}) + \wedOp(\bodyVelR{}{})^2 \big)\big)^\top}^2
+ \potentialEnergyC &= \tfrac{1}{2} \norm[\bodyStiffMatCp{}{}]{\big(\idMat[4] - \bodyHomoCoordE{}{}^{-1}\big)^\top}^2
+\\
+ \dissFktC &= \tfrac{1}{2} \norm[\bodyDissMatCp{}{}]{\big(\wedOp(\bodyVel{}{}) - \bodyHomoCoordE{}{}^{-1} \wedOp(\bodyVelR{}{}) \big)^\top}^2
+\\
+ \accEnergyC &= \tfrac{1}{2} \norm[\bodyInertiaMatCp{}{}]{\big(\wedOp(\bodyVeld{}{}) + \wedOp(\bodyVel{}{})^2 - \bodyHomoCoordE{}{}^{-1} \big( \wedOp(\bodyVelRd{}{}) + \wedOp(\bodyVelR{}{})^2 \big)\big)^\top}^2
+\\
+ \kineticEnergyC &= \tfrac{1}{2} \norm[\bodyInertiaMatCp{}{}]{\big(\wedOp(\bodyVel{}{}) - \bodyHomoCoordE{}{}^{-1} \wedOp(\bodyVelR{}{}) \big)^\top}^2
+\end{align}
+\end{subequations}
+Using the $\veeTwoOp$-operator defined in \eqref{eq:DefVeeTwoOp} the resulting forces can be expressed as
+\begin{subequations}\label{eq:RBCtrlParticles}
+\begin{align}
+ \genForceStiffC
+ &= \differential \potentialEnergyC
+ = \veeTwoOp \big( (\idMat[4] - \bodyHomoCoordE{}{}^{-1}) \bodyStiffMatCp{}{} \big),
+ \label{eq:GenForceStiffRigidBodyCtrl}
+\\
+ \genForceDissC
+ &= \pdiff[\dissFktC]{\sysVel}
+ = \veeTwoOp \big( (\wedOp(\bodyVel{}{}) - \bodyHomoCoordE{}{}^{-1} \wedOp(\bodyVelR{}{})) \bodyDissMatCp{}{} \big),
+\\
+ \genForceInertiaC
+ &= \pdiff[\accEnergyC]{\sysVeld}
+ = \veeTwoOp \big( \big(\wedOp(\bodyVeld{}{}) + \wedOp(\bodyVel{}{})^2 - \bodyHomoCoordE{}{}^{-1} \big( \wedOp(\bodyVelRd{}{}) + \wedOp(\bodyVelR{}{})^2 \big) \big) \bodyInertiaMatCp{}{} \big) 
+\end{align}
+\end{subequations}
+or more explicitly
+\begin{subequations}
+\begin{align}
+ \genForceStiffC
+ &= \begin{bmatrix} \kc \RE^\top (\rE + (\RE-\idMat[3])\hc) \\ \kc \wedOp(\hc) \RE^\top \rE + 2 \veeOp\big( \veeMatOp(\kapc) (\RE-\idMat[3]) \big) \end{bmatrix}
+\\
+ \genForceDissC 
+ &= \underbrace{\begin{bmatrix} \dc \,\idMat[3] & \!\!\dc \wedOp(\lc)^\top \\ \dc \wedOp(\lc) & \sigc \end{bmatrix}}_{\bodyDissMatC{}{}} \underbrace{\begin{bmatrix} \v \\ \w \end{bmatrix}}_{\sysVel}
+ - \begin{bmatrix} \dc\RE^\top & \RE^\top \dc \wedOp(\lc)^\top \\ \dc\wedOp(\lc) \RE^\top & \wedMatOp(\RE^\top \veeMatOp(\sigc)) \RE^\top \end{bmatrix}
+% }_{\wedMatOp(\bodyHomoCoordE{}{}^{-1} \bodyDissMatCp{}{}) \Ad{\bodyHomoCoordE{}{}}^{-1}}
+ \underbrace{\begin{bmatrix} \vR \\ \wR \end{bmatrix}}_{\sysVelR}
+\\
+ \genForceInertiaC 
+ &= \underbrace{\begin{bmatrix} \mc \idMat[3] & \!\!\mc \wedOp(\sc)^\top \\ \mc \wedOp(\sc) & \Jc \end{bmatrix}}_{\bodyInertiaMatC{}{}} \underbrace{\begin{bmatrix} \vd \\ \wdot \end{bmatrix}}_{\sysVeld}
+ + \begin{bmatrix} \mc \wedOp(\w) & -\mc \wedOp(\w) \wedOp(\sc) \\ \mc \wedOp(\sc) \wedOp(\w) & \wedOp(\veeMatOp(\Jc)\w) \end{bmatrix} \begin{bmatrix} \v \\ \w \end{bmatrix}
+\nonumber\\
+ &\qquad
+ - \begin{bmatrix} \mc\RE^\top & \RE^\top \mc \wedOp(\sc)^\top \\ \mc\wedOp(\sc) \RE^\top & \wedMatOp(\RE^\top \veeMatOp(\Jc)) \RE^\top \end{bmatrix}
+% }_{\wedMatOp(\bodyHomoCoordE{}{}^{-1} \bodyInertiaMatCp{}{}) \Ad{\bodyHomoCoordE{}{}}^{-1}} 
+ \begin{bmatrix} \vRd \\ \wRd \end{bmatrix}
+\nonumber\\
+ &\qquad
+ - \begin{bmatrix} \mc\RE^\top\wedOp(\wR) & -\mc\RE^\top\wedOp(\wR)\wedOp(\sc) \\ \mc\wedOp(\sc)\RE^\top\wedOp(\wR) & \wedMatOp(\RE^\top\wedOp(\wR)\veeMatOp(\Jc))\RE^\top \end{bmatrix}  \begin{bmatrix} \vR \\ \wR \end{bmatrix}
+\end{align}
+\end{subequations}
+The closed loop kinetic equation $\genForceInertiaC + \genForceDissC + \genForceStiffC = \tuple{0}$ contains 30 tuning parameters within the matrices $\bodyInertiaMatCp{}{}$, $\bodyDissMatCp{}{}$, $\bodyStiffMatCp{}{} \in \SymMatP(4)$.
+The characteristic polynomial of the first order approximation of the system about any constant configuration $\sysCoordR=\const$ is $\det(\bodyInertiaMatC{}{} \lambda^2 + \bodyDissMatC{}{} \lambda + \bodyStiffMatC{}{})$ where $\bodyInertiaMatC{}{} = \veeMatOp(\bodyInertiaMatCp{}{})$, etc..
+
+\fixme{blah}
+
+In contrast to this, the characteristic polynomial resulting from the computed torque method (see \autoref{sec:ComputedTorque}) for this system is $\det(\idMat[6] \lambda^2 + \mat{K}_1 \lambda + \mat{K}_2)$, which has $\dimConfigSpace(\dimConfigSpace+1) = 42$ tuning parameters within the matrixes $\mat{K}_1,\mat{K}_2\in\SymMatP(6)$.
+
+\fixme{blah}
+
+A possible generalization of the rigid body potential $\potentialEnergyC$ which works with all $\tfrac{1}{2}n(n+1) = 21$ tuning parameters in a matrix $\bodyStiffMatC{}{} \in \SymMatP(6)$ is given in \autoref{sec:GenRigidBodyPotential}.
+
+% \paragraph{Total energy.}
+% \newcommand{\GEbodyVelR}{\mat{\mathsf{\Xi}}_{\idxRef}}
+% \newcommand{\GEbodyVelRd}{\dot{\mat{\mathsf{\Xi}}}_{\idxRef}}
+% Using the substitution $\GEbodyVelR = \bodyHomoCoordE{}{}^{-1} \wedOp(\bodyVelR{}{})$ for the sake of readability
+% \begin{align}
+%  \totalEnergyC
+%  &= \tfrac{1}{2} \norm[\bodyInertiaMatCp{}{}]{(\wedOp(\bodyVel{}{}) - \bodyHomoCoordE{}{}^{-1} \wedOp(\bodyVelR{}{}))^\top}^2
+%   + \tfrac{1}{2} \norm[\bodyStiffMatCp{}{}]{(\idMat[4] - \bodyHomoCoordE{}{}^{-1})^\top}^2,
+% \nonumber\\
+%  &= \tfrac{1}{2} \tr\big( (\wedOp(\bodyVel{}{}) - \bodyHomoCoordE{}{}^{-1} \wedOp(\bodyVelR{}{})) \bodyInertiaMatCp{}{} (\wedOp(\bodyVel{}{}) - \bodyHomoCoordE{}{}^{-1} \wedOp(\bodyVelR{}{}))^\top \big)
+%   + \tfrac{1}{2} \norm[\bodyStiffMatCp{}{}]{(\idMat[4] - \bodyHomoCoordE{}{}^{-1})^\top}^2,
+% \\
+%  \totalEnergyCd &= 
+%   \sProd[\bodyInertiaMatCp{}{}]{(\wedOp(\bodyVel{}{}) - \bodyHomoCoordE{}{}^{-1} \wedOp(\bodyVelR{}{}))^\top}{(\wedOp(\bodyVeld{}{}) - \bodyHomoCoordE{}{}^{-1} \wedOp(\bodyVelRd{}{}) - \bodyHomoCoordE{}{}^{-1} \wedOp(\bodyVelR{}{})^2 + \wedOp(\bodyVel{}{})\bodyHomoCoordE{}{}^{-1} \wedOp(\bodyVelR{}{}))^\top}
+% \nonumber\\
+%  &+ \sProd[\bodyStiffMatCp{}{}]{(\idMat[4] - \bodyHomoCoordE{}{}^{-1})^\top}{(\wedOp(\bodyVel{}{}) \bodyHomoCoordE{}{}^{-1} - \bodyHomoCoordE{}{}^{-1} \wedOp(\bodyVelR{}{})^\top}
+% \nonumber\\
+%  &= \bodyVel{}{}^\top \bodyInertiaMatC{}{} \bodyVeld{}{}
+%   - \bodyVelR{}{}^\top \Ad{\bodyHomoCoordE{}{}}^{-\top} \veeMatOp(\bodyHomoCoordE{}{}^{-1} \bodyInertiaMatCp{}{}) \bodyVeld{}{}
+% \nonumber\\
+%  &- \tr\big( \wedOp(\bodyVel{}{}) \bodyInertiaMatCp{}{} (\bodyHomoCoordE{}{}^{-1} \wedOp(\bodyVelRd{}{}))^\top \big)
+%   - \tr\big( \wedOp(\bodyVel{}{}) \bodyInertiaMatCp{}{} (\bodyHomoCoordE{}{}^{-1} \wedOp(\bodyVelR{}{})^2)^\top \big)
+%   + \tr\big( \wedOp(\bodyVel{}{}) \bodyInertiaMatCp{}{} (\wedOp(\bodyVel{}{})\bodyHomoCoordE{}{}^{-1} \wedOp(\bodyVelR{}{}))^\top \big)
+% \nonumber\\
+%  &+ \tr\big( \bodyHomoCoordE{}{}^{-1} \wedOp(\bodyVelR{}{}) \bodyInertiaMatCp{}{} (\bodyHomoCoordE{}{}^{-1} \wedOp(\bodyVelRd{}{}))^\top \big)
+%   + \tr\big( \bodyHomoCoordE{}{}^{-1} \wedOp(\bodyVelR{}{}) \bodyInertiaMatCp{}{} (\bodyHomoCoordE{}{}^{-1} \wedOp(\bodyVelR{}{})^2)^\top \big)
+%   - \tr\big( \bodyHomoCoordE{}{}^{-1} \wedOp(\bodyVelR{}{}) \bodyInertiaMatCp{}{} (\wedOp(\bodyVel{}{})\bodyHomoCoordE{}{}^{-1} \wedOp(\bodyVelR{}{}))^\top \big)
+% \nonumber\\
+%  &+ \tr\big( (\idMat[4] - \bodyHomoCoordE{}{}^{-1}) \bodyStiffMatCp{}{} \wedOp(\bodyVel{}{})^\top \big)
+%   - \tr\big( (\idMat[4] - \bodyHomoCoordE{}{}^{-1}) \bodyStiffMatCp{}{} \GEbodyVelR^\top \big)
+% \nonumber\\
+%  &= \bodyVel{}{}^\top \bodyInertiaMatC{}{} \bodyVeld{}{}
+%   - \bodyVelR{}{}^\top \Ad{\bodyHomoCoordE{}{}}^{-\top} \veeMatOp(\bodyHomoCoordE{}{}^{-1} \bodyInertiaMatCp{}{}) \bodyVeld{}{}
+% \nonumber\\
+%  &- \bodyVel{}{}^\top \big( \veeMatOp( \bodyInertiaMatCp{}{} \bodyHomoCoordE{}{}^{-\top} ) \Ad{\bodyHomoCoordE{}{}}^{-1} \bodyVelRd{}{} - \veeMatOp( \bodyInertiaMatCp{}{} \wedOp(\bodyVelR{}{})^\top \bodyHomoCoordE{}{}^{-\top} ) (\bodyVel{}{} - \Ad{\bodyHomoCoordE{}{}}^{-1} \bodyVelR{}{}) \big)
+% \nonumber\\
+%  &+ (\Ad{\bodyHomoCoordE{}{}}^{-1} \bodyVelR{}{})^\top \big( \veeMatOp( \bodyHomoCoordE{}{}^{-1} \bodyInertiaMatCp{}{} \bodyHomoCoordE{}{}^{-\top} ) \Ad{\bodyHomoCoordE{}{}}^{-1} \bodyVelRd{}{} - \veeMatOp( \bodyHomoCoordE{}{}^{-1} \bodyInertiaMatCp{}{} \wedOp(\bodyVelR{}{})^\top \bodyHomoCoordE{}{}^{-\top} ) (\bodyVel{}{} - \Ad{\bodyHomoCoordE{}{}}^{-1} \bodyVelR{}{}) \big)
+% \nonumber\\
+%  &+ \tr\big( (\idMat[4] - \bodyHomoCoordE{}{}^{-1}) \bodyStiffMatCp{}{} \wedOp(\bodyVel{}{})^\top \big)
+%   - \tr\big( (\idMat[4] - \bodyHomoCoordE{}{}^{-1}) \bodyStiffMatCp{}{} \GEbodyVelR^\top \big)
+% \end{align}
+
+
+
+\subsection{Rigid body systems}\label{sec:CtrlApproachParticlesRBS}
+Let the particles belong to a system of $\numRigidBodies$ rigid bodies with the body configurations $\bodyHomoCoord{\BidxI}{\BidxII}$ as discussed in \autoref{sec:RBSRigidBodySys}.
+The potential energy from \eqref{eq:SolCtrlGaussPrinciple} may be formulated as $\potentialEnergyC = \sum_{\BidxII=1}^{\numRigidBodies} \tfrac{1}{2} \norm[\bodyStiffMatCp{0}{\BidxII}]{\big(\bodyHomoCoord{0}{\BidxII} - \bodyHomoCoordR{0}{\BidxII}\big)^\top}^2$ with a body stiffness matrix $\bodyStiffMatCp{0}{\BidxII}$ resulting from \eqref{eq:CtrlMDK} for each body.
+This potential only captures stiffness w.r.t.\ the absolute configurations $\bodyHomoCoord{0}{\BidxII}$.
+Depending on the control objective it may be equally reasonable to consider a stiffness associated with the relative configurations $\bodyHomoCoord{\BidxI}{\BidxII}$ as illustrated in \autoref{fig:DoublePendulumPotentials}.
+\begin{figure}[ht]
+ \centering
+ \input{graphics/DoublePendulumPotentials.pdf_tex}
+ \caption{Different parts of the potential $\potentialEnergyC$ for a double pendulum}
+ \label{fig:DoublePendulumPotentials}
+\end{figure}
+Considering the same argument for damping and inertia, we propose the following energies for the control of a rigid body system:
+\begin{subequations}\label{eq:RBSCtrlEnergies1}
+\begin{align}
+ \potentialEnergyC &= \sum\nolimits_{\BidxI,\BidxII=0}^{\numRigidBodies} \overbrace{\tfrac{1}{2} \norm[\bodyStiffMatCp{\BidxI}{\BidxII}]{\big(\bodyHomoCoord{\BidxI}{\BidxII} - \bodyHomoCoordR{\BidxI}{\BidxII}\big)^\top}^2}^{\bodyPotentialEnergyC{\BidxI}{\BidxII}},&
+ \bodyStiffMatCp{\BidxI}{\BidxII} &\in \SymMatSP(4)
+\\
+ \dissFktC &= \sum\nolimits_{\BidxI,\BidxII=0}^{\numRigidBodies} \tfrac{1}{2} \norm[\bodyDissMatCp{\BidxI}{\BidxII}]{\big(\bodyHomoCoordd{\BidxI}{\BidxII} - \bodyHomoCoordRd{\BidxI}{\BidxII}\big)^\top}^2,&
+ \bodyDissMatCp{\BidxI}{\BidxII} &\in \SymMatSP(4)
+\\
+ \accEnergyC &= \sum\nolimits_{\BidxI,\BidxII=0}^{\numRigidBodies} \tfrac{1}{2} \norm[\bodyInertiaMatCp{\BidxI}{\BidxII}]{\big(\bodyHomoCoorddd{\BidxI}{\BidxII} - \bodyHomoCoordRdd{\BidxI}{\BidxII}\big)^\top}^2,&
+ \bodyInertiaMatCp{\BidxI}{\BidxII} &\in \SymMatSP(4)
+ \label{eq:CtrlApproachParticlesRBSaccEnergyC}
+\\
+ \kineticEnergyC &= \sum\nolimits_{\BidxI,\BidxII=0}^{\numRigidBodies} \tfrac{1}{2} \norm[\bodyInertiaMatCp{\BidxI}{\BidxII}]{\big(\bodyHomoCoordd{\BidxI}{\BidxII} - \bodyHomoCoordRd{\BidxI}{\BidxII}\big)^\top}^2.
+\end{align}
+\end{subequations}
+Note that $\bodyStiffMatCp{\BidxI}{\BidxII} = \bodyStiffMatCp{\BidxII}{\BidxI}$ implies $\bodyPotentialEnergyC{\BidxI}{\BidxII} = \bodyPotentialEnergyC{\BidxII}{\BidxI}$ and $\bodyPotentialEnergyC{\BidxI}{\BidxI} = 0$ since $\bodyHomoCoord{\BidxI}{\BidxI} = \bodyHomoCoordR{\BidxI}{\BidxI} = \idMat[4]$ and analog for damping and inertia.
+
+Let the body configurations $\bodyHomoCoord{\BidxI}{\BidxII}(\sysCoord)$ and the body velocities $\bodyVel{\BidxI}{\BidxII} = \bodyJac{\BidxI}{\BidxII}(\sysCoord) \sysVel$ be formulated in terms of suitable system coordinates $\sysCoord$ and $\sysVel$, as discussed in \autoref{sec:RBSRigidBodySys}.
+With the shorthand notations $\bodyHomoCoordE{\BidxI}{\BidxII} = \bodyHomoCoordE{\BidxI}{\BidxII}(\sysCoord, \sysCoordR) = \bodyHomoCoord{\BidxI}{\BidxII}^{-1}(\sysCoordR) \bodyHomoCoord{\BidxI}{\BidxII}(\sysCoord)$ and $\bodyJac{\BidxI}{\BidxII} = \bodyJac{\BidxI}{\BidxII}(\sysCoord)$, $\bodyJacR{\BidxI}{\BidxII} = \bodyJac{\BidxI}{\BidxII}(\sysCoordR)$ we can express \eqref{eq:RBSCtrlEnergies1} as
+\begin{subequations}
+\begin{align}
+ \potentialEnergyC &= \sumBodiesAB \tfrac{1}{2} \norm[\bodyStiffMatCp{\BidxI}{\BidxII}]{\big(\idMat[4] - \bodyHomoCoordE{\BidxI}{\BidxII}^{-1}\big)^\top}^2,
+\\
+ \dissFktC &= \sumBodiesAB \tfrac{1}{2} \norm[\bodyDissMatCp{\BidxI}{\BidxII}]{\big(\wedOp(\bodyJac{\BidxI}{\BidxII} \sysVel) - \bodyHomoCoordE{\BidxI}{\BidxII}^{-1} \wedOp(\bodyJacR{\BidxI}{\BidxII} \sysVelR) \big)^\top}^2,
+\\
+ \accEnergyC &= \sumBodiesAB \tfrac{1}{2} \norm[\bodyInertiaMatCp{\BidxI}{\BidxII}]{\big(\wedOp(\bodyJac{\BidxI}{\BidxII} \sysVeld + \bodyJacd{\BidxI}{\BidxII} \sysVel) + \wedOp(\bodyJac{\BidxI}{\BidxII} \sysVel)^2 
+\nonumber\\[-0.7ex]
+ &\hspace{8em}- \bodyHomoCoordE{\BidxI}{\BidxII}^{-1} \big( \wedOp(\bodyJacR{\BidxI}{\BidxII}\sysVelRd + \bodyJacRd{\BidxI}{\BidxII} \sysVelR) + \wedOp(\bodyJacR{\BidxI}{\BidxII} \sysVelR)^2 \big)\big)^\top}^2
+\\
+ \kineticEnergyC &= \sumBodiesAB \tfrac{1}{2} \norm[\bodyInertiaMatCp{\BidxI}{\BidxII}]{\big(\wedOp(\bodyJac{\BidxI}{\BidxII} \sysVel) - \bodyHomoCoordE{\BidxI}{\BidxII}^{-1} \wedOp(\bodyJacR{\BidxI}{\BidxII} \sysVelR) \big)^\top}^2.
+\end{align}
+\end{subequations}
+
+Plugging this into the original definition of the closed loop \eqref{eq:CtrlGaussPrincipleForces} we find:
+\begin{RedBox}
+The desired closed loop system for the particle based approach is given by 
+\begin{subequations}\label{eq:CtrlApproachParticles}
+\begin{align}
+ \genForceInertiaC + \genForceDissC + \genForceStiffC = \tuple{0}
+\end{align}
+where
+\begin{align}
+ \genForceStiffC
+ &= \differential \potentialEnergyC
+ = \sumBodiesAB \bodyJac{\BidxI}{\BidxII}^\top \veeTwoOp \big( (\idMat[4] - \bodyHomoCoordE{\BidxI}{\BidxII}^{-1}) \bodyStiffMatCp{\BidxI}{\BidxII} \big)
+ \label{eq:GenForceStiffControlParticles}
+\\
+ \genForceDissC
+ &= \pdiff[\dissFktC]{\sysVel}
+ = \sumBodiesAB \bodyJac{\BidxI}{\BidxII}^\top \veeTwoOp \big( (\wedOp(\bodyJac{\BidxI}{\BidxII} \sysVel) - \bodyHomoCoordE{\BidxI}{\BidxII}^{-1} \wedOp(\bodyJacR{\BidxI}{\BidxII} \sysVelR)) \bodyDissMatCp{\BidxI}{\BidxII} \big)
+\\
+ \genForceInertiaC
+ &= \pdiff[\accEnergyC]{\sysVeld}
+ = \sumBodiesAB \bodyJac{\BidxI}{\BidxII}^\top \veeTwoOp \big( \big(\wedOp(\bodyJac{\BidxI}{\BidxII} \sysVeld + \bodyJacd{\BidxI}{\BidxII} \sysVel) + \wedOp(\bodyJac{\BidxI}{\BidxII} \sysVel)^2
+\nonumber\\[-0.7ex]
+ &\hspace{10em}- \bodyHomoCoordE{\BidxI}{\BidxII}^{-1} \big( \wedOp(\bodyJacR{\BidxI}{\BidxII}\sysVelRd + \bodyJacRd{\BidxI}{\BidxII} \sysVelR) + \wedOp(\bodyJacR{\BidxI}{\BidxII} \sysVelR)^2 \big) \big) \bodyInertiaMatCp{\BidxI}{\BidxII} \big) 
+ \label{eq:CtrlApproachTwoInertiaForce}
+\end{align}
+\end{subequations} 
+\end{RedBox}
+
+The system inertia matrix $\sysInertiaMatC$ can be recovered from the first term in \eqref{eq:CtrlApproachTwoInertiaForce}:
+\begin{align}
+ \sumBodiesAB \bodyJac{\BidxI}{\BidxII}^\top \veeTwoOp \big(\wedOp(\bodyJac{\BidxI}{\BidxII} \sysVeld) \bodyInertiaMatCp{\BidxI}{\BidxII} \big) 
+ = \underbrace{\sumBodiesAB \bodyJac{\BidxI}{\BidxII}^\top \wedMatOp(\bodyInertiaMatCp{\BidxI}{\BidxII}) \bodyJac{\BidxI}{\BidxII}}_{\sysInertiaMatC} \sysVeld
+ = \frac{\partial^2 \accEnergyC}{\partial\sysVeld \partial\sysVeld}
+ = \frac{\partial^2 \kineticEnergyC}{\partial\sysVel \partial\sysVel}
+\end{align}
+Though the body inertia matrices $\bodyInertiaMatCp{\BidxI}{\BidxII} \in \SymMatSP(4)$ from \eqref{eq:CtrlApproachParticlesRBSaccEnergyC} are only required to be positive semi-definite, the resulting system inertia matrix $\sysInertiaMatC(\sysCoord)\in\SymMatP(\dimConfigSpace)$ is required to be positive definite for the closed loop to be solvable.
+

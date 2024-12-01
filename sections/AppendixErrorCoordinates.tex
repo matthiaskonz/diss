@@ -1,0 +1,60 @@
+\section{On error coordinates}
+\paragraph{Error coordinates.}
+Introduce (possibly redundant) error coordinates $\sysCoordE \in \RealNum^{\numCoordE}$ as
+\begin{align}
+ \sysCoordE = \sysCoordFktE(\sysCoord, \sysCoordR), \qquad \geoConstraintE(\sysCoordE) = 0.
+\end{align}
+and require that this relation is invertible with $\sysCoord = \sysCoordFkt(\sysCoordE, \sysCoordR)$, i.e.\ $\sysCoordFkt(\sysCoordFktE(\sysCoord, \sysCoordR), \sysCoordR) = \sysCoord \, \forall \, \sysCoord \in \configSpace$.
+The inverse function theorem now implies that the differential $\differential \sysCoordFktE = \pdiff[\sysCoordFktE]{\sysCoord} \kinMat $ has full rank: $\rank(\differential \sysCoordFktE) = \dim \configSpace = \dimConfigSpace$.
+
+Let $\geoConstraintMatE$ be the linear independent rows of $\spdiff[\geoConstraintE]{\sysCoordE}$.
+Then the derivative of the geometric constraint $\geoConstraintEd = 0$ implies
+\begin{align}
+ \geoConstraintMatE \differential \sysCoordFktE = 0,
+\qquad
+ \geoConstraintMatE \differentialR \sysCoordFktE = 0,
+\end{align}
+Since the matrices $\differential \sysCoordFktE$ and $\geoConstraintMatE$ have full rank, their pseudo-inverses are
+\begin{align}
+ (\differential \sysCoordFktE)^+ &= \big( (\differential \sysCoordFktE)^\top (\differential \sysCoordFktE) \big)^{-1} (\differential \sysCoordFktE)^\top,&
+ (\differential \sysCoordFktE)^+ (\differential \sysCoordFktE) &= \idMat[\dimConfigSpace]
+\\
+ \geoConstraintMatE^+ &= \geoConstraintMatE^\top \big( \geoConstraintMatE \geoConstraintMatE^\top \big)^{-1},&
+ \geoConstraintMatE \geoConstraintMatE^+ &= \idMat[\numCoordE - \dimConfigSpace].
+\end{align}
+Furthermore, due to the orthogonality $\geoConstraintMatE \differential \sysCoordFktE = 0$ we have
+\begin{align}
+ (\differential \sysCoordFktE) (\differential \sysCoordFktE)^+ + \geoConstraintMatE^+ \geoConstraintMatE = \idMat[\numCoordE].
+\end{align}
+
+\paragraph{Error potential.} 
+We require that the potential $\potentialEnergyC$ can be expressed as a function $\potentialEnergyC_{\idxErr}$ of the error coordinates $\sysCoordE$ alone, i.e.\
+\begin{align}
+ \potentialEnergyC(\sysCoord, \sysCoordR) = \potentialEnergyC_{\idxErr}(\sysCoordFktE(\sysCoord, \sysCoordR)).
+\end{align}
+Now the requirement \eqref{eq:DefTransportMap} for the transport map $\sysTransportMap$ can be written as
+\begin{align}
+ \differentialR \potentialEnergyC + \sysTransportMap^\top \differential \potentialEnergyC
+ &= \big( \differentialR \sysCoordFktE + \differential \sysCoordFktE \sysTransportMap \big)^\top \pdiff[\potentialEnergyC_\idxErr]{\sysCoordE}
+\nonumber\\
+ &= \big( \underbrace{\big( (\differential \sysCoordFktE) (\differential \sysCoordFktE)^+ + \geoConstraintMatE^+ \geoConstraintMatE \big)}_{\idMat[\numCoordE]} \differentialR \sysCoordFktE + \differential \sysCoordFktE \sysTransportMap \big)^\top \pdiff[\potentialEnergyC_\idxErr]{\sysCoordE}
+\nonumber\\
+ &= \big( (\differential \sysCoordFktE)^+ (\differentialR \sysCoordFktE) +\,\sysTransportMap \big)^\top (\differential \sysCoordFktE)^\top \pdiff[\potentialEnergyC_\idxErr]{\sysCoordE}
+ + \geoConstraintMatE^+ \underbrace{\geoConstraintMatE \differentialR \sysCoordFktE}_{0}  \pdiff[\potentialEnergyC_\idxErr]{\sysCoordE}
+ = 0
+\end{align}
+which has the simple solution
+\begin{align}\label{eq:DefErrorTransportMap}
+ \sysTransportMap = -(\differential \sysCoordFktE)^+ (\differentialR \sysCoordFktE).
+\end{align}
+
+\paragraph{Error kinematics.}
+With the same approach as above we can derive a kinematic relation between the error coordinates $\sysCoordE$ and the error velocity $\sysVelE = \sysVel - \sysTransportMap \sysVelR$ as
+\begin{align}
+ \sysCoordEd &= (\differential \sysCoordFktE) \sysVel + (\differentialR \sysCoordFktE) \sysVelR
+\nonumber\\
+ &= (\differential \sysCoordFktE) \sysVel + \underbrace{\big( (\differential \sysCoordFktE) (\differential \sysCoordFktE)^+ + \geoConstraintMatE^+ \geoConstraintMatE \big)}_{\idMat[\numCoordE]} \differentialR \sysCoordFktE \sysVelR
+\nonumber\\
+ &= (\differential \sysCoordFktE) \underbrace{\big( \sysVel + (\differential \sysCoordFktE)^+ (\differentialR \sysCoordFktE) \sysVelR \big)}_{\sysVelE}
+ +\,\geoConstraintMatE^+ \underbrace{\geoConstraintMatE (\differentialR \sysCoordFktE)}_{0} \sysVelR
+\end{align}

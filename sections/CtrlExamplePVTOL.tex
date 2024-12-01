@@ -1,0 +1,230 @@
+\subsection{PVTOL}
+The planar vertical take off landing aircraft (PVTOL), \autoref{fig:PVTOLModel}, is a common benchmark problem discussed in e.g.\ \cite{Hauser:PVTOL} or \cite{Fliess:LieBacklund}.
+\begin{figure}[ht]
+ \centering
+% \def\svgwidth{.5\textwidth}
+ \input{graphics/PVTOLModel.pdf_tex}
+ \caption{Model of the PVTOL}
+ \label{fig:PVTOLModel}
+\end{figure}
+
+\paragraph{Model.}
+We choose the position $(\rx, \ry)$ of the center of mass and the tilt angle $\tiltAngle$ as configuration coordinates.
+So the body configuration is
+\begin{align}
+ \bodyHomoCoord{0}{1} = \begin{bmatrix} \cos\tiltAngle & -\sin\tiltAngle & 0 & \rx \\ \sin\tiltAngle & \cos\tiltAngle & 0 & \ry \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}.
+\end{align}
+Note that in these coordinates the gravity acceleration has the components $\gravityAcc = [0,-\gravityAccConst,0]^\top$, so the potential energy due to gravity is $\potentialEnergy = \m \gravityAccConst \ry$.
+In contrast to the sources mentioned above, we use the coefficients $(\vx, \vy)$ of the absolute velocity w.r.t.\ the body fixed frame and the angular velocity $\wz$ of the body tilt as velocity coordinates.
+The kinematic relation is 
+\begin{align}
+ \ddt
+ \underbrace{\begin{bmatrix} \rx \\ \ry \\ \tiltAngle \end{bmatrix}}_{\sysCoord}
+ &= 
+ \underbrace{\begin{bmatrix} \cos\tiltAngle & -\sin\tiltAngle & 0 \\ \sin\tiltAngle & \cos\tiltAngle & 0 \\ 0 & 0 & 1 \end{bmatrix}}_{\kinMat}
+ \underbrace{\begin{bmatrix} \vx \\ \vy \\ \wz \end{bmatrix}}_{\sysVel}.
+\end{align}
+Let $\m$ be the total mass of the PVTOL and $\Jz$ the moment of inertia around the center of mass.
+The propeller thrusts are $F_\text{r}$, $F_\text{l}$ according to \autoref{fig:PVTOLModel}.
+Overall, we have the kinetic equation
+\begin{align}
+ \underbrace{\begin{bmatrix} \m & 0 & 0 \\ 0 & \m & 0 \\ 0 & 0 & \Jz \end{bmatrix}}_{\sysInertiaMat}
+ \underbrace{\begin{bmatrix} \vxd \\ \vyd \\ \wzd \end{bmatrix}}_{\sysVeld}
+ +
+%  \underbrace{\begin{bmatrix} -m \vy \wz \\ m \vx \wz \\ 0 \end{bmatrix}}_{\gyroForce}
+%  +
+%  \underbrace{\begin{bmatrix} m \gravityAccConst \sin\tiltAngle \\ m \gravityAccConst \cos\tiltAngle \\ 0 \end{bmatrix}}_{\differential \potentialEnergy}
+ \underbrace{\begin{bmatrix} m(\gravityAccConst \sin\tiltAngle - \vy \wz) \\ m (\gravityAccConst \cos\tiltAngle + \vx \wz) \\ 0 \end{bmatrix}}_{\sysForce}
+ =
+ \underbrace{\begin{bmatrix} \sin\beta & -\sin\beta \\ \cos\beta & \cos\beta \\ \ArmRadius \cos\beta & -\ArmRadius\cos\beta \end{bmatrix}}_{\sysInputMat}
+ \underbrace{\begin{bmatrix} F_\text{r} \\ F_\text{l} \end{bmatrix}}_{\sysInput}
+ .
+\end{align}
+% \fixme{Input trafo}
+% \begin{align}
+% %  F_m &= \cos\beta (F_\text{r} + F_\text{l}),
+% %  \tau = a \cos\beta (F_\text{r} - F_\text{l})
+% % \qquad \Leftrightarrow \qquad
+% %  F_\text{r} = \tfrac{1}{2 \cos\beta} (F_m + \tfrac{\tau}{a}), \
+% %  F_\text{l} = \tfrac{1}{2 \cos\beta} (F_m - \tfrac{\tau}{a})
+%  \begin{bmatrix} F_m \\ \tau \end{bmatrix}
+%  = \begin{bmatrix} \cos\beta & \cos\beta \\ a \cos\beta & -a \cos\beta \end{bmatrix}
+%  \begin{bmatrix} F_\text{r} \\ F_\text{l} \end{bmatrix}
+% \end{align}
+
+\paragraph{Reference trajectory.}
+For the following we chose the left complement $\sysInputMatLComp = [1, 0, -\tfrac{\sin\beta}{l \cos\beta}]$.
+The condition for the reference from \eqref{eq:MatchingForceZeroError} for this example is
+\begin{align}
+ \lambda^{\text{ZeroError}} = \m \big(\vRxd - \underbrace{\tfrac{\Jz \sin\beta}{\m \ArmRadius \cos\beta}}_{\eps} \wRzd - \wRz \vRy + \gravityAccConst \sin\tiltAngleR \big) = 0
+\end{align}
+This can be fulfilled by parameterizing the configuration through the flat output $y_{1\idxRef} = \rRx - \eps \sin\tiltAngleR$, $y_{2\idxRef} = \rRy + \eps \cos\tiltAngleR$ (see e.g.\ \cite{Fliess:LieBacklund}), i.e.
+\begin{align}
+ \rxR &= y_{1\idxRef} - \eps \frac{\ddot{y}_{1\idxRef}}{\sqrt{\ddot{y}_{1\idxRef}^2 + (\ddot{y}_{1\idxRef}+\gravityAccConst)^2}},
+\\
+ \ryR &= y_{2\idxRef} - \eps \frac{\ddot{y}_{2\idxRef}-\gravityAccConst}{\sqrt{\ddot{y}_{1\idxRef}^2 + (\ddot{y}_{1\idxRef}+\gravityAccConst)^2}},
+\\
+ \tiltAngle_{\idxRef} &= \atanTwo(\ddot{y}_{2\idxRef}, \ddot{y}_{1\idxRef}+\gravityAccConst).
+\end{align}
+Note that this parameterization fails if $\ddot{y}_{1\idxRef} = \ddot{y}_{1\idxRef}+\gravityAccConst = 0$, i.e. the body is in free fall.
+
+% \begin{align}
+%  \matchingForceR = \m (\ddot{y}_{1\idxRef} \cos\tiltAngleR + (\ddot{y}_{2\idxRef} + \gravityAccConst) \sin\tiltAngleR) = 0
+% \end{align}
+
+\paragraph{Closed loop.}
+The PVTOL model is just a planar rigid body with particular actuation. 
+So its  closed loop template coincides with the one for the planar rigid body from \autoref{sec:CtrlPlanarRigidBody}, but for symmetry reasons we choose the parameters $\hcx=\lcx=\scx=0$.
+% \begin{align}
+%  \potentialEnergyC &= \tfrac{1}{2} \kc \big( (\rEx - \hcy \sin\tiltAngleE)^2 + (\rEy + \hcy(\cos\tiltAngleE-1))^2 \big) + \kapcz (1-\cos\tiltAngleE),
+% \\
+%  \sysDissMatC &= \begin{bmatrix} \dc & 0 & -\dc \lcy \\ 0 & \dc & 0 \\ -\dc \lcy & 0 & \sigcz + \dc \lcy^2 \end{bmatrix},
+%  \qquad
+%  \sysInertiaMatC = \begin{bmatrix} \mc & 0 & -\mc \scy \\ 0 & \mc & 0 \\ -\mc \scy & 0 & \Jcz + \mc \scy^2 \end{bmatrix}
+% \end{align}
+% This leads to the desired closed loop kinetics
+% \begin{multline}
+%  \underbrace{\begin{bmatrix} \mc & 0 & -\mc \scy \\ 0 & \mc & 0 \\ -\mc \scy & 0 & \Jcz + \mc \scy^2 \end{bmatrix}}_{\sysInertiaMatC}
+%  \underbrace{\begin{bmatrix} \vExd \\ \vEyd \\ \wEzd \end{bmatrix}}_{\sysVelEd}
+%  +
+%  \underbrace{\begin{bmatrix} -\mc \wz \vEy \\ \mc \wz (\vEx - \scy \wEz) \\ \mc \scy \wz \vEy \end{bmatrix}}_{\gyroForceC}
+% \\
+%  +
+%  \underbrace{\begin{bmatrix} \dc & 0 & -\dc \lcy \\ 0 & \dc & 0 \\ -\dc \lcy & 0 & \sigcz + \dc \lcy^2 \end{bmatrix}}_{\sysDissMatC}
+%  \underbrace{\begin{bmatrix} \vEx \\ \vEy \\ \wEz \end{bmatrix}}_{\sysVelE}
+%  +
+%  \underbrace{\begin{bmatrix} \kc (\hcy \sin\tiltAngleE - \rEx) \\ \kc (\hcy (1-\cos\tiltAngleE) - \rEy) \\ \kc \hcy (\rEx - \hcy \sin\tiltAngleE) - \kapcz \sin\tiltAngleE \end{bmatrix}}_{\differential \potentialEnergyC}
+%  =
+%  \tuple{0}.
+% \end{multline}
+
+\paragraph{Matching.}
+The matching force $\tuple{\lambda}$ from \eqref{eq:DefMatchingForce} with the orthogonal complement from above takes a rather cumbersome form and is not given explicitly here.
+Instead we will investigate its linear approximation about any reference trajectory with $\tiltAngle_\idxRef = 0$: The matrices of the linearized model and desired closed loop are
+\begin{subequations}
+\begin{align}
+ \sysInertiaMatLin &= \begin{bmatrix} m & 0 & 0 \\ 0 & m & 0 \\ 0 & 0 & J \end{bmatrix},&
+ \sysInertiaMatCLin &= \begin{bmatrix} \mc & 0 & -\mc\scy \\ 0 & \mc & 0 \\ -\mc\scy & 0 & \Jcz + \mc\scy^2 \end{bmatrix},
+\\
+ \sysDissMatLin &= \begin{bmatrix} 0 & 0 & 0 \\ 0 & 0 & 0 \\ 0 & 0 & 0 \end{bmatrix},&
+ \sysDissMatCLin &= \begin{bmatrix} \dc & 0 & -\dc\lcy \\ 0 & \dc & 0 \\ -\dc\lcy & 0 & \sigcz + \dc\lcy^2 \end{bmatrix},
+\\
+ \sysStiffMatLin &= \begin{bmatrix} 0 & 0 & m \gravityAccConst \\ 0 & 0 & 0 \\ 0 & 0 & 0 \end{bmatrix},&
+ \sysStiffMatCLin &= \begin{bmatrix} \kc & 0 & -\kc\hcy \\ 0 & \kc & 0 \\ -\kc\hcy & 0 & \kapcz + \kc\hcy^2 \end{bmatrix}.
+\end{align}
+\end{subequations}
+The conditions for $(\sysInputMatLComp)^\top \big( \sysInertiaMatLin \sysInertiaMatCLin^{-1} \sysDissMatCLin - \sysDissMatLin\big) = \mat{0}$ and $(\sysInputMatLComp)^\top \big( \sysInertiaMatLin \sysInertiaMatCLin^{-1} \sysStiffMatCLin - \sysStiffMatLin\big) = \mat{0}$ for the linearized matching force from \eqref{eq:MatchingForceLin} to vanish are equivalent to
+\begin{subequations}
+\begin{align}
+ \kc \big( \Jcz - \mc(\hcy - \scy)(\scy - \eps) \big) &= 0,
+\\
+ \mc \kapcz (\scy-\eps) - \kc\hcy \big( \Jcz - \mc (\hcy - \scy)(\scy - \eps) \big) &= \Jcz \mc \gravityAccConst, 
+\\
+ \dc \big( \Jcz - \mc(\lcy - \scy)(\scy - \eps) \big) &= 0,
+\\
+ \mc \sigcz (\scy-\eps) - \dc\,\lcy \big( \Jcz - \mc (\lcy - \scy)(\scy - \eps) \big) &= 0.
+\end{align}
+\end{subequations}
+One solution for this is
+\begin{align}\label{eq:PVTOLMatchingSolution}
+ \Jcz &= \mc(\hcy - \scy)(\scy - \eps),&
+ \lcy &= \hcy,&
+ \sigcz &= 0,&
+ \kapcz &= \mc \gravityAccConst (\hcy-\scy)
+\end{align}
+which leaves the parameters $\kc, \dc, \mc, \hcy, \scy$ for tuning.
+The resulting matching force is
+\begin{align}
+ \tilde{\sysForce} = \frac{\mc(\hcy-\scy)}{m(\hcy-\eps)} \begin{bmatrix} 1 \\ 0 \\ -\eps \end{bmatrix} \lambda
+\end{align}
+where $\lambda$ for the corresponding approach is
+\begin{subequations}
+\begin{align}
+ \lambda^{\text{ParticleBased}} &= m(a_{\idxY\idxRef} - \eps\wzR^2)\sin\tiltAngleE
+\\
+ \lambda^{\text{BodyBased}} &= m(a_{\idxY\idxRef}\sin\tiltAngleE - \rxE\wzR^2 + 2\vyE\wzR + (\eps(1-\cos\tiltAngleE)-\ryE)\wzRd)
+\\
+ \lambda^{\text{EnergyBased}} &= m(a_{\idxY\idxRef}\sin\tiltAngleE - \rxE\wzR^2 +\phantom{2}\vyE\wzR + (\eps(1-\cos\tiltAngleE)-\ryE)\wzRd)
+\end{align} 
+\end{subequations}
+where $a_{\idxY\idxRef} = \vyRd + \vxR\wzR + \gravityAccConst(\cos\tiltAngleR - 1)$. 
+
+\paragraph{Tuning.}
+For the energies to be positive (semi) definite, we need $\sysInertiaMatC > 0$, $\sysDissMatC \geq 0$ and $\potentialEnergyC > 0$ which means for the remaining tuning parameters
+\begin{align}
+ \kc, \dc, \mc > 0, \qquad \hcy > \scy > \eps.
+\end{align}
+
+The characteristic polynomial of the linearized system is
+% \begin{align}
+%  \det (\sysInertiaMatC \EigenVal^2 + \sysDissMatC \EigenVal + \sysStiffMatC) = 0
+% \nonumber\\
+% \Leftrightarrow \quad
+%  \det \begin{bmatrix}
+%   \bodyMassC{}{} \EigenVal^2 + \bodyDampingC{}{} \EigenVal + \bodyStiffnessC{}{} & 0 & \bodyMassC{}{}(\bodyCOSC{}{}{2}-\bodyCOMC{}{}{2}) \EigenVal^2 \\
+%   0 & \bodyMassC{}{} \EigenVal^2 + \bodyDampingC{}{} \EigenVal + \bodyStiffnessC{}{} & 0 \\
+%   \bodyMassC{}{}(\bodyCOSC{}{}{2}-\bodyCOMC{}{}{2}) \EigenVal^2 & 0 & \bodyMassC{}{}(\bodyCOSC{}{}{2} - \varepsilon)(\bodyCOSC{}{}{2}-\bodyCOM{}{}{2}) \EigenVal^2+ \bodyMassC{}{} g (\bodyCOSC{}{}{2}-\bodyCOMC{}{}{2}) \\
+%  \end{bmatrix}
+%  = 0
+% \end{align}
+\begin{multline}
+ \sfrac{\det(\sysInertiaMatC \EigenVal^2 + \sysDissMatC \EigenVal + \sysStiffMatC)}{\det\sysInertiaMatC}
+\\
+ = (\EigenVal^2 + \tfrac{\dc}{\mc} \EigenVal + \tfrac{\kc}{\mc})
+ \big(\EigenVal^4
+ + \tfrac{\dc(\hcy-\eps)}{\mc(\scy-\eps)} \EigenVal^3
+ + \tfrac{\kc(\hcy-\eps) + \mc \gravityAccConst}{\mc(\scy-\eps)} \EigenVal^2
+ + \tfrac{\dc \gravityAccConst}{\mc (\scy-\eps)} \EigenVal
+ + \tfrac{\kc \gravityAccConst}{\mc (\scy-\eps)} \big)
+\end{multline}
+Set a desired polynomial of forth degree $\EigenVal^4 + p_3 \EigenVal^3 + p_2 \EigenVal^2 + p_1 \EigenVal + p_0$ we get the parameters
+\begin{align}
+ \kc &= \frac{\mc \, p_0 p_1}{p_1 p_2 - p_0 p_3},&
+ \hcy &= \eps + \frac{\gravityAccConst\, p_3}{p_1},&
+ \Jcz &= \frac{\mc \gravityAccConst^2 (p_1 p_2 p_3 - p_1^2 - p_0 p_3^2)}{(p_1 p_2 - p_0 p_3)^2},
+\\
+ \dc &= \frac{\mc\, p_1^2}{p_1 p_2 - p_0 p_3},&
+ \scy &= \varepsilon + \frac{\gravityAccConst\, p_1}{p_1 p_2 - p_0 p_3},&
+ \kapcz &= \frac{\mc \gravityAccConst^2 (p_1 p_2 p_3 - p_1^2 - p_0 p_3)}{p_1 (p_1 p_2 - p_0 p_3)},
+\end{align}
+Note that the Hurwitz criterion ($p_0, p_1, p_2, p_3, p_1 p_2 - p_0 p_3, p_1 p_2 p_3 - p_1^2 - p_0 p_3^2 > 0$) implies the positive definiteness of the inertia $\sysInertiaMatC$ and stiffness matrix $\sysStiffMatC$.
+Even though the damping matrix $\sysDissMatC$ is only positive semidefinite the \textit{local} attractiveness of the nonlinear system can be concluded by Lyapunov's indirect method.
+
+\paragraph{Mechanical interpretation.}
+\begin{figure}[ht]
+ \centering
+ \input{graphics/PVTOLPendulum.pdf_tex}
+ \caption{Interpretation of the controlled PVTOL as a mechanical system}
+ \label{fig:PVTOLPendulum}
+\end{figure}
+
+
+% \paragraph{Flatness based control}
+% It is well known that the PVTOL is a flat system, see \eg \cite{Fliess:LieBacklund}.
+% A flat output is
+% \begin{align}
+%  \yx = \rx - \eps \sa, 
+% \qquad
+%  \yy = \ry + \eps \ca, 
+% \end{align}
+% Rewriting the the acceleration constraint \eqref{eq:PVTOLAccConstraint} in terms of the flat output yields the equation for the tilt angle $\tiltAngle$:
+% \begin{align}
+%  \ca \yxdd + \sa (\yydd + g) &= 0&
+%  &\Rightarrow&
+%  \tiltAngle &= -\arctan\frac{\yxdd}{\yydd + g}.
+% \end{align}
+% However, naive feedback linearization might lead to a singularity when $\tiltAngle = \pm \tfrac{\pi}{2}$ as pointed out in \cite{Rudolph:InvariantTrackingPAMM}.
+% This can be resolved by the position error $(\yxE, \yyE)$ \wrt to the (moving) reference frame:
+% \begin{align}
+%  \yxE &= \caR (\yx - \yxD) + \saR(\yy - \yyD),&
+%  \yyE &= -\saR (\yx - \yxD) + \caR(\yy - \yyD).
+% \end{align}
+% Since this is just a time variant transformation, the position error $(\yxE, \yyE)$ is as well a flat output of the system.
+% We can define the error dynamics
+% \begin{align}
+%  (\yxE)^{(4)} + p_3 (\yxE)^{(3)} + p_2 \yxEdd + p_1 \yxEd + p_0 \yxE &= 0
+% \\
+%  \yyEdd + \tfrac{\bodyDampingC{}{}}{\bodyMassC{}{}} \yyEd + \tfrac{\bodyStiffnessC{}{}}{\bodyMassC{}{}} \yyE &= 0
+% \end{align}
+% which essentially defines a quasi-static state feedback that stabilizes the motion of the PVTOL to the reference trajectory.
+% See \cite{Rudolph:InvariantTrackingPAMM} for further details.

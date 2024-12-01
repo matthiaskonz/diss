@@ -1,0 +1,122 @@
+\section{Additional general constraints}
+So far we dealt with geometric constraints and essentially eliminated them by suitable choice of coordinates.
+This section considers additional constraints that may also depend on velocity and/or even acceleration, but sticks to the chosen coordinates $\sysCoord$ and $\sysVel$.
+
+\paragraph{Types of constraints.}
+Recall that any smooth constraint is equivalent to its derivative supplemented by the appropriate initial condition.
+We may consider the following types of constraints
+\begin{subequations}\label{eq:PossibleConstraintsGauss}
+\begin{itemize}
+\item geometric constraint:
+\begin{align}
+ \tuple{\psi}(\sysCoord) &= \tuple{0}
+\nonumber\\
+\Leftrightarrow \qquad 
+ \underbrace{\dirDiff{\LidxI}\psi^{\CidxI}(\sysCoord)}_{\accConstraintMatCoeff{\CidxI}{\LidxI}(\sysCoord)} \sysVelCoeffd{\LidxI} &= \underbrace{-\dirDiff{\LidxII} \dirDiff{\LidxI} \psi^{\CidxI}(\sysCoord) \sysVelCoeff{\LidxI} \sysVelCoeff{\LidxII}}_{\accConstraintBCoeff{\CidxI}(\sysCoord, \sysVel)},
+\quad
+ \psi^{\CidxI}(\sysCoord_0) = 0, \ \dirDiff{\LidxI} \psi^{\CidxI}(\sysCoord_0) \sysVelCoeff{\LidxI}_0 = 0
+\end{align}
+\item linear kinematic constraint (possibly nonholonomic):
+\begin{align}
+ \kinConstraintMat(\sysCoord) \sysCoordd = \underbrace{\kinConstraintMat(\sysCoord) \kinMat(\sysCoord)}_{\accConstraintMat(\sysCoord)} \sysVel &= \tuple{0}
+\nonumber\\
+\Leftrightarrow \qquad
+ \accConstraintMatCoeff{\CidxI}{\LidxI}(\sysCoord) \sysVelCoeffd{\LidxI} &= \underbrace{-\dirDiff{\LidxII} \accConstraintMatCoeff{\CidxI}{\LidxI} (\sysCoord) \sysVelCoeff{\LidxI} \sysVelCoeff{\LidxII}}_{\accConstraintBCoeff{\CidxI}(\sysCoord, \sysVel)}, \quad
+ \accConstraintMatCoeff{\CidxI}{\LidxI}(\sysCoord_0) \sysVelCoeff{\CidxI}_0 = 0
+\end{align}
+\item general kinematic constraints
+\begin{align}
+ \tuple{\eta}(\sysCoord, \sysVel, t) &= \tuple{0}
+\nonumber\\
+\Leftrightarrow \qquad
+ \underbrace{\tpdiff[\eta^{\CidxI}]{\sysVelCoeff{\LidxI}}(\sysCoord, \sysVel, t)}_{\accConstraintMatCoeff{\CidxI}{\LidxI}(\sysCoord, \sysVel, t)} \sysVelCoeffd{\LidxI} &= \underbrace{-\dirDiff{\LidxI} \eta^{\CidxI}(\sysCoord, \sysVel, t) \sysVelCoeff{\LidxI} - \tpdiff[\eta^{\CidxI}]{t}(\sysCoord, \sysVel, t)}_{\accConstraintBCoeff{\CidxI}(\sysCoord, \sysVel, t)}, 
+\quad
+ \eta^{\CidxI}(\sysCoord_0, \sysVel_0, t_0) = 0
+\end{align}
+\item linear\footnote{Nonlinear acceleration constraints could be handled as well, but with a more sophisticated solution than \eqref{eq:EOMMultipliers}} acceleration constraints.
+\begin{align}
+ \accConstraintMat(\sysCoord, \sysVel, t) \sysVeld = \accConstraintB(\sysCoord, \sysVel, t)
+\end{align}
+\end{itemize}
+\end{subequations}
+All these constraints can be formulated as \textit{linear acceleration constraints} $\accConstraintMat \sysVeld = \accConstraintB$ possibly supplemented by suitable conditions on the initial coordinates $\sysCoord_0 = \sysCoord(t_0)$ and $\sysVel_0 = \sysVel(t_0)$.
+%For the following we assume that $\accConstraintMat$ has full rank.
+%Roughly speaking, this assumes that the constraints are independent.
+
+\paragraph{Gauß' principle.}
+Let the free system (without these additional constraints) be governed by the acceleration $\sysVeld = \sysInertiaMat^{-1}\sysForce$.
+Then Gauß' principle for the system with the additional constraint states
+\begin{align}\label{eq:GaussPrincipleAccConstraints}
+ \begin{array}{rl}
+  \minOp[\sysVeld\in\RealNum^{\dimConfigSpace}] & \GaussianConstraint = \tfrac{1}{2} \sysVeld^\top \sysInertiaMat \sysVeld - \sysVeld^\top \sysForce + \GaussianConstraint_0 \\
+  \text{s.\ t.} & \accConstraintMat \sysVeld = \accConstraintB
+ \end{array}
+\end{align}
+This is a standard quadratic optimization problem with well established solutions.
+Let $\rank\accConstraintMat = c \leq \dimConfigSpace$ and assume that $\accConstraintB$ lies in the column space $\accConstraintMat$, i.e. the constraint equations is solvable.
+For $c=\dimConfigSpace$ the trivial solution is $\sysVel = \accConstraintMat^{-1}\accConstraintB$.
+For the common case $0 < c < \dimConfigSpace$ we may consider two solution approaches:
+
+\paragraph{Solution using null space.}
+Similar to the choice of minimal velocity coordinates above \fixme{[link]} we may formulate \textit{all} solution to the constraint equation as $\sysVeld = \mat{W}\tuple{\alpha} + \tuple{w}$.
+The columns of the matrix $\mat{W}\in\RealNum^{\dimConfigSpace\times c}$ span the null space of $\accConstraintMat$, i.e.\ $\accConstraintMat \mat{W}=\mat{0}$ and $\rank\mat{W} = \dimConfigSpace-c$. 
+The tuple $\tuple{w} \in \RealNum^\dimConfigSpace$ is any solution to the constraint equation, i.e.\ $\accConstraintMat\tuple{w} = \accConstraintB$.
+The variables $\tuple{\alpha} \in \RealNum^{\dimConfigSpace-c}$ may be called the \textit{acceleration coordinates}.
+
+As in the previous section, this transforms \eqref{eq:GaussPrincipleAccConstraints} to an unconstrained optimization problem with
+\begin{align}
+ \GaussianConstraint &= \tfrac{1}{2} (\mat{W}\tuple{\alpha} + \tuple{w})^\top \sysInertiaMat (\mat{W}\tuple{\alpha} + \tuple{w}) - (\mat{W}\tuple{\alpha} + \tuple{w})^\top \sysForce + \GaussianConstraint_0
+\\
+ &= \tfrac{1}{2} \tuple{\alpha}^\top \underbrace{\mat{W}^\top \sysInertiaMat \mat{W}}_{\sysInertiaMat^c} \tuple{\alpha} - \tuple{\alpha}^\top \underbrace{\mat{W}^\top (\sysForce - \sysInertiaMat \tuple{w})}_{\sysForce^c} + \underbrace{\tuple{w}^\top \sysInertiaMat \tuple{w} - \tuple{w}^\top \sysForce + \GaussianConstraint_0}_{\GaussianConstraint_0^c}
+\end{align}
+with the obvious minimum $\tuple{\alpha} = (\sysInertiaMat^c)^{-1} \sysForce^c$.
+This approach is quite common also for the numerical solution of such problems, see \cite{Gould:EqualityConstrainedQuadraticProgramming}.
+
+Finally, the equations of motion of the constrained system are
+\begin{align}
+ \sysCoordd = \kinMat\sysVel, 
+\quad
+ \sysVeld = \mat{W}(\sysInertiaMat^c)^{-1} \sysForce^c + \tuple{w}.
+\end{align}
+
+\paragraph{Solution using Lagrange multipliers.}
+Another common solution approach to \eqref{eq:GaussPrincipleAccConstraints} utilizes the concept \textit{Lagrange multipliers} (see \eg \cite[ch.\,14]{Luenberger:LinearAndNonlinearProgramming}):
+Define a \textit{Lagrangian} $\Lagrangian = \GaussianConstraint + \LagrangeMult^\top (\accConstraintMat\sysVeld - \accConstraintB)$ with the Lagrange multipliers $\LagrangeMult \in \RealNum^c$.
+Its critical points are solved from
+\begin{align}\label{eq:EOMMultipliers}
+ \begin{bmatrix} \pdiff[\Lagrangian]{\sysVeld} \\ \pdiff[\Lagrangian]{\LagrangeMult} \end{bmatrix} = \tuple{0}
+\qquad\Leftrightarrow\qquad
+ \begin{bmatrix} \sysInertiaMat & \accConstraintMat^\top \\ \accConstraintMat & \mat{0} \end{bmatrix}
+ \begin{bmatrix} \sysVeld \\ \LagrangeMult \end{bmatrix}
+ =
+ \begin{bmatrix} \sysForce \\ \accConstraintB \end{bmatrix}.
+\end{align}
+Similar to the section on the principle of constraint release, the term $\accConstraintMat^\top \LagrangeMult$ may be interpreted as the generalized reaction force on the system to enforce the constraint.
+
+If the constraint matrix $\accConstraintMat$ has full rank, we may use block matrix inversion
+\begin{align}
+ \begin{bmatrix} \sysInertiaMat & \accConstraintMat^\top \\ \accConstraintMat & \mat{0} \end{bmatrix}^{-1}
+ =
+ \begin{bmatrix} \sysInertiaMat^{-1} - \sysInertiaMat^{-1}\! \accConstraintMat^\top (\accConstraintMat \sysInertiaMat^{-1}\! \accConstraintMat^\top)^{-1} \accConstraintMat \sysInertiaMat^{-1} & \sysInertiaMat^{-1}\! \accConstraintMat^\top (\accConstraintMat \sysInertiaMat^{-1}\! \accConstraintMat^\top)^{-1} \\ (\accConstraintMat \sysInertiaMat^{-1}\! \accConstraintMat^\top)^{-1} \accConstraintMat \sysInertiaMat^{-1} & -(\accConstraintMat \sysInertiaMat^{-1}\! \accConstraintMat^\top)^{-1} \end{bmatrix}
+\end{align}
+to eliminate the Lagrange multipliers and obtain the equations of motion as
+\begin{align}
+ \sysCoordd = \kinMat\sysVel, 
+\quad
+% \sysVeld = (\sysInertiaMat^{-1} - \sysInertiaMat^{-1} \accConstraintMat^\top (\accConstraintMat \sysInertiaMat^{-1} \accConstraintMat^\top)^{-1} \accConstraintMat \sysInertiaMat^{-1}) \sysForce + \sysInertiaMat^{-1} \accConstraintMat^\top (\accConstraintMat \sysInertiaMat^{-1} \accConstraintMat^\top)^{-1} \accConstraintB.
+ \sysVeld = \sysInertiaMat^{-1} \big( \sysForce + \accConstraintMat^\top (\accConstraintMat \sysInertiaMat^{-1} \accConstraintMat^\top)^{-1} (\accConstraintB - \accConstraintMat \sysInertiaMat^{-1}\sysForce) \big).
+\end{align}
+
+\fixme{
+The possibility of handling such a variety of constraints might put Gauß' principle in a superior position compared to other principles as pointed out in \cite[p.\,525]{Hamel:TheoretischeMechanik}.
+The Lagrange-d'Alembert principle handles linear kinematic constraints $\kinConstraintMat \sysCoordd = \tuple{0}$ by requiring $\kinConstraintMat \delta\sysCoord = \tuple{0}$. %motivated by the principle that reaction forces do no work.
+However, there are no real world examples of nonlinear nonhholonomic constraints \cite[p.\,499]{Hamel:TheoretischeMechanik}, \cite[ch.\,IV]{Neimark:NonholonomicSystems}, \cite[p.\,96]{Schwertassek:MultibodySystems} and none of acceleration constraints \cite[p.\,505 \& 525]{Hamel:TheoretischeMechanik}, so one should be careful with this context.
+Note for example that for nonlinear kinematic and acceleration constraints the reaction forces $\LagrangeMult$ enter the balance of energy.
+}
+%\cite[p.\,96]{Schwertassek:MultibodySystems} \textit{for all known mechanical nonholonomic constraints are linear in the velocity variables: Ref to} \cite{Hamel:TheoretischeMechanik}
+
+\fixme{
+Gauß suggested in \cite{Gauss:Principle} also the application to inequality constraints which will not be discussed here.
+For a contemporary discussion and applications of this see \cite[sec.\,6.1]{Pfeiffer:UnilateralContacts}.
+}
+

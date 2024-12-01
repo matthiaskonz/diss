@@ -1,0 +1,64 @@
+%% Creator: Inkscape inkscape 0.48.4, www.inkscape.org
+%% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
+%% Accompanies image file 'Scara.pdf' (pdf, eps, ps)
+%%
+%% To include the image in your LaTeX document, write
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics{<filename>.pdf}
+%% To scale the image, write
+%%   \def\svgwidth{<desired width>}
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics[width=<desired width>]{<filename>.pdf}
+%%
+%% Images with a different path to the parent latex file can
+%% be accessed with the `import' package (which may need to be
+%% installed) using
+%%   \usepackage{import}
+%% in the preamble, and then including the image with
+%%   \import{<path to file>}{<filename>.pdf_tex}
+%% Alternatively, one can specify
+%%   \graphicspath{{<path to file>/}}
+%% 
+%% For more information, please see info/svg-inkscape on CTAN:
+%%   http://tug.ctan.org/tex-archive/info/svg-inkscape
+%%
+\begingroup%
+  \makeatletter%
+  \providecommand\color[2][]{%
+    \errmessage{(Inkscape) Color is used for the text in Inkscape, but the package 'color.sty' is not loaded}%
+    \renewcommand\color[2][]{}%
+  }%
+  \providecommand\transparent[1]{%
+    \errmessage{(Inkscape) Transparency is used (non-zero) for the text in Inkscape, but the package 'transparent.sty' is not loaded}%
+    \renewcommand\transparent[1]{}%
+  }%
+  \providecommand\rotatebox[2]{#2}%
+  \ifx\svgwidth\undefined%
+    \setlength{\unitlength}{402.16213446bp}%
+    \ifx\svgscale\undefined%
+      \relax%
+    \else%
+      \setlength{\unitlength}{\unitlength * \real{\svgscale}}%
+    \fi%
+  \else%
+    \setlength{\unitlength}{\svgwidth}%
+  \fi%
+  \global\let\svgwidth\undefined%
+  \global\let\svgscale\undefined%
+  \makeatother%
+  \begin{picture}(1,0.46958679)%
+    \put(0,0){\includegraphics[width=\unitlength]{Scara.pdf}}%
+    \put(0.70430448,0.09153088){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{$\theta_1$}}}%
+    \put(0.82365933,0.25067068){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{$\theta_2$}}}%
+    \put(0.67446577,0.05174593){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{$\bodyRotVect{0}{1}$}}}%
+    \put(0.61478834,0.16115454){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\bodyRotVect{0}{2}$}}}%
+    \put(0.69634749,0.21884272){\color[rgb]{0,0,0}\makebox(0,0)[rb]{\smash{$\bodyRotVect{2}{2}$}}}%
+    \put(0.55511092,0.16115454){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{$\bodyRotVect{1}{2}$}}}%
+    \put(0.72419695,0.02190722){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$l_1$}}}%
+    \put(0.89328299,0.22083196){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{$l_2$}}}%
+    \put(0.58972205,0.34661652){\color[rgb]{0,0,0}\makebox(0,0)[rb]{\smash{$r_T^2$}}}%
+    \put(0.80123355,0.05126468){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{$r_T^1$}}}%
+  \end{picture}%
+\endgroup%

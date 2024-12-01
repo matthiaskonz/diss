@@ -1,0 +1,85 @@
+\chapter{Templates}
+
+\section{Math fonts}
+\paragraph*{Latin alphabet in math mode}
+\begin{align*}
+ \arraycolsep=2pt
+ \begin{array}{l|cccccccccccccccccccccccccc}
+  \text{default} &
+  A & B & C & D & E & F & G & H & I & J & K & L & M & N & O & P & Q & R & S & T & U & V & W & X & Y & Z \\
+  \text{} &
+  a & b & c & d & e & f & g & h & i & j & k & l & m & n & o & p & q & r & s & t & u & v & w & x & y & z \\[2ex]
+  \text{mathrm} &
+  \mathrm{A} & \mathrm{B} & \mathrm{C} & \mathrm{D} & \mathrm{E} & \mathrm{F} & \mathrm{G} & \mathrm{H} & \mathrm{I} & \mathrm{J} & \mathrm{K} & \mathrm{L} & \mathrm{M} & \mathrm{N} & \mathrm{O} & \mathrm{P} & \mathrm{Q} & \mathrm{R} & \mathrm{S} & \mathrm{T} & \mathrm{U} & \mathrm{V} & \mathrm{W} & \mathrm{X} & \mathrm{Y} & \mathrm{Z} \\
+  \text{} &
+  \mathrm{a} & \mathrm{b} & \mathrm{c} & \mathrm{d} & \mathrm{e} & \mathrm{f} & \mathrm{g} & \mathrm{h} & \mathrm{i} & \mathrm{j} & \mathrm{k} & \mathrm{l} & \mathrm{m} & \mathrm{n} & \mathrm{o} & \mathrm{p} & \mathrm{q} & \mathrm{r} & \mathrm{s} & \mathrm{t} & \mathrm{u} & \mathrm{v} & \mathrm{w} & \mathrm{x} & \mathrm{y} & \mathrm{z} \\[2ex]
+  \text{mathsf} &
+  \mathsf{A} & \mathsf{B} & \mathsf{C} & \mathsf{D} & \mathsf{E} & \mathsf{F} & \mathsf{G} & \mathsf{H} & \mathsf{I} & \mathsf{J} & \mathsf{K} & \mathsf{L} & \mathsf{M} & \mathsf{N} & \mathsf{O} & \mathsf{P} & \mathsf{Q} & \mathsf{R} & \mathsf{S} & \mathsf{T} & \mathsf{U} & \mathsf{V} & \mathsf{W} & \mathsf{X} & \mathsf{Y} & \mathsf{Z} \\
+  \text{} &
+  \mathsf{a} & \mathsf{b} & \mathsf{c} & \mathsf{d} & \mathsf{e} & \mathsf{f} & \mathsf{g} & \mathsf{h} & \mathsf{i} & \mathsf{j} & \mathsf{k} & \mathsf{l} & \mathsf{m} & \mathsf{n} & \mathsf{o} & \mathsf{p} & \mathsf{q} & \mathsf{r} & \mathsf{s} & \mathsf{t} & \mathsf{u} & \mathsf{v} & \mathsf{w} & \mathsf{x} & \mathsf{y} & \mathsf{z} \\[2ex]
+  \text{mathtt}\qquad &
+  \mathtt{A} & \mathtt{B} & \mathtt{C} & \mathtt{D} & \mathtt{E} & \mathtt{F} & \mathtt{G} & \mathtt{H} & \mathtt{I} & \mathtt{J} & \mathtt{K} & \mathtt{L} & \mathtt{M} & \mathtt{N} & \mathtt{O} & \mathtt{P} & \mathtt{Q} & \mathtt{R} & \mathtt{S} & \mathtt{T} & \mathtt{U} & \mathtt{V} & \mathtt{W} & \mathtt{X} & \mathtt{Y} & \mathtt{Z} \\
+  \text{} &
+  \mathtt{a} & \mathtt{b} & \mathtt{c} & \mathtt{d} & \mathtt{e} & \mathtt{f} & \mathtt{g} & \mathtt{h} & \mathtt{i} & \mathtt{j} & \mathtt{k} & \mathtt{l} & \mathtt{m} & \mathtt{n} & \mathtt{o} & \mathtt{p} & \mathtt{q} & \mathtt{r} & \mathtt{s} & \mathtt{t} & \mathtt{u} & \mathtt{v} & \mathtt{w} & \mathtt{x} & \mathtt{y} & \mathtt{z} \\[2ex]
+  \text{boldsymbol} &
+  \boldsymbol{A} & \boldsymbol{B} & \boldsymbol{C} & \boldsymbol{D} & \boldsymbol{E} & \boldsymbol{F} & \boldsymbol{G} & \boldsymbol{H} & \boldsymbol{I} & \boldsymbol{J} & \boldsymbol{K} & \boldsymbol{L} & \boldsymbol{M} & \boldsymbol{N} & \boldsymbol{O} & \boldsymbol{P} & \boldsymbol{Q} & \boldsymbol{R} & \boldsymbol{S} & \boldsymbol{T} & \boldsymbol{U} & \boldsymbol{V} & \boldsymbol{W} & \boldsymbol{X} & \boldsymbol{Y} & \boldsymbol{Z} \\
+  \text{} &
+  \boldsymbol{a} & \boldsymbol{b} & \boldsymbol{c} & \boldsymbol{d} & \boldsymbol{e} & \boldsymbol{f} & \boldsymbol{g} & \boldsymbol{h} & \boldsymbol{i} & \boldsymbol{j} & \boldsymbol{k} & \boldsymbol{l} & \boldsymbol{m} & \boldsymbol{n} & \boldsymbol{o} & \boldsymbol{p} & \boldsymbol{q} & \boldsymbol{r} & \boldsymbol{s} & \boldsymbol{t} & \boldsymbol{u} & \boldsymbol{v} & \boldsymbol{w} & \boldsymbol{x} & \boldsymbol{y} & \boldsymbol{z} \\[2ex]
+  \text{mathbf} &
+  \mathbf{A} & \mathbf{B} & \mathbf{C} & \mathbf{D} & \mathbf{E} & \mathbf{F} & \mathbf{G} & \mathbf{H} & \mathbf{I} & \mathbf{J} & \mathbf{K} & \mathbf{L} & \mathbf{M} & \mathbf{N} & \mathbf{O} & \mathbf{P} & \mathbf{Q} & \mathbf{R} & \mathbf{S} & \mathbf{T} & \mathbf{U} & \mathbf{V} & \mathbf{W} & \mathbf{X} & \mathbf{Y} & \mathbf{Z} \\
+  \text{} &
+  \mathbf{a} & \mathbf{b} & \mathbf{c} & \mathbf{d} & \mathbf{e} & \mathbf{f} & \mathbf{g} & \mathbf{h} & \mathbf{i} & \mathbf{j} & \mathbf{k} & \mathbf{l} & \mathbf{m} & \mathbf{n} & \mathbf{o} & \mathbf{p} & \mathbf{q} & \mathbf{r} & \mathbf{s} & \mathbf{t} & \mathbf{u} & \mathbf{v} & \mathbf{w} & \mathbf{x} & \mathbf{y} & \mathbf{z} \\[2ex]
+  \text{mathfrak}\qquad &
+  \mathfrak{A} & \mathfrak{B} & \mathfrak{C} & \mathfrak{D} & \mathfrak{E} & \mathfrak{F} & \mathfrak{G} & \mathfrak{H} & \mathfrak{I} & \mathfrak{J} & \mathfrak{K} & \mathfrak{L} & \mathfrak{M} & \mathfrak{N} & \mathfrak{O} & \mathfrak{P} & \mathfrak{Q} & \mathfrak{R} & \mathfrak{S} & \mathfrak{T} & \mathfrak{U} & \mathfrak{V} & \mathfrak{W} & \mathfrak{X} & \mathfrak{Y} & \mathfrak{Z} \\
+  \text{} &
+  \mathfrak{a} & \mathfrak{b} & \mathfrak{c} & \mathfrak{d} & \mathfrak{e} & \mathfrak{f} & \mathfrak{g} & \mathfrak{h} & \mathfrak{i} & \mathfrak{j} & \mathfrak{k} & \mathfrak{l} & \mathfrak{m} & \mathfrak{n} & \mathfrak{o} & \mathfrak{p} & \mathfrak{q} & \mathfrak{r} & \mathfrak{s} & \mathfrak{t} & \mathfrak{u} & \mathfrak{v} & \mathfrak{w} & \mathfrak{x} & \mathfrak{y} & \mathfrak{z} \\[2ex]
+%   \text{mathscr}\qquad &
+%   \mathscr{A} & \mathscr{B} & \mathscr{C} & \mathscr{D} & \mathscr{E} & \mathscr{F} & \mathscr{G} & \mathscr{H} & \mathscr{I} & \mathscr{J} & \mathscr{K} & \mathscr{L} & \mathscr{M} & \mathscr{N} & \mathscr{O} & \mathscr{P} & \mathscr{Q} & \mathscr{R} & \mathscr{S} & \mathscr{T} & \mathscr{U} & \mathscr{V} & \mathscr{W} & \mathscr{X} & \mathscr{Y} & \mathscr{Z} \\
+%   \text{} &
+%   \mathscr{a} & \mathscr{b} & \mathscr{c} & \mathscr{d} & \mathscr{e} & \mathscr{f} & \mathscr{g} & \mathscr{h} & \mathscr{i} & \mathscr{j} & \mathscr{k} & \mathscr{l} & \mathscr{m} & \mathscr{n} & \mathscr{o} & \mathscr{p} & \mathscr{q} & \mathscr{r} & \mathscr{s} & \mathscr{t} & \mathscr{u} & \mathscr{v} & \mathscr{w} & \mathscr{x} & \mathscr{y} & \mathscr{z} \\[2ex]
+  \text{mathcal} &
+  \mathcal{A} & \mathcal{B} & \mathcal{C} & \mathcal{D} & \mathcal{E} & \mathcal{F} & \mathcal{G} & \mathcal{H} & \mathcal{I} & \mathcal{J} & \mathcal{K} & \mathcal{L} & \mathcal{M} & \mathcal{N} & \mathcal{O} & \mathcal{P} & \mathcal{Q} & \mathcal{R} & \mathcal{S} & \mathcal{T} & \mathcal{U} & \mathcal{V} & \mathcal{W} & \mathcal{X} & \mathcal{Y} & \mathcal{Z} \\[2ex]
+  \text{mathbb}\qquad &
+  \mathbb{A} & \mathbb{B} & \mathbb{C} & \mathbb{D} & \mathbb{E} & \mathbb{F} & \mathbb{G} & \mathbb{H} & \mathbb{I} & \mathbb{J} & \mathbb{K} & \mathbb{L} & \mathbb{M} & \mathbb{N} & \mathbb{O} & \mathbb{P} & \mathbb{Q} & \mathbb{R} & \mathbb{S} & \mathbb{T} & \mathbb{U} & \mathbb{V} & \mathbb{W} & \mathbb{X} & \mathbb{Y} & \mathbb{Z}
+ \end{array}
+\end{align*}
+\paragraph*{Greek alphabet in math mode}
+\begin{align*}
+ \arraycolsep=2.5pt
+ \begin{array}{l|cccccccccccccccccccccccc}
+  \text{default} &
+   &  & \Gamma & \Delta &  &  &  & \Theta & & & \Lambda & & & \Xi & & \Pi & & \Sigma & & \Upsilon & \Phi & & \Psi & \Omega \\
+  \text{} &
+  \alpha & \beta & \gamma & \delta & \epsilon & \zeta & \eta & \theta & \iota & \kappa & \lambda & \mu & \nu & \xi & o & \pi & \rho & \sigma & \tau & \upsilon & \phi & \chi & \psi & \omega \\
+  \text{var} &
+  A & B & \varGamma & \varDelta & E & Z & H & \varTheta & I & K & \varLambda & M & N & \varXi & O & \varPi & P & \varSigma & T & \varUpsilon & \varPhi & X & \varPsi & \varOmega \\
+  \text{} &
+   & & & & \varepsilon & & & \vartheta &  &  &  &  &  &  & & \varpi & \varrho & \varsigma & & & \varphi & & & \\[2ex]
+  \text{boldsymbol} &
+   & & \boldsymbol{\Gamma} & \boldsymbol{\Delta} & & & & \boldsymbol{\Theta} &  & & \boldsymbol{\Lambda} &  &  & \boldsymbol{\Xi} & & \boldsymbol{\Pi} & & \boldsymbol{\Sigma} & & \boldsymbol{\Upsilon} & \boldsymbol{\Phi} &  & \boldsymbol{\Psi} & \boldsymbol{\Omega} \\
+  \text{} &
+  \boldsymbol{\alpha} & \boldsymbol{\beta} & \boldsymbol{\gamma} & \boldsymbol{\delta} & \boldsymbol{\epsilon} & \boldsymbol{\zeta} & \boldsymbol{\eta} & \boldsymbol{\theta} & \boldsymbol{\iota} & \boldsymbol{\kappa} & \boldsymbol{\lambda} & \boldsymbol{\mu} & \boldsymbol{\nu} & \boldsymbol{\xi} & \boldsymbol{o} & \boldsymbol{\pi} & \boldsymbol{\rho} & \boldsymbol{\sigma} & \boldsymbol{\tau} & \boldsymbol{\upsilon} & \boldsymbol{\phi} & \boldsymbol{\chi} & \boldsymbol{\psi} & \boldsymbol{\omega} \\
+  \text{var} &
+  \boldsymbol{A} & \boldsymbol{B} & \boldsymbol{\varGamma} & \boldsymbol{\varDelta} & \boldsymbol{E} & \boldsymbol{Z} & \boldsymbol{H} & \boldsymbol{\varTheta} & \boldsymbol{I} & \boldsymbol{K} & \boldsymbol{\varLambda} & \boldsymbol{M} & \boldsymbol{N} & \boldsymbol{\varXi} & \boldsymbol{O} & \boldsymbol{\varPi} & \boldsymbol{P} & \boldsymbol{\varSigma} & \boldsymbol{T} & \boldsymbol{\varUpsilon} & \boldsymbol{\varPhi} & \boldsymbol{X} & \boldsymbol{\varPsi} & \boldsymbol{\varOmega} \\
+  \text{} &
+   & & & & \boldsymbol{\varepsilon} & & & \boldsymbol{\vartheta} & & & & & & & & \boldsymbol{\varpi} & \boldsymbol{\varrho} & \boldsymbol{\varsigma} & & & \boldsymbol{\varphi} & & & \\[2ex]
+  \text{mathsf} &
+  \mathsf{A} & \mathsf{B} & \mathsf{\Gamma} & \mathsf{\Delta} & \mathsf{E} & \mathsf{Z} & \mathsf{H} & \mathsf{\Theta} & \mathsf{I} & \mathsf{K} & \mathsf{\Lambda} & \mathsf{M} & \mathsf{N} & \mathsf{\Xi} & \mathsf{O} & \mathsf{\Pi} & \mathsf{P} & \mathsf{\Sigma} & \mathsf{T} & \mathsf{\Upsilon} & \mathsf{\Phi} & \mathsf{X} & \mathsf{\Psi} & \mathsf{\Omega} \\
+  \text{} &
+  \sfalpha & \sfbeta & \sfgamma & \sfdelta & \sfepsilon & \sfzeta & \sfeta & \sftheta & \sfiota & \sfkappa & \sflambda & \sfmu & \sfnu & \sfxi & \mathsf{o} & \sfpi & \sfrho & \sfsigma & \sftau & \sfupsilon & \sfphi & \sfchi & \sfpsi & \sfomega \\[2ex]
+  \text{mathbf} &
+  \mathbf{A} & \mathbf{B} & \mathbf{\Gamma} & \mathbf{\Delta} & \mathbf{E} & \mathbf{Z} & \mathbf{H} & \mathbf{\Theta} & \mathbf{I} & \mathbf{K} & \mathbf{\Lambda} & \mathbf{M} & \mathbf{N} & \mathbf{\Xi} & \mathbf{O} & \mathbf{\Pi} & \mathbf{P} & \mathbf{\Sigma} & \mathbf{T} & \mathbf{\Upsilon} & \mathbf{\Phi} & \mathbf{X} & \mathbf{\Psi} & \mathbf{\Omega} \\[2ex]
+ \end{array}
+\end{align*}
+
+% \begin{itemize}
+%  \item capital letters are in \texttt{mathrm} style by default, var version \eg \texttt{varGamma} yields the italic version
+%  \item \texttt{mathrm} has no effect
+%  \item \texttt{mathsf}, \texttt{mathbf} affects only the upright capital letters
+% \end{itemize}
+
+\begin{figure}
+ \centering
+ \input{graphics/00-MasterTemplate.pdf_tex}
+ \caption{Inkscape figure template}
+\end{figure}

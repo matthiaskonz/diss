@@ -1,0 +1,515 @@
+\section{Rigid body systems}\label{sec:RBSRigidBodySys}
+A rigid body system is a system of $\numRigidBodies \geq 1$ rigid bodies which may be constrained to each other and/or to the surrounding space.
+As before, this section restricts to geometric constraints.
+
+There are many established textbooks on this subject \eg \cite{Schwertassek:MultibodySystems}, \cite{Murray:Robotic}, \cite{Kane:Dynamics}.
+However, all these excellent texts restrict to \textit{minimal} generalized coordinates or are even more restrictive by requiring Denavit-Hartenberg parameters \cite{DenavitHartenbergParam}.
+While this is just fine when dealing only with one-dimensional joints, it may be too restrictive when dealing with multidimensional joints as e.g.\ mobile robots.
+Furthermore, the texts mentioned above mostly focus on inertia but not dissipation and stiffness.
+
+This section deals with the derivation of equations of motion for rigid body systems subject to inertia, gravity, linear springs and viscous friction.
+It allows for a quite general parameterization as motivated in the previous sections.
+%The goal of this section is to present an algorithm for the computation of the equations of motion for rigid body systems that allows for a rather flexible parameterization.
+
+\subsection{Parameterization}\label{sec:RBSParameterization}
+\begin{figure}[ht]
+ \centering
+% \def\svgwidth{.7\linewidth}
+ \input{graphics/RBSConfigurations.pdf_tex}
+ \caption{inertial frame and body fixed frames}
+ \label{fig:RBSConfigurations}
+\end{figure}
+
+\paragraph{Configuration coordinates.}
+As motivated for the single rigid body, let there be a body fixed frame for each body of the system as illustrated in \autoref{fig:RBSConfigurations}.
+The components of the position of the $\BidxII\text{-th}$ body w.r.t.\ the inertial frame are $\bodyPos{0}{\BidxII} \in \RealNum^3$ and the components of its attitude are $\bodyRot{0}{\BidxII} = [\bodyRotx{0}{\BidxII}, \bodyRoty{0}{\BidxII}, \bodyRotz{0}{\BidxII}] \in \SpecialOrthogonalGroup(3)$.
+
+The configuration can also be expressed w.r.t.\ any other body: $\bodyPos{\BidxI}{\BidxII}$ is the position of the $\BidxII\text{-th}$ frame w.r.t.\ the frame of the $\BidxI\text{-th}$ body and analog of the attitude $\bodyRot{\BidxI}{\BidxII}$.
+The left side indices are used for readability but also to emphasize their different nature compared to the right side indices.
+The sum convention does not apply to these indices.
+For the positions and attitudes we have the following relations
+\begin{subequations}\label{eq:rigidBodyRelCoordRules}
+\begin{align}
+ \bodyPos{\BidxI}{\BidxIII} &= \bodyPos{\BidxI}{\BidxII} + \bodyRot{\BidxI}{\BidxII} \bodyPos{\BidxII}{\BidxIII},&
+ \bodyRot{\BidxI}{\BidxIII} &= \bodyRot{\BidxI}{\BidxII} \bodyRot{\BidxII}{\BidxIII},
+\\
+ \bodyPos{\BidxII}{\BidxI} &= -\bodyRot{\BidxI}{\BidxII}^\top \bodyPos{\BidxI}{\BidxII},&
+ \bodyRot{\BidxII}{\BidxI} &= \bodyRot{\BidxI}{\BidxII}^\top,&
+\\
+ \bodyPos{\BidxI}{\BidxI} &= \tuple{0},&
+ \bodyRot{\BidxI}{\BidxI} &= \idMat[3],&
+ \BidxI, \BidxII, \BidxIII &= 0,\ldots,\numRigidBodies.
+\end{align}
+\end{subequations}
+
+As motivated in the previous section, it will be convenient to merge position $\bodyPos{0}{\BidxII} \in \RealNum^3$ and rotation matrix $\bodyRot{0}{\BidxII} \in \SpecialOrthogonalGroup(3)$ into the (rigid body) configuration matrix
+\begin{align}
+ \bodyHomoCoord{\BidxI}{\BidxII}{}{} &= \begin{bmatrix} \bodyRot{\BidxI}{\BidxII} & \bodyPos{\BidxI}{\BidxII}{} \\ 0 & 1 \end{bmatrix} \in \SpecialEuclideanGroup(3).
+\end{align}
+Then \eqref{eq:rigidBodyRelCoordRules} is equivalent to
+\begin{align}\label{eq:rigidBodyRelCoordRules2}
+ \bodyHomoCoord{\BidxI}{\BidxIII} &= \bodyHomoCoord{\BidxI}{\BidxII} \bodyHomoCoord{\BidxII}{\BidxIII},&
+ \bodyHomoCoord{\BidxII}{\BidxI} &= \bodyHomoCoord{\BidxI}{\BidxII}^{-1},&
+ \bodyHomoCoord{\BidxI}{\BidxI} &= \idMat[4],&
+ \BidxI, \BidxII, \BidxIII &= 0,\ldots,\numRigidBodies.
+\end{align}
+For a system of $\numRigidBodies$ body fixed frames and a inertial frame there are $(\numRigidBodies+1)^2$ transformations, but due to the rules \eqref{eq:rigidBodyRelCoordRules2}, only $\numRigidBodies$ can be independent.
+So a \RBS can have at most $6\numRigidBodies$ degrees of freedom which is the case if there are no constraints (like joints) between the bodies.
+Constraints of a joint between body $a$ and $b$ can be captured inside the corresponding transformation $\bodyHomoCoord{\BidxI}{\BidxII}{}{}$.
+%The description of a rigid body system by a set of transformations is shown in the following example.
+We will discuss this in the following example.
+
+\begin{figure}[p]
+ \centering
+% \def\svgwidth{0.95\textwidth}
+ \input{graphics/TriV3ConfigGraph.pdf_tex}
+ \caption{Frames attached to the Tricopter bodies (top) and the configuration graph (bottom)}
+ \label{fig:TriV3ConfigGraph}
+\end{figure}
+
+\begin{Example}\label{exp:TricopterWithLoadConfiguration}
+\textbf{Tricopter with suspended load: configuration.}
+Consider the Tricopter with a suspended load as shown in \autoref{fig:TriV3ConfigGraph}.
+The top part of the figure shows the body fixed frames which are attached to geometrically meaningful points.
+The numbering of the bodies is rather arbitrary.
+
+The Tricopter flies freely in space, i.e.\ there are no constraints between the inertial frame and any body of the system.
+So we chose to describe the configuration of the central body w.r.t. the inertial frame as
+\begin{subequations}\label{eq:configurationMatricesTricopterExample}
+\begin{align}
+ \bodyHomoCoord{0}{1} = 
+ \begin{bmatrix}
+  \bodyRotxx{0}{1} & \bodyRotxy{0}{1} & \bodyRotxz{0}{1} & \bodyPosx{0}{1} \\
+  \bodyRotyx{0}{1} & \bodyRotyy{0}{1} & \bodyRotyz{0}{1} & \bodyPosy{0}{1} \\
+  \bodyRotzx{0}{1} & \bodyRotzy{0}{1} & \bodyRotzz{0}{1} & \bodyPosz{0}{1} \\
+  0 & 0 & 0 & 1
+ \end{bmatrix}.
+\end{align}
+The suspended load is a rigid body that is attached by a spherical joint to the central body.
+The body fixed frame of the load was placed in the center of this spherical joint.
+As a consequence, the position of the load (the position of its body fixed frame not the position of its center of mass) w.r.t.\ the central body is constant.
+This is reflected by the configuration
+\begin{align}
+ \bodyHomoCoord{1}{2} =
+ \begin{bmatrix}
+  \bodyRotxx{1}{2} & \bodyRotxy{1}{2} & \bodyRotxz{1}{2} & 0 \\
+  \bodyRotyx{1}{2} & \bodyRotyy{1}{2} & \bodyRotyz{1}{2} & 0 \\
+  \bodyRotzx{1}{2} & \bodyRotzz{1}{2} & \bodyRotzz{1}{2} & \LoadHeight \\
+  0 & 0 & 0 & 1
+ \end{bmatrix}.
+\end{align}
+The three arms are connected to the central body each by revolute joints with tilt angles $\aServo[k],\,k=1,2,3$.
+The joint axis lie in the plane spanned by $\bodyRotx{0}{1}$ and $\bodyRoty{0}{1}$ and their angles to $\bodyRotx{0}{1}$ are $\ArmAngle[1] = \tfrac{\pi}{3}, \ArmAngle[2] = \pi, \ArmAngle[3] = -\tfrac{\pi}{3}$.
+The body fixed axes are placed such that $\bodyRotx{0}{2k+1}$ coincide with the tilt axis and $\bodyRotz{0}{2k+1},\,k=1,2,3$ coincide with the propeller spinning axis.
+The configuration of the $k\text{-th}$ arm w.r.t.\ the central body is
+\begin{align}
+ \bodyHomoCoord{1}{2k+1} &= 
+ \begin{bmatrix}
+  \cos\ArmAngle[k] & -\sin\ArmAngle[k] \cos\aServo[k] & \sin\ArmAngle[k] \sin\aServo[k] & \ArmRadius \cos\ArmAngle[k] \\
+  \sin\ArmAngle[k] & \cos\ArmAngle[k] \cos\aServo[k] & -\cos\ArmAngle[k] \sin\aServo[k] & \ArmRadius \sin\ArmAngle[k] \\ 
+  0 & \sin\aServo[k] & \cos\aServo[k] & 0 \\
+  0 & 0 & 0 & 1
+ \end{bmatrix},
+ \quad 
+ k = 1,\ldots,3.
+\end{align}
+The propellers are connected by revolute joints to the arms.
+The body fixed frame is attached to the geometric center of the propeller (which will be an important point for its aerodynamic model).
+The configuration w.r.t.\ the corresponding arm is
+\begin{align}
+ \bodyHomoCoord{2k+1}{2k+2} &= 
+ \begin{bmatrix}
+  \cPropAngle[k] & -\sPropAngle[k] & 0 & 0 \\
+  \sPropAngle[k] & \cPropAngle[k] & 0 & 0 \\ 
+  0 & 0 & 1 & \PropHeight \\
+  0 & 0 & 0 & 1
+ \end{bmatrix},
+ \qquad
+ k = 1,\ldots,3.
+\end{align}
+\end{subequations}
+The set of configurations $\HomoCoordGraph_0 = \{ \bodyHomoCoord{0}{1}, \bodyHomoCoord{1}{2}, \bodyHomoCoord{1}{3}, \bodyHomoCoord{3}{4}, \bodyHomoCoord{1}{5}, \bodyHomoCoord{5}{6}, \bodyHomoCoord{1}{7}, \bodyHomoCoord{7}{8} \}$ form a directed graph as shown at the bottom of \autoref{fig:TriV3ConfigGraph}.
+With them and the rules from \eqref{eq:rigidBodyRelCoordRules2} we can compute the configuration $\bodyHomoCoord{\BidxI}{\BidxII}$ of any body w.r.t.\ any other body or the inertial frame.
+
+The configurations can be seen as functions $\bodyHomoCoord{\BidxI}{\BidxII}(\sysCoord)$ of the system coordinates
+\begin{align}
+ \sysCoord = \big[
+  \bodyPosx{0}{1}, \bodyPosy{0}{1}, \bodyPosz{0}{1},
+  \bodyRotxx{0}{1}, \ldots, \bodyRotzz{0}{1},
+  \bodyRotxx{1}{2}, \ldots, \bodyRotzz{1}{2},
+  \PropTilt[1], \PropTilt[2], \PropTilt[3],
+  \cPropAngle[1], \sPropAngle[1],
+  \cPropAngle[2], \sPropAngle[2],
+  \cPropAngle[3], \sPropAngle[3]
+ \big]^\top \in \RealNum^{30}
+\end{align}
+and the constant parameters $\LoadHeight, \ArmRadius, \ArmAngle[1], \ArmAngle[2], \ArmAngle[3], \PropHeight$.
+From the rules \eqref{eq:rigidBodyRelCoordRules2} emerge the geometric constraints
+\begin{align}\label{eq:TricopterExampleConstraint}
+ \geoConstraint(\sysCoord) = \tuple{0} 
+\qquad \cong \qquad 
+ \begin{cases}
+  \bodyRot{0}{1}^\top \bodyRot{0}{1} = \idMat[3], \, \det\bodyRot{0}{1} = +1, \\
+  \bodyRot{1}{2}^\top \bodyRot{1}{2} = \idMat[3], \, \det\bodyRot{1}{2} = +1, \\
+  (\cPropAngle[k])^2 + (\sPropAngle[k])^2 = 1, \ k=1,2,3
+ \end{cases}
+\end{align}
+The configuration space of the rigid body system is
+\begin{align}
+ \configSpace = \{ \sysCoord \in \RealNum^{30} \, | \, \geoConstraint(\sysCoord) = 0 \} \ \cong \ \SpecialEuclideanGroup(3) \times \SpecialOrthogonalGroup(3) \times \RealNum^3 \times (\Sphere^1)^3.
+\end{align}
+
+This example was mainly chosen as the Tricopter will be discussed in the following chapters.
+However, it is also an example of a system that is complex enough that one probably does not want to derive the equations of motion without a formalism.
+It also covers the most common manifolds encountered in rigid body mechanics.
+Even though the revolute joints for the propeller tilt and the propeller spinning axes both imply a $\Sphere^1$ manifold, the local parameterization by the angle $\aServo[k],k=1,2,3$ is chosen.
+This has a practical motivation: The tilt mechanism also twists the cables to the propeller motor and so $\aServo[k] = 0$ and $\aServo[k] = 2\pi$ are really different situations in practice.
+On the other hand it should also show that the following algorithm handles minimal coordinates just as fine.
+\end{Example}
+
+A generalization of the example states:
+A rigid body system can be parameterized by a set of $\numCoord$ (possibly redundant) coordinates $\sysCoord$ which again parameterize a set of configurations $\bodyHomoCoord{\BidxI}{\BidxII}(\sysCoord)$ which form a \textit{connected} graph.
+The property connected is essential: it ensures that, with the rules \eqref{eq:rigidBodyRelCoordRules2}, all remaining configurations of the graph can be computed \ie the corresponding \textit{complete} graph.
+Loops in the graph and the property $\bodyHomoCoord{\BidxI}{\BidxII} \in \SpecialEuclideanGroup(3)$ may imply geometric constraints.
+
+The use of graph theory in the context of algorithms for rigid body systems is quite common, see \eg \cite[sec.\,8.2]{Schwertassek:MultibodySystems} or \cite[sec.\,5.3]{Wittenburg:DynamicsOfMultibodySystems}.
+However, we will not go any deeper into this.
+All we need for the following is that any configuration $\bodyHomoCoord{\BidxI}{\BidxII}(\sysCoord), \BidxI,\BidxII = 0\ldots\numRigidBodies$ can be expressed in terms of the configuration coordinates $\sysCoord$.
+
+\paragraph{Body velocity.}
+The previous section motivated particular velocity coordinates $\bodyVel{}{} = [\v^\top, \w^\top]^\top$ for the free rigid body, which did lead to a convenient mathematical expressions.
+In the context of rigid body systems we may associate a \textit{body velocity} $\bodyVel{\BidxI}{\BidxII} = [\bodyLinVel{\BidxI}{\BidxII}^\top, \bodyAngVel{\BidxI}{\BidxII}^\top]^\top$ with any configuration $\bodyHomoCoord{\BidxI}{\BidxII}, \BidxI,\BidxII = 0,\ldots,\numRigidBodies$ defined by 
+\begin{align}\label{eq:DefBodyVelocityMulti}
+ \bodyVel{\BidxI}{\BidxII} = \veeOp\big(\bodyHomoCoord{\BidxII}{\BidxI} \bodyHomoCoordd{\BidxI}{\BidxII}{}{} \big), \quad \BidxI,\BidxII = 0,\ldots,\numRigidBodies.
+\end{align}
+From the rules \eqref{eq:rigidBodyRelCoordRules2} for the configurations we can conclude similar rules for their velocities:
+For the composition $\bodyHomoCoord{\BidxI}{\BidxIII}{}{} = \bodyHomoCoord{\BidxI}{\BidxII}{}{} \bodyHomoCoord{\BidxII}{\BidxIII}{}{}$ we get
+\begin{subequations}\label{eq:rulesBodyVelocity}
+\begin{align}
+ \bodyVel{\BidxI}{\BidxIII} = \veeOp\big(\bodyHomoCoord{\BidxIII}{\BidxII} \bodyHomoCoord{\BidxII}{\BidxI}(\bodyHomoCoordd{\BidxI}{\BidxII} \bodyHomoCoord{\BidxII}{\BidxIII} + \bodyHomoCoord{\BidxI}{\BidxII} \bodyHomoCoordd{\BidxII}{\BidxIII})\big)
+ = \veeOp\big(\bodyHomoCoord{\BidxIII}{\BidxII} \wedOp(\bodyVel{\BidxI}{\BidxII}) \bodyHomoCoord{\BidxII}{\BidxIII} \big) + \bodyVel{\BidxII}{\BidxIII}
+ = \Ad{\bodyHomoCoord{\BidxIII}{\BidxII}} \bodyVel{\BidxI}{\BidxII} + \bodyVel{\BidxII}{\BidxIII}
+\end{align}
+% where
+% \begin{align*}
+%  \Ad{\bodyHomoCoord{}{}} = \begin{bmatrix} R & \widehat{r} R \\ 0 & R \end{bmatrix},
+% \qquad
+%  \Ad{\bodyHomoCoord{}{}^{-1}} = \begin{bmatrix} R^\top & -R^\top \widehat{r} \\ 0 & R^\top \end{bmatrix} = \Ad{\bodyHomoCoord{}{}}^{-1}
+%  .
+% \end{align*}
+Differentiation of the rule for the inverse yields 
+\begin{align}
+ \tdiff{t} \big(\bodyHomoCoord{\BidxI}{\BidxII} \bodyHomoCoord{\BidxII}{\BidxI}\big)
+ &= \bodyHomoCoordd{\BidxI}{\BidxII} \bodyHomoCoord{\BidxII}{\BidxI} + \bodyHomoCoord{\BidxI}{\BidxII} \bodyHomoCoordd{\BidxII}{\BidxI}
+ = \bodyHomoCoord{\BidxI}{\BidxII} \wedOp(\bodyVel{\BidxI}{\BidxII}) \bodyHomoCoord{\BidxII}{\BidxI} + \wedOp(\bodyVel{\BidxII}{\BidxI})
+ = \mat{0}&
+ &\Leftrightarrow&
+ \bodyVel{\BidxII}{\BidxI}{} &= -\Ad{\bodyHomoCoord{\BidxI}{\BidxII}{}{}} \bodyVel{\BidxI}{\BidxII}{}
+\end{align}
+and obviously 
+\begin{align}
+ \bodyVel{\BidxI}{\BidxI}{} = \tuple{0}.
+\end{align}
+\end{subequations}
+
+\paragraph{System velocity and body Jacobians.}
+Based on their definition \eqref{eq:DefBodyVelocityMulti}, the body velocities $\bodyVel{\BidxI}{\BidxII}$ can be seen as a function of the system coordinates $\sysCoord$ and their derivatives $\sysCoordd = \kinMat(\sysCoord)\sysVel$.
+Crucially the velocity is linear in $\sysCoordd$ and consequently linear in the system velocity $\sysVel$ and we can write
+\begin{align}\label{eq:DefBodyJacobian}
+ \bodyVel{\BidxI}{\BidxII}(\sysCoord, \sysVel) &= \bodyJac{\BidxI}{\BidxII}(\sysCoord) \sysVel,&
+ \bodyJac{\BidxI}{\BidxII}(\sysCoord) &= \pdiff[\,\bodyVel{\BidxI}{\BidxII}]{\sysVel}(\sysCoord) = \pdiff{\sysCoordd} \veeOp\Big( \bodyHomoCoord{\BidxII}{\BidxI}(\sysCoord) \diff{t} \big(\bodyHomoCoord{\BidxI}{\BidxII}(\sysCoord) \big) \Big) \kinMat.
+\end{align}
+The matrix $\bodyJac{\BidxI}{\BidxII}(\sysCoord) \in \RealNum^{6\times\dimConfigSpace}$ that maps the system velocity $\sysVel$ to the body velocity $\bodyVel{\BidxI}{\BidxII}$ is commonly called the \textit{body Jacobian}.
+\fixme{An alternative formula for the body Jacobian, which might give additional geometric insight, is given in [eq:AppendixDefBodyJac].} 
+The following rules emerge directly from \eqref{eq:rulesBodyVelocity}:
+\begin{align}\label{eq:rulesBodyJacobian}
+ \bodyJac{\BidxI}{\BidxIII} &= \Ad{\bodyHomoCoord{\BidxIII}{\BidxII}} \bodyJac{\BidxI}{\BidxII} + \bodyJac{\BidxII}{\BidxIII},&
+ \bodyJac{\BidxII}{\BidxI} &= -\Ad{\bodyHomoCoord{\BidxI}{\BidxII}} \bodyJac{\BidxI}{\BidxII},&
+ \bodyJac{\BidxI}{\BidxI} &= \mat{0}.
+\end{align}
+
+\begin{Example}
+\textbf{Tricopter with suspended load: kinematics.}
+For the tricopter with load from Example \ref{exp:TricopterWithLoadConfiguration} we chose the following velocity coordinates:
+The components of the body velocity $\bodyVel{0}{1}$ of the central body w.r.t.\ the inertial frame, the components of the angular velocity $\bodyAngVel{0}{2}$ of the load w.r.t.\ the inertial frame, the angular velocities $\aServod[k], k=1,2,3$ of the arm tilt mechanism and the angular velocities $\PropVel[k], k=1,2,3$ of the propellers w.r.t.\ the arms.
+These velocity coordinates $\sysVel = [\bodyVel{0}{1}^\top, \bodyAngVel{0}{2}^\top, \aServod[1], \aServod[2], \aServod[3], \PropVel[1], \PropVel[2], \PropVel[3]]^\top$ are related to the configuration coordinates $\sysVel$ by the kinematic equation
+\begin{align}
+ \sysCoordd &= \kinMat \sysVel
+\qquad\cong\qquad
+ \begin{cases}
+  \bodyHomoCoordd{0}{1} = \bodyHomoCoord{0}{1} \wedOp(\bodyVel{0}{1}), \\
+  \bodyRotd{1}{2} = \bodyRot{1}{2} \wedOp(\bodyAngVel{0}{2}) - \wedOp(\bodyAngVel{0}{1}) \bodyRot{1}{2}, \\
+  \aServod[k] = \aServod[k], \ k=1,2,3 \\
+  \cPropAngled[k] = -\sPropAngle[k]\PropVel[k], \ k=1,2,3 \\
+  \sPropAngled[k] =  \cPropAngle[k]\PropVel[k], \ k=1,2,3
+ \end{cases}
+ .
+\end{align}
+The relative velocity $\bodyAngVel{1}{2} = \veeOp(\bodyRot{1}{2}^\top \bodyRotd{1}{2})$ of the load would be another possible and probably more obvious choice.
+The absolute velocity $\bodyAngVel{0}{2}$ is mainly chosen to demonstrate the flexibility of the presented approach but the use of absolute velocities also leads to less cumbersome terms in the system inertia matrix.
+
+The body velocities associated with the configuration matrices from \eqref{eq:configurationMatricesTricopterExample} are
+\begin{subequations}
+\begin{align}
+ \bodyVel{0}{1} &= \begin{bmatrix} \bodyLinVelx{0}{1} \\ \bodyLinVely{0}{1} \\ \bodyLinVelz{0}{1} \\ \bodyAngVelx{0}{1} \\ \bodyAngVely{0}{1} \\ \bodyAngVelz{0}{1} \end{bmatrix},&
+ \bodyVel{1}{2} &= 
+ \begin{bmatrix}
+  0 \\ 0 \\ 0 \\
+  \bodyAngVelx{0}{2} - \bodyRotxx{1}{2} \bodyAngVelx{0}{2} - \bodyRotyx{1}{2} \bodyAngVely{0}{2} - \bodyRotzx{1}{2} \bodyAngVelz{0}{2} \\
+  \bodyAngVely{0}{2} - \bodyRotxy{1}{2} \bodyAngVelx{0}{2} - \bodyRotyy{1}{2} \bodyAngVely{0}{2} - \bodyRotzy{1}{2} \bodyAngVelz{0}{2} \\
+  \bodyAngVelz{0}{2} - \bodyRotxz{1}{2} \bodyAngVelx{0}{2} - \bodyRotyz{1}{2} \bodyAngVely{0}{2} - \bodyRotzz{1}{2} \bodyAngVelz{0}{2} 
+ \end{bmatrix},&
+\\
+ \bodyVel{1}{2k+1} &= \begin{bmatrix} 0 \\ 0 \\ 0 \\ \aServod[k] \\ 0 \\ 0 \end{bmatrix},&
+ \bodyVel{2k+1}{2k+2} &= \begin{bmatrix} 0 \\ 0 \\ 0 \\ 0 \\ 0 \\ \PropVel[k] \end{bmatrix},
+\quad k=1,2,3.
+\end{align}
+\end{subequations}
+From this it should clear how the corresponding body Jacobians look like, \eg $\bodyJac{0}{1} = [\idMat[6] \ 0]$.
+
+For the formulation of the kinetic energy in the following subsection we will need the body Jacobians $\bodyJac{0}{\BidxII}, \BidxII=1,\ldots,\numRigidBodies$.
+From the graph structure and the rules \eqref{eq:rulesBodyJacobian} we can compute them iteratively as
+\begin{subequations}
+\begin{align}
+ \bodyJac{0}{2} &= \Ad{\bodyHomoCoord{2}{1}} \ \bodyJac{0}{1} + \bodyJac{1}{2},
+\\
+ \bodyJac{0}{2k+1} &= \Ad{\bodyHomoCoord{2k+1}{1}} \ \bodyJac{0}{1} + \bodyJac{1}{2k+1},
+\\
+ \bodyJac{0}{2k+2} &= \Ad{\bodyHomoCoord{2k+2}{2k+1}} \ \bodyJac{0}{2k+1} + \bodyJac{2k+1}{2k+2}.
+\end{align}
+\end{subequations}
+These terms are significantly more cumbersome, so they are not displayed explicitly.
+\end{Example}
+
+
+
+\subsection{Inertia}\label{sec:RBSInertia}
+\paragraph{Kinetic energy and inertia matrix.}
+The kinetic energy $\kineticEnergy$ of a rigid body system is simply the sum of the kinetic energies of its bodies.
+Combining this with the kinetic energy \eqref{eq:RigidBodyKineticEnergy} of a single free rigid body and the formulation of the absolute body velocities $\bodyVel{0}{\BidxII}$ in terms of the chosen coordinates using the body Jacobian $\bodyJac{0}{\BidxII}$ from \eqref{eq:DefBodyJacobian}, yields
+\begin{align}\label{eq:RBSKineticEnergy}
+ \kineticEnergy
+ &= \sumBodies \tfrac{1}{2} \bodyVel{0}{\BidxII}^\top \bodyInertiaMat{0}{\BidxII}\bodyVel{0}{\BidxII}
+ = \tfrac{1}{2} \sysVel^\top \underbrace{\sumBodies \bodyJac{0}{\BidxII}^\top \bodyInertiaMat{0}{\BidxII} \bodyJac{0}{\BidxII}}_{\sysInertiaMat} \sysVel.
+\end{align}
+Recall from the previous section, that the constant \textit{body} inertia matrix $\bodyInertiaMat{0}{\BidxII} \in \RealNum^{6\times6}$ collects the inertia parameters of the rigid body with index $\BidxII$ and w.r.t.\ its body fixed frame. 
+The matrix $\sysInertiaMat(\sysCoord) \in \RealNum^{\dimConfigSpace\times\dimConfigSpace}$ is the \textit{system} inertia matrix.
+
+\paragraph{Connection coefficients.}
+\fixme{
+With a rather cumbersome computation (see \fixme{[eq:AppendixSysConnCoeffL}]), it can be shown that the connection coefficients $\ConnCoeffL{\LidxI}{\LidxII}{\LidxIII}$ associated to the system inertia matrix $\sysInertiaMat$ from \eqref{eq:RBSKineticEnergy} can be expressed in terms of the body Jacobians $\bodyJac{0}{\BidxII}$, the body inertia matrices $\bodyInertiaMat{0}{\BidxII}$ and the body connection coefficients $\bodyConnCoeffL{0}{\BidxII}{\LBidxI}{\LBidxII}{\LBidxIII}$ from \eqref{eq:RBConnCoeffRes} or the body commutation coefficients $\bodyBoltzSym{\LBidxIV}{\LBidxI}{\LBidxII}$ from \eqref{eq:RBCommutationCoeff} as
+\begin{align}\label{eq:RBSConnCoeff}
+ \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII}
+ &= \sumBodies \bodyJacCoeff{0}{\BidxII}{\LBidxI}{\LidxI} \big( \bodyInertiaMatCoeff{0}{\BidxII}{\LBidxI\LBidxII} \dirDiff{\LidxIII} \bodyJacCoeff{0}{\BidxII}{\LBidxII}{\LidxII} + \underbrace{\tfrac{1}{2} \big( \bodyBoltzSym{\LBidxIV}{\LBidxI}{\LBidxII} \bodyInertiaMatCoeff{0}{\BidxII}{\LBidxIV\LBidxIII} + \bodyBoltzSym{\LBidxIV}{\LBidxI}{\LBidxIII} \bodyInertiaMatCoeff{0}{\BidxII}{\LBidxIV\LBidxII} - \bodyBoltzSym{\LBidxIV}{\LBidxII}{\LBidxIII} \bodyInertiaMatCoeff{0}{\BidxII}{\LBidxIV\LBidxI} \big)}_{\bodyConnCoeffL{0}{\BidxII}{\LBidxI}{\LBidxII}{\LBidxIII}} \bodyJacCoeff{0}{\BidxII}{\LBidxII}{\LidxII} \bodyJacCoeff{0}{\BidxII}{\LBidxIII}{\LidxIII} \big)
+\end{align}
+% With this we can state the gyroscopic terms as 
+% \begin{align}\label{eq:RBSGyroCoeff}
+%  \gyroForceCoeff{\LidxI}
+%  &= \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII} \sysVelCoeff{\LidxII} \sysVelCoeff{\LidxIII}
+%   = \sumBodies \bodyJacCoeff{0}{\BidxII}{\LBidxI}{\LidxI} \big( \bodyInertiaMatCoeff{0}{\BidxII}{\LBidxI\LBidxII} \dirDiff{\LidxIII} \bodyJacCoeff{0}{\BidxII}{\LBidxII}{\LidxII} + \bodyJacCoeff{0}{\BidxII}{\LBidxII}{\LidxII} \bodyBoltzSym{\LBidxIV}{\LBidxI}{\LBidxII} \bodyInertiaMatCoeff{0}{\BidxII}{\LBidxIV\LBidxIII} \bodyJacCoeff{0}{\BidxII}{\LBidxIII}{\LidxIII} \big) \sysVelCoeff{\LidxII} \sysVelCoeff{\LidxIII}
+% \end{align}
+}
+
+\paragraph{Acceleration energy.}
+As with the kinetic energy, the acceleration energy of a rigid body system is simply the sum of the acceleration energies of its bodies.
+Summing up the body acceleration energies from \eqref{eq:RBAccEnergyHomo} and plugging in the body velocities $\bodyVel{0}{\BidxII} = \bodyJac{0}{\BidxII} \sysVel$ yields
+\begin{align}\label{eq:RBSAccEnergy}
+ \accEnergy
+ &= \sumBodies \tfrac{1}{2} \norm[\bodyInertiaMatp{0}{\BidxII}]{(\bodyHomoCoorddd{0}{\BidxII})^\top}^2
+%\nonumber\\
+% &= \sumBodies \tfrac{1}{2} \norm[\bodyInertiaMatp{0}{\BidxII}]{(\wedOp(\bodyVeld{0}{\BidxII}) + \wedOp(\bodyVel{0}{\BidxII})^2)^\top}^2
+\nonumber\\
+ &= \sumBodies \tfrac{1}{2} \norm[\bodyInertiaMatp{0}{\BidxII}]{(\wedOp(\bodyJac{0}{\BidxII} \sysVeld + \bodyJacd{0}{\BidxII} \sysVel) + \wedOp(\bodyJac{0}{\BidxII} \sysVel)^2)^\top}^2
+\nonumber\\
+ &= \sumBodies \tfrac{1}{2} \norm[\bodyInertiaMatp{0}{\BidxII}]{(\wedOp(\bodyJac{0}{\BidxII} \sysVeld))^\top}^2
+ + \sumBodies \tr\big( \wedOp(\bodyJac{0}{\BidxII} \sysVeld) \bodyInertiaMatp{0}{\BidxII} (\wedOp(\bodyJacd{0}{\BidxII} \sysVel) + \wedOp(\bodyJac{0}{\BidxII} \sysVel)^2)^\top \big)
+\nonumber\\
+ &\quad + \underbrace{\sumBodies \tfrac{1}{2} \norm[\bodyInertiaMatp{0}{\BidxII}]{(\wedOp(\bodyJacd{0}{\BidxII} \sysVel) + \wedOp(\bodyJac{0}{\BidxII} \sysVel)^2)^\top}^2}_{\accEnergy_0}
+\nonumber\\
+ &= \tfrac{1}{2} \sysVeld^\top \underbrace{\sumBodies \bodyJac{0}{\BidxII}^\top \bodyInertiaMat{0}{\BidxII} \bodyJac{0}{\BidxII}}_{\sysInertiaMat} \sysVeld
+ + \sysVeld^\top \underbrace{\sumBodies \bodyJac{0}{\BidxII}^\top \big(\bodyInertiaMat{0}{\BidxII} \bodyJacd{0}{\BidxII} - \ad{\bodyJac{0}{\BidxII}\sysVel}^\top \bodyInertiaMat{0}{\BidxII}\bodyJac{0}{\BidxII} \big) \sysVel}_{\gyroForce}
+ + \, \accEnergy_0.
+\end{align}
+Obviously, we found again the system inertia matrix $\sysInertiaMat$ and one may check that indeed $\gyroForceCoeff{\LidxI} = \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII} \sysVelCoeff{\LidxII} \sysVelCoeff{\LidxIII}$ with the connection coefficients $\ConnCoeffL{\LidxI}{\LidxII}{\LidxIII}$ from \eqref{eq:RBSConnCoeff}.
+Note that $\accEnergy_0$ is independent of $\sysVeld$, so it does not contribute to the generalized inertia force.
+
+\paragraph{Inertia force.}
+As before, there are several equivalent ways for computing the inertia force $\genForceInertia$ of a rigid body system:
+We may use the Lagrange operator on the kinetic energy from \eqref{eq:RBSKineticEnergy}, use the inertia matrix and connection coefficients from \eqref{eq:RBSConnCoeff}, or taking the differential of the acceleration energy from \eqref{eq:RBSAccEnergy}.
+% \begin{itemize}
+%  \item $\genForceInertiaCoeff{\LidxI} = \sysInertiaMatCoeff{\LidxI\LidxII} \sysVelCoeffd{\LidxII} + \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII} \sysVelCoeff{\LidxIII} \sysVelCoeff{\LidxII}$ using the inertia matrix $\sysInertiaMatCoeff{\LidxI\LidxII}$ from \eqref{eq:RBSKineticEnergy} and the connection coefficients $\ConnCoeffL{\LidxI}{\LidxII}{\LidxIII}$ from \eqref{eq:RBSConnCoeff}.
+%  \item $\genForceInertiaCoeff{\LidxI} = \diff{t} \pdiff[\kineticEnergy]{\sysVelCoeff{\LidxI}} + \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \sysVelCoeff{\LidxII} \pdiff[\kineticEnergy]{\sysVelCoeff{\LidxIII}} - \dirDiff{\LidxI} \kineticEnergy$ with the kinetic energy $\kineticEnergy$ from \eqref{eq:RBSKineticEnergy}.
+%  \item $\genForceInertiaCoeff{\LidxI} = \pdiff[\accEnergy]{\sysVelCoeffd{\LidxI}}$ using the acceleration energy $\accEnergy$ from \eqref{eq:RBSAccEnergy}.
+% \end{itemize}
+Each of these approaches will yield
+\begin{align}\label{eq:RBSInertiaForce}
+% \genForceInertia(\sysCoord, \sysVel, \sysVeld) = \sysInertiaMat(\sysCoord) \sysVeld + \gyroForce(\sysCoord, \sysVel)
+ \genForceInertia 
+ = \underbrace{\sumBodies \bodyJac{0}{\BidxII}^\top \bodyInertiaMat{0}{\BidxII} \bodyJac{0}{\BidxII}}_{\sysInertiaMat} \sysVeld
+ + \underbrace{\sumBodies \bodyJac{0}{\BidxII}^\top \big(\bodyInertiaMat{0}{\BidxII} \bodyJacd{0}{\BidxII} - \ad{\bodyJac{0}{\BidxII}\sysVel}^\top \bodyInertiaMat{0}{\BidxII}\bodyJac{0}{\BidxII} \big) \sysVel}_{\gyroForce}.
+\end{align}
+Similar results are called \textit{the projection equation} in \cite[sec.\ 4.2.5]{Bremer:ElasticMultibodyDynamics} and \textit{the Kane equations} \cite[chap.\ 6]{Kane:Dynamics}.
+There is some controversy (starting in \cite{Desloge:KaneAppell}) about the naming, since the equations result rather directly (as shown above) from the Gibbs-Appell formulation.
+See \cite{Lesser:GeometricInterpretationOfKanesEquations} or \cite[p.\ 714]{Papastavridis:AnalyticalMechanics} for an overview.
+
+\fixme{
+In contrast to the derivations in the sources above, the formulation \eqref{eq:RBSInertiaForce} poses no restrictions on the body fixed frames and allows redundant configuration coordinates.
+}
+
+\subsection{Gravitation}
+The potential energy of gravitation of a rigid body system is the sum of the potentials of the individual bodies \eqref{eq:RBGravityEnergyHomo}.
+This is
+\begin{align}\label{eq:RBSPotentialGravity}
+ \potentialGravity
+% &= \sumBodies \bodyMass{0}{\BidxII} \sProd{ \bodyPos{0}{\BidxII}(\sysCoord) + \bodyRot{0}{\BidxII}(\sysCoord) \, \bodyCOM{0}{\BidxII}}{ \gravityAcc}
+%\nonumber\\
+ &= \sumBodies \sProd[\bodyInertiaMatp{0}{\BidxII}]{(\bodyHomoCoord{0}{\BidxII})^\top}{\wedOp(\gravityAccWrench)^\top},
+\qquad 
+ \gravityAccWrench^\top = [\gravityAcc^\top, \tuple{0}_{1\times3} ],
+\end{align}
+where $\bodyInertiaMatp{0}{\BidxII} = \veeMatOp(\bodyInertiaMat{0}{\BidxII})$ is the body inertia matrix and $\gravityAccWrench$ is earth's gravity wrench.
+
+Finally, the generalized force of gravity on a rigid body system may be formulated as
+\begin{multline}\label{eq:RBSGenForceGravity}
+ \genForceGravity = \differential\potentialGravity
+ = \frac{\partial \potentialGravityd}{\partial \sysVel}
+ = \frac{\partial}{\partial \sysVel} \sumBodies \tr\big( \bodyHomoCoord{0}{\BidxII} \wedOp(\bodyVel{0}{\BidxII}) \bodyInertiaMatp{0}{\BidxII} \wedOp(\gravityAccWrench)^\top \big)
+\\ 
+ = \sumBodies \Big(\frac{\partial \bodyVel{0}{\BidxII}}{\partial \sysVel}\Big)^\top \veeTwoOp\big( \bodyHomoCoord{0}{\BidxII}^\top \wedOp(\gravityAccWrench) \bodyInertiaMatp{0}{\BidxII} \big) 
+ = \sumBodies \bodyJac{0}{\BidxII}^\top \bodyInertiaMat{0}{\BidxII} \, \Ad{\bodyHomoCoord{0}{\BidxII}}^{-1} \gravityAccWrench.
+\end{multline}
+
+\subsection{Stiffness}
+In \autoref{sec:RBStiffness} we considered linear springs between arbitrary points of the body and the inertial frame.
+For a system of rigid bodies we may consider the same for each body, but additionally we may also consider springs connecting the bodies to each other, see \autoref{fig:MultibodyStiffnessIllustration}.
+
+\begin{figure}[ht]
+ \centering
+ \input{graphics/MultibodyPotentialIllustration.pdf_tex}
+ \caption{MultibodyStiffnessIllustration}
+ \label{fig:MultibodyStiffnessIllustration}
+\end{figure}
+
+The total potential energy $\potentialStiff$ is the sum of the potentials of the individual springs.
+Here it will make sense to group them differently:
+Let $\bodyPotentialStiff{\BidxI}{\BidxII}$ with $0 \leq \BidxI < \BidxII \leq \numRigidBodies$ denote the combined potential of all springs connecting body $\BidxI$ and $\BidxII$.
+The total energy is
+\begin{align}
+ \potentialStiff
+ = \sum_{\BidxI=0}^{\numRigidBodies-1} \sum_{\BidxII=\BidxI+1}^{\numRigidBodies} \bodyPotentialStiff{\BidxI}{\BidxII}
+\end{align}
+
+Using the results from \autoref{sec:RBStiffness} it may be shown that each potential can be formulated as
+\begin{align}
+ \bodyPotentialStiff{\BidxI}{\BidxII} &= \tfrac{1}{2} \norm[\bodyStiffMatp{\BidxI}{\BidxII}]{(\bodyHomoCoord{\BidxI}{\BidxII} - \bodyHomoCoordR{\BidxI}{\BidxII})^\top}^2
+ = \tfrac{1}{2} \norm[\bodyStiffMatp{\BidxI}{\BidxII}]{(\bodyHomoCoordR{\BidxI}{\BidxII}^{-1} \bodyHomoCoord{\BidxI}{\BidxII} - \idMat[4])^\top}^2
+\end{align}
+with the constant parameters $\bodyStiffMatp{\BidxI}{\BidxII} \in \SymMat(4)$ and $\bodyHomoCoordR{\BidxI}{\BidxII}\in \SpecialEuclideanGroup(3)$ resulting from the particular spring distribution between body $\BidxI$ and $\BidxII$.
+
+Finally, the generalized force due to an arbitrary constellation of linear springs on a rigid body system may be formulated as
+\begin{multline}\label{eq:RBSGenForceStiff}
+ \genForceStiff = \differential\potentialStiff
+ = \frac{\partial \potentialStiffd}{\partial \sysVel}
+ = \frac{\partial}{\partial \sysVel} \sumBodiesAB \tr\big((\bodyHomoCoord{\BidxI}{\BidxII} - \bodyHomoCoordR{\BidxI}{\BidxII}) \bodyStiffMatp{\BidxI}{\BidxII} (\bodyHomoCoord{\BidxI}{\BidxII} \wedOp(\bodyVel{\BidxI}{\BidxII}))^\top \big)
+% = \frac{\partial}{\partial \sysVel} \sumBodiesAB \tr\big((\bodyHomoCoordR{\BidxI}{\BidxII}^{-1} \bodyHomoCoord{\BidxI}{\BidxII} - \idMat[4]) \bodyStiffMatp{\BidxI}{\BidxII} (\bodyHomoCoordR{\BidxI}{\BidxII}^{-1} \bodyHomoCoord{\BidxI}{\BidxII} \wedOp(\bodyVel{\BidxI}{\BidxII}))^\top \big)
+\\ 
+ = \sumBodiesAB \Big(\frac{\partial \bodyVel{\BidxI}{\BidxII}}{\partial \sysVel}\Big)^\top \veeTwoOp\big(\bodyHomoCoord{\BidxI}{\BidxII}^\top (\bodyHomoCoord{\BidxI}{\BidxII} - \bodyHomoCoordR{\BidxI}{\BidxII}) \bodyStiffMatp{\BidxI}{\BidxII} \big)
+\\
+ = \sumBodiesAB \bodyJac{\BidxI}{\BidxII}^\top \veeTwoOp\big((\idMat[4] - \bodyHomoCoord{\BidxI}{\BidxII}^{-1} \bodyHomoCoordR{\BidxI}{\BidxII}) \bodyStiffMatp{\BidxI}{\BidxII} \big)
+\end{multline}
+
+
+\subsection{Dissipation}
+Similar to the previous subsection we may consider viscous friction of the bodies to each other and to the inertial frame.
+Let the body with index $\BidxII$ move through a viscous fluid that is attached to the body with index $\BidxI$.
+The corresponding dissipation function $\bodyDissFkt{\BidxI}{\BidxII}$ was derived in \eqref{eq:RBDissFkt}:
+\begin{align}
+ \bodyDissFkt{\BidxI}{\BidxII} = \tfrac{1}{2} \bodyVel{\BidxI}{\BidxII}^\top \bodyDissMat{\BidxI}{\BidxII} \bodyVel{\BidxI}{\BidxII}
+\end{align}
+with the body dissipation matrix $\bodyDissMat{\BidxI}{\BidxII}$.
+Notice that in contrast to stiffness, the dissipation is, in general, not symmetric in the sense $\bodyDissFkt{\BidxI}{\BidxII} \neq \bodyDissFkt{\BidxII}{\BidxI}$.
+But due to $\bodyVel{\BidxI}{\BidxI} = \tuple{0}$ we have $\bodyDissFkt{\BidxI}{\BidxII}=0$.
+For system of rigid bodies we have the dissipation function
+\begin{align}
+ \dissFkt = \sum_{\BidxI=0}^{\numRigidBodies} \sum_{\BidxII=0, \BidxII\neq\BidxI}^{\numRigidBodies} \bodyDissFkt{\BidxI}{\BidxII}
+ = \tfrac{1}{2} \sysVel^\top \underbrace{\sum_{\BidxI=0}^{\numRigidBodies} \sum_{\BidxII=0, \BidxII\neq\BidxI}^{\numRigidBodies} \bodyJac{\BidxI}{\BidxII}^\top \bodyDissMat{\BidxI}{\BidxII} \bodyJac{\BidxI}{\BidxII}}_{\sysDissMat} \sysVel
+\end{align}
+where $\sysDissMat$ is called the system dissipation matrix.
+
+Finally, the generalized force due to viscous friction on a rigid body system may be formulated as
+\begin{align}
+ \genForceDiss = \pdiff[\dissFkt]{\sysVel} = \sysDissMat \sysVel
+\end{align}
+
+\subsection{Summary}
+There are three ingredients:
+\begin{enumerate}
+ \item the chosen parameterization in the configuration coordinates $\sysCoord$, the velocity coordinates $\sysVel$ and their relation captured by the kinematics matrix $\kinMat$
+ \item the rigid body graph $\bodyHomoCoord{\BidxI}{\BidxII}$ that maps the coordinates to the rigid body configuration.
+ \item the constitutive parameters merged into the inertia matrices $\bodyInertiaMatp{0}{\BidxII}$, dissipation matrices $\bodyDissMatp{\BidxI}{\BidxII}$, stiffness matrices $\bodyStiffMatp{\BidxI}{\BidxII}$, their corresponding minimum $\bodyHomoCoordR{\BidxI}{\BidxII}$ and the gravity vector $\gravityAcc$.
+ It should be stressed that these are independent of the chosen coordinates.
+\end{enumerate}
+% There is an algorithm that takes the system parameterization $(\sysCoord, \sysVel, \kinMat)$, the 
+% \begin{align}
+%  \big( \sysCoord, \sysVel, \kinMat, \bodyHomoCoord{\BidxI}{\BidxII}, \bodyInertiaMatp{0}{\BidxII}, \bodyDissMatp{\BidxI}{\BidxII}, \bodyStiffMatp{\BidxI}{\BidxII}, \bodyHomoCoordR{\BidxI}{\BidxII}, \gravityAcc \big) \ \mapsto \ \big( \sysInertiaMat, \gyroForce, \genForceDiss, \genForceStiff, \genForceGravity \big)
+% \end{align}
+% which is
+
+Based on this input we may compute the equations of motion in three steps:
+\begin{enumerate}
+\item compute the body Jacobians for the given configurations:
+\begin{align}\label{eq:RBSAlogJacobian}
+ \bodyJac{\BidxI}{\BidxII}(\sysCoord) = \pdiff{\sysCoordd} \veeOp\Big( \bodyHomoCoord{\BidxII}{\BidxI}(\sysCoord) \diff{t} \big(\bodyHomoCoord{\BidxI}{\BidxII}(\sysCoord) \big) \Big) \kinMat(\sysCoord)
+\end{align}
+\item use the group rules to compute the missing configurations and Jacobians
+\begin{subequations}
+\begin{align}
+ \bodyHomoCoord{\BidxI}{\BidxIII} &= \bodyHomoCoord{\BidxI}{\BidxII} \bodyHomoCoord{\BidxII}{\BidxIII},&
+ \bodyHomoCoord{\BidxII}{\BidxI} &= \bodyHomoCoord{\BidxI}{\BidxII}^{-1},&
+\\
+ \bodyJac{\BidxI}{\BidxIII} &= \Ad{\bodyHomoCoord{\BidxIII}{\BidxII}} \bodyJac{\BidxI}{\BidxII} + \bodyJac{\BidxII}{\BidxIII},&
+ \bodyJac{\BidxII}{\BidxI} &= -\Ad{\bodyHomoCoord{\BidxI}{\BidxII}} \bodyJac{\BidxI}{\BidxII},&
+\\
+ \bodyJacd{\BidxI}{\BidxIII} &= \Ad{\bodyHomoCoord{\BidxIII}{\BidxII}} \big(\bodyJacd{\BidxI}{\BidxII} + \ad{\bodyJac{\BidxIII}{\BidxII}\sysVel} \bodyJac{\BidxI}{\BidxII} \big) + \bodyJacd{\BidxII}{\BidxIII},&
+ \bodyJacd{\BidxII}{\BidxI} &= -\Ad{\bodyHomoCoord{\BidxI}{\BidxII}} \big(\bodyJacd{\BidxI}{\BidxII} + \ad{\bodyJac{\BidxI}{\BidxII}\sysVel} \bodyJac{\BidxI}{\BidxII} \big),&
+% \BidxI, \BidxII, \BidxIII &= 0,\ldots,\numRigidBodies.
+\end{align}
+\end{subequations} 
+\item assemble the system matrices
+\begin{subequations}
+\begin{align}
+ \sysInertiaMat &= \sumBodies \bodyJac{0}{\BidxII}^\top \veeMatOp(\bodyInertiaMatp{0}{\BidxII}) \bodyJac{0}{\BidxII},
+\\
+ \gyroForce &= \sumBodies \bodyJac{0}{\BidxII}^\top \veeTwoOp \big(\big(\wedOp(\bodyJacd{0}{\BidxII} \sysVel) + \wedOp(\bodyJac{0}{\BidxII} \sysVel)^2 \big) \bodyInertiaMatp{0}{\BidxII} \big) 
+ %= \sum_{\BidxII} \big( \bodyJac{0}{\BidxII}^\top \bodyInertiaMat{0}{\BidxII} \bodyJacd{0}{\BidxII} - \ad{\bodyJac{0}{\BidxII}\sysVel}^\top \bodyInertiaMat{0}{\BidxII} \bodyJac{0}{\BidxII}\big) \sysVel
+\\
+ \sysDissMat &= \sumBodiesAB \bodyJac{\BidxI}{\BidxII}^\top \veeMatOp(\bodyDissMatp{\BidxI}{\BidxII}) \bodyJac{\BidxI}{\BidxII}
+\\
+ \genForceStiff &= \sumBodiesAB \bodyJac{\BidxI}{\BidxII}^\top \veeTwoOp \big( (\idMat[4] - \bodyHomoCoord{\BidxII}{\BidxI} \bodyHomoCoordR{\BidxI}{\BidxII}) \bodyStiffMatp{\BidxI}{\BidxII} \big)
+\\
+ \genForceGravity &= \sumBodies \bodyJac{0}{\BidxII}^\top \veeMatOp(\bodyInertiaMatp{0}{\BidxII}) \Ad{\bodyHomoCoord{\BidxII}{0}} \gravityAccWrench, \qquad \gravityAccWrench = [\gravityAcc^\top, \tuple{0}_{1\times3}]^\top
+%\\
+% \sysForce &= \gyroForce + \sysDissMat\sysVel + \genForceStiff + \genForceGravity
+%  \kineticEnergy &= \tfrac{1}{2} \norm[\sysInertiaMat]{\sysVel}^2
+% \\
+%  \dissFkt &= \tfrac{1}{2} \norm[\sysDissMat]{\sysVel}^2
+% \\
+%  \potentialStiff &= \sumBodiesAB \tfrac{1}{2} \norm[\bodyStiffMatp{\BidxI}{\BidxII}]{\bodyHomoCoord{\BidxI}{\BidxII}^\top - \bodyHomoCoordR{\BidxI}{\BidxII}^\top}^2
+% \\
+%  \potentialGravity &= \sumBodies \sProd[\bodyInertiaMatp{0}{\BidxII}]{\bodyHomoCoord{0}{\BidxII}^\top}{\wedOp(\gravityAccWrench)},
+\end{align}
+\end{subequations} 
+\item explicit equations of motion
+\begin{subequations}
+\begin{align}
+ \sysCoordd &= \kinMat \sysVel, 
+\\
+ \sysVeld &= \sysInertiaMat^{-1}(\genForceEx - \gyroForce - \sysDissMat\sysVel - \genForceStiff - \genForceGravity).
+\end{align}
+\end{subequations} 
+\end{enumerate}
+
+The first step \eqref{eq:RBSAlogJacobian} requires differentiation, so must be performed symbolically.
+The remaining steps only require basic linear algebra, so can be preformed numerically.
+For small systems it might be still reasonable to compute $\sysInertiaMat(\sysCoord)$ symbolically, but for larger systems the explicit expressions can be overwhelming even for contemporary computers.
+

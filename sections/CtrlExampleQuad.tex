@@ -1,0 +1,157 @@
+\subsection{Quadcopter}
+Consider a Quadcopter \autoref{fig:QuadModel}
+\begin{figure}[ht]
+ \centering
+% \def\svgwidth{.5\textwidth}
+ \input{graphics/QuadMechModel.pdf_tex}
+ \caption{Model of the Quadcopter}
+ \label{fig:QuadModel}
+\end{figure}
+
+\paragraph{Model.}
+Kinematics
+\begin{align}\label{eq:QuadcopterKinematics}
+ \rd = \R\v, \quad \Rd = \R\wedOp(\w)
+\end{align}
+Kinetics
+\begin{align}\label{eq:QuadcopterKinetics}
+ \underbrace{\!\begin{bmatrix}
+  m & 0 & 0 & 0 & 0 & 0 \\
+  0 & m & 0 & 0 & 0 & 0 \\
+  0 & 0 & m & 0 & 0 & 0 \\
+  0 & 0 & 0 & \!\Jy\! & 0 & 0 \\
+  0 & 0 & 0 & 0 & \!\Jx\! & 0 \\
+  0 & 0 & 0 & 0 & 0 & \!\Jz\! \\
+  \end{bmatrix}\!}_{\sysInertiaMat}
+ \underbrace{\!\begin{bmatrix} \vxd \\ \vyd \\ \vzd \\ \wxd \\ \wyd \\ \wzd \end{bmatrix}\!}_{\sysVeld}
+ +
+ \underbrace{\!\begin{bmatrix}
+  m (\vy\wz \!-\! \vz\wy + \Rzx\gravityAccConst) \\
+  m (\vx\wz \!-\! \vz\wx + \Rzy\gravityAccConst) \\
+  m (\vy\wx \!-\! \vx\wy + \Rzz\gravityAccConst) \\
+  (\Jz-\Jy)\wy\wz \\
+  (\Jx-\Jz)\wx\wz \\
+  (\Jy-\Jx)\wx\wy \\
+ \end{bmatrix}\!}_{\sysForce}
+ =
+ \underbrace{\!\begin{bmatrix}
+  0 & 0 & 0 & 0 \\
+  0 & 0 & 0 & 0 \\
+  1 & 1 & 1 & 1 \\
+  0 & \ArmRadius & 0 & -\ArmRadius \\
+  -\ArmRadius & 0 & \ArmRadius & 0 \\
+  -\PropTorqueFaktor & \PropTorqueFaktor & -\PropTorqueFaktor & \PropTorqueFaktor \\
+ \end{bmatrix}\!}_{\sysInputMat}
+ \underbrace{\!\begin{bmatrix} \PropForce[1] \\ \PropForce[2] \\ \PropForce[3] \\ \PropForce[4] \end{bmatrix}\!}_{\sysInput}
+\end{align}
+
+
+\paragraph{Closed loop template.}
+The quadcopter is just a free rigid body with a particular actuation, so the closed loop templates coincide with the ones given in \autoref{sec:CtrlApproachParticlesSingleBody}, \autoref{sec:CtrlApproachBodySingleBody} and \autoref{sec:CtrlApproachEnergySingleBody}.
+Due to symmetry considerations we set $\scx = \scy = 0$, $\Jcxx=\Jcyy$, $\Jcxy=\Jcxz=\Jcyz=0$ and analog for the stiffness and damping parameters.
+
+\paragraph{Matching}
+An obvious left complement for $\sysInputMat$ is
+\begin{align}
+ \sysInputMatLComp = \begin{bmatrix} 1 & 0 \\ 0 & 1 \\ 0 & 0 \\ 0 & 0 \\ 0 & 0 \\ 0 & 0 \end{bmatrix}.
+\end{align}
+As the actual matching force $\tuple{\lambda}$ is extremely cumbersome, we will consider its first order approximation first:
+The reference part is
+\begin{align}
+ \tuple{\lambda}^{\text{ZeroError}} = m \begin{bmatrix} \vxRd + \vzR\wyR-\vyR\wzR + \RRzx\gravityAccConst \\ \vyRd + \vxR\wzR-\vzR\wxR + \RRzy \gravityAccConst \end{bmatrix}
+\end{align}
+which is just the first two coefficients of \eqref{eq:QuadcopterKinetics}.
+Combining this with the kinematic relation $\sysCoordRd = \kinMat(\sysCoordR)\sysVelR$ .. flat output.. see \cite{Konz:QuadrotorMovingFrame}
+
+With the linearized system matrices
+\begin{align*}
+ \sysInertiaMatLin &= 
+ \begin{bmatrix}
+  m & 0 & 0 & 0 & 0 & 0 \\
+  0 & m & 0 & 0 & 0 & 0 \\
+  0 & 0 & m & 0 & 0 & 0 \\
+  0 & 0 & 0 & \!\Jy\! & 0 & 0 \\
+  0 & 0 & 0 & 0 & \!\Jx\! & 0 \\
+  0 & 0 & 0 & 0 & 0 & \!\Jz\! \\
+  \end{bmatrix},&
+ \sysInertiaMatCLin &=
+ \begin{bmatrix}
+  \mc & 0 & 0 & 0 & \mc\scz & 0 \\
+  0 & \mc & 0 & -\mc\scz & 0 & 0 \\
+  0 & 0 & \mc & 0 & 0 & 0 \\
+  0 & -\mc\scz & 0 & \!\Jcy+\mc\scz^2\! & 0 & 0 \\
+  \mc\scz & 0 & 0 & 0 & \!\Jcx+\mc\scz^2\! & 0 \\
+  0 & 0 & 0 & 0 & 0 & \!\Jcz\! \\
+ \end{bmatrix},
+\\
+ \sysDissMatLin &= 
+ \begin{bmatrix}
+  0 & 0 & 0 & 0 & 0 & 0 \\
+  0 & 0 & 0 & 0 & 0 & 0 \\
+  0 & 0 & 0 & 0 & 0 & 0 \\
+  0 & 0 & 0 & 0 & 0 & 0 \\
+  0 & 0 & 0 & 0 & 0 & 0 \\
+  0 & 0 & 0 & 0 & 0 & 0 \\
+  \end{bmatrix},&
+ \sysDissMatCLin &=
+ \begin{bmatrix}
+  \dc & 0 & 0 & 0 & \dc\lcz & 0 \\
+  0 & \dc & 0 & -\dc\lcz & 0 & 0 \\
+  0 & 0 & \dc & 0 & 0 & 0 \\
+  0 & -\dc\lcz & 0 & \!\sigcy+\dc\lcz^2\! & 0 & 0 \\
+  \dc\lcz & 0 & 0 & 0 & \!\sigcx+\dc\lcz^2\! & 0 \\
+  0 & 0 & 0 & 0 & 0 & \!\sigcz\! \\
+ \end{bmatrix},
+\\ 
+ \sysStiffMatLin &= 
+ \begin{bmatrix}
+  0 & 0 & 0 & 0 & -m\gravityAccConst & 0 \\
+  0 & 0 & 0 & m\gravityAccConst & 0 & 0 \\
+  0 & 0 & 0 & 0 & 0 & 0 \\
+  0 & 0 & 0 & 0 & 0 & 0 \\
+  0 & 0 & 0 & 0 & 0 & 0 \\
+  0 & 0 & 0 & 0 & 0 & 0 \\
+  \end{bmatrix},&
+ \sysStiffMatCLin &=
+ \begin{bmatrix}
+  \kc & 0 & 0 & 0 & \kc\hcz & 0 \\
+  0 & \kc & 0 & -\kc\hcz & 0 & 0 \\
+  0 & 0 & \kc & 0 & 0 & 0 \\
+  0 & -\kc\hcz & 0 & \!\kapcy+\kc\hcz^2\! & 0 & 0 \\
+  \kc\hcz & 0 & 0 & 0 & \!\kapcx+\kc\hcz^2\! & 0 \\
+  0 & 0 & 0 & 0 & 0 & \!\kapcz\! \\
+ \end{bmatrix}.
+\end{align*}
+the linearized matching condition is
+\begin{subequations}
+\begin{align}
+ \kc(\Jcx - \mc\scz(\hcz - \scz)) &= 0
+%\\
+% \kc(\Jcy - \mc\scz(\hcz -\scz)) &= 0
+\\
+ \mc(\Jcx\gravityAccConst - \kapcx\scz) + \kc\hcz(\Jcx - \mc\scz(\hcz - \scz)) &= 0
+%\\
+% \mc(\Jcy\gravityAccConst - \kapcy\scz) + \kc\hcz(\Jcy - \mc\scz(\hcz - \scz)) &= 0
+\\
+ \dc(\Jcx - \mc\scz(\hcz - \scz)) &= 0
+%\\
+% \dc(\Jcy - \mc\scz(\hcz -\scz)) &= 0
+\\
+ -\mc\scz\sigcx + \dc\lcz(\Jcx - \mc\scz(\lcz - \scz)) &= 0
+%\\
+% -\mc\scz\sigcy + \dc\lcz(\Jcy - \mc\scz(\lcz - \scz)) &= 0
+\end{align} 
+\end{subequations}
+These terms vanish for
+\begin{align}
+ \lcz &= \hcz,&
+ \Jcx &= \mc\scz(\hcz \!-\! \scz),&
+ \sigcx &= 0,&
+ \kapcx &= \mc\gravityAccConst(\hcz \!-\! \scz).
+\end{align}
+Even with these the ...
+\begin{align}
+ \tilde{\sysForce} = \frac{1}{\m\hcz}\begin{bmatrix} \Jcz\wx\wz - \tfrac{1}{2}\kapcz(\Rxz+\Rzx) \\ \Jcz\wy\wz - \tfrac{1}{2}\kapcz(\REyz+\REzy) \\ 0 \\ 0 \\ 0 \\ 0 \end{bmatrix}
+\end{align}
+
+

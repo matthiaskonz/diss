@@ -1,0 +1,46 @@
+function [V, gradV, Q, Qd, xiE] = RigidBodyPotential(opt, Kh, x, xD, xi, xiD)
+
+g = [x(4:6) x(7:9) x(10:12) x(1:3); 0 0 0 1];
+gD = [xD(4:6) xD(7:9) xD(10:12) xD(1:3); 0 0 0 1];
+
+g0 = eye(4);
+x0 = vec_SE3(g0);
+
+if (opt == 1)
+  gE = inv_SE3(gD)*g;
+  Q = Ad_SE3(inv_SE3(g)*gD);
+  xiE = xi-Q*xiD;
+  Qd = -ad_se3(xiE) * Q;
+  
+  xE = vec_SE3(gE);
+  F = [xD(4) xD(5) xD(6) 0 0 0 0 0 0 0 0 0; xD(7) xD(8) xD(9) 0 0 0 0 0 0 0 0 0; xD(10) xD(11) xD(12) 0 0 0 0 0 0 0 0 0; 0 0 0 xD(4) xD(5) xD(6) 0 0 0 0 0 0; 0 0 0 xD(7) xD(8) xD(9) 0 0 0 0 0 0; 0 0 0 xD(10) xD(11) xD(12) 0 0 0 0 0 0; 0 0 0 0 0 0 xD(4) xD(5) xD(6) 0 0 0; 0 0 0 0 0 0 xD(7) xD(8) xD(9) 0 0 0; 0 0 0 0 0 0 xD(10) xD(11) xD(12) 0 0 0; 0 0 0 0 0 0 0 0 0 xD(4) xD(5) xD(6); 0 0 0 0 0 0 0 0 0 xD(7) xD(8) xD(9); 0 0 0 0 0 0 0 0 0 xD(10) xD(11) xD(12);];
+elseif (opt == 2)
+  gE = inv_SE3(g)*gD;
+  Q = Ad_SE3(inv_SE3(g)*gD);
+  xiE = xi-Q*xiD;
+  Qd = -ad_se3(xiE) * Q;
+  
+  xE = vec_SE3(gE);
+  F = [-x(4) -x(5) -x(6) -x(1) + xD(1) -x(2) + xD(2) -x(3) + xD(3) 0 0 0 0 0 0; -x(7) -x(8) -x(9) 0 0 0 -x(1) + xD(1) -x(2) + xD(2) -x(3) + xD(3) 0 0 0; -x(10) -x(11) -x(12) 0 0 0 0 0 0 -x(1) + xD(1) -x(2) + xD(2) -x(3) + xD(3); 0 0 0 xD(4) xD(5) xD(6) 0 0 0 0 0 0; 0 0 0 0 0 0 xD(4) xD(5) xD(6) 0 0 0; 0 0 0 0 0 0 0 0 0 xD(4) xD(5) xD(6); 0 0 0 xD(7) xD(8) xD(9) 0 0 0 0 0 0; 0 0 0 0 0 0 xD(7) xD(8) xD(9) 0 0 0; 0 0 0 0 0 0 0 0 0 xD(7) xD(8) xD(9); 0 0 0 xD(10) xD(11) xD(12) 0 0 0 0 0 0; 0 0 0 0 0 0 xD(10) xD(11) xD(12) 0 0 0; 0 0 0 0 0 0 0 0 0 xD(10) xD(11) xD(12);];
+elseif (opt == 3)
+  r = g(1:3,4);
+  R = g(1:3,1:3);
+  rD = gD(1:3,4);
+  RD = gD(1:3,1:3);
+  rE = r - rD;
+  RE = RD'*R;
+  gE = [R r; 0 0 0 1];
+  xE = 
+
+  Q = Ad_SE3(inv_SE3(g)*gD);
+  xiE = xi-Q*xiD;
+  Qd = -ad_se3(xiE) * Q;
+  
+  xE = vec_SE3(gE);
+  F = [1 0 0 0 0 0 0 0 0 0 0 0; 0 1 0 0 0 0 0 0 0 0 0 0; 0 0 1 0 0 0 0 0 0 0 0 0; 0 0 0 xD(4) xD(5) xD(6) 0 0 0 0 0 0; 0 0 0 xD(7) xD(8) xD(9) 0 0 0 0 0 0; 0 0 0 xD(10) xD(11) xD(12) 0 0 0 0 0 0; 0 0 0 0 0 0 xD(4) xD(5) xD(6) 0 0 0; 0 0 0 0 0 0 xD(7) xD(8) xD(9) 0 0 0; 0 0 0 0 0 0 xD(10) xD(11) xD(12) 0 0 0; 0 0 0 0 0 0 0 0 0 xD(4) xD(5) xD(6); 0 0 0 0 0 0 0 0 0 xD(7) xD(8) xD(9); 0 0 0 0 0 0 0 0 0 xD(10) xD(11) xD(12);];  
+end
+
+V = .5*(xE-x0)'*Kh*(xE-x0);
+gradV = A_SE3(g(1:3,1:3))' * F' * Kh * (xE-x0);
+
+end

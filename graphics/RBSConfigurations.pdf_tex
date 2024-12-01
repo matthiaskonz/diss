@@ -1,0 +1,66 @@
+%% Creator: Inkscape inkscape 0.48.4, www.inkscape.org
+%% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
+%% Accompanies image file 'RBSConfigurations.pdf' (pdf, eps, ps)
+%%
+%% To include the image in your LaTeX document, write
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics{<filename>.pdf}
+%% To scale the image, write
+%%   \def\svgwidth{<desired width>}
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics[width=<desired width>]{<filename>.pdf}
+%%
+%% Images with a different path to the parent latex file can
+%% be accessed with the `import' package (which may need to be
+%% installed) using
+%%   \usepackage{import}
+%% in the preamble, and then including the image with
+%%   \import{<path to file>}{<filename>.pdf_tex}
+%% Alternatively, one can specify
+%%   \graphicspath{{<path to file>/}}
+%% 
+%% For more information, please see info/svg-inkscape on CTAN:
+%%   http://tug.ctan.org/tex-archive/info/svg-inkscape
+%%
+\begingroup%
+  \makeatletter%
+  \providecommand\color[2][]{%
+    \errmessage{(Inkscape) Color is used for the text in Inkscape, but the package 'color.sty' is not loaded}%
+    \renewcommand\color[2][]{}%
+  }%
+  \providecommand\transparent[1]{%
+    \errmessage{(Inkscape) Transparency is used (non-zero) for the text in Inkscape, but the package 'transparent.sty' is not loaded}%
+    \renewcommand\transparent[1]{}%
+  }%
+  \providecommand\rotatebox[2]{#2}%
+  \ifx\svgwidth\undefined%
+    \setlength{\unitlength}{279.84050116bp}%
+    \ifx\svgscale\undefined%
+      \relax%
+    \else%
+      \setlength{\unitlength}{\unitlength * \real{\svgscale}}%
+    \fi%
+  \else%
+    \setlength{\unitlength}{\svgwidth}%
+  \fi%
+  \global\let\svgwidth\undefined%
+  \global\let\svgscale\undefined%
+  \makeatother%
+  \begin{picture}(1,0.38360497)%
+    \put(0,0){\includegraphics[width=\unitlength]{RBSConfigurations.pdf}}%
+    \put(0.18502037,0.01410633){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\ey$}}}%
+    \put(0.04327581,0.00317324){\color[rgb]{0,0,0}\makebox(0,0)[rb]{\smash{$\ex$}}}%
+    \put(0.07537012,0.13251009){\color[rgb]{0,0,0}\makebox(0,0)[rb]{\smash{$\ez$}}}%
+    \put(0.31420019,0.20911269){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\bodyRotx{0}{1}$}}}%
+    \put(0.18962418,0.15719652){\color[rgb]{0,0,0}\makebox(0,0)[rb]{\smash{$\bodyPos{0}{1}$}}}%
+    \put(0.34666523,0.06110667){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\bodyPos{0}{2}$}}}%
+    \put(0.5490437,0.24172866){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\bodyPos{1}{2}$}}}%
+    \put(0.4147378,0.28648953){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\bodyRoty{0}{1}$}}}%
+    \put(0.29056267,0.36951357){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\bodyRotz{0}{1}$}}}%
+    \put(0.67563602,0.11315768){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\bodyRotx{0}{2}$}}}%
+    \put(0.80360765,0.15082732){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\bodyRoty{0}{2}$}}}%
+    \put(0.73285681,0.26200738){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\bodyRotz{0}{2}$}}}%
+  \end{picture}%
+\endgroup%

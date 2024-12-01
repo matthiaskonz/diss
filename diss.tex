@@ -1,0 +1,232 @@
+\documentclass[a4paper,12pt, oneside]{book}
+%%%%%%%%%%%
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+%
+\usepackage[T1]{fontenc}
+%\renewcommand{\familydefault}{\sfdefault}
+\usepackage{ifthen}
+%%%%%%%%%%% paper margins
+\usepackage[
+	a4paper,
+%	bindingoffset=0.5cm, 
+	left=2.5cm,
+	right=2.5cm,
+	top=2cm,
+	bottom=3.5cm
+]{geometry}
+%%%%%%%%%%% math environment
+\usepackage{amsmath, amssymb, amsthm}
+%%%%%%%%%%% graphics
+\usepackage[svgnames]{xcolor} % [svgnames] loads additional named colors
+\usepackage{graphicx}
+\graphicspath{{graphics/}}
+\makeatletter
+\newcommand\appendtographicspath[1]{%
+  \g@addto@macro\Ginput@path{#1}%
+}
+\makeatother
+
+%%%%%%%%%%% captions to non float elements
+\usepackage{capt-of}
+%%%%%%%%%%% hyperlinks
+\usepackage[
+	pdfstartview=Fit,
+	plainpages=false,
+	colorlinks=true,
+	linkcolor=black,
+	citecolor=gray,
+	urlcolor=blue,
+	linktocpage=true,
+	hyperfootnotes=false,
+	bookmarksopen=false
+]{hyperref}
+%%%%%%%%%%% Tabellen
+\usepackage{array}
+\usepackage{booktabs}
+%%%%%%%%%%% color boxes
+\usepackage{framed}
+%%%%%%%%%%% Formatierung Absaetze
+\setlength{\parindent}{0mm} % einzug nach absatz
+\setlength{\parskip}{1.5ex} % extrazeilenabstand nach absatz
+
+\usepackage{fancyhdr} % ändern von Kopf- und Fußzeile
+
+\usepackage{url} % um Links in Bibtex anzuzeigen
+\usepackage{breakcites}
+\usepackage{xspace}
+%\allowdisplaybreaks
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PDF-Dokumenteigenschaften festlegen %%%%%%%%%%%%%%
+\hypersetup{pdfauthor = Matthias Konz}
+\hypersetup{pdftitle = Dissertation}
+\hypersetup{pdfsubject = Modeling and Control of Rigid Body Systems with Realization on Multicopters}
+\hypersetup{pageanchor = false}
+
+%\pdfsuppresswarningpagegroup=1
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Seiten-Layout festlegen %%%%%%%%%%%%%%%%%%%%%%%%%%
+\pagestyle{fancyplain}
+\renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\setlength{\headheight}{30pt}
+\fancyhf{}
+\fancyhead[LO]{\rightmark\hspace*{1cm}}
+\fancyhead[RO]{\thepage}
+%\fancyhead[RE]{\hspace*{1cm}\leftmark}
+%\fancyhead[LE]{\thepage}
+\fancypagestyle{plain}{
+ \fancyhead{} % Header enfernen
+ \renewcommand{\headrulewidth}{0pt} % Trennlinie entfernen
+}
+  
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Nummerierungen festlegen %%%%%%%%%%%%%%%%%%%%%%%%%
+\numberwithin{equation}{chapter}
+\numberwithin{figure}{chapter}
+\numberwithin{table}{chapter}
+% \renewcommand{\theenumi}{\alph{enumi})} 
+% \renewcommand{\theenumii}{\roman{enumii})}
+% \renewcommand{\theenumiii}{\fnsymbol{enumiii})}
+% \renewcommand{\labelenumi}{\theenumi}
+% \renewcommand{\labelenumii}{\theenumii}
+% \renewcommand{\labelenumiii}{\theenumiii}
+
+%%%%%%%%%%% custom macros %%%%%%%%%%%%%%%%
+%\input{/home/matthias/texStyle/jokerMacros}
+%\newcommand{\figref}[1]{fig.~\ref{#1}}
+%\newcommand{\Figref}[1]{Fig.~\ref{#1}}
+\newcommand{\wrt}{w.r.t.\ }
+\newcommand{\ie}{i.e.\xspace}
+\newcommand{\eg}{e.g.\ }
+\newcommand{\etc}{etc.\xspace}
+\newcommand{\WLOG}{w.l.o.g.\xspace}
+\newcommand{\Tricopter}{tricopter\xspace}
+\newcommand{\Quadcopter}{quadcopter\xspace}
+\newcommand{\Multicopter}{multicopter\xspace}
+\newcommand{\Multicopters}{multicopters\xspace}
+\newcommand{\RB}{RB\xspace}
+\newcommand{\RBs}{RBs\xspace}
+\newcommand{\RBS}{RBS\xspace}
+\newcommand{\RBSs}{RBSs\xspace}
+\newcommand{\microcontroller}{microcontroller\xspace}
+% farben
+\definecolor{jokerGray}{gray}{0.4}
+\definecolor{jokerDarkGreen}{rgb}{0,0.65,0} % 0, 166, 0
+\definecolor{jokerTeal}{rgb}{0,0.5,0.5}
+\definecolor{jokerMagenta}{rgb}{1,0,0.5} % {255, 0, 128}
+% boxes
+\theoremstyle{definition}
+\newtheorem{exmp}{Example}
+\newenvironment{GrayBox}{\colorlet{shadecolor}{gray!15}\begin{shaded}}{\end{shaded}}
+\newenvironment{GreenBox}{\colorlet{shadecolor}{green!15}\begin{shaded}}{\end{shaded}}
+\newenvironment{RedBox}{\colorlet{shadecolor}{red!15}\begin{shaded}}{\end{shaded}}
+\newenvironment{BlueBox}{\colorlet{shadecolor}{blue!15}\begin{shaded}}{\end{shaded}}
+\newenvironment{DefinitionBox}{\colorlet{shadecolor}{red!15}\begin{shaded}\textbf{Definition.} }{\end{shaded}}
+\newenvironment{Example}{\colorlet{shadecolor}{green!10}\begin{shaded}\vspace{-1.5ex}\begin{exmp}}{\vspace{-2ex}\end{exmp}\end{shaded}}
+\newenvironment{Remark}{\colorlet{shadecolor}{gray!10}\begin{shaded}\textbf{Remark.}}{\end{shaded}}
+\newenvironment{NamedRemark}[1]{\colorlet{shadecolor}{gray!10}\begin{shaded}\textbf{Remark {(#1)}.}}{\end{shaded}}
+% tag for subequations
+\makeatletter
+\newenvironment{varsubequations}[1]
+{\begin{subequations} \renewcommand{\theparentequation}{#1} \def\@currentlabel{#1} }
+{\end{subequations}\ignorespacesafterend}
+\makeatother
+%
+\input{MathMacros}
+\newcommand{\fixme}[1]{\textcolor{orange}{#1}}
+
+\begin{document}
+\input{sections/Titelblatt}
+%\input{sections/Dedication}
+%\input{sections/Eidesstatt}
+\input{sections/Kurzfass}
+
+\pagenumbering{roman}
+
+\tableofcontents
+% \listoffigures
+% \listoftables
+
+\clearpage
+\pagenumbering{arabic}
+
+\input{sections/Intro}
+
+\input{sections/MathIntro}
+\input{sections/MathCoord}
+\input{sections/MathCalculus}
+\input{sections/MathLinalg}
+\input{sections/MathAttitudePotential}
+
+\input{sections/MechIntro}
+\input{sections/MechParticle}
+\input{sections/MechConstrainedParticles}
+\input{sections/MechRigidBody}
+\input{sections/MechRigidBodySys}
+%\input{sections/MechGenConstraints}
+
+
+%\input{sections/CtrlIntro}
+%\input{sections/CtrlApproachParticles}
+%\input{sections/CtrlApproachBody}
+%\input{sections/CtrlApproachEnergy}
+%\input{sections/CtrlLinearization}
+%\input{sections/CtrlUnderactuated}
+%\input{sections/CtrlSummary}
+% 
+%\section{Examples of fully actuated systems}
+%\input{sections/CtrlExamplePrismaticJoint}
+%\input{sections/CtrlExampleRevoluteJoint}
+%\input{sections/CtrlExampleRigidBodyOrientation}
+%\input{sections/CtrlExamplePlanarRigidBody}
+%\input{sections/CtrlExampleFreeRigidBody}\clearpage
+%\input{sections/CtrlExampleScara}
+%\input{sections/CtrlExampleRobotArm}
+%\clearpage
+%\section{Examples of underactuated systems}
+%\input{sections/CtrlExampleTwoMassSpring}
+%\input{sections/CtrlExamplePVTOL}
+%\input{sections/CtrlExampleQuad}
+%\input{sections/CtrlExampleBicopter}
+ 
+%\input{sections/RealizationIntro}
+%\input{sections/RealizationHardware}
+%\input{sections/RealizationModels}
+%\input{sections/RealizationControlStructure}
+%\input{sections/RealizationForceVectorControl}
+%\input{sections/RealizationStateEstimation}
+% \input{sections/RealizationReferenceGeneration}
+%\input{sections/RealizationFlightTestResults}
+% 
+% \input{sections/Conclusion}
+
+%\appendix
+%\chapter{Some math}
+%\input{sections/AppendixMath}
+% \input{sections/AppendixLinAlg}
+% \input{sections/AppendixDiffGeo}
+% \input{sections/AppendixCovariance}
+% \input{sections/AppendixStaticOptimization}
+% %
+% \input{sections/AppendixAttitudeParameterizations}
+% \input{sections/AppendixConstraintStabilization}
+% \input{sections/AppendixRigidBodyCoord}
+% % 
+% \input{sections/AppendixNonholonomicSys}
+% \input{sections/AppendixHamilton}
+%\input{sections/AppendixErrorCoordinates}
+%\input{sections/AppendixGenRigidBodyPotential}
+
+%\bibliographystyle{alpha}
+\bibliographystyle{apalike}
+%\bibliographystyle{plain}
+\bibliography{/home/matthias/texStyle/jokerBib}
+
+\clearpage
+\input{sections/Templates}
+
+\end{document}

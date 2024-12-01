@@ -1,0 +1,252 @@
+\section{Linear algebra}
+
+\subsection{Matrix sets}
+The following sets of real matrices that are frequently used in the work: 
+\begin{subequations}
+\begin{align}
+ &\text{(symmetric)}&
+ \SymMat(n) &= \{ \mat{A} \in \RealNum^{n\times n} \, | \, \mat{A} = \mat{A}^\top \},
+\\
+ &\text{(symmetric, pos.\ def.)}&
+ \SymMatP(n) &= \{ \mat{A} \in \SymMat(n) \, | \, \tuple{x}^\top\! \mat{A} \tuple{x} > 0 \, \forall \, \tuple{x} \in \RealNum^{n} \backslash \{\tuple{0}\} \},
+\\
+ &\text{(sym., pos.\ semi-def.)}&
+ \SymMatSP(n) &= \{ \mat{A} \in \SymMat(n) \, | \, \tuple{x}^\top\! \mat{A} \tuple{x} \geq 0 \, \forall \, \tuple{x} \in \RealNum^{n} \backslash \{\tuple{0}\} \},
+\\[2ex]
+ &\text{(unit sphere)}&
+ \mathbb{S}^n &= \{ \tuple{a} \in \RealNum^{n} \, | \, \tuple{a}^\top\tuple{a} = 1 \},
+\\
+ &\text{(orthogonal)}&
+ \mathbb{O}(n) &= \{ \mat{A} \in \RealNum^{n\times n} \, | \, \mat{A}^\top \mat{A} = \idMat[n] \},
+\\
+ &\text{(special orthogonal)}&
+ \SpecialOrthogonalGroup(n) &= \{ \mat{R} \in \mathbb{O}(n) \, | \, \det\mat{R} = +1 \},
+% \\
+%  &\text{(special Euclidean)}&
+%  \SpecialEuclideanGroup(n) &= \left\{ \begin{bmatrix} \R & \r \\ \mat{0} & 1 \end{bmatrix} \, \bigg| \, \r \in \RealNum^n, \R \in \SpecialOrthogonalGroup(n) \right\},
+% \\[2ex]
+%  &\text{(skew symmetric)}&
+%  \SpecialOrthogonalAlgebra(n) &= \{ \mat{\Omega} \in \RealNum^{n\times n} \, | \, \mat{\Omega}^\top = -\mat{\Omega} \},
+% \\
+%  &\text{}&
+%  \SpecialEuclideanAlgebra(n) &= \left\{ \begin{bmatrix} \mat{\Omega} & \tuple{v} \\ \mat{0} & 0 \end{bmatrix} \, | \, \mat{\Omega} \in \SpecialOrthogonalAlgebra(n), \tuple{v} \in \RealNum^{n} \right\}.
+\end{align} 
+\end{subequations}
+
+\subsection{Inner product, norm and metric}
+\paragraph{Inner product.}
+For matrices $\mat{A}, \mat{B} \in \RealNum^{n\times m}$ and a symmetric, positive definite matrix $ \mat{K} \in \SymMatP(n)$, define an \textit{inner product} as
+\begin{align}\label{eq:DefMatrixInnerProduct}
+ \sProd[\mat{K}]{\mat{A}}{\mat{B}} = \tr(\mat{A}^\top \mat{K} \mat{B}).
+\end{align}
+% For $\mat{A}, \mat{B}, \mat{C} \in \RealNum^{n\times m}$ and $\lambda \in \RealNum$ we have the basic properties
+% \begin{subequations}
+% \begin{align}
+%  &\text{(linearity)}&
+%  \sProd[\mat{K}]{\lambda \mat{A}}{\mat{B}} &= \lambda \sProd[\mat{K}]{\mat{A}}{\mat{B}} = \sProd[\mat{K}]{\mat{A}}{\lambda \mat{B}},
+% \\
+%  &&
+%  \sProd[\mat{K}]{\mat{A}+\mat{C}}{\mat{B}} &= \sProd[\mat{K}]{\mat{A}}{\mat{B}} + \sProd[\mat{K}]{\mat{C}}{\mat{B}}
+% \\
+%  &\text{(symmetry)}&
+%  \sProd[\mat{K}]{\mat{B}}{\mat{A}} %&= \tr(B K A^\top) = \tr(A K^\top B^\top) = \tr(A K B^\top)
+%  &= \sProd[\mat{K}]{\mat{A}}{\mat{B}}
+% \\
+%  &\text{(positive definiteness)}&
+%  \sProd[\mat{K}]{\mat{A}}{\mat{A}} &\geq 0, \quad \sProd[\mat{K}]{\mat{A}}{\mat{A}} = 0 \ \Leftrightarrow \ \mat{A} = \mat{0}.
+% \end{align}
+% \end{subequations}
+% Let $\tuple{a}_i$ and $\tuple{b}_i$ be the columns of $\mat{A}$ and $\mat{B}$, then
+% \begin{align}
+%  \sProd[\mat{K}]{\mat{A}}{\mat{B}} &= \tr \left( \begin{bmatrix} \tuple{a}_1^\top \\ \vdots \\ \tuple{a}_n^\top \end{bmatrix} \mat{K}  \big[ \tuple{b}_1 \cdots \tuple{b}_n \big] \right) 
+%  = \tr \begin{bmatrix} \tuple{a}_1^\top \mat{K} \tuple{b}_1 & \cdots & \tuple{a}_1^\top \mat{K} \tuple{b}_n \\ \vdots & \ddots & \vdots \\ \tuple{a}_n^\top \mat{K} \tuple{b}_1 & \cdots & \tuple{a}_n^\top \mat{K} \tuple{b}_n \end{bmatrix} 
+%  = \sum_{i=1}^n \tuple{a}_i^\top \mat{K} \tuple{b}_i.
+% \end{align}
+% With this the preceding properties should be clear.
+Setting $\mat{K} = \idMat[n]$ in the definition \eqref{eq:DefMatrixInnerProduct} is called the \textit{Frobenius inner product} in \cite[sec.\ 5.2]{Horn:MatrixAnalysis} or \textit{Hilbert-Schmidt inner product} in \cite[sec.\ A.6]{Hall:LieGroups}.
+Furthermore, for $\mat{A}, \mat{B} \in \RealNum^{n\times 1}$ it coincides with the common \textit{dot product}.
+
+\paragraph{Norm.}
+The inner product \eqref{eq:DefMatrixInnerProduct} induces the norm
+\begin{align}\label{eq:DefMatrixNorm}
+ \norm[\mat{K}]{\mat{A}} = \sqrt{\sProd[\mat{K}]{\mat{A}}{\mat{A}}}.
+\end{align}
+% For $\mat{A}, \mat{B} \in \RealNum^{n\times m}$ and $\lambda \in \RealNum$ we have the basic properties
+% \begin{subequations}
+% \begin{align}
+%  &\text{(triangle inequality)}&
+%  \norm[\mat{K}]{\mat{A}+\mat{B}} &\leq \norm[\mat{K}]{\mat{A}} + \norm[\mat{K}]{\mat{B}}
+% \\
+%  &\text{(absolute homogeneity)}&
+%  \norm[\mat{K}]{\lambda \mat{A}} &= |\lambda| \, \norm[\mat{K}]{\mat{A}},
+% \\
+%  &\text{(positive definiteness)}&
+%  \norm[\mat{K}]{\mat{A}} &\geq 0, \quad \norm[\mat{K}]{\mat{A}} = 0 \ \Leftrightarrow \ \mat{A} = \mat{0}.
+% \end{align}
+% \end{subequations}
+Again for $\mat{K} = \idMat[n]$ this coincides with the established \textit{Frobenius norm}, e.g.\ \cite[p 55]{Golub:MatrixComputations}.
+Furthermore, for $\mat{A}, \mat{B} \in \RealNum^{n\times 1}$ it coincides with the common \textit{Euclidian norm} or 2-norm.
+
+\paragraph{Metric.}
+The norm \eqref{eq:DefMatrixNorm} induces the metric
+\begin{align}\label{eq:DefMatrixMetric}
+ d_{\mat{K}}(\mat{A}, \mat{B}) = \norm[\mat{K}]{\mat{A}-\mat{B}}.
+\end{align}
+% For $\mat{A}, \mat{B}, \mat{C} \in \RealNum^{n\times m}$ and $\lambda \in \RealNum$ we have the basic properties
+% \begin{subequations}
+% \begin{align}
+%  &\text{(triangle inequality)}&
+%  \metric[\mat{K}]{\mat{A}}{\mat{B}} &\leq \metric[\mat{K}]{\mat{A}}{\mat{C}} + \metric[\mat{K}]{\mat{B}}{\mat{C}}
+% \\
+%  &\text{(symmetry)}&
+%  \metric[\mat{K}]{\mat{A}}{\mat{B}} &= \metric[\mat{K}]{\mat{B}}{\mat{A}},
+% \\
+%  &\text{(positive definiteness)}&
+%  \metric[\mat{K}]{\mat{A}}{\mat{B}} &\geq 0, \quad \metric[\mat{K}]{\mat{A}}{\mat{B}} = 0 \ \Leftrightarrow \ \mat{A} = \mat{B}.
+% \end{align}
+% \end{subequations}
+Again for $\mat{K} = \idMat[n]$ this coincides with the established \textit{Euclidean metric}.
+
+The introduced inner product, norm and metric may be regarded as weighted versions of their established forms.
+For $\mat{K} = \idMat[n]$, this work uses the shorthand notation
+\begin{align}
+ \sProd[]{\cdot}{\cdot} &\equiv \sProd[{\idMat[n]}]{\cdot}{\cdot},&
+ \norm[]{\cdot} &\equiv \norm[{\idMat[n]}]{\cdot},&
+ \metric[]{\cdot}{\cdot} &\equiv \metric[{\idMat[n]}]{\cdot}{\cdot}.
+\end{align}
+
+
+\subsection{Vee and wedge}
+\paragraph{Established definitions.}
+Define the wedge operator as
+\begin{subequations}\label{eq:DefWedgeOpSO3}
+\begin{align}
+ \wedOp : \, \RealNum^3 \rightarrow \RealNum^{3\times3} \, : \, \begin{bmatrix} \omega_1 \\ \omega_2 \\ \omega_3 \end{bmatrix} &\mapsto \begin{bmatrix} 0 & -\omega_3 & \omega_2 \\ \omega_3 & 0 & -\omega_1 \\ -\omega_2 & \omega_1 & 0 \end{bmatrix}
+\end{align}
+\end{subequations}
+Its inverse is denoted $\veeOp(\cdot)$, i.e.\ $\veeOp(\wedOp(\w)=\w$.
+The $\wedOp$ and $\veeOp$ operators are well established in the literature, see e.g.\ \cite[sec.\ 2.3.2]{Murray:Robotic}, and have already been used in previous sections.
+
+\paragraph{New definitions.}
+The following operators are not established in the literature, but will prove quite useful for this work.
+Define the $\veeTwoOp$ operator through: $\mat{M}\in\RealNum^{3\times3}$:
+\begin{align}\label{eq:EqVeeTwoOpSO3}
+ \tr\big( \mat{M} (\wedOp\tuple{\omega})^\top \big) = \tuple{\omega}^\top \veeTwoOp(\mat{M}),
+\end{align}
+this is
+\begin{align}
+ \veeTwoOp &: \RealNum^{3\times 3} \rightarrow \RealNum^3 \, : \, \mat{M} \mapsto \veeOp(\mat{M}-\mat{M}^\top)
+\end{align}
+Note that we have $\veeTwoOp(\wedOp{\w}) = 2\veeOp(\wedOp{\w}) = 2\w$, thus giving the motivation for the name.
+
+Define the $\veeMatOp$ operator through
+\begin{align}\label{eq:EqVeeMatOpSO3}
+ \tr\big( \wedOp\tuple{\omega}\, \mat{M} (\wedOp\tuple{\eta})^\top \big) = \tuple{\eta}^\top (\veeMatOp\mat{M}) \tuple{\omega},
+\end{align}
+this is
+\begin{align}
+ \veeMatOp &: \RealNum^{3\times 3} \!\rightarrow\! \RealNum^{3\times3} \, : \mat{M} \mapsto \tr(\mat{M}) \idMat[3] - \mat{M}
+\end{align} 
+Noting that $\tr(\veeMatOp(\mat{M})) = 2\tr(\mat{M})$, we may write the inverse $\wedMatOp(\veeMatOp(\mat{M})) = \mat{M}$ as
+\begin{align}
+ \wedMatOp &: \RealNum^{3\times 3} \!\rightarrow\! \RealNum^{3\times3} \, : \mat{M} \mapsto \tfrac{1}{2}\tr(\mat{M}) \idMat[3] - \mat{M}.
+\end{align}
+
+\paragraph{Identities.}
+For $\tuple{a}, \tuple{b}, \tuple{c} \in \RealNum^{3}$ and $\mat{M}\in\RealNum^{3\times3}$, the following identities may be checked by direct computation:
+\begin{subequations}\label{eq:identitiesWedgeSO3}
+\begin{align}
+ \wedOp(\tuple{a})^\top = -\wedOp(\tuple{a}),
+\\
+ \wedOp(\tuple{a}) \tuple{b} = \veeTwoOp(\tuple{b} \tuple{a}^\top),
+\\
+ \wedOp(\tuple{a}) \wedOp(\tuple{b}) = \tuple{b} \tuple{a}^\top - (\tuple{b}^\top \tuple{a}) \idMat[3] = -\veeMatOp(\tuple{b} \tuple{a}^\top),
+\\
+ \wedOp(\tuple{a}) \wedOp(\tuple{b}) \tuple{c} + \wedOp(\tuple{b}) \wedOp(\tuple{c}) \tuple{a} + \wedOp(\tuple{c}) \wedOp(\tuple{a}) \tuple{b} = \tuple{0},
+ \label{eq:JacobiIdentitiySO3}
+\\
+ \veeTwoOp(\wedOp(\tuple{b}) \mat{M}) = \veeMatOp(\mat{M}) \tuple{b}.
+\end{align} 
+\end{subequations}
+
+% \subsection{Pseudo inverse}
+% \paragraph{Definition}
+% For any matrix $\mat{S}\in\RealNum^{m\times n}$ there exists a unique \textit{(Moore-Penrose) pseudoinverse} $\mat{S}^+ \in \RealNum^{n\times m}$ determined by the following conditions \cite[Theo.\ 1]{Penrose:Pseudoinverse}:
+% \begin{subequations}\label{eq:PenroseConditions}
+% \begin{align}
+%  \mat{S} \mat{S}^+ \mat{S} &= \mat{S},
+% \\
+%  \mat{S}^+ \mat{S} \mat{S}^+ &= \mat{S}^+,
+% \\
+%  (\mat{S} \mat{S}^+)^\top &= \mat{S} \mat{S}^+,
+% \\
+%  (\mat{S}^+ \mat{S})^\top &= \mat{S}^+ \mat{S}.
+% \end{align}
+% \end{subequations}
+% If the matrix $\mat{S}$ has linearly independent columns, its pseudoinverse is $\mat{S}^+ = (\mat{S}^\top \mat{S})^{-1} \mat{S}^\top$.
+% Similarly, if $\mat{S}$ has linearly independent rows, its pseudoinverse is $\mat{S}^+ = \mat{S}^\top (\mat{S} \mat{S}^\top)^{-1}$.
+% Consequently, if $\mat{S}$ is invertible (independent rows and columns) the pseudoinverse coincides with the inverse $\mat{S}^+ = \mat{S}^{-1}$.
+
+
+\subsection{Singular value decomposition}
+\paragraph{Definition}
+\cite[Theo.\ 2.5.2]{Golub:MatrixComputations}:
+For any matrix $\mat{M} \in \RealNum^{n\times m}$ there exist orthonormal matrices $\mat{X} \in \OrthogonalGroup(n)$, $\mat{Y} \in \OrthogonalGroup(m)$ and a matrix $\mat{\varSigma} \in \RealNum^{n\times m}$ with $i\neq j : \varSigma_{ij} = 0$, $\varSigma_{ii} = \sigma_i$ with $\sigma_1 \geq \ldots, \geq \sigma_p \geq 0$, $p=\max(n,m)$ such that $\mat{M} = \mat{X} \mat{\varSigma} \mat{Y}^\top$.
+\begin{itemize}
+ \item The columns of $\mat{X}$ are eigenvectors of $\mat{M} \mat{M}^\top = \mat{X} (\mat{\varSigma} \mat{\varSigma}^\top) \mat{X}^\top$
+ \item The columns of $\mat{Y}$ are eigenvectors of $\mat{M}^\top \mat{M} = \mat{Y} (\mat{\varSigma}^\top \mat{\varSigma}) \mat{Y}^\top$
+ \item The squared singular values $\sigma_i^2$ coincide with the eigenvalues of $\mat{M}^\top \mat{M}$ and $\mat{M}^\top \mat{M}$
+\end{itemize}
+Due to the descending order of the singular values, the matrix $\mat{\varSigma}$ is unique.
+The matrices $\mat{X}$ and $\mat{Y}$ are unique up to orthogonal transformations of the subspaces of each singular value and the kernel and co-kernel of $\mat{M}$.
+
+% \subsection{Polar decomposition}
+% Any square matrix $\mat{A} \in \RealNum^{n\times n}$ can be decomposed into $\mat{A} = \mat{U} \mat{K}$, where $\mat{U} \in \OrthogonalGroup(n)$, $\mat{K} \in \SymMatSP(n)$.
+% The matrix $\mat{K}$ is uniquely defined while $\mat{U}$ is only unique if $\mat{A}$ is invertible.
+% The same holds for the decomposition $\mat{A} = \mat{L} \mat{V}$, where $\mat{V} \in \OrthogonalGroup(n)$, $\mat{L} \in \SymMatSP(n)$.
+% The relation to the singular value decomposition $\mat{A} = \mat{X} \mat{\varSigma} \mat{Y}^\top$ is
+% \begin{align}
+%  \mat{U} = \mat{X} \mat{Y}^\top, \quad \mat{K} = \mat{Y} \mat{\varSigma} \mat{Y}^\top
+% \qquad \text{and} \qquad
+%  \mat{L} = \mat{X} \mat{\varSigma} \mat{X}^\top, \quad \mat{V} = \mat{X} \mat{Y}^\top.
+% \end{align}
+
+% \paragraph{Special singular decomposition}
+% One problem when dealing with rigid body attitudes, i.e.\ $\SpecialOrthogonalGroup(3)$, is that the singular value decomposition and orthogonal decomposition return orthogonal matrices, i.e.\ $\det\mat{X}, \det\mat{Y} = \pm 1$, which might not be pure rotations.
+% A way to mend this was proposed in \cite{Kabsch:SSVD}:
+% Consider the SVD $\mat{A} = \mat{X} \mat{\varSigma} \mat{Y}^\top$ and define 
+% \begin{subequations}
+% \begin{align}
+%  \bar{\mat{X}} &= \mat{X} \diag(1, \ldots, 1, \det\mat{X}) \in \SpecialOrthogonalGroup(n),
+% \\
+%  \bar{\mat{Y}} &= \mat{Y} \diag(1, \ldots, 1, \det\mat{Y}) \in \SpecialOrthogonalGroup(n),
+% \\
+%  \bar{\mat{\varSigma}} &= \diag(\varSigma_{1,1}, \ldots, \varSigma_{n-1,n-1}, \varSigma_{n,n} \det\mat{X}\det\mat{Y}).
+% \end{align} 
+% \end{subequations}
+% i.e.\ flip the directions corresponding to the smallest singular value $\varSigma_{n,n}$ if the original orthonormal matrix contains a reflection.
+% We have a possibly different decomposition $\mat{A} = \bar{\mat{X}} \bar{\mat{\varSigma}} \bar{\mat{Y}}^\top$.
+% 
+% For the following we restrict to \textit{square matrices} $\mat{A}$ and consequently $\bar{\mat{\varSigma}}$.
+% Since $\bar{\varSigma}_{n,n} = \varSigma_{n,n} \det\mat{X}\det\mat{Y}$ might be negative, the matrix $\bar{\mat{\varSigma}}$ is, in general, indifferent.
+% Nevertheless, since only the smallest singular value might be flipped, the matrix $\veeMatOp(\bar{\mat{\varSigma}}) = \bar{\mat{\Lambda}}$ is positive semidefinite.
+% 
+% In the following we call $\mat{A} = \bar{\mat{X}} \wedMatOp(\bar{\mat{\varLambda}}) \bar{\mat{Y}}^\top$ with $\bar{\mat{X}}, \bar{\mat{Y}} \in \SpecialOrthogonalGroup(n)$ and $\bar{\mat{\varLambda}} \in \RealNum^{n\times n}$ with $\bar{\varLambda}_{ii} \geq 0, i=1,\ldots,n, \bar{\varLambda}_{ij} = 0, i\neq j$ the \textit{special} singular value decomposition.
+% Note that the property of the SVD $\bar{\varSigma}_{1,1} \geq \ldots \geq \bar{\varSigma}_{n-1,n-1} \geq |\bar{\varSigma}_{n,n}| \geq 0$ implies $\bar{\varLambda}_{1,1} \geq \ldots \geq \bar{\varLambda}_{n-1,n-1} \geq \bar{\varLambda}_{n,n} \geq 0$.
+% The uniqueness of $\bar{\mat{X}}, \bar{\mat{\varLambda}}, \bar{\mat{Y}}$ is the same as for the SVD.
+% 
+% \paragraph{Special polar decomposition}
+% Using the special singular value decomposition above we may write
+% \begin{subequations}
+% \begin{align}
+%  \mat{A} 
+%  &= \bar{\mat{X}} \underbrace{\bar{\mat{Y}}^\top \bar{\mat{Y}}}_{\idMat[n]} \wedMatOp(\bar{\mat{\varLambda}}) \bar{\mat{Y}}^\top
+%  = \underbrace{\bar{\mat{X}} \bar{\mat{Y}}^\top}_{\mat{U}\,\in\,\SpecialOrthogonalGroup(n)} \wedMatOp\big(\underbrace{\bar{\mat{Y}} \bar{\mat{\varLambda}} \bar{\mat{Y}}^\top}_{\mat{K}\,\in\,\SymMatSP(n)}\big)
+% \\
+%  &= \bar{\mat{X}} \wedMatOp(\bar{\mat{\varLambda}}) \underbrace{\bar{\mat{X}}^\top \bar{\mat{X}}}_{\idMat[n]} \bar{\mat{Y}}^\top
+%  = \wedMatOp\big(\underbrace{\bar{\mat{X}} \bar{\mat{\varLambda}} \bar{\mat{X}}^\top}_{\mat{L}\,\in\,\SymMatSP(n)}\big) \underbrace{\bar{\mat{X}} \bar{\mat{Y}}^\top}_{\mat{U}\,\in\,\SpecialOrthogonalGroup(n)}
+% \end{align}
+% \end{subequations}
+% Since this only involves proper rotations this is potentially useful in physics where we cant have reflections.
+% 
+% These special versions of the singular value and polar decomposition are not established in the literature to the best of the authors knowledge.

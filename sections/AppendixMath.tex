@@ -1,0 +1,432 @@
+\section{Linear algebra}
+
+\subsection{Matrix sets}
+Define the following sets of real matrices that are frequently used in the work: 
+\begin{subequations}
+\begin{align}
+ &\text{(symmetric)}&
+ \SymMat(n) &= \{ \mat{A} \in \RealNum^{n\times n} \, | \, \mat{A} = \mat{A}^\top \},
+\\
+ &\text{(symmetric, pos.\ def.)}&
+ \SymMatP(n) &= \{ \mat{A} \in \SymMat(n) \, | \, \tuple{x}^\top\! \mat{A} \tuple{x} > 0 \, \forall \, \tuple{x} \in \RealNum^{n} \backslash \{\tuple{0}\} \},
+\\
+ &\text{(sym., pos.\ semi-def.)}&
+ \SymMatSP(n) &= \{ \mat{A} \in \SymMat(n) \, | \, \tuple{x}^\top\! \mat{A} \tuple{x} \geq 0 \, \forall \, \tuple{x} \in \RealNum^{n} \backslash \{\tuple{0}\} \},
+\\[2ex]
+ &\text{(unit sphere)}&
+ \mathbb{S}^n &= \{ \tuple{a} \in \RealNum^{n} \, | \, \tuple{a}^\top\tuple{a} = 1 \},
+\\
+ &\text{(orthogonal)}&
+ \mathbb{O}(n) &= \{ \mat{A} \in \RealNum^{n\times n} \, | \, \mat{A}^{-1} = \mat{A}^\top \},
+\\
+ &\text{(special orthogonal)}&
+ \SpecialOrthogonalGroup(n) &= \{ \mat{R} \in \mathbb{O}(n) \, | \, \det\mat{R} = +1 \},
+\\
+ &\text{(special Euclidean)}&
+ \SpecialEuclideanGroup(n) &= \left\{ \begin{bmatrix} \R & \r \\ \mat{0} & 1 \end{bmatrix} \, \bigg| \, \r \in \RealNum^n, \R \in \SpecialOrthogonalGroup(n) \right\},
+\\[2ex]
+ &\text{(skew symmetric)}&
+ \SpecialOrthogonalAlgebra(n) &= \{ \mat{\Omega} \in \RealNum^{n\times n} \, | \, \mat{\Omega}^\top = -\mat{\Omega} \},
+\\
+ &\text{}&
+ \SpecialEuclideanAlgebra(n) &= \left\{ \begin{bmatrix} \mat{\Omega} & \tuple{v} \\ \mat{0} & 0 \end{bmatrix} \, | \, \mat{\Omega} \in \SpecialOrthogonalAlgebra(n), \tuple{v} \in \RealNum^{n} \right\}.
+\end{align} 
+\end{subequations}
+
+\subsection{Trace}
+The \textit{trace} of a quadratic matrix $\mat{A} \in \RealNum^{n\times n}$ is the sum of its diagonal entries
+\begin{align}
+ \tr \mat{A} = \sum_{i=1}^{n} A_{ii}
+\end{align}
+Some properties of the trace are
+\begin{subequations}
+\begin{align}
+ \mat{A}, \mat{B} \in \RealNum^{n\times n}, \lambda\in\RealNum \,&:&
+ \tr(\mat{A}+\mat{B}) &= \tr\mat{A} + \tr\mat{B},
+\\
+ &&
+ \tr(\lambda \mat{A}) &= \lambda \tr\mat{A},
+\\
+ &&
+ \tr \mat{A}^\top &= \tr \mat{A},
+\\ 
+ \mat{A} \in \RealNum^{n\times m}, \mat{B}\in\RealNum^{m\times n}\,&:&
+ \tr(\mat{A}\mat{B}) &= \tr(\mat{B}\mat{A}),
+\\ 
+ \mat{A}, \mat{P} \in \RealNum^{n\times n}, \det\mat{P} \neq 0\,&:&
+ \tr(\mat{P}^{-1} \mat{A} \mat{P}) &= \tr\mat{A}.
+\\
+ \mat{K}\in\SymMat(n), \mat{\Omega}\in\SpecialOrthogonalAlgebra(n)\,&:&
+ \tr(\mat{K}\mat{\Omega}) &= 0.
+\end{align}
+\end{subequations}
+For matrices $\mat{A},\mat{B}\in \RealNum^{n\times n}, n\geq2$ we may define the bijective mapping
+\begin{align}
+ \mat{B} = \tr(\mat{A})\idMat[n] - \mat{A}
+\qquad \Leftrightarrow \qquad
+ \mat{A} = \tfrac{1}{n-1}\tr(\mat{B}) \idMat[n] - \mat{B}.
+\end{align}
+which is due to $\tr\mat{B} = (n-1)\tr\mat{A}$.
+
+
+\subsection{Inner product}\label{sec:MathInnerProduct}
+\paragraph{Inner product.}
+For matrices $\mat{A}, \mat{B} \in \RealNum^{n\times m}$ and a symmetric, positive definite matrix $ \mat{K} \in \SymMatP(n)$, define an \textit{inner product} as
+\begin{align}\label{eq:DefMatrixInnerProduct}
+ \sProd[\mat{K}]{\mat{A}}{\mat{B}} = \tr(\mat{A}^\top \mat{K} \mat{B}).
+\end{align}
+For $\mat{A}, \mat{B}, \mat{C} \in \RealNum^{n\times m}$ and $\lambda \in \RealNum$ we have the basic properties
+\begin{subequations}
+\begin{align}
+ &\text{(linearity)}&
+ \sProd[\mat{K}]{\lambda \mat{A}}{\mat{B}} &= \lambda \sProd[\mat{K}]{\mat{A}}{\mat{B}} = \sProd[\mat{K}]{\mat{A}}{\lambda \mat{B}},
+\\
+ &&
+ \sProd[\mat{K}]{\mat{A}+\mat{C}}{\mat{B}} &= \sProd[\mat{K}]{\mat{A}}{\mat{B}} + \sProd[\mat{K}]{\mat{C}}{\mat{B}}
+\\
+ &\text{(symmetry)}&
+ \sProd[\mat{K}]{\mat{B}}{\mat{A}} %&= \tr(B K A^\top) = \tr(A K^\top B^\top) = \tr(A K B^\top)
+ &= \sProd[\mat{K}]{\mat{A}}{\mat{B}}
+\\
+ &\text{(positive definiteness)}&
+ \sProd[\mat{K}]{\mat{A}}{\mat{A}} &\geq 0, \quad \sProd[\mat{K}]{\mat{A}}{\mat{A}} = 0 \ \Leftrightarrow \ \mat{A} = \mat{0}.
+\end{align}
+\end{subequations}
+% Let $\tuple{a}_i$ and $\tuple{b}_i$ be the columns of $\mat{A}$ and $\mat{B}$, then
+% \begin{align}
+%  \sProd[\mat{K}]{\mat{A}}{\mat{B}} &= \tr \left( \begin{bmatrix} \tuple{a}_1^\top \\ \vdots \\ \tuple{a}_n^\top \end{bmatrix} \mat{K}  \big[ \tuple{b}_1 \cdots \tuple{b}_n \big] \right) 
+%  = \tr \begin{bmatrix} \tuple{a}_1^\top \mat{K} \tuple{b}_1 & \cdots & \tuple{a}_1^\top \mat{K} \tuple{b}_n \\ \vdots & \ddots & \vdots \\ \tuple{a}_n^\top \mat{K} \tuple{b}_1 & \cdots & \tuple{a}_n^\top \mat{K} \tuple{b}_n \end{bmatrix} 
+%  = \sum_{i=1}^n \tuple{a}_i^\top \mat{K} \tuple{b}_i.
+% \end{align}
+% With this the preceding properties should be clear.
+Setting $\mat{K} = \idMat[n]$ in the definition \eqref{eq:DefMatrixInnerProduct} is called the \textit{Frobenius inner product} in \cite[sec.\ 5.2]{Horn:MatrixAnalysis} or \textit{Hilbert-Schmidt inner product} in \cite[sec.\ A.6]{Hall:LieGroups}.
+Furthermore, for $\mat{A}, \mat{B} \in \RealNum^{n\times 1}$ it coincides with the common \textit{dot product}.
+
+\paragraph{Norm.}
+The induced norm is
+\begin{align}
+ \norm[\mat{K}]{\mat{A}} = \sqrt{\sProd[\mat{K}]{\mat{A}}{\mat{A}}}.
+\end{align}
+For $\mat{A}, \mat{B} \in \RealNum^{n\times m}$ and $\lambda \in \RealNum$ we have the basic properties
+\begin{subequations}
+\begin{align}
+ &\text{(triangle inequality)}&
+ \norm[\mat{K}]{\mat{A}+\mat{B}} &\leq \norm[\mat{K}]{\mat{A}} + \norm[\mat{K}]{\mat{B}}
+\\
+ &\text{(absolute homogeneity)}&
+ \norm[\mat{K}]{\lambda \mat{A}} &= |\lambda| \, \norm[\mat{K}]{\mat{A}},
+\\
+ &\text{(positive definiteness)}&
+ \norm[\mat{K}]{\mat{A}} &\geq 0, \quad \norm[\mat{K}]{\mat{A}} = 0 \ \Leftrightarrow \ \mat{A} = \mat{0}.
+\end{align}
+\end{subequations}
+
+\paragraph{Metric.}
+The induced metric is
+\begin{align}
+ d_{\mat{K}}(\mat{A}, \mat{B}) = \norm[\mat{K}]{\mat{A}-\mat{B}}.
+\end{align}
+For $\mat{A}, \mat{B}, \mat{C} \in \RealNum^{n\times m}$ and $\lambda \in \RealNum$ we have the basic properties
+\begin{subequations}
+\begin{align}
+ &\text{(triangle inequality)}&
+ \metric[\mat{K}]{\mat{A}}{\mat{B}} &\leq \metric[\mat{K}]{\mat{A}}{\mat{C}} + \metric[\mat{K}]{\mat{B}}{\mat{C}}
+\\
+ &\text{(symmetry)}&
+ \metric[\mat{K}]{\mat{A}}{\mat{B}} &= \metric[\mat{K}]{\mat{B}}{\mat{A}},
+\\
+ &\text{(positive definiteness)}&
+ \metric[\mat{K}]{\mat{A}}{\mat{B}} &\geq 0, \quad \metric[\mat{K}]{\mat{A}}{\mat{B}} = 0 \ \Leftrightarrow \ \mat{A} = \mat{B}.
+\end{align}
+\end{subequations}
+
+
+\subsection{Vee \& wedge}
+Define the $\wedOp$ operator for vectors as
+\begin{subequations}\label{eq:AppDefWedgeOp}
+\begin{align}
+ \wedOp : \, \RealNum^3 \rightarrow \SpecialOrthogonalAlgebra(3) \, : \, \begin{bmatrix} \omega_1 \\ \omega_2 \\ \omega_3 \end{bmatrix} &\mapsto \begin{bmatrix} 0 & -\omega_3 & \omega_2 \\ \omega_3 & 0 & -\omega_1 \\ -\omega_2 & \omega_1 & 0 \end{bmatrix},&
+\\
+ \wedOp: \, \RealNum^6 \rightarrow \SpecialEuclideanAlgebra(3) \, : \ \ \begin{bmatrix} \v \\ \w \end{bmatrix} &\mapsto \begin{bmatrix} \wedOp\w & \v \\ \mat{0} & 0 \end{bmatrix},&
+\end{align}
+\end{subequations}
+The corresponding inverse operator is denoted $\veeOp$.
+
+Furthermore, define the $\veeTwoOp$ operator through
+\begin{align}\label{eq:AppEqVeeTwo}
+ \tr\big( \mat{A} (\wedOp\tuple{\xi})^\top \big) = \tuple{\xi}^\top \veeTwoOp(\mat{A}).
+\end{align}
+The particular important cases for this work are
+\begin{subequations}\label{eq:AppDefVeeTwo}
+\begin{align}
+ \veeTwoOp &: \RealNum^{3\times 3} \rightarrow \RealNum^3 \, : \, \begin{bmatrix} \ast & A_{12} & A_{13} \\ A_{21} & \ast & A_{23} \\ A_{31} & A_{32} & \ast \end{bmatrix} \mapsto \begin{bmatrix} A_{32} - A_{23} \\ A_{13} - A_{31} \\ A_{21} - A_{12} \end{bmatrix},
+\\
+ \veeTwoOp &: \RealNum^{4\times 4} \rightarrow \RealNum^6 \, : \, \begin{bmatrix} \mat{A} & \tuple{b} \\ \ast & \ast \end{bmatrix} \mapsto \begin{bmatrix} \tuple{b} \\ \veeTwoOp\mat{A} \end{bmatrix}.
+\end{align}
+\end{subequations}
+Note that for $\mat{\Omega} \in \SpecialOrthogonalAlgebra(3) \subset \RealNum^{3\times3}$ we have $\veeTwoOp(\mat{\Omega}) = 2 \veeOp(\mat{\Omega})$, thus giving the motivation for the name.
+
+For matrices define the $\veeMatOp$ through the relation
+\begin{align}\label{eq:AppEqVeeMat}
+ \veeTwoOp\big(\wedOp(\tuple{\xi}) \, \mat{A} \big) = \veeMatOp(\mat{A}) \tuple{\xi}.
+\end{align}
+The particular important cases for this work are
+\begin{subequations}\label{eq:AppDefVeeMat}
+\begin{align}
+ \veeMatOp &: \RealNum^{3\times 3} \rightarrow \RealNum^{3\times 3} \, : \, \mat{A} \mapsto \tr(\mat{A}) \idMat[3] - \mat{A},
+\\
+ \veeMatOp &: \RealNum^{4\times 4} \rightarrow \RealNum^{6\times 6} \, : \, \begin{bmatrix} \mat{A} & \tuple{b} \\ \tuple{c}^\top & d \end{bmatrix} \mapsto \begin{bmatrix} d \idMat[3] & (\wedOp \tuple{b})^\top \\ \wedOp\tuple{c} & \veeMatOp\mat{A} \end{bmatrix},
+\end{align} 
+\end{subequations}
+The corresponding inverse operator is denoted $\wedMatOp$.
+% \begin{align}
+%  \mat{A}, \mat{P} \in \RealNum^{n\times n}, \det\mat{P} \neq 0\,:
+% \qquad
+%  \veeMatOp(\mat{P}^{-1} \mat{A} \mat{P}) = \mat{P}^{-1} \veeMatOp(\mat{A}) \mat{P}
+% \end{align}
+Combining \eqref{eq:AppEqVeeTwo} and \eqref{eq:AppEqVeeMat} yields
+\begin{align}
+ \tr\big( \wedOp\tuple{\xi}\, \mat{A} (\wedOp\tuple{\eta})^\top \big) = \tuple{\eta}^\top \veeMatOp(\mat{A}) \tuple{\xi}.
+\end{align}
+
+\section{SVD and polar decomposition}
+\subsection{Singular value decomposition (SVD)}
+Any matrix $\mat{A} \in \RealNum^{n\times m}$ can be decomposed into $\mat{A} = \mat{X} \mat{\varSigma} \mat{Y}^\top$, where $\mat{X} \in \OrthogonalGroup(n)$, $\mat{Y} \in \OrthogonalGroup(m)$ and $\mat{\varSigma} \in \RealNum^{n\times m}$ with $\varSigma_{ii} \geq 0, i=1,\ldots,\min(n,m), \varSigma_{ij} = 0, i\neq j$.
+\begin{itemize}
+ \item The columns of $\mat{X}$ are eigenvectors of $\mat{A} \mat{A}^\top = \mat{X} (\mat{\varSigma} \mat{\varSigma}^\top) \mat{X}^\top$.
+ \item The columns of $\mat{Y}$ are eigenvectors of $\mat{A}^\top \mat{A} = \mat{Y} (\mat{\varSigma}^\top \mat{\varSigma}) \mat{Y}^\top$.
+\end{itemize}
+%The SVD is, in general, not unique.
+It is common practice to place the singular values in descending order, i.e.\ $\varSigma_{ii} \geq \varSigma_{jj}, i > j$, thus making $\mat{\varSigma}$ unique.
+The matrices $\mat{X}$ and $\mat{Y}$ are unique up to orthogonal transformations of the subspaces of each singular value and the kernel and co-kernel of $\mat{A}$.
+
+\subsection{Polar decomposition}
+Any square matrix $\mat{A} \in \RealNum^{n\times n}$ can be decomposed into $\mat{A} = \mat{U} \mat{K}$, where $\mat{U} \in \OrthogonalGroup(n)$, $\mat{K} \in \SymMatSP(n)$.
+The matrix $\mat{K}$ is uniquely defined while $\mat{U}$ is only unique if $\mat{A}$ is invertible.
+The same holds for the decomposition $\mat{A} = \mat{L} \mat{V}$, where $\mat{V} \in \OrthogonalGroup(n)$, $\mat{L} \in \SymMatSP(n)$.
+The relation to the singular value decomposition $\mat{A} = \mat{X} \mat{\varSigma} \mat{Y}^\top$ is
+\begin{align}
+ \mat{U} = \mat{X} \mat{Y}^\top, \quad \mat{K} = \mat{Y} \mat{\varSigma} \mat{Y}^\top
+\qquad \text{and} \qquad
+ \mat{L} = \mat{X} \mat{\varSigma} \mat{X}^\top, \quad \mat{V} = \mat{X} \mat{Y}^\top.
+\end{align}
+
+\subsection{Special singular decomposition}
+One problem when dealing with rigid body attitudes, i.e.\ $\SpecialOrthogonalGroup(3)$, is that the singular value decomposition and orthogonal decomposition return orthogonal matrices, i.e.\ $\det\mat{X}, \det\mat{Y} = \pm 1$, which might not be pure rotations.
+A way to mend this was proposed in \cite{Kabsch:SSVD}:
+Consider the SVD $\mat{A} = \mat{X} \mat{\varSigma} \mat{Y}^\top$ and define 
+\begin{subequations}
+\begin{align}
+ \bar{\mat{X}} &= \mat{X} \diag(1, \ldots, 1, \det\mat{X}) \in \SpecialOrthogonalGroup(n),
+\\
+ \bar{\mat{Y}} &= \mat{Y} \diag(1, \ldots, 1, \det\mat{Y}) \in \SpecialOrthogonalGroup(n),
+\\
+ \bar{\mat{\varSigma}} &= \diag(\varSigma_{1,1}, \ldots, \varSigma_{n-1,n-1}, \varSigma_{n,n} \det\mat{X}\det\mat{Y}).
+\end{align} 
+\end{subequations}
+i.e.\ flip the directions corresponding to the smallest singular value $\varSigma_{n,n}$ if the original orthonormal matrix contains a reflection.
+We have a possibly different decomposition $\mat{A} = \bar{\mat{X}} \bar{\mat{\varSigma}} \bar{\mat{Y}}^\top$.
+
+For the following we restrict to \textit{square matrices} $\mat{A}$ and consequently $\bar{\mat{\varSigma}}$.
+Since $\bar{\varSigma}_{n,n} = \varSigma_{n,n} \det\mat{X}\det\mat{Y}$ might be negative, the matrix $\bar{\mat{\varSigma}}$ is, in general, indifferent.
+Nevertheless, since only the smallest singular value might be flipped, the matrix $\veeMatOp(\bar{\mat{\varSigma}}) = \bar{\mat{\Lambda}}$ is positive semidefinite.
+
+In the following we call $\mat{A} = \bar{\mat{X}} \wedMatOp(\bar{\mat{\varLambda}}) \bar{\mat{Y}}^\top$ with $\bar{\mat{X}}, \bar{\mat{Y}} \in \SpecialOrthogonalGroup(n)$ and $\bar{\mat{\varLambda}} \in \RealNum^{n\times n}$ with $\bar{\varLambda}_{ii} \geq 0, i=1,\ldots,n, \bar{\varLambda}_{ij} = 0, i\neq j$ the \textit{special} singular value decomposition.
+Note that the property of the SVD $\bar{\varSigma}_{1,1} \geq \ldots \geq \bar{\varSigma}_{n-1,n-1} \geq |\bar{\varSigma}_{n,n}| \geq 0$ implies $\bar{\varLambda}_{1,1} \geq \ldots \geq \bar{\varLambda}_{n-1,n-1} \geq \bar{\varLambda}_{n,n} \geq 0$.
+The uniqueness of $\bar{\mat{X}}, \bar{\mat{\varLambda}}, \bar{\mat{Y}}$ is the same as for the SVD.
+
+\subsection{Special polar decomposition}
+Using the special singular value decomposition above we may write
+\begin{subequations}
+\begin{align}
+ \mat{A} 
+ &= \bar{\mat{X}} \underbrace{\bar{\mat{Y}}^\top \bar{\mat{Y}}}_{\idMat[n]} \wedMatOp(\bar{\mat{\varLambda}}) \bar{\mat{Y}}^\top
+ = \underbrace{\bar{\mat{X}} \bar{\mat{Y}}^\top}_{\mat{U}\,\in\,\SpecialOrthogonalGroup(n)} \wedMatOp\big(\underbrace{\bar{\mat{Y}} \bar{\mat{\varLambda}} \bar{\mat{Y}}^\top}_{\mat{K}\,\in\,\SymMatSP(n)}\big)
+\\
+ &= \bar{\mat{X}} \wedMatOp(\bar{\mat{\varLambda}}) \underbrace{\bar{\mat{X}}^\top \bar{\mat{X}}}_{\idMat[n]} \bar{\mat{Y}}^\top
+ = \wedMatOp\big(\underbrace{\bar{\mat{X}} \bar{\mat{\varLambda}} \bar{\mat{X}}^\top}_{\mat{L}\,\in\,\SymMatSP(n)}\big) \underbrace{\bar{\mat{X}} \bar{\mat{Y}}^\top}_{\mat{U}\,\in\,\SpecialOrthogonalGroup(n)}
+\end{align}
+\end{subequations}
+Since this only involves proper rotations this is potentially useful in physics where we cant have reflections.
+
+These special versions of the singular value and polar decomposition are not established in the literature to the best of the authors knowledge.
+
+
+\section{Attitude potential}\label{sec:AppendixAttitudePotential}
+We are interested in the extrema of the function
+\begin{align}
+ \potentialEnergy(\R) = -\tr(\mat{P} \R), \quad \R \in \SpecialOrthogonalGroup(3)
+\end{align}
+with the constant parameter $\mat{P} \in \RealNum^{3\times3}$.
+Similar functions appear in the context of attitude control \cite{Koditschek:TotalEnergy} or in the so-called Wahba's problem \cite{Wahba:WahbaProblem}.
+
+\paragraph{Coordinate transformation.}
+A crucial ingredient for the solution is what we called the \textit{special singular value decomposition} above:
+Let $\mat{P} = \bar{\mat{X}} \wedMatOp(\mat{\varLambda}) \bar{\mat{Y}}^\top$ with $\bar{\mat{X}}, \bar{\mat{Y}} \in \SpecialOrthogonalGroup(3)$ and $\mat{\varLambda} = \diag(\lambda_1, \lambda_2, \lambda_3)$, $\lambda_1 \geq \lambda_2 \geq \lambda_3 \geq 0$.
+With this we define the transformed function
+\begin{align}
+ \potentialEnergy(\R) = -\tr( \bar{\mat{X}} \wedMatOp(\mat{\varLambda}) \bar{\mat{Y}}^\top \R) = -\tr( \wedMatOp(\mat{\varLambda}) \underbrace{\bar{\mat{Y}}^\top \R \bar{\mat{X}}}_{\bar{\R}}) =: \bar{\potentialEnergy}(\bar{\R})
+\end{align}
+Since the SVD is not unique in general, the transformed function $\bar{\potentialEnergy}$ is neither.
+However, since the coordinate transformation $\R = \bar{\mat{Y}} \bar{\R} \bar{\mat{X}}^\top$ is bijective, no information is lost here.
+% The SVD is also the most robust approach for the numerical solution of the problem \cite{Markley:Wahba}.
+
+\paragraph{Critical points.}
+The first and second differential of the transformed function are
+\begin{align}
+ \differential \bar{\potentialEnergy}(\bar{\R}) &= \veeTwoOp(\wedMatOp(\mat{\varLambda}) \bar{\R}),
+\\
+ \differential^2 \bar{\potentialEnergy}(\bar{\R}) &= \veeMatOp(\wedMatOp(\mat{\varLambda}) \bar{\R})^\top.
+\end{align}
+So, for a critical point $\bar{\R}_0 : \differential \bar{\potentialEnergy}(\bar{\R}_0)=\tuple{0}$ we need the matrix $\wedMatOp(\mat{\varLambda}) \bar{\R}_0$ to be symmetric.
+An obvious critical point is $\bar{\R}_0 = \idMat[3]$ which is a minimum if $\differential^2 \bar{\potentialEnergy}(\idMat[3]) = \mat{\varLambda}$ is positive definite.
+Depending on the actual constellation of $\lambda_1 \geq \lambda_2 \geq \lambda_3 \geq 0$ we have more critical points or submanifolds which are analysed in the following:
+\begin{subequations}
+\begin{itemize}
+\item Distinct eigenvalues: $\lambda_3 > \lambda_2 > \lambda_1 > 0$: We have the critical points
+\begin{align}
+ &\bar{\R}_{0} = \idMat[3] \ :
+\nonumber\\
+ &\quad
+ \potentialEnergy(\bar{\R}_{0}) = -\tfrac{\lambda_1}{2} - \tfrac{\lambda_2}{2} - \tfrac{\lambda_3}{2}, 
+ \quad
+ \eig(\differential^2 \bar{\potentialEnergy}(\bar{\R}_{0})) = \{ \lambda_3, \lambda_2, \lambda_1 \}
+\\
+ &\bar{\R}_{1} = \diag(1,-1,-1) \ :
+\nonumber\\
+ &\quad
+ \potentialEnergy(\bar{\R}_{1}) = \tfrac{3\lambda_1 - \lambda_2 - \lambda_3}{2}, 
+ \quad
+ \eig(\differential^2 \bar{\potentialEnergy}(\bar{\R}_{1})) = \{ \lambda_3-\lambda_1, \lambda_2-\lambda_1, -\lambda_1 \}
+\\
+ &\bar{\R}_{2} = \diag(-1,1,-1) \ :
+\nonumber\\
+ &\quad
+ \potentialEnergy(\bar{\R}_{2}) = \tfrac{3\lambda_2 - \lambda_1 - \lambda_3}{2}, 
+ \quad
+ \eig(\differential^2 \bar{\potentialEnergy}(\bar{\R}_{2})) = \{ \lambda_3-\lambda_2, \lambda_1-\lambda_2, -\lambda_2 \}
+\\
+ &\bar{\R}_{3} = \diag(-1,-1,1) \ :
+\nonumber\\
+ &\quad
+ \potentialEnergy(\bar{\R}_{3}) = \tfrac{3\lambda_3 - \lambda_1 - \lambda_2}{2}, 
+ \quad
+ \eig(\differential^2 \bar{\potentialEnergy}(\bar{\R}_{3})) = \{ \lambda_2-\lambda_3, \lambda_1-\lambda_3, -\lambda_3 \}
+\end{align}
+so $\bar{\R}_{0}$ is a minimum, $\bar{\R}_{1}$ and $\bar{\R}_{2}$ are saddle points, and $\bar{\R}_{3}$ is a maximum.
+
+\item Double eigenvalue: $\lambda_3 > \lambda_2 = \lambda_1 > 0$: We have a minimum at $\bar{\R}_{0}$, a maximum at $\bar{\R}_{3}$ and a saddle on the circular manifold 
+\begin{align}
+ \bar{\R}_{4} &= \begin{bmatrix} -c & s & 0 \\ s & c & 0 \\ 0 & 0 & -1 \end{bmatrix}, \ c^2+s^2=1 \ : 
+\nonumber\\
+ &\quad
+ \potentialEnergy(\bar{\R}_{4}) = \lambda_1 - \tfrac{\lambda_3}{2}, 
+ \quad
+ \eig(\differential^2 \bar{\potentialEnergy}(\bar{\R}_{4})) = \{ \lambda_3-\lambda_1, 0, -\lambda_1 \}
+\end{align}
+which includes the points $\bar{\R}_{1}$ and $\bar{\R}_{2}$.
+
+\item Double eigenvalue: $\lambda_3 = \lambda_2 > \lambda_1 > 0$: Analog to above we have a minimum at $\bar{\R}_{0}$, a saddle at $\bar{\R}_{4}$ and a maximum on the circular manifold 
+\begin{align}
+ \bar{\R}_{5} &= \begin{bmatrix} -1 & 0 & 0 \\ 0 & c & s \\ 0 & s & -c \end{bmatrix}, \ c^2+s^2=1 \ : 
+\nonumber\\
+ &\quad
+ \potentialEnergy(\bar{\R}_{5}) = \lambda_2 - \tfrac{\lambda_1}{2}, 
+ \quad
+ \eig(\differential^2 \bar{\potentialEnergy}(\bar{\R}_{5})) = \{ 0, \lambda_1-\lambda_2, -\lambda_2 \}
+\end{align}
+which includes the points $\bar{\R}_{2}$ and $\bar{\R}_{3}$.
+
+\item Triple eigenvalue: $\lambda_3 = \lambda_2 = \lambda_1 > 0$: Minimum at $\bar{\R}_{0}$ and a maximum on the spherical manifold 
+\begin{align}
+ &\bar{\R}_{6} = \begin{bmatrix} \quatx^2 - \quaty^2 - \quatz^2 & 2\quatx\quaty & 2\quatx\quatz \\ 2\quatx\quaty & \quaty^2-\quatx^2+\quatz^2 & 2\quaty\quatz \\ 2\quatx\quatz & 2\quaty\quatz & \quatz^2-\quatx^2-\quaty^2 \end{bmatrix}, \ \quatx^2+\quaty^2+\quatz^2=1 :
+\nonumber\\
+ &\quad
+ \potentialEnergy(\bar{\R}_{6}) = \tfrac{\lambda_1}{2},
+ \quad
+ \eig(\differential^2 \bar{\potentialEnergy}(\bar{\R}_{6})) = \{ 0, 0, -\lambda_1 \}
+\end{align}
+which includes the points $\bar{\R}_{1}$, $\bar{\R}_{2}$ and $\bar{\R}_{3}$ and the circles $\bar{\R}_4$ and $\bar{\R}_5$.
+It corresponds to a $180^\circ$ rotation about an arbitrary axis $[\quatx,\quaty,\quatz]^\top \in \Sphere^2$.
+
+\item One zero eigenvalue: $\lambda_3 > \lambda_2 > \lambda_1 = 0$: We have a minimum on the circular manifold
+\begin{align}
+ \bar{\R}_{7} &= \begin{bmatrix} 1 & 0 & 0 \\ 0 & c & -s \\ 0 & s & c \end{bmatrix}, \ c^2+s^2=1 \ : 
+\nonumber\\
+ \potentialEnergy(\bar{\R}_{7}) &= -\tfrac{\lambda_2+\lambda_3}{2}, \qquad
+ \eig(\differential^2 \bar{\potentialEnergy}(\bar{\R}_{7})) = \{ \lambda_3, \lambda_2, 0\}
+\end{align}
+which includes $\bar{\R}_{0}$ and $\bar{\R}_{1}$.
+Furthermore we have a saddle point at $\bar{\R}_{2}$ and a maximum at $\bar{\R}_{3}$.
+
+\item Double eigenvalue and zero eigenvalue: $\lambda_3 = \lambda_2 > \lambda_1 = 0$: We have a minimum on $\bar{\R}_{7}$ and a maximum on $\bar{\R}_{5}$.
+
+\item Two zero eigenvalues: $\lambda_3 > \lambda_2 = \lambda_1 = 0$: We have a minimum on the spherical manifold
+\begin{align}
+ \bar{\R}_{8} &= \begin{bmatrix} \quatw^2 + \quatx^2 - \quaty^2 & 2\quatx\quaty & 2\quatw\quaty \\ 2\quatx\quaty & \quatw^2-\quatx^2+\quaty^2 & -2\quatw\quatx \\ -2\quatw\quatx & 2\quatw\quatx & \quatw^2-\quatx^2-\quaty^2 \end{bmatrix}, \ \quatw^2+\quatx^2+\quaty^2=1 :
+\nonumber\\
+ \potentialEnergy(\bar{\R}_{8}) &= -\tfrac{\lambda_3}{2}, \qquad
+ \eig(\differential^2 \bar{\potentialEnergy}(\bar{\R}_{8})) = \{ \lambda_3, 0, 0\}
+\end{align}
+which includes $\bar{\R}_{0}$, $\bar{\R}_{1}$ and $\bar{\R}_{2}$ and corresponds to an arbitrary rotation about an axis $[\quatx, \quaty, 0]^\top$.
+Furthermore we have a maximum at $\bar{\R}_{3}$.
+
+\item All zero Eigenvalues: $\lambda_3 = \lambda_2 = \lambda_1 = 0$: for this we have $\bar{\mat{\varSigma}} = \mat{P} = \mat{0}$ and the function is $\potentialEnergy = 0$.
+
+\end{itemize}
+\end{subequations}
+We may conclude that the function $\bar{\potentialEnergy}$ has a minimum at $\bar{\R}_0 = \idMat[3]$ and a maximum at $\bar{\R}_3 = \diag(-1,-1,1)$, though they may not be strict.
+The minimum is strict if and only if $\lambda_1 > 0$. 
+The maximum is strict if and only if $\lambda_3>\lambda_2$.
+
+It should also be noted that the results of this paragraph would be much more ``symmetric'' if we would not have required the descending order of the singular values $\sigma_i$.
+This did however reduce the number of cases to distinguish.
+
+\paragraph{Original coordinates.}
+The original function $\potentialEnergy$ has a minimum at $\R_0 = \bar{\mat{Y}} \bar{\mat{X}}^\top$.
+% We may decompose
+% \begin{align}
+%  \mat{P}
+%  = \bar{\mat{X}} \bar{\mat{\varSigma}} \bar{\mat{Y}}^\top 
+%  = \bar{\mat{X}} \wedMatOp(\mat{\Lambda}) \underbrace{\bar{\mat{X}}^\top \bar{\mat{X}}}_{\idMat[3]} \bar{\mat{Y}}^\top
+%  = \wedMatOp( \underbrace{\bar{\mat{X}} \mat{\Lambda} \bar{\mat{X}}^\top }_{\mat{K}}) \R_0^\top
+% \end{align}
+% with $\mat{K} \in \SymMatSP(3)$.
+The minimum $\R_0$ is strict, if, and only if, $\lambda_i > 0, i=1,2,3$ or equivalently if $\mat{K}$ is positive definite:
+\begin{align}
+ \mat{K} = \differential^2 \potentialEnergy (\R_0) = \veeMatOp(\mat{P}\R_0) = \bar{\mat{X}} \mat{\Lambda} \bar{\mat{X}}^\top.
+\end{align}
+Note that the minimum $\R_0$ and the Hessian $\mat{K}$ coincide with the special orthogonal decomposition $\mat{P}^\top = \R_0 \wedMatOp(\mat{K})$ introduced above.
+
+\paragraph{Prototype for a positive definite function.}
+Substracting the minimal value $\potentialEnergy(\R_0)$ from the function we obtain
+\begin{subequations}
+\begin{align}
+ \hat{\potentialEnergy}(\R) &= \potentialEnergy(\R) - \potentialEnergy(\R_0)
+\nonumber\\
+ &= -\tr(\bar{\mat{X}} \wedMatOp(\mat{\Lambda}) \bar{\mat{Y}}^\top \R) + \tfrac{1}{2}\tr(\mat{\Lambda})
+\nonumber\\
+ &= -\tr(\bar{\mat{X}} \wedMatOp(\mat{\Lambda}) \bar{\mat{X}}^\top \R_0^\top \R) + \tr(\wedMatOp(\mat{K}))
+\nonumber\\
+\label{eq:NavFunctionSO3}
+ &= \tr\big(\wedMatOp(\mat{K})(\idMat[3] - \R_0^\top \R)\big)
+\\
+ &= \tfrac{1}{2} \tr\big(\wedMatOp(\mat{K})(\R - \R_0)^\top (\R - \R_0)\big)
+\nonumber\\
+ &= \tfrac{1}{2}\norm[\wedMatOp(\mat{K})]{\R-\R_0}^2.
+\end{align}
+\end{subequations}
+We have the properties
+\begin{subequations}
+\begin{align}
+ \mat{K} &\geq 0& 
+ &\Leftrightarrow&
+ \hat{\potentialEnergy}(\R) &\geq 0
+\\
+ \mat{K} &> 0& 
+ &\Leftrightarrow&
+ \hat{\potentialEnergy}(\R) &\geq 0 \ \wedge \ \hat{\potentialEnergy}(\R) = 0 \, \Leftrightarrow \, \R = \R_0.
+\end{align}
+\end{subequations}
+The form \eqref{eq:NavFunctionSO3} is called the \textit{navigation function} for $\SpecialOrthogonalGroup(3)$ in \cite{Koditschek:TotalEnergy}.
+From its properties $\hat{\potentialEnergy}$ is an $\SpecialOrthogonalGroup(3)$ analogon to $\tfrac{1}{2}(\tuple{x}-\tuple{x}_0)^\top\mat{K}(\tuple{x}-\tuple{x}_0), \tuple{x},\tuple{x}_0\in\RealNum^3$.

@@ -1,0 +1,448 @@
+\section{Calculus}
+This section reviews some of the established tools of calculus for the context of redundant coordinates and nonholonomic velocity coordinates as introduced in the previous section.
+
+\subsection{Directional derivative and Hessian}
+Consider a function $\potentialEnergy : \RealNum^{\numCoord} \rightarrow \RealNum$ and a curve $\sysCoord : \RealNum \rightarrow \configSpace$.
+Since $\configSpace \subset \RealNum^{\numCoord}$, their composition $\potentialEnergy \circ \sysCoord = f : \RealNum \rightarrow \RealNum$ is a scalar function and has the the Taylor expansion
+\begin{multline}
+ \underbrace{\potentialEnergy(\sysCoord(t))}_{f(t)}
+ = \underbrace{\potentialEnergy(\sysCoord(0))}_{f(0)}
+  \, + \, t \underbrace{\pdiff[\potentialEnergy]{\sysCoordCoeff{\GidxI}}(\sysCoord(0)) \sysCoordCoeffd{\GidxI}(0)}_{\dot{f}(0)}
+ \\
+  + \tfrac{1}{2} t^2 \underbrace{\Big( \frac{\partial^2 \potentialEnergy}{\partial\sysCoordCoeff{\GidxII} \partial\sysCoordCoeff{\GidxI}}(\sysCoord(0)) \sysCoordCoeffd{\GidxI}(0) \sysCoordCoeffd{\GidxII}(0) + \pdiff[\potentialEnergy]{\sysCoordCoeff{\GidxI}}(\sysCoord(0)) \sysCoordCoeffdd{\GidxI}(0)\Big)}_{\ddot{f}(0)}
+  + \, \mathcal{O}(t^3).
+\end{multline}
+Now let the curve be parameterized by $\sysCoordd(t) = \kinMat(\sysCoord(t))\sysVel(t)$ and we use the shorthand notations $\sysCoordB = \sysCoord(0)$, $\sysVelB = \sysVel(0)$ and $\kinMatB = \kinMat(\sysCoord(0))$ to write
+\begin{multline}
+ \potentialEnergy(\sysCoord(t))
+ = \potentialEnergy(\sysCoordB)
+  + t \pdiff[\potentialEnergy]{\sysCoordCoeff{\GidxI}}(\sysCoordB) \kinMatCoeffB{\GidxI}{\LidxI} \sysVelCoeffB{\LidxI}
+\\
+  + \tfrac{1}{2} t^2 \Big( \frac{\partial^2 \potentialEnergy}{\partial\sysCoordCoeff{\GidxII} \partial\sysCoordCoeff{\GidxI}}(\sysCoordB) \kinMatCoeffB{\GidxI}{\LidxI} \kinMatCoeffB{\GidxII}{\LidxII} \sysVelCoeffB{\LidxI} \sysVelCoeffB{\LidxII} + \pdiff[\potentialEnergy]{\sysCoordCoeff{\GidxI}}(\sysCoordB) \Big( \pdiff[\kinMatCoeff{\GidxI}{\LidxI}]{\sysCoordCoeff{\GidxII}}(\sysCoordB) \kinMatCoeffB{\GidxII}{\LidxII} \sysVelCoeffB{\LidxI}\sysVelCoeffB{\LidxII} + \kinMatCoeffB{\GidxI}{\LidxI} \sysVelCoeffBd{\LidxI}\Big) \Big)
+  + \mathcal{O}(t^3)
+\end{multline}
+Introducing the notation
+\begin{align}\label{eq:DefBasisDiff}
+ \dirDiff{\LidxI} = \kinMatCoeff{\GidxI}{\LidxI} \pdiff{\sysCoordCoeff{\GidxI}}, \ \LidxI = 1,\ldots,\dimConfigSpace
+\end{align}
+for the derivative in the direction of the $\LidxI$-th basis vector, we can state the Taylor expansion as
+\begin{align}
+ \potentialEnergy(\sysCoord(t)) = \potentialEnergy(\sysCoordB)
+  + t \, \dirDiff{\LidxI} \potentialEnergy(\sysCoordB) \sysVelCoeffB{\LidxI}
+  + \tfrac{1}{2} t^2 \big( \dirDiff{\LidxI} \dirDiff{\LidxII} \potentialEnergy(\sysCoordB) \sysVelCoeffB{\LidxI} \sysVelCoeffB{\LidxII} + \dirDiff{\LidxI} \potentialEnergy(\sysCoordB) \sysVelCoeffBd{\LidxI} \big)
+  + \mathcal{O}(t^3).
+\label{eq:TaylorExpansionOne}
+\end{align}
+There are two more things we can derive from this equation:
+\begin{itemize}
+ \item 
+If $\dirDiff{\LidxI} \potentialEnergy(\sysCoordB) = 0, \LidxI=1,\ldots,\dimConfigSpace$ then $\sysCoordB$ is called a \textit{critical point} of $\potentialEnergy$.
+At a critical point the expansion \eqref{eq:TaylorExpansionOne} reduces to
+\begin{align}
+ \potentialEnergy(\sysCoord(t))
+ &= \potentialEnergy(\sysCoordB)
+  + \tfrac{1}{2} t^2 \underbrace{(\dirDiff{\LidxI} \dirDiff{\LidxII} \potentialEnergy)(\sysCoordB)}_{\bar{H}_{\LidxI\LidxII}} \sysVelCoeffB{\LidxI} \sysVelCoeffB{\LidxII}
+  + \mathcal{O}(t^3).
+\label{eq:TaylorExpansionTwo}
+\end{align}
+This relation holds for any sufficiently smooth curve $t\mapsto\sysCoord(t)$ through $\sysCoordB$ and consequently for any velocity vector $\sysVelB$ at the critical point.
+So if the matrix $\bar{\mat{H}}$ is positive (negative) definite, then $\sysCoordB$ is a local minimum (maximum) of $\potentialEnergy$.
+
+\item
+Assume the curve $t\mapsto\sysCoord(t)$ is a \textit{geodesic}, i.e.\ $\sysVelCoeffd{\LidxI} = -\ConnCoeff{\LidxI}{\LidxII}{\LidxIII} \sysVelCoeff{\LidxII} \sysVelCoeff{\LidxIII}$ with the connection coefficients $\ConnCoeff{\LidxI}{\LidxII}{\LidxIII}$ that will be discussed later.
+Plugging this into \eqref{eq:TaylorExpansionOne} we find a coordinate form of the \textit{Hessian tensor} $\differential^2 \potentialEnergy$ of the potential:
+\begin{align}
+ \potentialEnergy(\sysCoord(t))
+ &= \potentialEnergy(\sysCoordB)
+  + t (\dirDiff{\LidxI} \potentialEnergy)(\sysCoordB) \sysVelCoeffB{\LidxI}
+  + \tfrac{1}{2} t^2 \underbrace{\big( \dirDiff{\LidxI} \dirDiff{\LidxII} \potentialEnergy - \ConnCoeff{\LidxIII}{\LidxI}{\LidxII} \dirDiff{\LidxIII} \potentialEnergy \big)}_{(\differential^2\potentialEnergy)_{\LidxI\LidxII}}(\sysCoordB)  \sysVelCoeffB{\LidxI} \sysVelCoeffB{\LidxII}
+  + \mathcal{O}(t^3).
+\end{align}
+%The Hessian is a symmetric tensor, which follows from the definition of the connection coefficients \fixme{(??)}.
+At a critical point $\sysCoordB$, the Hessian of the potential is independent of the connection coefficients $\ConnCoeff{\LidxI}{\LidxII}{\LidxIII}$ and consequently of the underlying metric.
+There it coincides with the matrix $\bar{\mat{H}}$ defined in \eqref{eq:TaylorExpansionTwo}.
+\end{itemize}
+
+
+\subsection{Commutation coefficients}\label{sec:CommutationCoeff}
+For a function $\potentialEnergy : \RealNum^{\numCoord} \rightarrow \RealNum$ we are used to the fact that partial derivatives commute, \ie $\sfrac{\partial^2 \potentialEnergy}{\partial \sysCoordCoeff{\GidxI} \partial \sysCoordCoeff{\GidxII}} = \sfrac{\partial^2 \potentialEnergy}{\partial \sysCoordCoeff{\GidxII} \partial \sysCoordCoeff{\GidxI}}$.
+Unfortunately this is (in general) not the case for a directional derivatives like $\dirDiff{\LidxI}$ defined in \eqref{eq:DefBasisDiff}.
+Consequently we investigate the following commutation relation
+\begin{align}\label{eq:DerivationCommCoeff1}
+ \dirDiff{\LidxI} \dirDiff{\LidxII} \potentialEnergy - \dirDiff{\LidxII} \dirDiff{\LidxI} \potentialEnergy 
+ &= \kinMatCoeff{\GidxI}{\LidxI} \pdiff{\sysCoordCoeff{\GidxI}} \bigg( \kinMatCoeff{\GidxII}{\LidxII} \pdiff[\potentialEnergy]{\sysCoordCoeff{\GidxII}}\bigg) - \kinMatCoeff{\GidxII}{\LidxII} \pdiff{\sysCoordCoeff{\GidxII}} \bigg(\kinMatCoeff{\GidxI}{\LidxI} \pdiff[\potentialEnergy ]{\sysCoordCoeff{\GidxI}} \bigg)
+\nonumber\\
+ &= \kinMatCoeff{\GidxI}{\LidxI} \pdiff[\kinMatCoeff{\GidxII}{\LidxII}]{\sysCoordCoeff{\GidxI}} \pdiff[\potentialEnergy]{\sysCoordCoeff{\GidxII}} - \kinMatCoeff{\GidxII}{\LidxII} \pdiff[\kinMatCoeff{\GidxI}{\LidxI}]{\sysCoordCoeff{\GidxII}} \pdiff[\potentialEnergy ]{\sysCoordCoeff{\GidxI}}
+ + \kinMatCoeff{\GidxI}{\LidxI} \kinMatCoeff{\GidxII}{\LidxII} \underbrace{\bigg( \frac{\partial^2 \potentialEnergy}{\partial\sysCoordCoeff{\GidxI} \partial\sysCoordCoeff{\GidxII}} - \frac{\partial^2 \potentialEnergy}{\partial\sysCoordCoeff{\GidxII} \partial\sysCoordCoeff{\GidxI}}\bigg)}_{=\,0}
+\nonumber\\[-2ex]
+ &= \bigg(\kinMatCoeff{\GidxII}{\LidxI} \pdiff[\kinMatCoeff{\GidxI}{\LidxII}]{\sysCoordCoeff{\GidxII}} - \kinMatCoeff{\GidxII}{\LidxII} \pdiff[\kinMatCoeff{\GidxI}{\LidxI}]{\sysCoordCoeff{\GidxII}}\bigg) \pdiff[\potentialEnergy]{\sysCoordCoeff{\GidxI}}
+ .
+\end{align}
+Now using the identity \eqref{eq:ProjectionIdentity} with $\geoConstraintMatCoeff{\CidxI}{\GidxI} = \pdiff[\geoConstraintCoeff{\CidxI}]{\sysCoordCoeff{\GidxI}}$ and $\geoConstraintMatCoeff{\CidxI}{\GidxI} \kinMatCoeff{\GidxI}{\LidxI} = 0 \, \Rightarrow \, \geoConstraintMatCoeff{\CidxI}{\GidxI} \pdiff[\kinMatCoeff{\GidxI}{\LidxI}]{\sysCoordCoeff{\GidxII}} = -\pdiff[\geoConstraintMatCoeff{\CidxI}{\GidxI}]{\sysCoordCoeff{\GidxII}} \kinMatCoeff{\GidxI}{\LidxI}$ to shape this expressions a bit further
+\begin{align}\label{eq:DerivationCommCoeff2}
+ \dirDiff{\LidxI} \dirDiff{\LidxII} \potentialEnergy - \dirDiff{\LidxII} \dirDiff{\LidxI} \potentialEnergy 
+ &= \bigg(\kinMatCoeff{\GidxII}{\LidxI} \pdiff[\kinMatCoeff{\GidxI}{\LidxII}]{\sysCoordCoeff{\GidxII}} - \kinMatCoeff{\GidxII}{\LidxII} \pdiff[\kinMatCoeff{\GidxI}{\LidxI}]{\sysCoordCoeff{\GidxII}}\bigg) \overbrace{(\kinMatCoeff{\GidxIII}{\LidxIII} \kinBasisMatCoeff{\LidxIII}{\GidxI} + \InvGeoConstraintMatCoeff{\GidxIII}{\CidxI}\geoConstraintMatCoeff{\CidxI}{\GidxI})}^{\delta^{\GidxIII}_{\GidxI}}  \pdiff[\potentialEnergy]{\sysCoordCoeff{\GidxIII}}
+\nonumber\\
+ &= \bigg(\kinMatCoeff{\GidxII}{\LidxI} \pdiff[\kinMatCoeff{\GidxI}{\LidxII}]{\sysCoordCoeff{\GidxII}} - \kinMatCoeff{\GidxII}{\LidxII} \pdiff[\kinMatCoeff{\GidxI}{\LidxI}]{\sysCoordCoeff{\GidxII}}\bigg) \kinBasisMatCoeff{\LidxIII}{\GidxI} \kinMatCoeff{\GidxIII}{\LidxIII} \pdiff[\potentialEnergy]{\sysCoordCoeff{\GidxIII}}
+ - \bigg(\kinMatCoeff{\GidxII}{\LidxI} \kinMatCoeff{\GidxI}{\LidxII} \pdiff[\geoConstraintMatCoeff{\CidxI}{\GidxI}]{\sysCoordCoeff{\GidxII}} - \kinMatCoeff{\GidxII}{\LidxII} \kinMatCoeff{\GidxI}{\LidxI} \pdiff[\geoConstraintMatCoeff{\CidxI}{\GidxI}]{\sysCoordCoeff{\GidxII}} \bigg) \InvGeoConstraintMatCoeff{\GidxIII}{\CidxI} \pdiff[\potentialEnergy]{\sysCoordCoeff{\GidxIII}}
+\nonumber\\
+ &= \underbrace{\bigg(\kinMatCoeff{\GidxII}{\LidxI} \pdiff[\kinMatCoeff{\GidxI}{\LidxII}]{\sysCoordCoeff{\GidxII}} - \kinMatCoeff{\GidxII}{\LidxII} \pdiff[\kinMatCoeff{\GidxI}{\LidxI}]{\sysCoordCoeff{\GidxII}}\bigg) \kinBasisMatCoeff{\LidxIII}{\GidxI}}_{\BoltzSym{\LidxIII}{\LidxI}{\LidxII}} \underbrace{\kinMatCoeff{\GidxIII}{\LidxIII} \pdiff[\potentialEnergy]{\sysCoordCoeff{\GidxIII}}}_{\dirDiff{\LidxIII} \potentialEnergy}
+ - \kinMatCoeff{\GidxII}{\LidxII} \kinMatCoeff{\GidxI}{\LidxI} \underbrace{\bigg(\frac{\partial^2\geoConstraintCoeff{\CidxI}}{\partial\sysCoordCoeff{\GidxI}\partial\sysCoordCoeff{\GidxII}} - \frac{\partial^2\geoConstraintCoeff{\CidxI}}{\partial\sysCoordCoeff{\GidxII}\partial\sysCoordCoeff{\GidxI}} \bigg)}_{=\,0} \InvGeoConstraintMatCoeff{\GidxIII}{\CidxI} \pdiff[\potentialEnergy]{\sysCoordCoeff{\GidxIII}}
+ .
+\end{align}
+Since this relation holds for any function $\potentialEnergy$ we can state it in operator form and introduce the \textit{commutation coefficients} $\BoltzSym{\LidxIII}{\LidxI}{\LidxII}$ as
+\begin{align}\label{eq:DefCommutationCoeff}
+ \dirDiff{\LidxI} \dirDiff{\LidxII} - \dirDiff{\LidxII} \dirDiff{\LidxI} = \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \dirDiff{\LidxIII},
+\qquad
+ \BoltzSym{\LidxIII}{\LidxI}{\LidxII} = \big(\dirDiff{\LidxI} \kinMatCoeff{\GidxI}{\LidxII} - \dirDiff{\LidxII} \kinMatCoeff{\GidxI}{\LidxI} \big) ({\kinMatCoeff{}{}}^+)^{\LidxIII}_{\GidxI}.
+\end{align}
+Note the skew symmetry $\BoltzSym{\LidxIII}{\LidxI}{\LidxII} = -\BoltzSym{\LidxIII}{\LidxII}{\LidxI}$.
+
+\begin{Example}\label{ex:BoltzmannSymSattelite}
+The commutation coefficients $\BoltzSym{\LidxIII}{\LidxI}{\LidxII}$ associated with the kinematics matrix $\kinMat$ from \eqref{eq:KinMatSO3} are
+\begin{align*}
+ \BoltzSym{1}{2}{3} = \BoltzSym{2}{3}{1} = \BoltzSym{3}{1}{2} &= +1,
+\\
+ \BoltzSym{1}{3}{2} = \BoltzSym{2}{1}{3} = \BoltzSym{3}{2}{1} &= -1,
+\\
+ \BoltzSym{1}{1}{1} = \BoltzSym{1}{1}{2} = \BoltzSym{1}{1}{3} = \BoltzSym{1}{2}{1} = \BoltzSym{1}{2}{2} = \BoltzSym{1}{3}{1} = \BoltzSym{1}{3}{3} &= 0,
+\\
+ \BoltzSym{2}{1}{1} = \BoltzSym{2}{1}{2} = \BoltzSym{2}{2}{1} = \BoltzSym{2}{2}{2} = \BoltzSym{2}{2}{3} = \BoltzSym{2}{3}{2} = \BoltzSym{2}{3}{3} &= 0,
+\\
+ \BoltzSym{3}{1}{1} = \BoltzSym{3}{1}{3} = \BoltzSym{3}{2}{2} = \BoltzSym{3}{2}{3} = \BoltzSym{3}{3}{1} = \BoltzSym{3}{3}{2} = \BoltzSym{3}{3}{3} &= 0.
+\end{align*}
+This coincides with the three dimensional Levi-Civita symbol commonly defined as
+\begin{align}\label{eq:BoltzmannSymSattelite}
+ \BoltzSym{\LidxIII}{\LidxI}{\LidxII} =
+ \left\{
+ \begin{array}{rl}
+  +1, & (\LidxI,\LidxII,\LidxIII) \ \text{even permutation of} \ (1,2,3) \\
+  -1, & (\LidxI,\LidxII,\LidxIII) \ \text{odd permutation of} \ (1,2,3) \\
+  0, & \text{else}
+ \end{array}
+ \right.
+ .
+\end{align}
+It is related to the 3 dimensional \textit{cross product} by $\tuple{a}, \tuple{b} \in \RealNum^3 \, : \, [\BoltzSym{\LidxIII}{\LidxI}{\LidxII} a^{\LidxI} b^{\LidxII}]_{\LidxIII=1..3} = \tuple{a} \times \tuple{b}$ and to the previously defined $\wedOp$ operator by $\tuple{a} \in \RealNum^3 \, : \, [\BoltzSym{\LidxIII}{\LidxI}{\LidxII} a^{\LidxI}]_{\LidxII,\LidxIII=1..3} = \wedOp(\tuple{a})$.
+\end{Example}
+
+The right hand side of \eqref{eq:DefCommutationCoeff} appears in the context of Lagrange's equation in \cite[p.\ 687]{Boltzmann:NonholCoord} and \cite[p.\ 10]{Hamel:LagrangeEuler} for the case of minimal configuration coordinates and consequently with a square matrix $\kinMat$.
+In the contemporary literature on this context, the quantities $\BoltzSym{\LidxIII}{\LidxI}{\LidxII}$ are sometimes called the \textit{Boltzmann three-index symbols} \cite[sec.\,1.8]{Lurie:AnalyticalMechanics} or \textit{Hamel coefficients} \cite[p.\,75]{Bremer:ElasticMultibodyDynamics}.
+The left hand side of \eqref{eq:DefCommutationCoeff} appears in the context of tensor algebra in \cite[Box 8.4]{Misner:Gravitation} where $\BoltzSym{\LidxIII}{\LidxI}{\LidxII}$ are called the \textit{commutation coefficients}.
+From the way $\BoltzSym{\LidxIII}{\LidxI}{\LidxII}$ is defined here, this naming seems most fitting and will be used throughout this work. 
+
+The case of redundant configuration coordinates and consequently a non-square matrix $\kinMat$ as derived above, is not established in the literature to the best of the authors knowledge.
+
+It is worth noting that the commutation coefficients are \textit{invariant} to the choice of configuration coordinates $\sysCoord$, even though the coordinates appear explicitly in the definition:
+For a change of configuration coordinates $\sysCoord = f(\sysCoordW)$ the commutation symbols transform like $\BoltzSymW{\LidxIII}{\LidxI}{\LidxII}(\sysCoordW) = \BoltzSym{\LidxIII}{\LidxI}{\LidxII}(f(\sysCoordW))$.
+This might be obvious from a geometric point of view, but the explicit calculation of the coordinate transformation is shown in see fixme{[sec:TrafoRules]}.
+It will even turn out that for most of our examples the coefficients will be constants.
+
+The commutation coefficients $\BoltzSym{\LidxI}{\LidxII}{\LidxIII}$ vanish if the corresponding velocity coordinates $\sysVelCoeff{\LidxI}$ are \textit{integrable}, \ie
+\begin{align}
+ \exists \ \pi^\LidxI \, : \, \dot{\pi}^\LidxI &= \sysVelCoeff{\LidxI} = \kinBasisMatCoeff{\LidxI}{\GidxI} \sysCoordCoeffd{\GidxI}&
+ &\Rightarrow&
+  \kinBasisMatCoeff{\LidxI}{\GidxI} &= \pdiff[\pi^i]{\sysCoordCoeff{\GidxII}}
+\nonumber\\
+&&
+&\Rightarrow&
+ \pdiff[\kinBasisMatCoeff{\LidxI}{\GidxI}]{\sysCoordCoeff{\GidxI}}
+ &= \frac{\partial^2 \pi^i}{\partial \sysCoordCoeff{\GidxII} \partial \sysCoordCoeff{\GidxI}}
+ = \pdiff[\kinBasisMatCoeff{\LidxI}{\beta}]{\sysCoordCoeff{\GidxI}},&
+&\Rightarrow&
+ \BoltzSym{\LidxI}{\LidxII}{\LidxIII} &= 0.
+\end{align}
+This is not the case in general.
+Nevertheless the quantities $\pi$ are introduced as \textit{nonholonomic coordinates} in \cite{Boltzmann:NonholCoord} or as \textit{quasi coordinates} in \cite[sec.\,1.5]{Lurie:AnalyticalMechanics}.
+Then we could write $\partial_\LidxI (\partial_\LidxII f) - \partial_\LidxII (\partial_\LidxI f) = \sfrac{\partial^2 f}{\partial \pi^\LidxI \partial \pi^\LidxII} - \sfrac{\partial^2 f}{\partial \pi^\LidxII \partial \pi^\LidxI} \neq 0$ what might lead to the conception that partial derivatives do not commute.
+The commutativity clearly holds, the issue is rather $\pi$ are no proper coordinates.
+To avoid confusion of this kind we do not pick up this notation here.
+See also \cite{Hamel:virtuelleVerschiebungen} for an extensive discussion on this topic.
+
+
+\subsection{Linearization about a trajectory}\label{sec:LinAboutTraj}
+Let $\sysCoordB : [t_1, t_2] \rightarrow \configSpace$ be a smooth curve with the velocity coordinates $\sysVelB : [t_1, t_2] \rightarrow \RealNum^{\dimConfigSpace} : t \mapsto \kinMat^+(\sysCoordB(t)) \sysCoordBd(t)$.
+For a small deviation $\sysCoord \approx \sysCoordB$ with $\sysCoord \in \configSpace$ we may approximate the geometric constraint as
+\begin{align}
+ \geoConstraint(\sysCoord) \approx \underbrace{\geoConstraint(\sysCoordB)}_{=\,\tuple{0}} + \pdiff[\geoConstraint]{\sysCoord}(\sysCoordB) (\sysCoord - \sysCoordB) = \tuple{0}.
+\end{align}
+Since this constraint is affine w.r.t.\ $\sysCoord$ it is reasonable to use a the basis $\LinErrorCoord(t) \in \RealNum^{\dimConfigSpace}$ for the deviated configuration coordinates:
+\begin{align}
+ \sysCoord = \sysCoordB + \kinMat(\sysCoordB) \LinErrorCoord,
+\qquad
+ \LinErrorCoord = \kinMat^+(\sysCoordB) (\sysCoord - \sysCoordB),
+\end{align}
+For the velocity coordinates $\sysVel$ of the deviated curve $\sysCoord$ we use again the first order approximation and $\kinBasisMat = \kinMat^+$:
+\begin{align}
+ \sysVelCoeff{\LidxI} &= \kinBasisMatCoeff{\LidxI}{\GidxI}(\sysCoord) \sysCoordCoeffd{\GidxI}
+\nonumber\\
+ &\approx \kinBasisMatCoeff{\LidxI}{\GidxI}(\sysCoordB + \kinMat(\sysCoordB) \LinErrorCoord) \tdiff{t} \big( \sysCoordCoeffB{\GidxI} + \kinMatCoeff{\GidxI}{\LidxII}(\sysCoordB) \, \LinErrorCoordCoeff{\LidxII} \big)
+% \big( \sysCoordCoeffBd{\GidxI} + \tpdiff[\kinMatCoeff{\GidxI}{\LidxII}]{\sysCoordCoeff{\GidxII}}(\sysCoordB) \, \sysCoordCoeffRd{\GidxII} \LinErrorCoordCoeff{\LidxII} + \kinMatCoeff{\GidxI}{\LidxII}(\sysCoordB) \, \LinErrorCoordCoeffd{\LidxII} \big)
+\nonumber\\
+ &\approx \kinBasisMatCoeff{\LidxI}{\GidxI}(\sysCoordB) \big( \sysCoordCoeffRd{\GidxI} + \tpdiff[\kinMatCoeff{\GidxI}{\LidxII}]{\sysCoordCoeff{\GidxII}}(\sysCoordB) \, \sysCoordCoeffRd{\GidxII} \LinErrorCoordCoeff{\LidxII} + \kinMatCoeff{\GidxI}{\LidxII}(\sysCoordB) \, \LinErrorCoordCoeffd{\LidxII} \big)
+  + \tpdiff[\kinBasisMatCoeff{\LidxI}{\GidxI}]{\sysCoordCoeff{\GidxII}}(\sysCoordB)  \kinMatCoeff{\GidxII}{\LidxII}(\sysCoordB) \, \LinErrorCoordCoeff{\LidxII} \sysCoordCoeffRd{\GidxI}
+\nonumber\\
+%  &= \underbrace{\kinBasisMatCoeff{\LidxI}{\GidxI}(\sysCoordB) \sysCoordCoeffRd{\GidxI}}_{\sysVelCoeffB{\LidxI}}
+%   + \underbrace{\kinBasisMatCoeff{\LidxI}{\GidxI}(\sysCoordB) \kinMatCoeff{\GidxI}{\LidxII}(\sysCoordB)}_{\delta^\LidxI_\LidxII} \LinErrorCoordCoeffd{\LidxII}
+%   + \underbrace{\big( \tpdiff[\kinBasisMatCoeff{\LidxI}{\GidxI}]{\sysCoordCoeff{\GidxII}}(\sysCoordB) - \tpdiff[\kinBasisMatCoeff{\LidxI}{\GidxII}]{\sysCoordCoeff{\GidxI}}(\sysCoordB) \big) \kinMatCoeff{\GidxII}{\LidxII}(\sysCoordB)  \kinMatCoeff{\GidxI}{\LidxIII}(\sysCoordB)}_{\BoltzSym{\LidxI}{\LidxIII}{\LidxII}(\sysCoordB)} \sysVelCoeffB{\LidxIII} \LinErrorCoordCoeff{\LidxII}
+% \nonumber\\
+ &= \sysVelCoeffB{\LidxI} + \LinErrorCoordCoeffd{\LidxI} + \BoltzSym{\LidxI}{\LidxIII}{\LidxII}(\sysCoordB) \sysVelCoeffB{\LidxIII} \LinErrorCoordCoeff{\LidxII}
+\end{align}
+Using these results we may formulate an approximation of a general smooth function $f$ along the trajectory $t \mapsto \sysCoordB(t)$ as 
+\begin{align}
+ f(\sysCoord, \sysVel, \sysVeld) 
+  &\approx f(\sysCoordB, \sysVelB, \sysVelBd) 
+  + \pdiff[f]{\sysCoordCoeff{\GidxI}}(\sysCoordB, \sysVelB, \sysVelBd) (\sysCoordCoeff{\GidxI} - \sysCoordCoeffB{\GidxI})
+  + \pdiff[f]{\sysVelCoeff{\LidxI}}(\sysCoordB, \sysVelB, \sysVelBd) (\sysVelCoeff{\LidxI} - \sysVelCoeffB{\LidxI})
+\nonumber\\
+  &\qquad + \pdiff[f]{\sysVelCoeffd{\LidxI}}(\sysCoordB, \sysVelB, \sysVelBd) (\sysVelCoeffd{\LidxI} - \sysVelCoeffBd{\LidxI})
+\nonumber\\
+  &\approx f(\sysCoordB, \sysVelB, \sysVelBd) 
+  + (\dirDiff{\LidxI}f) (\sysCoordB, \sysVelB, \sysVelBd) \LinErrorCoordCoeff{\LidxI}
+  + \pdiff[f]{\sysVelCoeff{\LidxI}}(\sysCoordB, \sysVelB, \sysVelBd) (\LinErrorCoordCoeffd{\LidxI} + \BoltzSym{\LidxI}{\LidxIII}{\LidxII}(\sysCoordB) \sysVelCoeffB{\LidxIII} \LinErrorCoordCoeff{\LidxII})
+\nonumber\\
+  &\qquad 
+  + \pdiff[f]{\sysVelCoeffd{\LidxI}}(\sysCoordB, \sysVelB, \sysVelBd) (\LinErrorCoordCoeffdd{\LidxI} + \BoltzSym{\LidxI}{\LidxIII}{\LidxII}(\sysCoordB) \sysVelCoeffB{\LidxIII} \LinErrorCoordCoeffd{\LidxII}  + \BoltzSym{\LidxI}{\LidxIII}{\LidxII}(\sysCoordB) \sysVelCoeffBd{\LidxIII} \LinErrorCoordCoeff{\LidxII}  + \dirDiff{\LidxIV}\BoltzSym{\LidxI}{\LidxIII}{\LidxII}(\sysCoordB) \sysVelCoeffB{\LidxIV} \sysVelCoeffB{\LidxIII} \LinErrorCoordCoeff{\LidxII})
+\nonumber\\
+ &= \bar{f} + \bar{F}^0_\LidxI \LinErrorCoordCoeff{\LidxI} + \bar{F}^1_\LidxI \LinErrorCoordCoeffd{\LidxI} + \bar{F}^2_\LidxI \LinErrorCoordCoeffdd{\LidxI}
+\end{align}
+where
+\begin{align*}
+ \bar{f} &= f(\sysCoordB, \sysVelB, \sysVelBd),
+\\
+ \bar{F}^0_\LidxI &= (\dirDiff{\LidxI}f) (\sysCoordB, \sysVelB, \sysVelBd) + \pdiff[f]{\sysVelCoeff{\LidxII}}(\sysCoordB, \sysVelB, \sysVelBd) \BoltzSym{\LidxII}{\LidxIII}{\LidxI}(\sysCoordB) \sysVelCoeffB{\LidxIII} + \pdiff[f]{\sysVelCoeffd{\LidxII}}(\sysCoordB, \sysVelB, \sysVelBd) \big( \BoltzSym{\LidxII}{\LidxIII}{\LidxI}(\sysCoordB) \sysVelCoeffBd{\LidxIII} + \dirDiff{\LidxIV}\BoltzSym{\LidxII}{\LidxIII}{\LidxI}(\sysCoordB) \sysVelCoeffB{\LidxIV} \sysVelCoeffB{\LidxIII} \big),
+\\
+ \bar{F}^1_\LidxI &= \pdiff[f]{\sysVelCoeff{\LidxI}}(\sysCoordB, \sysVelB, \sysVelBd) + \pdiff[f]{\sysVelCoeffd{\LidxII}}(\sysCoordB, \sysVelB, \sysVelBd) \BoltzSym{\LidxII}{\LidxIII}{\LidxI}(\sysCoordB) \sysVelCoeffB{\LidxIII},
+\\
+ \bar{F}^2_\LidxI &= \pdiff[f]{\sysVelCoeffd{\LidxI}}(\sysCoordB, \sysVelB, \sysVelBd).
+\end{align*}
+Evidently, the expressions simplify significantly is the velocity coordinates are holonomic, i.e. $\BoltzSym{}{}{} = 0$, or if the approximation is about a static point $\sysCoordB = \const \Rightarrow \sysVel = \tuple{0}$.
+
+
+\subsection{Calculus of variations}\label{sec:CalculusOfVariations}
+The calculus of variations is concerned with the extremals of functionals, i.e. functions of functions. %\cite[sec.\,12]{Arnold:MathematicalMethodsOfClassicalMechanics}.
+For the particular context of classical mechanics we are interested in the curves $t \mapsto \sysCoord(t)$ for which the functional
+\begin{align}\label{eq:Functional}
+ \mathcal{J}[\sysCoord] = \int_{t_1}^{t_2} \Lagrangian(\sysCoord(t), \sysVel(t), t) \, \d t
+% \tag{$\bigstar$}
+\end{align}
+for given boundary conditions $\sysCoord(t_1)$ and $\sysCoord(t_2)$ is \textit{stationary}.
+The \textit{Lagrangian} $\Lagrangian$ is here a function of the configuration coordinates $\sysCoord$, its derivatives $\sysCoordd = \kinMat \sysVel$ parameterized in the velocity coordinates $\sysVel$ and may depend explicitly on the time $t$ as well.
+
+For the standard case, $\sysCoord = \genCoord$ and $\sysVel = \genCoordd$, a derivation of may be found in e.g. \cite[chap.\,4, §3]{CourantHilbert1}, \cite[ch.\,II]{Lanczos:Variational} or \cite[sec.\,12]{Arnold:MathematicalMethodsOfClassicalMechanics}.
+For the present case we modify the well known derivation slightly:
+Suppose that $\sysCoord : [t_1, t_2] \mapsto \configSpace$ is the solution to the variational problem.
+With the function $\varFkt(t) \in \RealNum^{\numCoord}$ and the parameter $\varParam\in\RealNum$ we define a perturbation to it by
+\begin{align}
+ \sysCoordB = \sysCoord + \varParam\varFkt.
+\end{align}
+We need $\sysCoordB(t) \in \configSpace$ and consequently $\geoConstraint(\sysCoordB)=\tuple{0}$.
+Assuming $\varParam$ to be sufficiently small, we may use the first order approximation analog to \autoref{sec:LinAboutTraj}:
+With the \textit{variation coordinates} $\varCoord : [t_1,t_2] \rightarrow \RealNum^{\dimConfigSpace}$ we parameterize $\varFkt = \kinMat(\sysCoord)\varCoord$.
+Using the inverse kinematic relation $\sysVel = \kinBasisMat(\sysCoord)\sysCoordd$ we can write the functional for the varied path as
+\begin{align}
+ \mathcal{J}[\sysCoordB] = \int_{t_1}^{t_2} \Lagrangian\big(\sysCoord + \varParam\kinMat(\sysCoord)\varCoord, \kinBasisMat(\sysCoord + \varParam\kinMat(\sysCoord)\varCoord) \tdiff{t}(\sysCoord + \varParam\kinMat(\sysCoord)\varCoord), t\big) \, \d t =: \mathcal{P}(\varParam)
+\end{align}
+Now if $\sysCoord(t)$ is indeed the solution to the variational problem, then $\mathcal{P}(\varParam)$ must have a minimum at $\mathcal{P}(0)$ and consequently $\spdiff[\mathcal{P}]{\varParam}(0) = 0$.
+Evaluation of this ``ordinary'' differentiation yields
+\begin{align}
+ 0 = \pdiff[\mathcal{P}]{\varParam} \Big|_{\varParam=0} &= \int_{t_1}^{t_2} \bigg( \pdiff[\Lagrangian]{\sysCoordCoeff{\GidxI}} \kinMatCoeff{\GidxI}{\LidxI} \varCoordCoeff{\LidxI} + \pdiff[\Lagrangian]{\sysVelCoeff{\LidxI}} \bigg( \pdiff[\kinBasisMatCoeff{\LidxI}{\GidxI}]{\sysCoordCoeff{\GidxII}} \kinMatCoeff{\GidxII}{\LidxII} \varCoordCoeff{\LidxII} \sysCoordCoeffd{\GidxI} + \kinBasisMatCoeff{\LidxI}{\GidxI} \pdiff[\kinMatCoeff{\GidxI}{\LidxII}]{\sysCoordCoeff{\GidxII}} \varCoordCoeff{\LidxII} \sysCoordCoeffd{\GidxII} + \varCoordCoeffd{\LidxI}\bigg) \bigg) \, \d t
+\nonumber\\
+ &= \int_{t_1}^{t_2} \bigg( \dirDiff{\LidxI}\Lagrangian \, \varCoordCoeff{\LidxI} + \pdiff[\Lagrangian]{\sysVelCoeff{\LidxI}} \big( \BoltzSym{\LidxI}{\LidxIII}{\LidxII} \varCoordCoeff{\LidxII} \sysVelCoeff{\LidxIII} + \varCoordCoeffd{\LidxI} \big) \bigg) \, \d t
+\end{align}
+where we have found again the commutation coefficients $\BoltzSym{\LidxI}{\LidxIII}{\LidxII}$ previously derived in \eqref{eq:DefCommutationCoeff}.
+% By the definition of the variation above, it is clear that it commutes with differentiation and integration, frequently quoted as $\delta \d = \d \delta$.
+% Furthermore we get the relation
+% \begin{align}
+%  &&
+%  \delta \sysCoordCoeffd{\GidxI} &= \tdiff{t} \delta \sysCoordCoeff{\GidxI}&
+% \nonumber\\
+%  &\Leftrightarrow&
+%  \delta \kinMatCoeff{\GidxI}{\LidxI} \sysVelCoeff{\LidxI} + \kinMatCoeff{\GidxI}{\LidxI} \delta\sysVelCoeff{\LidxI} &= \kinMatCoeffd{\GidxI}{\LidxI} \varCoordCoeff{\LidxI} + \kinMatCoeff{\GidxI}{\LidxI} \varCoordCoeffd{\LidxI}
+% % \nonumber\\
+% %  &\Leftrightarrow&
+% %  \dirDiff{\LidxII} \kinMatCoeff{\GidxI}{\LidxI} \varCoordCoeff{\LidxII} \sysVelCoeff{\LidxI} + \kinMatCoeff{\GidxI}{\LidxI} \delta\sysVelCoeff{\LidxI} &= \dirDiff{\LidxII} \kinMatCoeff{\GidxI}{\LidxI} \sysVelCoeff{\LidxII} \varCoordCoeff{\LidxI} + \kinMatCoeff{\GidxI}{\LidxI} \varCoordCoeffd{\LidxI}&
+% % \GidxI &= 1,\ldots,\numCoord
+% \nonumber\\
+%  &\Leftrightarrow&
+%  \kinMatCoeff{\GidxI}{\LidxI} \big( \delta\sysVelCoeff{\LidxI} - \varCoordCoeffd{\LidxI} \big) &= \big( \dirDiff{\LidxI} \kinMatCoeff{\GidxI}{\LidxII} - \dirDiff{\LidxII} \kinMatCoeff{\GidxI}{\LidxI} \big) \varCoordCoeff{\LidxII} \sysVelCoeff{\LidxI},&
+%  \GidxI &= 1,\ldots,\numCoord
+% \nonumber\\
+%  &\Leftrightarrow&
+%  \delta\sysVelCoeff{\LidxIII} - \varCoordCoeffd{\LidxIII} &= \underbrace{({\kinMatCoeff{}{}}^+)^{\LidxIII}_{\GidxI} \big( \dirDiff{\LidxI} \kinMatCoeff{\GidxI}{\LidxII} - \dirDiff{\LidxII} \kinMatCoeff{\GidxI}{\LidxI} \big)}_{\BoltzSym{\LidxIII}{\LidxI}{\LidxII}} \varCoordCoeff{\LidxII} \sysVelCoeff{\LidxI},&
+%  \LidxI &= 1,\ldots,\dimConfigSpace
+% \end{align}
+% where we found again the \textit{commutation coefficients} $\BoltzSym{\LidxIII}{\LidxI}{\LidxII}$, previously derived in \eqref{eq:DefCommutationCoeff}.
+Integrating by parts with the boundary conditions $\varCoord(t_1) = \varCoord(t_2) = \tuple{0}$ gives
+\begin{align}
+ \int_{t_0}^{t_1} \varCoordCoeff{\LidxI} \left( \kinMatCoeff{\GidxI}{\LidxI} \pdiff[\Lagrangian]{\sysCoordCoeff{\GidxI}} - \diff{t} \pdiff[\Lagrangian]{\sysVelCoeff{\LidxI}} - \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \sysVelCoeff{\LidxII} \pdiff[\Lagrangian]{\sysVelCoeff{\LidxIII}} \right) \, \d t = 0.
+\end{align}
+Since the variation coordinates $\varCoordCoeff{\LidxI}, i=1,\ldots,\dimConfigSpace$ are independent by definition, the \textit{fundamental lemma of the calculus of variations} (see e.g. \cite[p.\,57]{Arnold:MathematicalMethodsOfClassicalMechanics} or \cite[p.\,166]{CourantHilbert1}) states that, for the integral to vanish, the terms in the brackets have to vanish.
+Together with the kinematic equation, we have the following necessary conditions for the functional \eqref{eq:Functional} to be stationary:
+\begin{subequations}\label{eq:MyEulerLagrange}
+\begin{align}
+ \sysCoordCoeffd{\GidxI} = \kinMatCoeff{\GidxI}{\LidxI} \sysVelCoeff{\LidxI}, \qquad
+ \GidxI &= 1\ldots\numCoord,
+\\
+ \diff{t} \pdiff[\Lagrangian]{\sysVelCoeff{\LidxI}} + \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \sysVelCoeff{\LidxII} \pdiff[\Lagrangian]{\sysVelCoeff{\LidxIII}} - \dirDiff{\LidxI}\Lagrangian = 0, \qquad
+ \LidxI &= 1,\ldots,\dimConfigSpace.
+\end{align}
+\end{subequations}
+%This, combined with the kinematic relation $\sysCoordCoeffd{\GidxI} = \kinMatCoeff{\GidxI}{\LidxI} \sysVelCoeff{\LidxI}, \GidxI=1\ldots\numCoord$, is the necessary condition for the functional \eqref{eq:Functional} to be stationary.
+
+For the special case $\sysCoord(t)=\genCoord(t)\in\RealNum^\dimConfigSpace$ and $\sysVel(t)=\genCoordd(t)$ we have $\kinMat=\idMat[\dimConfigSpace]$ and $\BoltzSym{}{}{}=0$.
+Then \eqref{eq:MyEulerLagrange} coincides with the \textit{Euler-Lagrange equation}.
+
+\begin{Example}
+Consider the configuration coordinates $\sysCoord = [\Rx^\top, \Ry^\top, \Rz^\top]^\top$ and the velocity coordinates $\sysVel = \w$ related by $\Rd = \R \wedOp(\w)$.
+For the Lagrangian 
+\begin{align}
+\Lagrangian = \tfrac{1}{2} \w^\top \bodyMOI{}{} \w 
+ %+ \tr(\bodyMOSp{}{}(\idMat[3]-\R)) 
+\end{align}
+and taking into account the results from Example \fixme{(??)} we obtain
+and \ref{ex:BoltzmannSymSattelite} we obtain %\ref{ex:PotentialSO3}
+\begin{align}
+ \Big[ \diff{t} \pdiff[\Lagrangian]{\sysVelCoeff{\LidxI}} + \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \sysVelCoeff{\LidxII} \pdiff[\Lagrangian]{\sysVelCoeff{\LidxIII}} - \kinMatCoeff{\GidxI}{\LidxI} \pdiff[\Lagrangian]{\sysCoordCoeff{\GidxI}} \Big]_{\LidxI=1,2,3}
+ = \bodyMOI{}{} \wdot + \w \times \bodyMOI{}{} \w
+ %+ \veeTwoOp(\bodyMOSp{}{} \R).
+\end{align}
+\end{Example}
+
+
+\subsection{Hamilton's equations}\label{sec:HamiltonsEquations}
+\paragraph{Legendre transformation.}
+Define the \textit{generalized momentum} $\genMomentum$ as
+\begin{align}\label{eq:Legendre11}
+ \genMomentumCoeff{\LidxI} &= \pdiff[\Lagrangian]{\sysVelCoeff{\LidxI}}, \quad \LidxI = 1,\ldots,\dimConfigSpace
+% \Hamiltonian(\sysCoord, \sysVel, t) &= \genMomentumCoeff{\LidxI} \sysVelCoeff{\LidxI} - \Lagrangian(\sysCoord, \sysVel, t) = \Hamiltonian(\sysCoord, \genMomentum, t)
+% \Hamiltonian &= \genMomentumCoeff{\LidxI} \sysVelCoeff{\LidxI} - \Lagrangian
+ .
+\end{align}
+and assume that these relations can be inverted to express the velocity $\sysVel = \tuple{\zeta}(\sysCoord, \genMomentum, t)$ in terms of the momentum.
+Then define the \textit{Hamiltonian} $\Hamiltonian$ as
+\begin{align}\label{eq:Legendre12}
+ \Hamiltonian(\sysCoord, \genMomentum, t) 
+ = \Big[ \genMomentumCoeff{\LidxI} \sysVelCoeff{\LidxI} - \Lagrangian(\sysCoord, \sysVel, t) \Big]_{\sysVel = \tuple{\zeta}(\sysCoord, \genMomentum, t)}
+ = \genMomentumCoeff{\LidxI} \zeta^{\LidxI}(\sysCoord, \genMomentum, t) - \Lagrangian(\sysCoord, \tuple{\zeta}(\sysCoord, \genMomentum, t), t)
+ .
+\end{align}
+The definitions \eqref{eq:Legendre11} and \eqref{eq:Legendre12} describe the \textit{Legendre transformation} $(\Lagrangian, \sysVel) \rightarrow (\Hamiltonian, \genMomentum)$, see \cite[ch.\,VI.1]{Lanczos:Variational} or \cite[sec.\,14]{Arnold:MathematicalMethodsOfClassicalMechanics} for some geometric background.
+Note that the configuration coordinates $\sysCoord$ and the time $t$ do not participate in the transformation.
+
+\paragraph{Hamilton's canonical equations.}
+Evaluation of the differentials of \eqref{eq:Legendre12}, we get the relations
+\begin{subequations}\label{eq:Legendre2}
+\begin{align}
+ \partial_{\LidxII} \Hamiltonian &= \genMomentumCoeff{\LidxI} \partial_{\LidxII}\zeta^{\LidxI} - \partial_{\LidxII} \Lagrangian - \pdiff[\Lagrangian]{\sysVelCoeff{\LidxI}} \partial_{\LidxII}\zeta^{\LidxI}
+ =  -\partial_{\LidxII} \Lagrangian
+\\
+ \pdiff[\Hamiltonian]{\genMomentumCoeff{\LidxII}} &= \zeta^{\LidxII} + \genMomentumCoeff{\LidxI} \pdiff[\zeta^{\LidxI}]{\genMomentumCoeff{\LidxII}} - \pdiff[\Lagrangian]{\sysVelCoeff{\LidxI}} \pdiff[\zeta^{\LidxI}]{\genMomentumCoeff{\LidxII}}
+ = \sysVelCoeff{\LidxII}
+\\
+ \pdiff[\Hamiltonian]{t} &= \genMomentumCoeff{\LidxI} \pdiff[\zeta^{\LidxI}]{t} - \pdiff[\Lagrangian]{\sysVelCoeff{\LidxI}} \pdiff[\zeta^{\LidxI}]{t} - \pdiff[\Lagrangian]{t}
+ = -\pdiff[\Lagrangian]{t},
+\end{align}
+\end{subequations}
+With this we can express the Euler-Lagrange equation \eqref{eq:MyEulerLagrange} in terms of the generalized momentum $\genMomentum$ and the Hamiltonian $\Hamiltonian$ as
+\begin{subequations}\label{eq:HamiltonsCanonicalEquations}
+\begin{align}
+ \sysCoordCoeffd{\GidxI} = \kinMatCoeff{\GidxI}{\LidxI} \pdiff[\Hamiltonian]{\genMomentumCoeff{\LidxI}}, \qquad \GidxI &= 1,\ldots,\numCoord,
+\\
+ \genMomentumCoeffd{\LidxI} + \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \pdiff[\Hamiltonian]{\genMomentumCoeff{\LidxII}} \genMomentumCoeff{\LidxIII} + \dirDiff{\LidxI}\Hamiltonian = 0, \qquad \LidxI &= 1,\ldots,\dimConfigSpace.
+\end{align} 
+\end{subequations}
+% In matrix notation they can be combined as
+% \begin{align}\label{eq:HamiltonsCanonicalEquations}
+%  \tdiff{t}
+%  \begin{bmatrix} \sysCoord \\ \genMomentum \end{bmatrix}
+%  &= \begin{bmatrix} 0 & \kinMat \\ -\kinMat^\top & G \end{bmatrix}
+%  \begin{bmatrix} \tpdiff[\Hamiltonian]{\sysCoord} \\ \tpdiff[\Hamiltonian]{\genMomentum} \end{bmatrix}
+%  +
+%  \begin{bmatrix} 0 \\ \genForceEx \end{bmatrix}
+% \end{align}
+% with the skew symmetric matrix $G_{\LidxI\LidxII}(\sysCoord, \genMomentum) = -\BoltzSym{\LidxIII}{\LidxI}{\LidxII}(\sysCoord) \genMomentumCoeff{\LidxIII} = -G_{\LidxII\LidxI}(\sysCoord, \genMomentum)$.
+For the special case of minimal configuration coordinates $\genCoord$ and velocity coordinates $\sysVel = \genCoordd$ we have $\kinMat = \idMat[\dimConfigSpace]$ and \eqref{eq:HamiltonsCanonicalEquations} is called \textit{Hamilton's canonical equations}.
+
+\paragraph{Conservation law.}
+The time derivative of the Hamiltonian along the the solutions of \eqref{eq:HamiltonsCanonicalEquations} is
+\begin{align}\label{eq:BalanceHamiltonian}
+ \diff[\Hamiltonian]{t} = \pdiff[\Hamiltonian]{\sysCoordCoeff{\GidxI}} \sysCoordCoeffd{\GidxI} + \pdiff[\Hamiltonian]{\genMomentumCoeff{\LidxI}} \genMomentumCoeffd{\LidxI} + \pdiff[\Hamiltonian]{t}
+ = \underbrace{\pdiff[\Hamiltonian]{\sysCoordCoeff{\GidxI}} \kinMatCoeff{\GidxI}{\LidxI} \pdiff[\Hamiltonian]{\genMomentumCoeff{\LidxI}}
+ - \pdiff[\Hamiltonian]{\genMomentumCoeff{\LidxI}} \kinMatCoeff{\GidxI}{\LidxI} \pdiff[\Hamiltonian]{\sysCoordCoeff{\GidxI}}}_{0}
+ - \,\genMomentumCoeff{\LidxIII} \underbrace{\BoltzSym{\LidxIII}{\LidxI}{\LidxII} \pdiff[\Hamiltonian]{\genMomentumCoeff{\LidxI}} \pdiff[\Hamiltonian]{\genMomentumCoeff{\LidxII}}}_{0}
+ + \pdiff[\Hamiltonian]{t}
+\end{align}
+and consequently
+\begin{align}
+ \diff[\Hamiltonian]{t} &= \pdiff[\Hamiltonian]{t} = -\pdiff[\Lagrangian]{t}.
+\end{align}
+This is the well known conservation law for the Hamiltonian (\eg \cite[ch.\,VI.6]{Lanczos:Variational}).
+The remarkable aspect of the conservation law (and for the Legendre transformation) is that there is no particular assumption on the structure of the Lagrangian $\Lagrangian$.
+
+
+\begin{Example}
+Consider a Lagrangian as
+\begin{align}
+ \Lagrangian(\sysCoord, \sysVel, t) = \tfrac{1}{2} \sysInertiaMatCoeff{\LidxI\LidxII}(\sysCoord, t) \sysVelCoeff{\LidxII}\sysVelCoeff{\LidxI} + b_\LidxI(\sysCoord, t) \sysVelCoeff{\LidxI} + c(\sysCoord, t).
+\end{align}
+The corresponding generalized momentum and Hamiltonian are
+\begin{align}
+ \genMomentumCoeff{\LidxI} &= \pdiff[\Lagrangian]{\sysVelCoeff{\LidxI}} = \sysInertiaMatCoeff{\LidxI\LidxII}  \sysVelCoeff{\LidxI} + b_\LidxI
+\qquad \Leftrightarrow \qquad 
+ \sysVelCoeff{\LidxI} = \isysInertiaMatCoeff{\LidxI\LidxII} (\genMomentumCoeff{\LidxII} - b_\LidxII)
+\\
+ \Hamiltonian &= \tfrac{1}{2} \isysInertiaMatCoeff{\LidxI\LidxII} (\genMomentumCoeff{\LidxI} - b_\LidxI)(\genMomentumCoeff{\LidxII} - b_\LidxII) - c.
+\end{align}
+Evaluation of \eqref{eq:HamiltonsCanonicalEquations} yields
+\begin{subequations}
+\begin{align}
+ \sysCoordCoeffd{\GidxI} = \kinMatCoeff{\GidxI}{\LidxI} \isysInertiaMatCoeff{\LidxI\LidxII} (\genMomentumCoeff{\LidxII} - b_\LidxII), 
+% \quad \GidxI &= 1,\ldots,\numCoord,
+\\
+ \genMomentumCoeffd{\LidxI}
+ + \big( \BoltzSym{\LidxIII}{\LidxI}{\LidxIV} \isysInertiaMatCoeff{\LidxIV\LidxII} \genMomentumCoeff{\LidxIII}
+ + \tfrac{1}{2} \dirDiff{\LidxI}\isysInertiaMatCoeff{\LidxIII\LidxII} (\genMomentumCoeff{\LidxIII} - b_\LidxIII)
+ - \isysInertiaMatCoeff{\LidxIII\LidxII} \dirDiff{\LidxI} b_\LidxIII \big)(\genMomentumCoeff{\LidxII} - b_\LidxII)
+ + \dirDiff{\LidxI} c = 0, 
+% \quad \LidxI &= 1,\ldots,\dimConfigSpace.
+\end{align}
+\end{subequations}
+
+The Euler-Lagrange equation evaluates to
+\begin{subequations}
+\begin{align}
+ \sysCoordCoeffd{\GidxI} = \kinMatCoeff{\GidxI}{\LidxI} \sysVelCoeff{\LidxI}, 
+% \quad \GidxI &= 1,\ldots,\numCoord,
+\\
+ \sysInertiaMatCoeff{\LidxI\LidxII} \sysVelCoeffd{\LidxII}
+ + \big( \dirDiff{\LidxIII}\sysInertiaMatCoeff{\LidxI\LidxII}
+ + \BoltzSym{\LidxIV}{\LidxI}{\LidxII} \sysInertiaMatCoeff{\LidxIV\LidxIII}
+ - \tfrac{1}{2} \dirDiff{\LidxI}\sysInertiaMatCoeff{\LidxIII\LidxII} \big) \sysVelCoeff{\LidxII}\sysVelCoeff{\LidxIII}
+ + \big( \pdiff[\sysInertiaMatCoeff{\LidxI\LidxII}]{t} + \BoltzSym{\LidxIII}{\LidxI}{\LidxII} b_\LidxIII \big) \sysVelCoeff{\LidxII}
+ + \pdiff[b_\LidxI]{t}
+ - \dirDiff{\LidxI} c
+\end{align}
+\end{subequations}
+Note that the Hamiltonian in terms of Lagrangian coordinates reads
+\begin{align}
+ \Hamiltonian = \tfrac{1}{2} \sysInertiaMatCoeff{\LidxI\LidxII} \sysVelCoeff{\LidxI} \sysVelCoeff{\LidxII} - c.
+\end{align}
+
+% \begin{multline}
+%  \diff{t} \pdiff[\Lagrangian]{\sysVelCoeff{\LidxI}} + \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \sysVelCoeff{\LidxII} \pdiff[\Lagrangian]{\sysVelCoeff{\LidxIII}} - \dirDiff{\LidxI} \Lagrangian
+% %\\
+% % = \diff{t} \big( \sysInertiaMatCoeff{\LidxI\LidxII} \sysVelCoeff{\LidxII} + b_\LidxI \big) + \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \sysVelCoeff{\LidxII} \big( \sysInertiaMatCoeff{\LidxIII\LidxIV} \sysVelCoeff{\LidxIV} + b_\LidxIII \big) - \tfrac{1}{2} \dirDiff{\LidxI}\sysInertiaMatCoeff{\LidxIII\LidxII} \sysVelCoeff{\LidxII}\sysVelCoeff{\LidxIII} - \dirDiff{\LidxI} b_\LidxI \sysVelCoeff{\LidxI} - \dirDiff{\LidxI} c
+% \\
+%  = \sysInertiaMatCoeff{\LidxI\LidxII} \sysVelCoeffd{\LidxII}
+%  + \big( \dirDiff{\LidxIII}\sysInertiaMatCoeff{\LidxI\LidxII}
+%  + \BoltzSym{\LidxIV}{\LidxI}{\LidxII} \sysInertiaMatCoeff{\LidxIV\LidxIII}
+%  - \tfrac{1}{2} \dirDiff{\LidxI}\sysInertiaMatCoeff{\LidxIII\LidxII} \big) \sysVelCoeff{\LidxII}\sysVelCoeff{\LidxIII}
+%  + \big( \pdiff[\sysInertiaMatCoeff{\LidxI\LidxII}]{t} + \BoltzSym{\LidxIII}{\LidxI}{\LidxII} b_\LidxIII \big) \sysVelCoeff{\LidxII}
+%  + \pdiff[b_\LidxI]{t}
+%  - \dirDiff{\LidxI} c
+% % \nonumber\\
+% %  &= \sysInertiaMatCoeff{\LidxI\LidxII} \sysVelCoeffd{\LidxII} + \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII} \sysVelCoeff{\LidxIII} \sysVelCoeff{\LidxII} + \pdiff[\sysInertiaMatCoeff{\LidxI\LidxII}]{t} \sysVelCoeff{\LidxII} + \pdiff[b_\LidxI]{t} + \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \sysVelCoeff{\LidxII} b_\LidxIII - \dirDiff{\LidxI} c
+% \end{multline}
+
+\end{Example}

@@ -1,0 +1,259 @@
+\section{An important function on $\SpecialOrthogonalGroup(3)$}\label{sec:AppendixAttitudePotential}
+\paragraph{Motivation.}
+In the context of satellite attitude estimation, the following problem \cite{Wahba:WahbaProblem} arose, now commonly called \textit{Wahba's problem}: given $\tuple{u}_k, \tuple{v}_k \in \RealNum^3$, find $\R \in \SpecialOrthogonalGroup(3)$ that minimizes
+\begin{multline}
+ \potentialEnergy_1(\R) = \sum_k \norm{\tuple{u}_k - \R \tuple{v}_k}^2
+ = \sum_k \big( \norm{\tuple{u}_k}^2 + \norm{\tuple{v}_k}^2 - \sProd{\tuple{u}_k}{\R \tuple{v}_k} \big)
+\\
+ = \underbrace{\sum_k \big( \norm{\tuple{u}_k}^2 + \norm{\tuple{v}_k}^2 \big)}_{\const} - \tr\big( \R \underbrace{\sum_k \tuple{v}_k \tuple{u}_k^\top}_{\mat{P}_1} \big).
+\end{multline}
+
+In \cite{Koditschek:TotalEnergy} the following function with parameters $\mat{K}\in\SymMatP(3)$ and $\RR\in\SpecialOrthogonalGroup(3)$ is called a \textit{navigation function on} $\SpecialOrthogonalGroup(3)$:
+\begin{align}
+ \potentialEnergy_2(\R) = \tr\big(\mat{K}(\idMat[3] - \RR^\top\R)\big) = \underbrace{\tr\mat{K}}_{\const} - \tr(\underbrace{\mat{K}\RR^\top}_{\mat{P}_2}\R).
+\end{align}
+
+Using the metric from \eqref{eq:DefMatrixMetric} with a weight $\mat{K}\in\SymMatP(3)$ we may ask for the rotation matrix $\R \in \SpecialOrthogonalGroup(3)$ which is closest to a given matrix $\mat{Q}\in\RealNum^{3\times3}$, i.e.\ which minimizes
+\begin{multline}
+ \potentialEnergy_3(\R) = \tfrac{1}{2} \metricSq[\mat{K}]{\mat{Q}}{\R} 
+ = \tfrac{1}{2} \tr\big( (\mat{Q}-\R)^\top \mat{K} (\mat{Q}-\R) \big)
+\\
+ = \underbrace{\tfrac{1}{2} \tr\big( \mat{Q}^\top \mat{K} \mat{Q} + \mat{K} \big)}_{\const} - \tr\big( \underbrace{\mat{Q}^\top \mat{K}}_{\mat{P}_3} \R \big)
+\end{multline}
+
+Solutions to Wahba's problem are given in \cite{Davenport:QMethod} using attitude quaternions and in \cite{Kabsch:SSVD} using the singular value decomposition.
+A proof of a unique minimum in \cite{Bullo:TrackingAutomatica} relies on $\mat{P}$ having distinct singular values.
+For this work we do not pose assumptions on $\mat{P}$ and are also interested other extrema of $\potentialEnergy$.
+
+\paragraph{Problem definition.}
+Similar problems to the ones above will also appear in this work.
+So we are interested in the extrema, and their nature, of the of the function
+\begin{align}
+ \potentialEnergy: \SpecialOrthogonalGroup(3) \rightarrow \RealNum \, : \, \R \mapsto -\tr(\mat{P} \R)
+\end{align}
+with the parameter $\mat{P} \in \RealNum^{3\times3}$.
+
+\paragraph{Coordinate transformation.}
+Consider a singular value decomposition $\mat{P} = \mat{X} \mat{\varSigma} \mat{Y}^\top$ with $\mat{X}, \mat{Y} \in \OrthogonalGroup(3)$ and $\mat{\varSigma} = \diag(\sigma_1, \sigma_2, \sigma_3)$, $\sigma_1 \geq \sigma_2 \geq \sigma_3 \geq 0$.
+\cite{Kabsch:SSVD}: Define 
+\begin{subequations}
+\begin{align}
+ \bar{\mat{X}} &= \mat{X} \diag(1, 1, \det\mat{X}) \in \SpecialOrthogonalGroup(3),
+\\
+ \bar{\mat{Y}} &= \mat{Y} \diag(1, 1, \det\mat{Y}) \in \SpecialOrthogonalGroup(3),
+\\
+ \bar{\mat{\varSigma}} &= \diag(\sigma_1, \sigma_2, \bar{\sigma}_3), \ \bar{\sigma}_3 = \det\mat{X}\det\mat{Y} \sigma_3
+\end{align} 
+\end{subequations}
+which yields a decomposition $\mat{P} = \bar{\mat{X}} \bar{\mat{\varSigma}} \bar{\mat{Y}}^\top$ with proper rotations.
+Using the cyclic permutation property of the trace we get
+\begin{align}
+ \potentialEnergy(\R) = -\tr( \bar{\mat{X}} \bar{\mat{\varSigma}} \bar{\mat{Y}}^\top \R) = -\tr( \bar{\mat{\varSigma}} \underbrace{\bar{\mat{Y}}^\top \R \bar{\mat{X}}}_{\bar{\R}}) =: \bar{\potentialEnergy}(\bar{\R})
+\end{align}
+Since the SVD is not unique in general, the transformed function $\bar{\potentialEnergy}$ is neither.
+However, since the coordinate transformation $\R = \bar{\mat{Y}} \bar{\R} \bar{\mat{X}}^\top$ is bijective, no information is lost here.
+%The SVD is also the most robust approach for the numerical solution of the problem \cite{Markley:Wahba}.
+
+\paragraph{Critical points.}
+Using the operators defined above, we may formulate the differential and Hessian of the transformed function as
+\begin{align}
+ \differential \bar{\potentialEnergy}(\bar{\R}) &= \veeTwoOp(\bar{\mat{\varSigma}} \bar{\R}),
+\\
+ \differential^2 \bar{\potentialEnergy}(\bar{\R}) &= \veeMatOp(\bar{\mat{\varSigma}} \bar{\R})^\top.
+\end{align}
+For a critical point $\bar{\R}_0 : \differential \bar{\potentialEnergy}(\bar{\R}_0)=\tuple{0}$ we need the matrix $\bar{\mat{\varSigma}} \bar{\R}_0$ to be symmetric.
+For the following it will be useful to substitute the entries/eigenvalues of $\veeMatOp(\bar{\mat{\varSigma}}) = \diag(\lambda_1, \lambda_2, \lambda_3) = \mat{\Lambda}$ as
+\begin{align}
+ &\left.\begin{matrix}[1.2]
+ \lambda_1 = \sigma_2 + \bar{\sigma}_3, \\
+ \lambda_2 = \bar{\sigma}_3 + \sigma_1, \\
+ \lambda_3 = \sigma_1 + \sigma_2\hphantom{,}  
+ \end{matrix}\right\}&
+&\Leftrightarrow&
+ &\left\{\begin{matrix}[1.2]
+ \sigma_1 = \tfrac{1}{2} (\lambda_2 + \lambda_3 - \lambda_1), \\
+ \sigma_2 = \tfrac{1}{2} (\lambda_3 + \lambda_1 - \lambda_2), \\
+ \bar{\sigma}_3 = \tfrac{1}{2} (\lambda_1 + \lambda_2 - \lambda_3)\hphantom{,}  
+ \end{matrix}\right.
+\end{align} 
+Note that $\sigma_1 \geq \sigma_2 \geq |\bar{\sigma}_3| \geq 0$ implies $\lambda_3 \geq \lambda_2 \geq \lambda_1 \geq 0$.
+Depending on the constellation of the eigenvalues we have the following critical points:
+
+% \paragraph{Coordinate transformation.}
+% A crucial ingredient for the solution is what we called the \textit{special singular value decomposition} above:
+% Let $\mat{P} = \bar{\mat{X}} \wedMatOp(\mat{\varLambda}) \bar{\mat{Y}}^\top$ with $\bar{\mat{X}}, \bar{\mat{Y}} \in \SpecialOrthogonalGroup(3)$ and $\mat{\varLambda} = \diag(\lambda_1, \lambda_2, \lambda_3)$, $\lambda_1 \geq \lambda_2 \geq \lambda_3 \geq 0$.
+% With this we define the transformed function
+% \begin{align}
+%  \potentialEnergy(\R) = -\tr( \bar{\mat{X}} \wedMatOp(\mat{\varLambda}) \bar{\mat{Y}}^\top \R) = -\tr( \wedMatOp(\mat{\varLambda}) \underbrace{\bar{\mat{Y}}^\top \R \bar{\mat{X}}}_{\bar{\R}}) =: \bar{\potentialEnergy}(\bar{\R})
+% \end{align}
+% Since the SVD is not unique in general, the transformed function $\bar{\potentialEnergy}$ is neither.
+% However, since the coordinate transformation $\R = \bar{\mat{Y}} \bar{\R} \bar{\mat{X}}^\top$ is bijective, no information is lost here.
+% % The SVD is also the most robust approach for the numerical solution of the problem \cite{Markley:Wahba}.
+% 
+% \paragraph{Critical points.}
+% The first and second differential of the transformed function are
+% \begin{align}
+%  \differential \bar{\potentialEnergy}(\bar{\R}) &= \veeTwoOp(\wedMatOp(\mat{\varLambda}) \bar{\R}),
+% \\
+%  \differential^2 \bar{\potentialEnergy}(\bar{\R}) &= \veeMatOp(\wedMatOp(\mat{\varLambda}) \bar{\R})^\top.
+% \end{align}
+% So, for a critical point $\bar{\R}_0 : \differential \bar{\potentialEnergy}(\bar{\R}_0)=\tuple{0}$ we need the matrix $\wedMatOp(\mat{\varLambda}) \bar{\R}_0$ to be symmetric.
+% An obvious critical point is $\bar{\R}_0 = \idMat[3]$ which is a minimum if $\differential^2 \bar{\potentialEnergy}(\idMat[3]) = \mat{\varLambda}$ is positive definite.
+% Depending on the actual constellation of $\lambda_1 \geq \lambda_2 \geq \lambda_3 \geq 0$ we have more critical points or submanifolds which are analysed in the following:
+\begin{subequations}
+\begin{itemize}
+\item Distinct eigenvalues: $\lambda_3 > \lambda_2 > \lambda_1 > 0$: We have the critical points
+\begin{align}
+ &\bar{\R}_{0} = \idMat[3] \ :
+\nonumber\\
+ &\quad
+ \potentialEnergy(\bar{\R}_{0}) = -\tfrac{\lambda_1}{2} - \tfrac{\lambda_2}{2} - \tfrac{\lambda_3}{2}, 
+ \quad
+ \eig(\differential^2 \bar{\potentialEnergy}(\bar{\R}_{0})) = \{ \lambda_3, \lambda_2, \lambda_1 \}
+\\
+ &\bar{\R}_{1} = \diag(1,-1,-1) \ :
+\nonumber\\
+ &\quad
+ \potentialEnergy(\bar{\R}_{1}) = \tfrac{3\lambda_1 - \lambda_2 - \lambda_3}{2}, 
+ \quad
+ \eig(\differential^2 \bar{\potentialEnergy}(\bar{\R}_{1})) = \{ \lambda_3-\lambda_1, \lambda_2-\lambda_1, -\lambda_1 \}
+\\
+ &\bar{\R}_{2} = \diag(-1,1,-1) \ :
+\nonumber\\
+ &\quad
+ \potentialEnergy(\bar{\R}_{2}) = \tfrac{3\lambda_2 - \lambda_1 - \lambda_3}{2}, 
+ \quad
+ \eig(\differential^2 \bar{\potentialEnergy}(\bar{\R}_{2})) = \{ \lambda_3-\lambda_2, \lambda_1-\lambda_2, -\lambda_2 \}
+\\
+ &\bar{\R}_{3} = \diag(-1,-1,1) \ :
+\nonumber\\
+ &\quad
+ \potentialEnergy(\bar{\R}_{3}) = \tfrac{3\lambda_3 - \lambda_1 - \lambda_2}{2}, 
+ \quad
+ \eig(\differential^2 \bar{\potentialEnergy}(\bar{\R}_{3})) = \{ \lambda_2-\lambda_3, \lambda_1-\lambda_3, -\lambda_3 \}
+\end{align}
+so $\bar{\R}_{0}$ is a minimum, $\bar{\R}_{1}$ and $\bar{\R}_{2}$ are saddle points, and $\bar{\R}_{3}$ is a maximum.
+
+\item Double eigenvalue: $\lambda_3 > \lambda_2 = \lambda_1 > 0$: We have a minimum at $\bar{\R}_{0}$, a maximum at $\bar{\R}_{3}$ and a saddle on the circular manifold 
+\begin{align}
+ \bar{\R}_{4} &= \begin{bmatrix} -c & s & 0 \\ s & c & 0 \\ 0 & 0 & -1 \end{bmatrix}, \ c^2+s^2=1 \ : 
+\nonumber\\
+ &\quad
+ \potentialEnergy(\bar{\R}_{4}) = \lambda_1 - \tfrac{\lambda_3}{2}, 
+ \quad
+ \eig(\differential^2 \bar{\potentialEnergy}(\bar{\R}_{4})) = \{ \lambda_3-\lambda_1, 0, -\lambda_1 \}
+\end{align}
+which includes the points $\bar{\R}_{1}$ and $\bar{\R}_{2}$.
+
+\item Double eigenvalue: $\lambda_3 = \lambda_2 > \lambda_1 > 0$: Analog to above we have a minimum at $\bar{\R}_{0}$, a saddle at $\bar{\R}_{1}$ and a maximum on the circular manifold 
+\begin{align}
+ \bar{\R}_{5} &= \begin{bmatrix} -1 & 0 & 0 \\ 0 & c & s \\ 0 & s & -c \end{bmatrix}, \ c^2+s^2=1 \ : 
+\nonumber\\
+ &\quad
+ \potentialEnergy(\bar{\R}_{5}) = \lambda_2 - \tfrac{\lambda_1}{2}, 
+ \quad
+ \eig(\differential^2 \bar{\potentialEnergy}(\bar{\R}_{5})) = \{ 0, \lambda_1-\lambda_2, -\lambda_2 \}
+\end{align}
+which includes the points $\bar{\R}_{2}$ and $\bar{\R}_{3}$.
+
+\item Triple eigenvalue: $\lambda_3 = \lambda_2 = \lambda_1 > 0$: Minimum at $\bar{\R}_{0}$ and a maximum on the spherical manifold 
+\begin{align}
+ &\bar{\R}_{6} = \begin{bmatrix} \quatx^2 - \quaty^2 - \quatz^2 & 2\quatx\quaty & 2\quatx\quatz \\ 2\quatx\quaty & \quaty^2-\quatx^2+\quatz^2 & 2\quaty\quatz \\ 2\quatx\quatz & 2\quaty\quatz & \quatz^2-\quatx^2-\quaty^2 \end{bmatrix}, \ \quatx^2+\quaty^2+\quatz^2=1 :
+\nonumber\\
+ &\quad
+ \potentialEnergy(\bar{\R}_{6}) = \tfrac{\lambda_1}{2},
+ \quad
+ \eig(\differential^2 \bar{\potentialEnergy}(\bar{\R}_{6})) = \{ 0, 0, -\lambda_1 \}
+\end{align}
+which includes the points $\bar{\R}_{1}$, $\bar{\R}_{2}$ and $\bar{\R}_{3}$ and the circles $\bar{\R}_4$ and $\bar{\R}_5$.
+It corresponds to a $180^\circ$ rotation about an arbitrary axis $[\quatx,\quaty,\quatz]^\top \in \Sphere^2$.
+
+\item One zero eigenvalue: $\lambda_3 > \lambda_2 > \lambda_1 = 0$: We have a minimum on the circular manifold
+\begin{align}
+ \bar{\R}_{7} &= \begin{bmatrix} 1 & 0 & 0 \\ 0 & c & -s \\ 0 & s & c \end{bmatrix}, \ c^2+s^2=1 \ : 
+\nonumber\\
+ \potentialEnergy(\bar{\R}_{7}) &= -\tfrac{\lambda_2+\lambda_3}{2}, \qquad
+ \eig(\differential^2 \bar{\potentialEnergy}(\bar{\R}_{7})) = \{ \lambda_3, \lambda_2, 0\}
+\end{align}
+which includes $\bar{\R}_{0}$ and $\bar{\R}_{1}$.
+Furthermore we have a saddle point at $\bar{\R}_{2}$ and a maximum at $\bar{\R}_{3}$.
+
+\item Double eigenvalue and zero eigenvalue: $\lambda_3 = \lambda_2 > \lambda_1 = 0$: We have a minimum on $\bar{\R}_{7}$ and a maximum on $\bar{\R}_{5}$.
+
+\item Two zero eigenvalues: $\lambda_3 > \lambda_2 = \lambda_1 = 0$: We have a minimum on the spherical manifold
+\begin{align}
+ \bar{\R}_{8} &= \begin{bmatrix} \quatw^2 + \quatx^2 - \quaty^2 & 2\quatx\quaty & 2\quatw\quaty \\ 2\quatx\quaty & \quatw^2-\quatx^2+\quaty^2 & -2\quatw\quatx \\ -2\quatw\quatx & 2\quatw\quatx & \quatw^2-\quatx^2-\quaty^2 \end{bmatrix}, \ \quatw^2+\quatx^2+\quaty^2=1 :
+\nonumber\\
+ \potentialEnergy(\bar{\R}_{8}) &= -\tfrac{\lambda_3}{2}, \qquad
+ \eig(\differential^2 \bar{\potentialEnergy}(\bar{\R}_{8})) = \{ \lambda_3, 0, 0\}
+\end{align}
+which includes $\bar{\R}_{0}$, $\bar{\R}_{1}$ and $\bar{\R}_{2}$ and corresponds to an arbitrary rotation about an axis $[\quatx, \quaty, 0]^\top$.
+Furthermore we have a maximum at $\bar{\R}_{3}$.
+
+\item All zero Eigenvalues: $\lambda_3 = \lambda_2 = \lambda_1 = 0$: for this we have $\bar{\mat{\varSigma}} = \mat{P} = \mat{0}$ and the function is $\potentialEnergy = 0$.
+
+\end{itemize}
+\end{subequations}
+We may conclude that the function $\bar{\potentialEnergy}$ has a minimum at $\bar{\R}_0 = \idMat[3]$ and a maximum at $\bar{\R}_3 = \diag(-1,-1,1)$, though they may not be strict.
+The minimum is strict if and only if $\lambda_1 > 0$. 
+The maximum is strict if and only if $\lambda_3>\lambda_2$.
+
+It should also be noted that the results of this paragraph would be much more ``symmetric'' if we would not have required the descending order of the singular values $\sigma_i$.
+This did however reduce the number of cases to distinguish.
+
+\paragraph{Original coordinates.}
+The original function $\potentialEnergy$ has a minimum at $\R_0 = \bar{\mat{Y}} \bar{\mat{X}}^\top$.
+% We may decompose
+% \begin{align}
+%  \mat{P}
+%  = \bar{\mat{X}} \bar{\mat{\varSigma}} \bar{\mat{Y}}^\top 
+%  = \bar{\mat{X}} \wedMatOp(\mat{\Lambda}) \underbrace{\bar{\mat{X}}^\top \bar{\mat{X}}}_{\idMat[3]} \bar{\mat{Y}}^\top
+%  = \wedMatOp( \underbrace{\bar{\mat{X}} \mat{\Lambda} \bar{\mat{X}}^\top }_{\mat{K}}) \R_0^\top
+% \end{align}
+% with $\mat{K} \in \SymMatSP(3)$.
+The minimum $\R_0$ is strict, if, and only if, $\lambda_i > 0, i=1,2,3$ or equivalently if $\mat{K} \in \SymMatSP(3)$ is positive definite:
+\begin{align}
+ \mat{K} = \differential^2 \potentialEnergy (\R_0) = \veeMatOp(\mat{P}\R_0) = \bar{\mat{X}} \mat{\Lambda} \bar{\mat{X}}^\top.
+\end{align}
+%Note that the minimum $\R_0$ and the Hessian $\mat{K}$ coincide with the special orthogonal decomposition $\mat{P}^\top = \R_0 \wedMatOp(\mat{K})$ introduced above.
+
+\paragraph{Special polar decomposition}
+From the results of this section we may also conclude the following:
+For any matrix $\mat{M} \in\RealNum^{3\times3}$ there is a matrix $\R \in \SpecialOrthogonalGroup(3)$ and a unique matrix $\mat{K} \in \SymMatSP(3)$, such that $\mat{M} = \R \wedMatOp(\mat{K})$.
+The matrix $\R$ is unique if, and only if, the matrix $\mat{K}$ is positive definite.
+Within this work, this will be called the \textit{special polar decomposition}.
+
+
+
+% \paragraph{Prototype for a positive definite function.}
+% Substracting the minimal value $\potentialEnergy(\R_0)$ from the function we obtain
+% \begin{subequations}
+% \begin{align}
+%  \hat{\potentialEnergy}(\R) &= \potentialEnergy(\R) - \potentialEnergy(\R_0)
+% \nonumber\\
+%  &= -\tr(\bar{\mat{X}} \wedMatOp(\mat{\Lambda}) \bar{\mat{Y}}^\top \R) + \tfrac{1}{2}\tr(\mat{\Lambda})
+% \nonumber\\
+%  &= -\tr(\bar{\mat{X}} \wedMatOp(\mat{\Lambda}) \bar{\mat{X}}^\top \R_0^\top \R) + \tr(\wedMatOp(\mat{K}))
+% \nonumber\\
+% \label{eq:NavFunctionSO3}
+%  &= \tr\big(\wedMatOp(\mat{K})(\idMat[3] - \R_0^\top \R)\big)
+% \\
+%  &= \tfrac{1}{2} \tr\big(\wedMatOp(\mat{K})(\R - \R_0)^\top (\R - \R_0)\big)
+% \nonumber\\
+%  &= \tfrac{1}{2}\norm[\wedMatOp(\mat{K})]{\R-\R_0}^2.
+% \end{align}
+% \end{subequations}
+% We have the properties
+% \begin{subequations}
+% \begin{align}
+%  \mat{K} &\geq 0& 
+%  &\Leftrightarrow&
+%  \hat{\potentialEnergy}(\R) &\geq 0
+% \\
+%  \mat{K} &> 0& 
+%  &\Leftrightarrow&
+%  \hat{\potentialEnergy}(\R) &\geq 0 \ \wedge \ \hat{\potentialEnergy}(\R) = 0 \, \Leftrightarrow \, \R = \R_0.
+% \end{align}
+% \end{subequations}
+% The form \eqref{eq:NavFunctionSO3} is called the \textit{navigation function} for $\SpecialOrthogonalGroup(3)$ in \cite{Koditschek:TotalEnergy}.
+% From its properties $\hat{\potentialEnergy}$ is an $\SpecialOrthogonalGroup(3)$ analogon to $\tfrac{1}{2}(\tuple{x}-\tuple{x}_0)^\top\mat{K}(\tuple{x}-\tuple{x}_0), \tuple{x},\tuple{x}_0\in\RealNum^3$.

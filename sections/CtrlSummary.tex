@@ -1,0 +1,387 @@
+\section{Summary and recipe}
+We have proposed three approaches for a control law for rigid body systems.
+Each of them formulated a sightly different template for the desired closed loop dynamics.
+The actual control law results from its combination with the model dynamics.
+For a fully actuated system the desired closed loop is achieved exactly.
+For an underactuated system or in the presence of input constraints one achieves closed loop dynamics that are ``as close as possible`` to the desired dynamics in the sense that the resulting acceleration differs the least.
+
+The implementation of the controller is determined by the rigid body parameterization $\bodyHomoCoord{\BidxI}{\BidxII}(\sysCoord)$, the kinematics $\sysCoordd = \kinMat(\sysCoord) \sysVel$ and the constitutive parameters $\bodyInertiaMat{\BidxI}{\BidxII}$, $\bodyDissMat{\BidxI}{\BidxII}$, $\bodyStiffMat{\BidxI}{\BidxII}$.
+It is crucial to note that the resulting controlled system is invariant to the chosen coordinates $\sysCoord, \sysVel$ in the same way as the system model:
+Though the describing equations depend explicitly on the coordinates, the resulting motion of the closed loop system is the same for any choice of coordinates.
+This can be validated by checking the covariance of the closed loop equations.
+
+What does affect the motion of the controlled system are the constitutive parameters, i.e. the values within $\bodyInertiaMat{\BidxI}{\BidxII}$, $\bodyDissMat{\BidxI}{\BidxII}$, $\bodyStiffMat{\BidxI}{\BidxII}$.
+These are associated with the rigid bodies and are completely independent of the system coordinates.
+For the energy based approach, the choice of a transport map might not be unique and consequently might also affect the motion.
+
+% \newcommand{\configErr}[2]{\JokerTensor[^{#1}_{#2}]{\mat{\mathsf{E}}}{}}
+% \newcommand{\configErrd}[2]{\JokerTensor[^{#1}_{#2}]{\dot{\mat{\mathsf{E}}}}{}}
+% \newcommand{\configErrdd}[2]{\JokerTensor[^{#1}_{#2}]{\ddot{\mat{\mathsf{E}}}}{}}
+% 
+% \begin{figure}[p]
+%  \centering
+%  \newcommand{\macModelCoordAndKin}{$\sysCoord(t) \in \configSpace, \, \sysVel(t) \in \RealNum^{\dimConfigSpace}, \ \sysCoordd = \kinMat(\sysCoord) \sysVel$}
+%  \newcommand{\macRigidBodyStructure}{$\bodyHomoCoord{\BidxI}{\BidxII}(\sysCoord) \in \SpecialEuclideanGroup(3), \, \BidxI, \BidxII = 0,\ldots,\numRigidBodies$}
+%  \newcommand{\macKineticEquation}{$\sysInertiaMat(\sysCoord) \sysVeld + \genForce(\sysCoord, \sysVel) = \sysInputMat(\sysCoord) \sysInput, \ \sysInputConstMat \sysInput \leq \sysInputConstVec$}
+%  \newcommand{\macPotentialAppOne}{$\potentialEnergyC = \sum_{\BidxI, \BidxII} \tfrac{1}{2} \norm[\bodyStiffMatCp{\BidxI}{\BidxII}]{(\bodyHomoCoord{\BidxI}{\BidxII} - \bodyHomoCoordR{\BidxI}{\BidxII})^\top}^2$}
+%  \newcommand{\macDissMatAppOne}{$\sysDissMatC = \sum_{\BidxI, \BidxII} \bodyJac{\BidxI}{\BidxII}^\top \veeMatOp(\bodyDissMatCp{\BidxI}{\BidxII}) \bodyJac{\BidxI}{\BidxII}$}
+%  \newcommand{\macInertiaMatAppOne}{$\sysInertiaMatC = \sum_{\BidxI, \BidxII} \bodyJac{\BidxI}{\BidxII}^\top \veeMatOp(\bodyInertiaMatCp{\BidxI}{\BidxII}) \bodyJac{\BidxI}{\BidxII}$}
+%  \newcommand{\macTransportMap}{$\differentialR \potentialEnergyC = -\sysTransportMap^\top \differential \potentialEnergyC$}
+%  \newcommand{\macVelError}{$\sysVelE = \sysVel - \sysTransportMap \sysVelR$}
+% % \newcommand{\macKineticEquationAppOne}{$\sysInertiaMatCoeffC{\LidxI\LidxII} \sysVelCoeffEd{\LidxII} + \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII} \sysVelCoeff{\LidxIII} \sysVelCoeffE{\LidxII} + \sysDissMatCoeffC{\LidxI\LidxII} \sysVelCoeffE{\LidxII} + \dirDiff{\LidxI} \potentialEnergyC = 0$}
+%  \newcommand{\macKineticEquationAppOne}{$\sysInertiaMatC \sysVelEd + \ConnMatC \sysVelE + \sysDissMatC \sysVelE + \differential \potentialEnergyC = \tuple{0}$}
+%  \newcommand{\macBodyConfigErrorAppTwo}{$\configErr{\BidxI}{\BidxII} = \bodyHomoCoord{\BidxI}{\BidxII} - \bodyHomoCoordR{\BidxI}{\BidxII}$}
+%  \newcommand{\macBodyConfigErrorAppThree}{$\configErr{\BidxI}{\BidxII} = \bodyHomoCoordR{\BidxI}{\BidxII}^{-1} \bodyHomoCoord{\BidxI}{\BidxII} - \idMat[4]$}
+%  \newcommand{\macPotentialAppTwo}{$\potentialEnergyC = \sum_{\BidxI, \BidxII} \tfrac{1}{2} \norm[\bodyStiffMatCp{\BidxI}{\BidxII}]{\configErr{\BidxI}{\BidxII}^\top}^2$}
+%  \newcommand{\macDissFktAppTwo}{$\dissFktC = \sum_{\BidxI, \BidxII} \tfrac{1}{2} \norm[\bodyDissMatCp{\BidxI}{\BidxII}]{\configErrd{\BidxI}{\BidxII}^\top}^2$}
+%  \newcommand{\macAccEnergyAppTwo}{$\accEnergyC = \sum_{\BidxI, \BidxII} \tfrac{1}{2} \norm[\bodyInertiaMatCp{\BidxI}{\BidxII}]{\configErrdd{\BidxI}{\BidxII}^\top}^2$}
+%  \newcommand{\macKineticEquationAppTwo}{$\pdiff[\accEnergyC]{\sysVeld} + \pdiff[\dissFktC]{\sysVel} + \differential\potentialEnergyC = \tuple{0}$}
+%  \newcommand{\macKineticEquationC}{$\sysInertiaMatC(\sysCoord) \sysVeld + \genForceC(\sysCoord, \sysVel, \sysCoordR, \sysVel, \sysVelR) = \tuple{0}$}
+%  %\newcommand{\macCtrlStaticMin}{$\begin{array}{rl}\text{minimize} & \norm[\mat{H}]{\sysInput - \sysInput_0}^2 \\ \text{subject to} &\sysInputConstMat \sysInput \leq \sysInputConstVec \end{array}$}
+%  \newcommand{\macCtrlStaticMin}{$\sysInput = \argmin \norm[\mat{H}]{\sysInput - \sysInput_0}^2, \, \text{s.t.}\, \sysInputConstMat \sysInput \leq \sysInputConstVec$}
+%  \newcommand{\macCtrlEqI}{$\mat{H} = \sysInputMat^\top \sysInertiaMat^{-1} \sysInertiaMatC \sysInertiaMat^{-1} \sysInputMat$}
+%  \newcommand{\macCtrlEqII}{$\sysInput_0 = \mat{H}^{-1} \sysInputMat^\top \sysInertiaMat^{-1} (\sysInertiaMatC \sysInertiaMat^{-1} \genForce - \genForceC)$}
+%  \newcommand{\macKonstParam}{$\bodyStiffMatCp{\BidxI}{\BidxII}, \bodyDissMatCp{\BidxI}{\BidxII}, \bodyInertiaMatCp{\BidxI}{\BidxII} \in \SymMatP(4), \, \BidxI, \BidxII = 0,\ldots,\numRigidBodies$}
+%  \input{graphics/CtrlApproachSummary.pdf_tex}
+%  \caption{Summary of the control design procedure}
+%  \label{fig:CtrlApproachSummary}
+% \end{figure}
+
+\paragraph*{THE recipe:}
+% Let the rigid body system under consideration be parameterized by the (possibly redundant) coordinates $\sysCoord(t)\in\configSpace$.
+% This means that we can express all configurations of its individual rigid bodies by $\bodyHomoCoord{\BidxI}{\BidxII} : \configSpace \rightarrow \SpecialEuclideanGroup(3) : \sysCoord \mapsto \bodyHomoCoord{\BidxI}{\BidxII}(\sysCoord)$.
+\begin{itemize}
+ \item Modeling
+ \begin{itemize}\begin{subequations}
+  \item Choose a set of (possibly redundant) configuration coordinates $\sysCoord(t)\in\configSpace = \{ \sysCoord\in\RealNum^\numCoord \, | \, \geoConstraint(\sysCoord) = \tuple{0} \}$ and minimal velocity coordinates $\sysVel(t) \in \RealNum^{\dimConfigSpace}$, $\dimConfigSpace=\dim\configSpace$ that are related by the kinematics matrix $\kinMat(\sysCoord)\in\RealNum^{\numCoord\times\dimConfigSpace}$ (see \autoref{sec:AnaMechGeometry}):
+  \begin{align}
+   \sysCoordd = \kinMat \sysVel   
+  \end{align}
+  \item Formulate the rigid body configurations $\bodyHomoCoord{\BidxI}{\BidxII}(\sysCoord) \in \SpecialEuclideanGroup(3), \, \BidxI, \BidxII = 0,\ldots,\numRigidBodies$ in terms of the chosen coordinates.
+  This determines the body Jacobians (see \autoref{sec:RBSKinematics})
+  \begin{align}
+   \bodyJac{\BidxI}{\BidxII} &= \tpdiff{\sysCoordd} \veeOp\big( \bodyHomoCoord{\BidxI}{\BidxII}^{-1} \bodyHomoCoordd{\BidxI}{\BidxII} \big) \kinMat
+  \end{align}
+  \item Compute the model inertia force $\genForceInertia = \sysInertiaMat \sysVeld + \gyroForce$ from the body inertias $\bodyInertiaMatp{0}{\BidxII}$ (see \autoref{sec:RBSInertia})
+  \begin{align}
+   \sysInertiaMat \!=\! \sumBodies \bodyJac{0}{\BidxII}^\top \veeMatOp(\bodyInertiaMatp{0}{\BidxII}) \bodyJac{0}{\BidxII},
+   \
+   \gyroForce \!=\! \sumBodies \bodyJac{0}{\BidxII}^\top \big(\veeMatOp(\bodyInertiaMatp{0}{\BidxII}) \bodyJacd{0}{\BidxII} - \ad{\bodyJac{0}{\BidxII}\sysVel}^\top \veeMatOp(\bodyInertiaMatp{0}{\BidxII})\bodyJac{0}{\BidxII} \big) \sysVel
+  \end{align}
+  \item The model kinetics are the balance of the inertia force $\genForceInertia$, the force of control inputs $\sysInputMat \sysInput$ and whatever other forces $\genForceImpressed$ may act on the system
+  \begin{align}
+   \sysInertiaMat \sysVeld + \underbrace{\gyroForce + \genForceImpressed}_{\sysForce} = \sysInputMat \sysInput
+  \end{align}
+ \end{subequations}\end{itemize}
+ \item Closed loop template
+ \begin{itemize}\begin{subequations}
+  \item The template is computed from the body configurations $\bodyHomoCoord{\BidxI}{\BidxII}$, the body Jacobians $\bodyJac{\BidxI}{\BidxII}$ and the control parameters $\bodyStiffMatCp{\BidxI}{\BidxII}, \bodyDissMatCp{\BidxI}{\BidxII}, \bodyInertiaMatCp{\BidxI}{\BidxII}$:
+  \begin{align}
+   \sysInertiaMatC &= \sumBodiesAB \bodyJac{\BidxI}{\BidxII}^\top \veeMatOp(\bodyInertiaMatCp{\BidxI}{\BidxII}) \bodyJac{\BidxI}{\BidxII}
+  \\
+   \genForceStiffC &= \sumBodiesAB \bodyJac{\BidxI}{\BidxII}^\top \veeTwoOp \big( (\idMat[4] - \bodyHomoCoordE{\BidxI}{\BidxII}^{-1}) \bodyStiffMatCp{\BidxI}{\BidxII} \big)
+  \end{align}
+  \item particle-based approach (see \autoref{sec:CtrlApproachParticlesRBS})
+  \begin{align}
+   \genForceDissC &= \sumBodiesAB \bodyJac{\BidxI}{\BidxII}^\top \veeTwoOp \big(\big( \wedOp(\bodyJac{\BidxI}{\BidxII}(\sysCoord) \sysVel) - \bodyHomoCoordE{\BidxI}{\BidxII}^{-1} \wedOp(\bodyJac{\BidxI}{\BidxII}(\sysCoordR) \sysVelR) \big) \bodyDissMatCp{\BidxI}{\BidxII} \big)
+  \\
+   \gyroForceC &= \sumBodiesAB \bodyJac{\BidxI}{\BidxII}^\top \veeTwoOp \big(\big( \wedOp(\bodyJacd{\BidxI}{\BidxII} \sysVel) + \wedOp(\bodyJac{\BidxI}{\BidxII} \sysVel)^2
+   \nonumber\\ &\hspace{4em} -\bodyHomoCoordE{\BidxI}{\BidxII}^{-1} \big( \wedOp(\bodyJacR{\BidxI}{\BidxII}\sysVelRd + \bodyJacRd{\BidxI}{\BidxII} \sysVelR) + \wedOp(\bodyJacR{\BidxI}{\BidxII} \sysVelR)^2 \big) \big) \bodyInertiaMatCp{\BidxI}{\BidxII} \big)
+  \end{align}
+  \item body-based approach (see \autoref{sec:CtrlApproachBodyRBS})
+  \begin{align}
+   \genForceDissC &= \sumBodiesAB \bodyJac{\BidxI}{\BidxII}^\top \veeMatOp(\bodyDissMatCp{\BidxI}{\BidxII})\bodyVelE{\BidxI}{\BidxII}, \qquad \bodyVelE{\BidxI}{\BidxII} = \bodyJac{\BidxI}{\BidxII} \sysVel - \Ad{\bodyHomoCoordE{\BidxI}{\BidxII}^{-1}} \bodyJacR{\BidxI}{\BidxII} \sysVelR, 
+  \\
+   \gyroForceC &= \sumBodiesAB \bodyJac{\BidxI}{\BidxII}^\top \big( \bodyInertiaMatC{\BidxI}{\BidxII} (\bodyJacd{\BidxI}{\BidxII} \sysVel - \Ad{\bodyHomoCoordE{\BidxI}{\BidxII}^{-1}} (\bodyJacR{\BidxI}{\BidxII} \sysVelRd + \bodyJacRd{\BidxI}{\BidxII} \sysVelR) + \ad{\bodyVelE{\BidxI}{\BidxII}} \Ad{\bodyHomoCoordE{\BidxI}{\BidxII}^{-1}} \bodyJacR{\BidxI}{\BidxII} \sysVelR)
+   \nonumber\\ &\hspace{20em} -\ad{\bodyVelE{\BidxI}{\BidxII}}^\top \bodyInertiaMatC{\BidxI}{\BidxII} \bodyVelE{\BidxI}{\BidxII} \big), 
+  \end{align}
+  \item energy-based approach (see \autoref{sec:CtrlApproachEnergyRBS}, requires the choice of a transport map $\sysTransportMap$)
+  \begin{align}
+   \genForceDissC &= \sysDissMatC \sysVelE, 
+  \quad
+   \sysDissMatC = \sumBodiesAB \bodyJac{\BidxI}{\BidxII}^\top \veeMatOp(\bodyDissMatCp{\BidxI}{\BidxII}) \bodyJac{\BidxI}{\BidxII},
+  \quad 
+   \sysVelE = \sysVel - \sysTransportMap \sysVelR
+  \\
+   \ConnMatC &= \sumBodiesAB \bodyJac{\BidxI}{\BidxII}^\top \big( \veeMatOp(\bodyInertiaMatCp{\BidxI}{\BidxII}) \bodyJacd{\BidxI}{\BidxII} + \bodyConnMatC{\BidxI}{\BidxII} \bodyJac{\BidxI}{\BidxII} \big), \quad \bodyConnMatCoeffC{\BidxI}{\BidxII}{\LBidxI}{\LBidxII} = \bodyConnFkt{\LBidxI}{\LBidxII}{\LBidxIII}(\bodyInertiaMatCp{\BidxI}{\BidxII}) \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxIII}{\LidxIII} \sysVelCoeff{\LidxIII}
+  \\
+   \gyroForceC &= \ConnMatC \sysVelE - \sysInertiaMatC(\sysTransportMap\sysVelRd + \sysTransportMapd\sysVelR),
+  \end{align}
+  \item The desired closed loop kinetics are
+  \begin{align}
+   \sysInertiaMatC \sysVeld + \underbrace{\gyroForceC + \genForceDissC + \genForceStiffC}_{\sysForceC} = \tuple{0}
+  \end{align}
+ \end{subequations}\end{itemize}
+ \item Control law:
+ \begin{itemize}\begin{subequations}
+  \item For the fully actuated case, the desired closed loop is realized by  
+  \begin{align}
+   \sysInput = \sysInputMat^{-1} (\sysForce - \sysInertiaMat \sysInertiaMatC^{-1}\sysForceC)
+  \end{align}
+  \item In the underactuated case, the acceleration error measured by the Gaussian constraint, is minimized by (see \autoref{sec:CtrlUnderactuatedOptim})
+  \begin{align}
+   \sysInput &= (\sysInputMat^\top \sysInertiaMat^{-1} \sysInertiaMatC \sysInertiaMat^{-1} \sysInputMat)^{-1} \sysInputMat^\top \sysInertiaMat^{-1} (\sysInertiaMatC \sysInertiaMat^{-1} \sysForce - \sysForceC)
+  \end{align}
+  Choosing an orthogonal complement $\sysInputMatLComp$ to the input matrix $\sysInputMat$, i.e.\ $\rank \sysInputMatLComp = \dimConfigSpace-\numInputs$ and $\sysInputMat^\top \sysInputMatLComp = \mat{0}$, the residual acceleration error can be written as $\GaussianConstraintC_0 = \tfrac{1}{2} \norm[\mat{S}]{\tuple{\lambda}}^2$ where (see \autoref{sec:MatchingCondition})
+  \begin{align}
+   \tuple{\lambda} = (\sysInputMatLComp)^\top (\sysInertiaMat \sysInertiaMatC^{-1} \sysForceC - \sysForce) = \tuple{0},
+   \qquad
+   \mat{S} = \big( (\sysInputMatLComp)^\top \sysInertiaMat \sysInertiaMatC^{-1} \sysInertiaMat \sysInputMatLComp \big)^{-1}
+  \end{align}
+  By adjusting the control parameters within $\sysInertiaMatC$ and $\sysForceC$ one may try to minimize $\GaussianConstraintC_0$.
+ \end{subequations}\end{itemize}
+\end{itemize}
+
+% \newcommand{\bodyXi}[2]{\JokerTensor[^{#1}_{#2}]{\mat{\mathsf{\Xi}}}{}}
+% Desired closed loop
+% \begin{align}
+%  &(\sysInertiaMatC, \sysForceC) = \mathtt{trackSysParticleBased}(\sysCoord, \sysVel, \sysCoordR, \sysVelR, \sysVelRd, \kinMat, \{ \bodyHomoCoord{\BidxI}{\BidxII} \}, \{\bodyStiffMatCp{\BidxI}{\BidxII}, \bodyDissMatCp{\BidxI}{\BidxII}, \bodyInertiaMatCp{\BidxI}{\BidxII}\})
+% \\
+% %  &\Leftrightarrow\qquad
+% %  \left\{ \begin{array}{l}
+% %   \configErr{\BidxI}{\BidxII} = \bodyHomoCoord{\BidxI}{\BidxII}(\sysCoord) - \bodyHomoCoord{\BidxI}{\BidxII}(\sysCoordR) \\
+% %   \potentialEnergyC = \sum_{\BidxI, \BidxII} \tfrac{1}{2} \norm[\bodyStiffMatCp{\BidxI}{\BidxII}]{\configErr{\BidxI}{\BidxII}^\top}^2 \\
+% %   \dissFktC = \sum_{\BidxI, \BidxII} \tfrac{1}{2} \norm[\bodyDissMatCp{\BidxI}{\BidxII}]{\configErrd{\BidxI}{\BidxII}^\top}^2 \\
+% %   \accEnergyC = \sum_{\BidxI, \BidxII} \tfrac{1}{2} \norm[\bodyInertiaMatCp{\BidxI}{\BidxII}]{\configErrdd{\BidxI}{\BidxII}^\top}^2 \\
+% %   \sysInertiaMatC = \tfrac{\partial^2 \accEnergyC}{\partial\sysVeld \partial\sysVeld} \\
+% %   \sysForceC = \differential \potentialEnergyC + \pdiff[\dissFktC]{\sysVel} + \pdiff[\accEnergyC]{\sysVeld}|_{\sysVeld=\tuple{0}} 
+% %  \end{array}\right.
+% % \\
+%  &\Leftrightarrow\qquad
+%  \left\{ \begin{array}{rcl}
+%   \bodyJac{\BidxI}{\BidxII} &=& \pdiff{\sysCoordd} \veeOp\big( \bodyHomoCoord{\BidxI}{\BidxII}^{-1} \bodyHomoCoordd{\BidxI}{\BidxII} \big) \kinMat \\
+%   \bodyJacCoeffd{\BidxI}{\BidxII}{\LidxV}{\LidxI} &=& \pdiff{\sysCoordCoeff{\GidxI}} \bodyJacCoeff{\BidxI}{\BidxII}{\LidxV}{\LidxI} \kinMatCoeff{\GidxI}{\LidxI} \sysVelCoeff{\LidxI}
+%   \\[1.5ex]
+%   \bodyJacR{\BidxI}{\BidxII} &=& \bodyJac{\BidxI}{\BidxII}|_{\sysCoord = \sysCoordR} \\
+%   \bodyJacRd{\BidxI}{\BidxII} &=& \bodyJacd{\BidxI}{\BidxII}|_{\sysCoord = \sysCoordR, \sysVel = \sysVelR} \\
+%   \bodyHomoCoordE{\BidxI}{\BidxII}^{-1} &=& \bodyHomoCoord{\BidxI}{\BidxII}^{-1}(\sysCoord) \bodyHomoCoord{\BidxI}{\BidxII}(\sysCoordR) \\
+%   \bodyXi{\BidxI}{\BidxII}^{\text{K}} &=& \idMat[4] - \bodyHomoCoordE{\BidxI}{\BidxII}^{-1} \\
+%   \bodyXi{\BidxI}{\BidxII}^{\text{D}} &=& \wedOp(\bodyJac{\BidxI}{\BidxII}(\sysCoord) \sysVel) - \bodyHomoCoordE{\BidxI}{\BidxII}^{-1} \wedOp(\bodyJac{\BidxI}{\BidxII}(\sysCoordR) \sysVelR) \\
+%   \bodyXi{\BidxI}{\BidxII}^{\text{C}} &=& \wedOp(\bodyJacd{\BidxI}{\BidxII} \sysVel) + \wedOp(\bodyJac{\BidxI}{\BidxII} \sysVel)^2 \\
+%    &&-\bodyHomoCoordE{\BidxI}{\BidxII}^{-1} \big( \wedOp(\bodyJacR{\BidxI}{\BidxII}\sysVelRd + \bodyJacRd{\BidxI}{\BidxII} \sysVelR) + \wedOp(\bodyJacR{\BidxI}{\BidxII} \sysVelR)^2 \big) 
+%   \\[1ex]
+% %   \genForceStiffC = \sumBodiesAB \bodyJac{\BidxI}{\BidxII}^\top \veeTwoOp \big( (\idMat[4] - \bodyHomoCoordE{\BidxI}{\BidxII}^{-1}) \bodyStiffMatCp{\BidxI}{\BidxII} \big) \\
+% %   \genForceDissC = \sumBodiesAB \bodyJac{\BidxI}{\BidxII}^\top \veeTwoOp \big( (\wedOp(\bodyJac{\BidxI}{\BidxII} \sysVel) - \bodyHomoCoordE{\BidxI}{\BidxII}^{-1} \wedOp(\bodyJacR{\BidxI}{\BidxII} \sysVelR)) \bodyDissMatCp{\BidxI}{\BidxII} \big) \\
+% %   \gyroForceC = \sumBodiesAB \bodyJac{\BidxI}{\BidxII}^\top \veeTwoOp \big( \big(\wedOp(\bodyJacd{\BidxI}{\BidxII} \sysVel) + \wedOp(\bodyJac{\BidxI}{\BidxII} \sysVel)^2 \\
+% %   \hspace{4em}- \bodyHomoCoordE{\BidxI}{\BidxII}^{-1} \big( \wedOp(\bodyJacR{\BidxI}{\BidxII}\sysVelRd + \bodyJacRd{\BidxI}{\BidxII} \sysVelR) + \wedOp(\bodyJacR{\BidxI}{\BidxII} \sysVelR)^2 \big) \big) \bodyInertiaMatCp{\BidxI}{\BidxII} \big) \\
+% %   \sysForceC = \genForceStiffC + \genForceDissC + \gyroForceC 
+%   \sysInertiaMatC &=& \sumBodiesAB \bodyJac{\BidxI}{\BidxII}^\top \veeMatOp(\bodyInertiaMatCp{\BidxI}{\BidxII}) \bodyJac{\BidxI}{\BidxII} \\
+%   \sysForceC &=& \sumBodiesAB \bodyJac{\BidxI}{\BidxII}^\top \veeTwoOp \big( \bodyXi{\BidxI}{\BidxII}^{\text{K}} \bodyStiffMatCp{\BidxI}{\BidxII} + \bodyXi{\BidxI}{\BidxII}^{\text{D}} \bodyDissMatCp{\BidxI}{\BidxII} + \bodyXi{\BidxI}{\BidxII}^{\text{C}} \bodyInertiaMatCp{\BidxI}{\BidxII}\big)
+%  \end{array}\right.
+% \end{align}
+% 
+% Body-based approach
+% \begin{align}
+%  &(\sysInertiaMatC, \sysForceC) = \mathtt{trackSysBodyBased}(\sysCoord, \sysVel, \sysCoordR, \sysVelR, \sysVelRd, \kinMat, \{ \bodyHomoCoord{\BidxI}{\BidxII} \}, \{\bodyStiffMatCp{\BidxI}{\BidxII}, \bodyDissMatCp{\BidxI}{\BidxII}, \bodyInertiaMatCp{\BidxI}{\BidxII}\})
+% \\
+% %  &\Leftrightarrow\qquad
+% %  \left\{ \begin{array}{l}
+% %   \configErr{\BidxI}{\BidxII} = \bodyHomoCoordR{\BidxI}{\BidxII}^{-1} \bodyHomoCoord{\BidxI}{\BidxII} - \idMat[4] \\
+% %   \potentialEnergyC = \sum_{\BidxI, \BidxII} \tfrac{1}{2} \norm[\bodyStiffMatCp{\BidxI}{\BidxII}]{\configErr{\BidxI}{\BidxII}^\top}^2 \\
+% %   \dissFktC = \sum_{\BidxI, \BidxII} \tfrac{1}{2} \norm[\bodyDissMatCp{\BidxI}{\BidxII}]{\configErrd{\BidxI}{\BidxII}^\top}^2 \\
+% %   \accEnergyC = \sum_{\BidxI, \BidxII} \tfrac{1}{2} \norm[\bodyInertiaMatCp{\BidxI}{\BidxII}]{\configErrdd{\BidxI}{\BidxII}^\top}^2 \\
+% %   \sysInertiaMatC = \tfrac{\partial^2 \accEnergyC}{\partial\sysVeld \partial\sysVeld} \\
+% %   \sysForceC = \differential \potentialEnergyC + \pdiff[\dissFktC]{\sysVel} + \pdiff[\accEnergyC]{\sysVeld}|_{\sysVeld=\tuple{0}} 
+% %  \end{array}\right.
+% % \\
+%  &\Leftrightarrow\qquad
+%  \left\{ \begin{array}{l}
+%   \bodyJac{\BidxI}{\BidxII} = \pdiff{\sysCoordd} \veeOp\big( \bodyHomoCoord{\BidxI}{\BidxII}^{-1} \bodyHomoCoordd{\BidxI}{\BidxII} \big) \kinMat \\
+%   \bodyJacCoeffd{\BidxI}{\BidxII}{\LidxV}{\LidxI} = \pdiff{\sysCoordCoeff{\GidxI}} \bodyJacCoeff{\BidxI}{\BidxII}{\LidxV}{\LidxI} \kinMatCoeff{\GidxI}{\LidxI} \sysVelCoeff{\LidxI}
+%   \\[1.5ex]
+%   \bodyJacR{\BidxI}{\BidxII} = \bodyJac{\BidxI}{\BidxII}|_{\sysCoord = \sysCoordR} \\
+%   \bodyJacRd{\BidxI}{\BidxII} = \bodyJacd{\BidxI}{\BidxII}|_{\sysCoord = \sysCoordR, \sysVel = \sysVelR} \\
+%   \bodyHomoCoordE{\BidxI}{\BidxII}^{-1} = \bodyHomoCoord{\BidxI}{\BidxII}^{-1}(\sysCoord) \bodyHomoCoord{\BidxI}{\BidxII}(\sysCoordR) \\
+%   \bodyVelE{\BidxI}{\BidxII} = \bodyJac{\BidxI}{\BidxII} \sysVel - \Ad{\bodyHomoCoordE{\BidxI}{\BidxII}^{-1}} \bodyJacR{\BidxI}{\BidxII} \sysVelR
+%   \\[1ex]
+%   \sysInertiaMatC = \sum_{\BidxI, \BidxII} \bodyJac{\BidxI}{\BidxII}^\top \veeMatOp(\bodyInertiaMatCp{\BidxI}{\BidxII}) \bodyJac{\BidxI}{\BidxII} \\
+%   \sysForceC = \sumBodiesAB \bodyJac{\BidxI}{\BidxII}^\top \big( \veeTwoOp \big( (\idMat[4] - \bodyHomoCoordE{\BidxI}{\BidxII}^{-1}) \bodyStiffMatCp{\BidxI}{\BidxII} \big) + \veeMatOp(\bodyDissMatCp{\BidxI}{\BidxII})\bodyVelE{\BidxI}{\BidxII}  - \ad{\bodyVelE{\BidxI}{\BidxII}}^\top \bodyInertiaMatC{\BidxI}{\BidxII} \bodyVelE{\BidxI}{\BidxII}\\
+%   \hspace{2ex} + \bodyInertiaMatC{\BidxI}{\BidxII} (\bodyJacd{\BidxI}{\BidxII} \sysVel - \Ad{\bodyHomoCoordE{\BidxI}{\BidxII}^{-1}} (\bodyJacR{\BidxI}{\BidxII} \sysVelRd + \bodyJacRd{\BidxI}{\BidxII} \sysVelR) + \ad{\bodyVelE{\BidxI}{\BidxII}} \Ad{\bodyHomoCoordE{\BidxI}{\BidxII}^{-1}} \bodyJacR{\BidxI}{\BidxII} \sysVelR) \big)
+%  \end{array}\right.
+% \end{align}
+% 
+% 
+% \begin{align}
+%  &(\sysInertiaMatC, \sysForceC) = \mathtt{trackSysEnergyBased}(\sysCoord, \sysVel, \sysCoordR, \sysVelR, \sysVelRd, \kinMat, \{ \bodyHomoCoord{\BidxI}{\BidxII} \}, \{\bodyStiffMatCp{\BidxI}{\BidxII}, \bodyDissMatCp{\BidxI}{\BidxII}, \bodyInertiaMatCp{\BidxI}{\BidxII}\}, \sysTransportMap)
+% \\
+% %  &\Leftrightarrow\qquad
+% %  \left\{ \begin{array}{l}
+% %   \potentialEnergyC = \sum_{\BidxI, \BidxII} \tfrac{1}{2} \norm[\bodyStiffMatCp{\BidxI}{\BidxII}]{(\bodyHomoCoord{\BidxI}{\BidxII}(\sysCoord) - \bodyHomoCoord{\BidxI}{\BidxII}(\sysCoordR))^\top}^2 \\
+% %   \bodyJac{\BidxI}{\BidxII} = \pdiff{\sysCoordd} \veeOp\big( \bodyHomoCoord{\BidxII}{\BidxI} \bodyHomoCoordd{\BidxI}{\BidxII} \big) \kinMat \\
+% %   \sysDissMatC = \sum_{\BidxI, \BidxII} \bodyJac{\BidxI}{\BidxII}^\top \veeMatOp(\bodyDissMatCp{\BidxI}{\BidxII}) \bodyJac{\BidxI}{\BidxII} \\
+% %   \sysInertiaMatC = \sum_{\BidxI, \BidxII} \bodyJac{\BidxI}{\BidxII}^\top \veeMatOp(\bodyInertiaMatCp{\BidxI}{\BidxII}) \bodyJac{\BidxI}{\BidxII} \\
+% %   \BoltzSym{\LidxIII}{\LidxI}{\LidxII} = \big(\dirDiff{\LidxI} \kinMatCoeff{\GidxI}{\LidxII} - \dirDiff{\LidxII} \kinMatCoeff{\GidxI}{\LidxI} \big) ({\kinMatCoeff{}{}}^+)^{\LidxIII}_{\GidxI} \\
+% %   \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII} = \tfrac{1}{2}\big( \dirDiff{\LidxIII} \sysInertiaMatCoeff{\LidxI\LidxII} + \dirDiff{\LidxII} \sysInertiaMatCoeff{\LidxI\LidxIII} - \dirDiff{\LidxI} \sysInertiaMatCoeff{\LidxII\LidxIII} + \BoltzSym{\LidxV}{\LidxI}{\LidxII} \sysInertiaMatCoeff{\LidxV\LidxIII} + \BoltzSym{\LidxV}{\LidxI}{\LidxIII} \sysInertiaMatCoeff{\LidxV\LidxII} - \BoltzSym{\LidxV}{\LidxII}{\LidxIII} \sysInertiaMatCoeff{\LidxV\LidxI} \big) \\
+% %   \ConnMatCoeffC{\LidxI\LidxII} = \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII} \sysVelCoeff{\LidxIII} \\
+% %   %\sysVelE = \sysVel - \sysTransportMap \sysVelR \\
+% %   \sysForceC = \differential \potentialEnergyC + (\ConnMatC + \sysDissMatC) (\sysVel - \sysTransportMap \sysVelR) - \sysInertiaMatC(\sysTransportMap\sysVelRd+\sysTransportMapd\sysVelR)
+% %  \end{array}\right.
+% % \\
+%  &\Leftrightarrow\qquad
+%  \left\{ \begin{array}{l}
+%   \bodyJac{\BidxI}{\BidxII} = \pdiff{\sysCoordd} \veeOp\big( \bodyHomoCoord{\BidxI}{\BidxII}^{-1} \bodyHomoCoordd{\BidxI}{\BidxII} \big) \kinMat \\
+%   \bodyJacCoeffd{\BidxI}{\BidxII}{\LidxV}{\LidxI} = \pdiff{\sysCoordCoeff{\GidxI}} \bodyJacCoeff{\BidxI}{\BidxII}{\LidxV}{\LidxI} \kinMatCoeff{\GidxI}{\LidxI} \sysVelCoeff{\LidxI} \\
+%   \sysTransportMapCoeffd{\LidxI}{\LidxII} = \pdiff[\sysTransportMapCoeff{\LidxI}{\LidxII}]{\sysCoordCoeff{\GidxI}} \kinMatCoeff{\GidxI}{\LidxIII} \sysVelCoeff{\LidxIII} + \pdiff[\sysTransportMapCoeff{\LidxI}{\LidxII}]{\sysCoordCoeffR{\GidxI}} \kinMatCoeff{\GidxI}{\LidxIII}|_{\sysCoord=\sysCoordR} \sysVelCoeffR{\LidxIII}
+%   \\[1.5ex]
+%   \bodyHomoCoordE{\BidxI}{\BidxII}^{-1} = \bodyHomoCoord{\BidxI}{\BidxII}^{-1}(\sysCoord) \bodyHomoCoord{\BidxI}{\BidxII}(\sysCoordR) \\
+%   \genForceStiffC = \sumBodiesAB \bodyJac{\BidxI}{\BidxII}^\top \veeTwoOp \big( (\idMat[4] - \bodyHomoCoordE{\BidxI}{\BidxII}^{-1}) \bodyStiffMatCp{\BidxI}{\BidxII} \big) \\
+%   %\bodyVelE{\BidxI}{\BidxII} = \bodyJac{\BidxI}{\BidxII} \sysVel - \Ad{\bodyHomoCoordE{\BidxI}{\BidxII}^{-1}} \bodyJacR{\BidxI}{\BidxII} \sysVelR
+%   \sysDissMatC = \sum_{\BidxI, \BidxII} \bodyJac{\BidxI}{\BidxII}^\top \veeMatOp(\bodyDissMatCp{\BidxI}{\BidxII}) \bodyJac{\BidxI}{\BidxII} \\
+%   \sysInertiaMatC = \sum_{\BidxI, \BidxII} \bodyJac{\BidxI}{\BidxII}^\top \veeMatOp(\bodyInertiaMatCp{\BidxI}{\BidxII}) \bodyJac{\BidxI}{\BidxII} \\
+%   \bodyConnMatCoeffC{\BidxI}{\BidxII}{\LBidxI}{\LBidxII} = \bodyConnFkt{\LBidxI}{\LBidxII}{\LBidxIII}(\bodyInertiaMatCp{\BidxI}{\BidxII}) \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxIII}{\LidxIII} \sysVelCoeff{\LidxIII} \\  
+%   \ConnMatC = \sumBodiesAB \bodyJac{\BidxI}{\BidxII}^\top \big( \veeMatOp(\bodyInertiaMatCp{\BidxI}{\BidxII}) \bodyJacd{\BidxI}{\BidxII} + \bodyConnMatC{\BidxI}{\BidxII} \bodyJac{\BidxI}{\BidxII} \big) \\
+%   \sysForceC = \genForceStiffC + (\ConnMatC + \sysDissMatC) (\sysVel - \sysTransportMap \sysVelR) - \sysInertiaMatC(\sysTransportMap\sysVelRd+\sysTransportMapd\sysVelR)
+%  \end{array}\right.
+% \end{align}
+% 
+% control law
+% \begin{align}
+%  &\sysInput = \mathtt{ctrlLaw}(\sysInertiaMatC, \sysForceC, \sysInertiaMat, \sysForce, \sysInputMat, \sysInputConstMat, \sysInputConstVec)
+% \\
+%  &\Leftrightarrow\qquad
+%  \left\{ \begin{array}{l}
+%   \mat{H} = \sysInputMat^\top \sysInertiaMat^{-1} \sysInertiaMatC \sysInertiaMat^{-1} \sysInputMat \\
+%   \sysInput_0 = \mat{H}^{-1} \sysInputMat^\top \sysInertiaMat^{-1} (\sysInertiaMatC \sysInertiaMat^{-1} \sysForce - \sysForceC) \\
+%   \sysInput = \argmin \norm[\mat{H}]{\sysInput - \sysInput_0}^2, \, \text{s.t.}\, \sysInputConstMat \sysInput \leq \sysInputConstVec
+%  \end{array}\right.
+% \end{align}
+
+
+% \fixme{
+% \textbf{Approach 1:}
+% \begin{align*}
+%  \potentialEnergyC &:= \sum_{\BidxI, \BidxII} \tfrac{1}{2} \norm[\bodyStiffMatp{\BidxI}{\BidxII}]{\bodyHomoCoord{\BidxI}{\BidxII}^\top - \bodyHomoCoordR{\BidxI}{\BidxII}^\top},&
+% \\
+%  \sysDissMatC &:= \sum_{\BidxI, \BidxII} \bodyJac{\BidxI}{\BidxII}^\top \wedMatOp(\bodyDissMatCp{\BidxI}{\BidxII}) \bodyJac{\BidxI}{\BidxII}
+%  \qquad \rightarrow \qquad
+%  \dissFktC := \tfrac{1}{2} \sysDissMatCoeffC{\LidxI\LidxII} \sysVelCoeffE{\LidxII} \sysVelCoeffE{\LidxI},&
+% \\
+%  \sysInertiaMatC &:= \sum_{\BidxI, \BidxII} \bodyJac{\BidxI}{\BidxII}^\top \wedMatOp(\bodyInertiaMatCp{\BidxI}{\BidxII}) \bodyJac{\BidxI}{\BidxII}
+%  \qquad \rightarrow \qquad
+%  \kineticEnergyC := \tfrac{1}{2} \sysInertiaMatCoeffC{\LidxI\LidxII} \sysVelCoeffE{\LidxII} \sysVelCoeffE{\LidxI},
+% \end{align*}
+% Transport map
+% \begin{align*}
+%  \dirDiffR{\LidxI} \potentialEnergyC = -\sysTransportMapCoeff{\LidxII}{\LidxI} \dirDiff{\LidxII} \potentialEnergyC
+% \qquad \rightarrow \qquad
+%  \sysVelCoeffE{\LidxI} := \sysVelCoeff{\LidxI} - \sysTransportMapCoeff{\LidxI}{\LidxII} \sysVelCoeffR{\LidxII}
+% \end{align*}
+% EoM and total energy
+% \begin{align*}
+%  \sysInertiaMatCoeffC{\LidxI\LidxII} \sysVelCoeffEd{\LidxII} + \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII} \sysVelCoeff{\LidxIII} \sysVelCoeffE{\LidxII}
+%  + \sysDissMatCoeffC{\LidxI\LidxII} \sysVelCoeffE{\LidxII}
+%  + \dirDiff{\LidxI} \potentialEnergyC
+%  = 0
+% \qquad \rightarrow \qquad
+%  \totalEnergyC := \kineticEnergyC + \potentialEnergyC, \quad \tdiff{t} \totalEnergyC = -2\dissFktC
+% \end{align*}
+% % Total energy 
+% % \begin{align*}
+% %  \totalEnergy = \tfrac{1}{2} \sysInertiaMatCoeffC{\LidxI\LidxII} \sysVelCoeffE{\LidxI} \sysVelCoeffE{\LidxII} + \potentialEnergyC,
+% % \qquad
+% %  \tdiff{t} \totalEnergy = -\sysDissMatCoeffC{\LidxI\LidxII} \sysVelCoeffE{\LidxII} \sysVelCoeffE{\LidxI}
+% % \end{align*}
+% }
+% 
+% \fixme{
+% \textbf{Approach 2:} Configuration error $\configErr{\BidxI}{\BidxII} := \bodyHomoCoord{\BidxI}{\BidxII} - \bodyHomoCoordR{\BidxI}{\BidxII}$
+% }
+% 
+% \fixme{
+% \textbf{Approach 3:} Configuration error $\configErr{\BidxI}{\BidxII} := \bodyHomoCoordR{\BidxI}{\BidxII}^{-1} \bodyHomoCoord{\BidxI}{\BidxII} - \idMat[4]$
+% \begin{align*}
+%  \potentialEnergyC &:= \sum_{\BidxI, \BidxII} \tfrac{1}{2} \norm[\bodyStiffMatp{\BidxI}{\BidxII}]{\configErr{\BidxI}{\BidxII}^\top}^2,
+% \\
+%  \dissFktC &:= \sum_{\BidxI, \BidxII} \tfrac{1}{2} \norm[\bodyDissMatp{\BidxI}{\BidxII}]{\configErrd{\BidxI}{\BidxII}^\top}^2,
+% \\
+%  \accEnergyC &:= \sum_{\BidxI, \BidxII} \tfrac{1}{2} \norm[\bodyInertiaMatp{\BidxI}{\BidxII}]{\configErrdd{\BidxI}{\BidxII}^\top}^2,&
+%  \kineticEnergyC &:= \sum_{\BidxI, \BidxII} \tfrac{1}{2} \norm[\bodyInertiaMatp{\BidxI}{\BidxII}]{\configErrd{\BidxI}{\BidxII}^\top}^2
+% \end{align*}
+% EoM
+% \begin{align*}
+%  \pdiff[\accEnergyC]{\sysVelCoeffd{\LidxI}} + \pdiff[\dissFktC]{\sysVelCoeff{\LidxI}} + \dirDiff{\LidxI} \potentialEnergyC &= 0.
+% \end{align*}
+% stiffness force
+% \begin{align}
+%  \genForceStiff
+%  &= \differential \potentialEnergyC
+%  = \pdiff[\dot{\potentialEnergyC}]{\sysVel}
+%  = \pdiff{\sysVel} \sum_{\BidxI, \BidxII} \tr\big( (\bodyHomoCoordR{\BidxI}{\BidxII}^{-1}\bodyHomoCoord{\BidxI}{\BidxII} - \idMat[4]) \bodyStiffMatp{\BidxI}{\BidxII} (\bodyHomoCoordR{\BidxI}{\BidxII}^{-1}\bodyHomoCoord{\BidxI}{\BidxII} \wedOp(\bodyVel{\BidxI}{\BidxII}) - \wedOp(\bodyVelR{\BidxI}{\BidxII})\bodyHomoCoordR{\BidxI}{\BidxII}^{-1}\bodyHomoCoord{\BidxI}{\BidxII})^\top \big)
+% \nonumber\\
+%  &= \pdiff{\sysVel} \sum_{\BidxI, \BidxII} \tr\big( (\idMat[4] - \bodyHomoCoordE{\BidxI}{\BidxII}^{-1}) \bodyStiffMatp{\BidxI}{\BidxII} \wedOp(\bodyVel{\BidxI}{\BidxII} - \Ad{\bodyHomoCoordE{\BidxI}{\BidxII}^{-1}} \bodyVelR{\BidxI}{\BidxII})^\top \big)
+% \nonumber\\
+%  &= \pdiff{\sysVel} \sum_{\BidxI, \BidxII} (\bodyVel{\BidxI}{\BidxII} - \Ad{\bodyHomoCoordE{\BidxI}{\BidxII}^{-1}} \bodyVelR{\BidxI}{\BidxII})^\top \veeTwoOp \big( (\idMat[4] - \bodyHomoCoordE{\BidxI}{\BidxII}^{-1}) \bodyStiffMatp{\BidxI}{\BidxII} \big)
+% \nonumber\\
+%  &= \sum_{\BidxI, \BidxII} \bodyJac{\BidxI}{\BidxII}^\top \veeTwoOp \big( (\idMat[4] - \bodyHomoCoordE{\BidxI}{\BidxII}^{-1}) \bodyStiffMatp{\BidxI}{\BidxII} \big)
+% \end{align}
+% }
+% 
+% \textbf{Approach 2:} \\
+% % stiffness force
+% % \begin{align}
+% %  \genForceStiff
+% %  &= \differential \potentialEnergyC
+% %  = \pdiff[\dot{\potentialEnergyC}]{\sysVel}
+% %  = \pdiff{\sysVel} \sum_{\BidxI, \BidxII} \tr\big( (\bodyHomoCoord{\BidxI}{\BidxII} - \bodyHomoCoordR{\BidxI}{\BidxII}) \bodyStiffMatp{\BidxI}{\BidxII} (\bodyHomoCoord{\BidxI}{\BidxII} \wedOp(\bodyVel{\BidxI}{\BidxII}) - \bodyHomoCoordR{\BidxI}{\BidxII}\wedOp(\bodyVelR{\BidxI}{\BidxII}))^\top \big)
+% % \\
+% %  & = \pdiff{\sysVel} \sum_{\BidxI, \BidxII} \tr\big( \bodyHomoCoord{\BidxI}{\BidxII} (\idMat[4] - \bodyHomoCoordE{\BidxI}{\BidxII}^{-1}) \bodyStiffMatp{\BidxI}{\BidxII} (\wedOp(\bodyVel{\BidxI}{\BidxII}) - \bodyHomoCoordE{\BidxI}{\BidxII}^{-1}\wedOp(\bodyVelR{\BidxI}{\BidxII}))^\top \bodyHomoCoord{\BidxI}{\BidxII}^\top \big)
+% % \end{align}
+% damping force
+% \begin{align}
+%  \genForceDissC
+%  &= \pdiff[\dissFktC]{\sysVel}
+%  = \pdiff{\sysVel} \sum_{\BidxI, \BidxII} \tfrac{1}{2} \norm[\bodyDissMatCp{\BidxI}{\BidxII}]{(\wedOp(\bodyVel{\BidxI}{\BidxII}) - \bodyHomoCoordE{\BidxI}{\BidxII}^{-1} \wedOp(\bodyVelR{\BidxI}{\BidxII}))^\top}^2
+% \nonumber\\
+%  &= \sum_{\BidxI, \BidxII} \bodyJac{\BidxI}{\BidxII}^\top \veeTwoOp\big( (\wedOp(\bodyJac{\BidxI}{\BidxII} \sysVel) - \bodyHomoCoordE{\BidxI}{\BidxII}^{-1} \wedOp(\bodyJacR{\BidxI}{\BidxII} \sysVelR)) \bodyDissMatCp{\BidxI}{\BidxII} \big)
+% \nonumber\\
+%  &= \sum_{\BidxI, \BidxII} \bodyJac{\BidxI}{\BidxII}^\top \wedMatOp(\bodyDissMatCp{\BidxI}{\BidxII}) \bodyJac{\BidxI}{\BidxII} \sysVel
+%   - \sum_{\BidxI, \BidxII} \bodyJac{\BidxI}{\BidxII}^\top \wedMatOp ( \bodyHomoCoordE{\BidxI}{\BidxII}^{-1} \bodyDissMatCp{\BidxI}{\BidxII}) \Ad{\bodyHomoCoordE{\BidxI}{\BidxII}^{-1}} \bodyJacR{\BidxI}{\BidxII} \sysVelR
+% \end{align}
+% inertia force
+% \begin{align}
+%  \genForceInertiaC
+%  &= \pdiff[\accEnergyC]{\sysVeld}
+%  = \pdiff{\sysVeld} \sum_{\BidxI, \BidxII} \tfrac{1}{2} \norm[\bodyInertiaMatCp{\BidxI}{\BidxII}]{(\wedOp(\bodyVeld{\BidxI}{\BidxII})+\wedOp(\bodyVel{\BidxI}{\BidxII})^2 - \bodyHomoCoordE{\BidxI}{\BidxII}^{-1}(\wedOp(\bodyVelRd{\BidxI}{\BidxII}) + \wedOp(\bodyVelR{\BidxI}{\BidxII})^2))^\top}^2
+% \nonumber\\
+%  &= \sum_{\BidxI, \BidxII} \bodyJac{\BidxI}{\BidxII}^\top \veeTwoOp\big( (\wedOp(\bodyJac{\BidxI}{\BidxII} \sysVeld + \bodyJacd{\BidxI}{\BidxII} \sysVel) + \wedOp(\bodyJac{\BidxI}{\BidxII} \sysVel)^2
+% \nonumber\\[-2ex]
+%  &\hspace{30ex} - \bodyHomoCoordE{\BidxI}{\BidxII}^{-1}(\wedOp(\bodyJacR{\BidxI}{\BidxII}\sysVelRd + \bodyJacRd{\BidxI}{\BidxII}\sysVelR) + \wedOp(\bodyJacR{\BidxI}{\BidxII}\sysVelR)^2)) \bodyInertiaMatCp{\BidxI}{\BidxII} \big)
+% \nonumber\\
+%  &= \sum_{\BidxI, \BidxII} \bodyJac{\BidxI}{\BidxII}^\top \wedMatOp(\bodyInertiaMatCp{\BidxI}{\BidxII}) \bodyJac{\BidxI}{\BidxII} \sysVeld
+%  + \sum_{\BidxI, \BidxII} \bodyJac{\BidxI}{\BidxII}^\top \big( \wedMatOp(\bodyInertiaMatCp{\BidxI}{\BidxII}) \bodyJacd{\BidxI}{\BidxII} + \wedMatOp(\wedOp(\bodyJac{\BidxI}{\BidxII} \sysVel) \bodyInertiaMatCp{\BidxI}{\BidxII}) \bodyJac{\BidxI}{\BidxII} \big) \sysVel
+%  \nonumber\\
+%  &\hspace{3ex}- \sum_{\BidxI, \BidxII} \bodyJac{\BidxI}{\BidxII}^\top       \wedMatOp(\bodyHomoCoordE{\BidxI}{\BidxII}^{-1} \bodyInertiaMatCp{\BidxI}{\BidxII}) \Ad{\bodyHomoCoordE{\BidxI}{\BidxII}^{-1}} \bodyJacR{\BidxI}{\BidxII} \sysVelRd
+% \nonumber\\
+%  &\hspace{3ex}- \sum_{\BidxI, \BidxII} \bodyJac{\BidxI}{\BidxII}^\top \big( \wedMatOp(\bodyHomoCoordE{\BidxI}{\BidxII}^{-1} \bodyInertiaMatCp{\BidxI}{\BidxII}) \Ad{\bodyHomoCoordE{\BidxI}{\BidxII}^{-1}} \bodyJacRd{\BidxI}{\BidxII} + \wedMatOp(\bodyHomoCoordE{\BidxI}{\BidxII}^{-1} \wedOp(\bodyJacR{\BidxI}{\BidxII} \sysVelR) \bodyInertiaMatCp{\BidxI}{\BidxII}) \Ad{\bodyHomoCoordE{\BidxI}{\BidxII}^{-1}} \bodyJacR{\BidxI}{\BidxII} \big) \sysVelR
+% \end{align}
+% 
+% \textbf{Approach 3:} \\
+% damping force
+% \begin{align}
+%  \genForceDiss
+%  &= \pdiff[\dissFktC]{\sysVel}
+%  = \pdiff{\sysVel} \sum_{\BidxI, \BidxII} \tfrac{1}{2} \norm[\bodyDissMatp{\BidxI}{\BidxII}]{(\wedOp(\bodyVel{\BidxI}{\BidxII}) - \bodyHomoCoordE{\BidxI}{\BidxII}^{-1} \wedOp(\bodyVelR{\BidxI}{\BidxII})\bodyHomoCoordE{\BidxI}{\BidxII})^\top}^2
+% \nonumber\\
+%  &= \pdiff{\sysVel} \sum_{\BidxI, \BidxII} \tfrac{1}{2} \norm[\bodyDissMatp{\BidxI}{\BidxII}]{\wedOp(\bodyVel{\BidxI}{\BidxII} - \Ad{\bodyHomoCoordE{\BidxI}{\BidxII}^{-1}} \bodyVelR{\BidxI}{\BidxII})^\top}^2
+% % \nonumber\\
+% %  &= \pdiff{\sysVel} \sum_{\BidxI, \BidxII} \tfrac{1}{2} \norm[\bodyDissMat{\BidxI}{\BidxII}]{\bodyVel{\BidxI}{\BidxII} - \Ad{\bodyHomoCoordE{\BidxI}{\BidxII}^{-1}} \bodyVelR{\BidxI}{\BidxII}}^2
+% \nonumber\\
+%  &= \sum_{\BidxI, \BidxII} \bodyJac{\BidxI}{\BidxII}^\top \bodyDissMat{\BidxI}{\BidxII}(\bodyJac{\BidxI}{\BidxII} \sysVel - \Ad{\bodyHomoCoordE{\BidxI}{\BidxII}^{-1}} \bodyJacR{\BidxI}{\BidxII} \sysVelR)
+% \end{align}
+% inertia force
+% \begin{align}
+%  \genForceInertiaC 
+%  &= \pdiff[\accEnergyC]{\sysVeld}
+%  = \pdiff{\sysVeld} \sum_{\BidxI, \BidxII} \tfrac{1}{2} \norm[\bodyInertiaMatCp{\BidxI}{\BidxII}]{(\wedOp(\bodyVeld{\BidxI}{\BidxII})+\wedOp(\bodyVel{\BidxI}{\BidxII})^2 - \bodyHomoCoordE{\BidxI}{\BidxII}^{-1}(\wedOp(\bodyVelRd{\BidxI}{\BidxII}) + \wedOp(\bodyVelR{\BidxI}{\BidxII})^2)\bodyHomoCoordE{\BidxI}{\BidxII})^\top}^2
+% %  &= \pdiff{\sysVeld} \sum_{\BidxI, \BidxII} \tfrac{1}{2} \norm[\bodyInertiaMatCp{\BidxI}{\BidxII}]{(\wedOp(\bodyVeld{\BidxI}{\BidxII} - \Ad{\bodyHomoCoordE{\BidxI}{\BidxII}^{-1}}\bodyVelRd{\BidxI}{\BidxII}) + \wedOp(\bodyVel{\BidxI}{\BidxII} - \Ad{\bodyHomoCoordE{\BidxI}{\BidxII}^{-1}}\bodyVelR{\BidxI}{\BidxII})^2)^\top}^2
+% %\nonumber\\
+% % &= \sum_{\BidxI, \BidxII} \bodyJac{\BidxI}{\BidxII}^\top \veeTwoOp\big( (\wedOp(\bodyVeld{\BidxI}{\BidxII} - \Ad{\bodyHomoCoordE{\BidxI}{\BidxII}^{-1}}\bodyVelRd{\BidxI}{\BidxII}) + \wedOp(\bodyVel{\BidxI}{\BidxII} - \Ad{\bodyHomoCoordE{\BidxI}{\BidxII}^{-1}}\bodyVelR{\BidxI}{\BidxII})^2) \bodyInertiaMatCp{\BidxI}{\BidxII}\big)
+% % \nonumber\\
+% %  &= \sum_{\BidxI, \BidxII} \bodyJac{\BidxI}{\BidxII}^\top \veeTwoOp\big( (\wedOp(\bodyJac{\BidxI}{\BidxII} \sysVeld + \bodyJacd{\BidxI}{\BidxII} \sysVel - \Ad{\bodyHomoCoordE{\BidxI}{\BidxII}^{-1}} (\bodyJacR{\BidxI}{\BidxII} \sysVelRd + \bodyJacRd{\BidxI}{\BidxII} \sysVelR)) + \wedOp(\bodyJac{\BidxI}{\BidxII}\sysVel - \Ad{\bodyHomoCoordE{\BidxI}{\BidxII}^{-1}}\bodyJacR{\BidxI}{\BidxII}\sysVelR)^2) \bodyInertiaMatCp{\BidxI}{\BidxII}\big)
+% \nonumber\\
+%  &= \sum_{\BidxI, \BidxII} \bodyJac{\BidxI}{\BidxII}^\top \wedMatOp(\bodyInertiaMatCp{\BidxI}{\BidxII}) \bodyJac{\BidxI}{\BidxII} \sysVeld
+% \nonumber\\
+%  &\quad+ \sum_{\BidxI, \BidxII} \bodyJac{\BidxI}{\BidxII}^\top \veeTwoOp\big( (\wedOp(\bodyJacd{\BidxI}{\BidxII} \sysVel - \Ad{\bodyHomoCoordE{\BidxI}{\BidxII}^{-1}} (\bodyJacR{\BidxI}{\BidxII} \sysVelRd + \bodyJacRd{\BidxI}{\BidxII} \sysVelR)) + \wedOp(\bodyJac{\BidxI}{\BidxII}\sysVel - \Ad{\bodyHomoCoordE{\BidxI}{\BidxII}^{-1}}\bodyJacR{\BidxI}{\BidxII}\sysVelR)^2) \bodyInertiaMatCp{\BidxI}{\BidxII}\big)
+% \end{align}
+
+

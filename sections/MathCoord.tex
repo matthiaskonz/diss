@@ -1,0 +1,179 @@
+\section{Coordinates}\label{sec:MathCoordinates}
+The example of the rigid body orientation showed that, though its degree of freedom is $\dimConfigSpace=3$, it cannot be \textit{globally} parameterized by 3 coordinates without having singularities.
+In other words, the configuration space of the rigid body orientation is not isomorphic to $\RealNum^3$ and is called a nonlinear manifold.
+
+If interested in a global parameterization of a $\dimConfigSpace$ dimensional nonlinear manifold, there are two common approaches:
+\begin{enumerate}
+ \item Choose a finite number of overlapping local charts with with \textit{minimal} coordinates $\genCoord \in \RealNum^\dimConfigSpace$, e.g. four distinct sets of Euler angles for the rigid body attitude \cite{Grafarend:AtlasSO3}.
+ As this is the common way of defining a smooth manifold, this is always possible.
+ \item Choose one parameterization with \textit{redundant} coordinates $\sysCoord \in \RealNum^{\numCoord}$, i.e. coordinates that are constrained by smooth equations of the form $\geoConstraint(\sysCoord) = \tuple{0}$.
+ E.g. the coefficients of the rotation matrix as done in \eqref{eq:ExampleEulerEq}.
+ \textit{Whitney embedding theorem} states that this is always possible with at least $\numCoord = 2\dimConfigSpace$ coordinates.
+\end{enumerate}
+Both approaches have benefits and drawbacks depending on the application, but the first approach and the use of minimal coordinates is far more dominant in the literature.
+This work utilizes the second approach.
+
+%Another way for a global parameterization of nonlinear configuration manifolds is motivated from the \textit{Whitney embedding theorem} (see e.g.\ \cite[Theo.\,6.14]{Lee:SmoothManifolds}), that states: \textit{Every smooth manifold of dimension $\dimConfigSpace$ can be smoothly embedded in the Euclidean space $\RealNum^{2\dimConfigSpace}$.}
+%Note that $2\dimConfigSpace$ is a worst case bound, i.e.\ for a particular example a lower dimension for the embedding space might work and a higher dimension is permitted anyway.
+
+\subsection{Redundant configuration coordinates}
+In the notation of this work, we use $\numCoord > 0$ coordinates $\sysCoord(t) = [\sysCoordCoeff{1}(t),\ldots,\sysCoordCoeff{\numCoord}(t)]^\top \in \RealNum^\numCoord$ that might be constrained by $\numGeoConst \geq 0$ smooth functions of the form $\geoConstraint(\sysCoord) = [\geoConstraintCoeff{1}(\sysCoord), \ldots, \geoConstraintCoeff{\numGeoConst}(\sysCoord)]^\top = \tuple{0}$.
+For $\numGeoConst > 0$ these coordinates are not independent and are commonly called \textit{redundant}.
+The set of mutually admissible coordinates is called the configuration space $\configSpace$:
+\begin{align}
+ \configSpace = \{ \sysCoord \in \RealNum^{\numCoord} \, | \, \geoConstraint(\sysCoord) = \tuple{0} \}.
+\end{align}
+Assuming that the rank of $\pdiff[\geoConstraint]{\sysCoord}$ is constant, the dimension of the configuration space is
+\begin{align}
+ \dimConfigSpace = \dim \configSpace = \numCoord - \rank \pdiff[\geoConstraint]{\sysCoord}.
+\end{align}For holonomic systems, $\dimConfigSpace$ is also called its degree of freedom.
+
+Whitney embedding theorem (see e.g.\ \cite[Theo.\,6.14]{Lee:SmoothManifolds}) states that: \textit{Every smooth manifold of dimension $\dimConfigSpace$ can be smoothly embedded in the Euclidean space $\RealNum^{2\dimConfigSpace}$.}
+The number $2\dimConfigSpace$ is a worst case bound, i.e.\ for a particular example a lower dimension for the embedding space $\RealNum^\numCoord$ might work and a higher dimension is permitted anyway.
+For this work, it essentially guarantees the existence of a global parameterization by the set $\configSpace$ for any smooth manifold.
+
+
+\subsection{Minimal velocity coordinates}
+For the following it is crucial to note that a geometric constraint is equivalent to its derivative supplemented with a suitable initial condition
+\begin{subequations}
+\begin{align}
+ \label{eq:GeoConstraint}
+ &&
+ \geoConstraintCoeff{\CidxI}(\sysCoord) &= 0
+\\
+ \label{eq:DiffGeoConstraint}
+ &\Leftrightarrow&
+ \pdiff[\geoConstraintCoeff{\CidxI}]{\sysCoordCoeff{\GidxI}}(\sysCoord) \sysCoordCoeffd{\GidxI} &= 0,&
+ \geoConstraintCoeff{\CidxI}(\sysCoord_0) &= 0
+\\
+ &\Leftrightarrow&
+ \pdiff[\geoConstraintCoeff{\CidxI}]{\sysCoordCoeff{\GidxI}}(\sysCoord) \sysCoordCoeffdd{\GidxI} + \frac{\partial^2 \geoConstraintCoeff{\CidxI}}{\partial \sysCoordCoeff{\GidxI} \partial \sysCoordCoeff{\GidxII}}(\sysCoord) \sysCoordCoeffd{\GidxII} \sysCoordCoeffd{\GidxI} &= 0,&
+ \geoConstraintCoeff{\CidxI}(\sysCoord_0) &= 0, \ \pdiff[\geoConstraintCoeff{\CidxI}]{\sysCoordCoeff{\GidxI}}(\sysCoord_0) \sysCoordCoeffd{\GidxI}_0 = 0
+\\
+ &&
+ &\ldots \nonumber
+\end{align}
+\end{subequations}
+where $\sysCoord_0 = \sysCoord(t_0)$.
+Even though \eqref{eq:GeoConstraint} might be nonlinear, its derivative \eqref{eq:DiffGeoConstraint} is always \textit{linear} in the velocities $\sysCoordd$.
+So here it is reasonable to choose \textit{minimal velocity coordinates}:
+Let $\kinMat(\sysCoord) \in \RealNum^{\numCoord\times\dimConfigSpace}$ be a matrix with the properties $\pdiff[\geoConstraint]{\sysCoord} \kinMat = \mat{0}$ and $\rank \kinMat = \dimConfigSpace$.
+The first property of $\kinMat(\sysCoord)$ is that these columns of $\kinMat(\sysCoord)$ are orthogonal to the rows of $\pdiff[\geoConstraint]{\sysCoord}(\sysCoord)$.
+The second property implies that the columns of $\kinMat(\sysCoord)$ are linearly independent.
+So the columns of $\kinMat(\sysCoord)$ can be interpreted as a \textit{basis vectors} for the tangent space $\Tangent[\sysCoord] \configSpace$.
+We can capture all allowed velocities $\sysCoordd(t)$ by the minimal velocity coordinates $\sysVel(t) \in \RealNum^{\dimConfigSpace}$ through
+\begin{align}\label{eq:MyKinematics}
+ \sysCoordd = \kinMat(\sysCoord) \sysVel
+\end{align}
+This kinematic relation \eqref{eq:MyKinematics} ensures that the time derivative \eqref{eq:DiffGeoConstraint} of the geometric constraint is fulfilled, and consequently the geometric constraint only has to be imposed on the initial condition $\geoConstraint(\sysCoord(t_0)) = \tuple{0}$.
+
+% \fixme{Existence for A? guaranteed for Lie groups: the Lie algebra at the identity can be translated around the manifold by the group operation}
+% 
+% \fixme{Construction of $\kinMat$ by matrix inversion}
+
+\begin{Example}
+Consider a single particle constrained to a circle of radius $\rho$ as illustrated in \autoref{fig:ParticleOnCircle}.
+
+\begin{minipage}{\textwidth}
+ \centering
+ \input{graphics/ParticleOnCircle.pdf_tex}
+ \captionof{figure}{Particle on a circle}
+ \label{fig:ParticleOnCircle}
+\end{minipage}
+
+We use the its Cartesian position $[\sysCoordCoeff{1}, \sysCoordCoeff{2}]^\top \in \RealNum^2$ constrained by $\geoConstraintCoeff{} = (\sysCoordCoeff{1})^2 + (\sysCoordCoeff{2})^2 - \rho^2 = 0$ as configuration coordinates.
+A reasonable choice for the kinematics matrix $\kinMat$ is motivated from
+\begin{align}
+ \underbrace{\big[ 2\sysCoordCoeff{1} \ 2\sysCoordCoeff{2} \big]}_{\pdiff[\geoConstraintCoeff{}]{\sysCoord}}
+ \underbrace{\begin{bmatrix} -\sysCoordCoeff{2} \\ \sysCoordCoeff{1} \end{bmatrix}}_{\kinMat}
+ = 0
+\end{align}
+\end{Example}
+
+\begin{Example}\label{Example:KinMatSO3}
+Consider again the system from Example \fixme{Example:ThreeParticles}.
+Instead of parameterizing the rotation matrix $\R$ by minimal coordinates we now take its 9 coefficients $\sysCoord = [\Rxx, \Ryx, \Rzx, \Rxy, \Ryy, \Rzy, \Rxz, \Ryz, \Rzz]^\top \in \RealNum^{9}$ as configuration coordinates.
+The constraints $\R^\top \R = \idMat[3]$ and $\det\R = 1$ read
+\begin{align}\label{eq:constraintSO3}
+ \geoConstraint(\sysCoord) = 
+  \begin{bmatrix}
+  (\Rxx)^2 + (\Ryx)^2 + (\Rzx)^2 - 1 \\
+  (\Rxy)^2 + (\Ryy)^2 + (\Rzy)^2 - 1 \\
+  (\Rxz)^2 + (\Ryz)^2 + (\Rzz)^2 - 1 \\
+  \Rxy \Rxz + \Ryy \Ryz + \Rzy \Rzz \\
+  \Rxx \Rxz + \Ryx \Ryz + \Rzx \Rzz \\
+  \Rxx \Rxy + \Ryx \Ryy + \Rzx \Rzy \\
+  \Rxx \Ryy \Rzz + \Rxy \Ryz \Rzx + \Rxz \Ryx \Rzy - \Rxx \Ryz \Rzy - \Rxy \Ryx \Rzz - \Rxz \Ryy \Rzx - 1
+ \end{bmatrix}
+ = \tuple{0}.
+\end{align}
+The 9 conditions $\R^\top \R = \idMat[3]$ yields due to symmetry only 6 constraints and already imply $\det\R = \pm 1$.
+Since the determinant is a smooth function, the corresponding manifold must consist of two disjoint components, one with $\det\R = +1$ (proper rotations) and one with $\det\R=-1$ (rotations with reflection).
+So the additional constraint $\det\R = +1$ does not change the dimension of the configuration space.
+Formally this means $\rank\pdiff[\geoConstraint]{\sysCoord} = 6$ and consequently $\dim\configSpace = 9-6 = 3$.
+A kinematics matrix with $\pdiff[\geoConstraint]{\sysCoord} \kinMat = \mat{0}$ and $\rank\kinMat = 3$ is given by
+\begin{align}\label{eq:KinMatSO3}
+ \mat{A}(\sysCoord) =
+ \begin{bmatrix}
+  0 & -\Rxz & \Rxy \\
+  0 & -\Ryz & \Ryy \\
+  0 & -\Rzz & \Rzy \\
+  \Rxz & 0 & -\Rxx \\
+  \Ryz & 0 & -\Ryx \\
+  \Rzz & 0 & -\Rzx \\
+  -\Rxy & \Rxx & 0 \\
+  -\Ryy & \Ryx & 0 \\
+  -\Rzy & \Rzx & 0
+ \end{bmatrix}.
+\end{align}
+The resulting kinematic equation $\sysCoordd = \kinMat(\sysCoord) \sysVel$ can be reordered to the matrix equation $\Rd = \R \wedOp(\sysVel)$ by introducing the \textit{wedge operator} defined as
+\begin{align}
+ \wedOp \begin{bmatrix} \sysVelCoeff{1} \\ \sysVelCoeff{2} \\ \sysVelCoeff{3} \end{bmatrix} = \begin{bmatrix} 0 & -\sysVelCoeff{3} & \sysVelCoeff{2} \\ \sysVelCoeff{3} & 0 & -\sysVelCoeff{1} \\ -\sysVelCoeff{2} & \sysVelCoeff{1} & 0 \end{bmatrix}.
+\end{align}
+\end{Example}
+
+\paragraph{Pseudoinverse}
+For any matrix $\mat{S}\in\RealNum^{m\times n}$ there exists a unique \textit{(Moore-Penrose) pseudoinverse} $\mat{S}^+ \in \RealNum^{n\times m}$ determined by the following conditions \cite[Theo.\ 1]{Penrose:Pseudoinverse}:
+\begin{subequations}\label{eq:PenroseConditions}
+\begin{align}
+ \mat{S} \mat{S}^+ \mat{S} &= \mat{S},
+\\
+ \mat{S}^+ \mat{S} \mat{S}^+ &= \mat{S}^+,
+\\
+ (\mat{S} \mat{S}^+)^\top &= \mat{S} \mat{S}^+,
+\\
+ (\mat{S}^+ \mat{S})^\top &= \mat{S}^+ \mat{S}.
+\end{align}
+\end{subequations}
+If the matrix $\mat{S}$ has linearly independent columns, its pseudoinverse is $\mat{S}^+ = (\mat{S}^\top \mat{S})^{-1} \mat{S}^\top$.
+Similarly, if $\mat{S}$ has linearly independent rows, its pseudoinverse is $\mat{S}^+ = \mat{S}^\top (\mat{S} \mat{S}^\top)^{-1}$.
+Consequently, if $\mat{S}$ is invertible (independent rows and columns) the pseudoinverse coincides with the inverse $\mat{S}^+ = \mat{S}^{-1}$.
+
+\paragraph{Some identities involving the pseudo-inverse.}
+Define $\kinBasisMat(\sysCoord) \in \RealNum^{\dimConfigSpace\times\numCoord}$ as $\kinBasisMat = \kinMat^+ = (\kinMat^\top \kinMat)^{-1} \kinMat^\top$, i.e. the pseudoinverse of the kinematics matrix $\kinMat$.
+Note that this implies $\kinBasisMat \kinMat = \idMat[\dimConfigSpace]$, but $\kinMat \kinBasisMat \neq \idMat[\numCoord]$.
+We also introduce the matrices $\geoConstraintMat = \pdiff[\geoConstraint]{\sysCoord}$ and $\InvGeoConstraintMat = \geoConstraintMat^+$.
+With $\geoConstraintMat\kinMat = \mat{0}$ and the Penrose conditions \eqref{eq:PenroseConditions}, we can show\footnote{$\InvGeoConstraintMat^\top \kinMat = (\InvGeoConstraintMat \geoConstraintMat \InvGeoConstraintMat)^\top \kinMat = \InvGeoConstraintMat^\top (\InvGeoConstraintMat \geoConstraintMat)^\top \kinMat = \InvGeoConstraintMat^\top \InvGeoConstraintMat \geoConstraintMat \kinMat = \mat{0}$} that $\InvGeoConstraintMat^\top \kinMat = \mat{0}$ and $\kinBasisMat^\top \geoConstraintMat = \mat{0}$.
+Furthermore, since $\rank\InvGeoConstraintMat = \rank\geoConstraintMat = \numCoord - \dimConfigSpace$ the columns of $\InvGeoConstraintMat(\sysCoord)$ span the complementary space $(\Tangent[\sysCoord]\configSpace)^\bot$ though they might not be a basis since the columns might not be linearly independent.
+
+The matrix $\mat{P} = \kinMat \kinBasisMat$ is an \textit{orthogonal projector}, i.e.\ $\mat{P}^2 = \mat{P}$ and $\mat{P}^\top = \mat{P}$ which result directly from the Penrose conditions \eqref{eq:PenroseConditions}.
+It is in fact the unique orthogonal projector from $\RealNum^\nu$ to the tangent space $\Tangent[\sysCoord]\configSpace$.
+The unique orthogonal projector to the complementary space $(\Tangent[\sysCoord]\configSpace)^\bot$ is $\mat{P}^\bot = \idMat[\numCoord] - \mat{P}$.
+On the other hand, since $\InvGeoConstraintMat$ spans the complementary space the complementary projector can also be expressed as $\mat{P}^\bot = \InvGeoConstraintMat \geoConstraintMat$.
+This leads to the identity
+\begin{align}\label{eq:ProjectionIdentity}
+ \underbrace{\kinMat \kinBasisMat}_{\mat{P}} \, + \, \underbrace{\InvGeoConstraintMat \geoConstraintMat}_{\mat{P}^\bot} = \idMat[\numCoord].
+\end{align}
+
+% In summary: Given a matrix $\geoConstraintMat \in \RealNum^{\numGeoConst\times\numCoord}$ and a matrix $\kinMat \in \RealNum^{\numCoord\times\dimConfigSpace}$ with full column rank and $\geoConstraintMat\kinMat = \mat{0}$ we have
+% \begin{subequations}
+% \begin{align}
+%  \InvGeoConstraintMat &= \geoConstraintMat^+,
+% \\
+%  \kinBasisMat &= \kinMat^+ = (\kinMat^\top \kinMat)^{-1} \kinMat^\top
+% \\
+%  \kinBasisMat \kinMat &= \idMat[\dimConfigSpace]
+% \\
+%  \kinMat \kinBasisMat + \InvGeoConstraintMat \geoConstraintMat &= \idMat[\numCoord].
+% \end{align}
+% \end{subequations}

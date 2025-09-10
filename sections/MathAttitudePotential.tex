@@ -20,10 +20,12 @@ Using the metric from \eqref{eq:DefMatrixMetric} with a weight $\mat{K}\in\SymMa
 \\
  = \underbrace{\tfrac{1}{2} \tr\big( \mat{Q}^\top \mat{K} \mat{Q} + \mat{K} \big)}_{\const} - \tr\big( \underbrace{\mat{Q}^\top \mat{K}}_{\mat{P}_3} \R \big)
 \end{multline}
+Each of these problems essentially asks for an $\R\in\SpecialOrthogonalGroup(3)$ wich minimizes $\potentialEnergy = -\tr(\mat{P} \R)$ for some given $\mat{P}\in\RealNum^{3\times3}$.
 
 Solutions to Wahba's problem are given in \cite{Davenport:QMethod} using attitude quaternions and in \cite{Kabsch:SSVD} using the singular value decomposition.
 A proof of a unique minimum in \cite{Bullo:TrackingAutomatica} relies on $\mat{P}$ having distinct singular values.
-For this work we do not pose assumptions on $\mat{P}$ and are also interested other extrema of $\potentialEnergy$.
+
+In the following we extend theses results in the sense that, we do not impose assumptions on $\mat{P}$ and are also interested other extrema of $\potentialEnergy$.
 
 \paragraph{Problem definition.}
 Similar problems to the ones above will also appear in this work.
@@ -213,11 +215,15 @@ The original function $\potentialEnergy$ has a minimum at $\R_0 = \bar{\mat{Y}} 
 % with $\mat{K} \in \SymMatSP(3)$.
 The minimum $\R_0$ is strict, if, and only if, $\lambda_i > 0, i=1,2,3$ or equivalently if $\mat{K} \in \SymMatSP(3)$ is positive definite:
 \begin{align}
- \mat{K} = \differential^2 \potentialEnergy (\R_0) = \veeMatOp(\mat{P}\R_0) = \bar{\mat{X}} \mat{\Lambda} \bar{\mat{X}}^\top.
+ \mat{K} = \differential^2 \potentialEnergy (\R_0) 
+ = \veeMatOp(\mat{P}\R_0) 
+ = \veeMatOp(\bar{\mat{X}} \bar{\mat{\varSigma}} \bar{\mat{Y}}^\top \bar{\mat{Y}} \bar{\mat{X}}^\top)
+ = \bar{\mat{X}} \veeMatOp(\bar{\mat{\varSigma}}) \bar{\mat{X}}^\top
+ = \bar{\mat{X}} \mat{\Lambda} \bar{\mat{X}}^\top.
 \end{align}
 %Note that the minimum $\R_0$ and the Hessian $\mat{K}$ coincide with the special orthogonal decomposition $\mat{P}^\top = \R_0 \wedMatOp(\mat{K})$ introduced above.
 
-\paragraph{Special polar decomposition}
+\paragraph{Special polar decomposition.}
 From the results of this section we may also conclude the following:
 For any matrix $\mat{M} \in\RealNum^{3\times3}$ there is a matrix $\R \in \SpecialOrthogonalGroup(3)$ and a unique matrix $\mat{K} \in \SymMatSP(3)$, such that $\mat{M} = \R \wedMatOp(\mat{K})$.
 The matrix $\R$ is unique if, and only if, the matrix $\mat{K}$ is positive definite.

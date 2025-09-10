@@ -16,7 +16,7 @@ This work utilizes the second approach.
 %Another way for a global parameterization of nonlinear configuration manifolds is motivated from the \textit{Whitney embedding theorem} (see e.g.\ \cite[Theo.\,6.14]{Lee:SmoothManifolds}), that states: \textit{Every smooth manifold of dimension $\dimConfigSpace$ can be smoothly embedded in the Euclidean space $\RealNum^{2\dimConfigSpace}$.}
 %Note that $2\dimConfigSpace$ is a worst case bound, i.e.\ for a particular example a lower dimension for the embedding space might work and a higher dimension is permitted anyway.
 
-\subsection{Redundant configuration coordinates}
+\subsection{Redundant configuration coordinates}\label{sec:MathConfigCoord}
 In the notation of this work, we use $\numCoord > 0$ coordinates $\sysCoord(t) = [\sysCoordCoeff{1}(t),\ldots,\sysCoordCoeff{\numCoord}(t)]^\top \in \RealNum^\numCoord$ that might be constrained by $\numGeoConst \geq 0$ smooth functions of the form $\geoConstraint(\sysCoord) = [\geoConstraintCoeff{1}(\sysCoord), \ldots, \geoConstraintCoeff{\numGeoConst}(\sysCoord)]^\top = \tuple{0}$.
 For $\numGeoConst > 0$ these coordinates are not independent and are commonly called \textit{redundant}.
 The set of mutually admissible coordinates is called the configuration space $\configSpace$:
@@ -157,12 +157,10 @@ With $\geoConstraintMat\kinMat = \mat{0}$ and the Penrose conditions \eqref{eq:P
 Furthermore, since $\rank\InvGeoConstraintMat = \rank\geoConstraintMat = \numCoord - \dimConfigSpace$ the columns of $\InvGeoConstraintMat(\sysCoord)$ span the complementary space $(\Tangent[\sysCoord]\configSpace)^\bot$ though they might not be a basis since the columns might not be linearly independent.
 
 The matrix $\mat{P} = \kinMat \kinBasisMat$ is an \textit{orthogonal projector}, i.e.\ $\mat{P}^2 = \mat{P}$ and $\mat{P}^\top = \mat{P}$ which result directly from the Penrose conditions \eqref{eq:PenroseConditions}.
-It is in fact the unique orthogonal projector from $\RealNum^\nu$ to the tangent space $\Tangent[\sysCoord]\configSpace$.
-The unique orthogonal projector to the complementary space $(\Tangent[\sysCoord]\configSpace)^\bot$ is $\mat{P}^\bot = \idMat[\numCoord] - \mat{P}$.
-On the other hand, since $\InvGeoConstraintMat$ spans the complementary space the complementary projector can also be expressed as $\mat{P}^\bot = \InvGeoConstraintMat \geoConstraintMat$.
-This leads to the identity
+Since $\InvGeoConstraintMat$ spans the complementary space $(\Tangent[\sysCoord]\configSpace)^\bot$, the unique orthogonal projector from $\RealNum^\numCoord$ to $(\Tangent[\sysCoord]\configSpace)^\bot$ can be expressed as $\mat{P}^\bot = \InvGeoConstraintMat \geoConstraintMat$.
+The identity $\mat{P} + \mat{P}^\bot = \idMat[\numCoord]$ implies
 \begin{align}\label{eq:ProjectionIdentity}
- \underbrace{\kinMat \kinBasisMat}_{\mat{P}} \, + \, \underbrace{\InvGeoConstraintMat \geoConstraintMat}_{\mat{P}^\bot} = \idMat[\numCoord].
+ \kinMat \kinBasisMat + \InvGeoConstraintMat \geoConstraintMat = \idMat[\numCoord].
 \end{align}
 
 % In summary: Given a matrix $\geoConstraintMat \in \RealNum^{\numGeoConst\times\numCoord}$ and a matrix $\kinMat \in \RealNum^{\numCoord\times\dimConfigSpace}$ with full column rank and $\geoConstraintMat\kinMat = \mat{0}$ we have

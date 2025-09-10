@@ -98,7 +98,7 @@ Since this relation holds for any function $\potentialEnergy$ we can state it in
 \end{align}
 Note the skew symmetry $\BoltzSym{\LidxIII}{\LidxI}{\LidxII} = -\BoltzSym{\LidxIII}{\LidxII}{\LidxI}$.
 
-\begin{Example}\label{ex:BoltzmannSymSattelite}
+\begin{Example}%\label{ex:BoltzmannSymSattelite}
 The commutation coefficients $\BoltzSym{\LidxIII}{\LidxI}{\LidxII}$ associated with the kinematics matrix $\kinMat$ from \eqref{eq:KinMatSO3} are
 \begin{align*}
  \BoltzSym{1}{2}{3} = \BoltzSym{2}{3}{1} = \BoltzSym{3}{1}{2} &= +1,
@@ -135,7 +135,7 @@ The case of redundant configuration coordinates and consequently a non-square ma
 
 It is worth noting that the commutation coefficients are \textit{invariant} to the choice of configuration coordinates $\sysCoord$, even though the coordinates appear explicitly in the definition:
 For a change of configuration coordinates $\sysCoord = f(\sysCoordW)$ the commutation symbols transform like $\BoltzSymW{\LidxIII}{\LidxI}{\LidxII}(\sysCoordW) = \BoltzSym{\LidxIII}{\LidxI}{\LidxII}(f(\sysCoordW))$.
-This might be obvious from a geometric point of view, but the explicit calculation of the coordinate transformation is shown in see fixme{[sec:TrafoRules]}.
+This might be obvious from a geometric point of view, but the explicit calculation of the coordinate transformation is shown in see \fixme{[sec:TrafoRules]}.
 It will even turn out that for most of our examples the coefficients will be constants.
 
 The commutation coefficients $\BoltzSym{\LidxI}{\LidxII}{\LidxIII}$ vanish if the corresponding velocity coordinates $\sysVelCoeff{\LidxI}$ are \textit{integrable}, \ie
@@ -275,9 +275,9 @@ where we have found again the commutation coefficients $\BoltzSym{\LidxI}{\LidxI
 % where we found again the \textit{commutation coefficients} $\BoltzSym{\LidxIII}{\LidxI}{\LidxII}$, previously derived in \eqref{eq:DefCommutationCoeff}.
 Integrating by parts with the boundary conditions $\varCoord(t_1) = \varCoord(t_2) = \tuple{0}$ gives
 \begin{align}
- \int_{t_0}^{t_1} \varCoordCoeff{\LidxI} \left( \kinMatCoeff{\GidxI}{\LidxI} \pdiff[\Lagrangian]{\sysCoordCoeff{\GidxI}} - \diff{t} \pdiff[\Lagrangian]{\sysVelCoeff{\LidxI}} - \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \sysVelCoeff{\LidxII} \pdiff[\Lagrangian]{\sysVelCoeff{\LidxIII}} \right) \, \d t = 0.
+ \int_{t_1}^{t_2} \varCoordCoeff{\LidxI} \left( \kinMatCoeff{\GidxI}{\LidxI} \pdiff[\Lagrangian]{\sysCoordCoeff{\GidxI}} - \diff{t} \pdiff[\Lagrangian]{\sysVelCoeff{\LidxI}} - \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \sysVelCoeff{\LidxII} \pdiff[\Lagrangian]{\sysVelCoeff{\LidxIII}} \right) \, \d t = 0.
 \end{align}
-Since the variation coordinates $\varCoordCoeff{\LidxI}, i=1,\ldots,\dimConfigSpace$ are independent by definition, the \textit{fundamental lemma of the calculus of variations} (see e.g. \cite[p.\,57]{Arnold:MathematicalMethodsOfClassicalMechanics} or \cite[p.\,166]{CourantHilbert1}) states that, for the integral to vanish, the terms in the brackets have to vanish.
+Since the variation coordinates $\varCoordCoeff{\LidxI}, i=1,\ldots,\dimConfigSpace$ are independent by definition, the \textit{fundamental lemma of the calculus of variations} (see e.g.\ \cite[p.\,166]{CourantHilbert1} or \cite[p.\,57]{Arnold:MathematicalMethodsOfClassicalMechanics}) states that, for the integral to vanish, the terms in the brackets have to vanish.
 Together with the kinematic equation, we have the following necessary conditions for the functional \eqref{eq:Functional} to be stationary:
 \begin{subequations}\label{eq:MyEulerLagrange}
 \begin{align}
@@ -291,21 +291,23 @@ Together with the kinematic equation, we have the following necessary conditions
 %This, combined with the kinematic relation $\sysCoordCoeffd{\GidxI} = \kinMatCoeff{\GidxI}{\LidxI} \sysVelCoeff{\LidxI}, \GidxI=1\ldots\numCoord$, is the necessary condition for the functional \eqref{eq:Functional} to be stationary.
 
 For the special case $\sysCoord(t)=\genCoord(t)\in\RealNum^\dimConfigSpace$ and $\sysVel(t)=\genCoordd(t)$ we have $\kinMat=\idMat[\dimConfigSpace]$ and $\BoltzSym{}{}{}=0$.
-Then \eqref{eq:MyEulerLagrange} coincides with the \textit{Euler-Lagrange equation}.
+Then \eqref{eq:MyEulerLagrange} coincides with the \textit{Euler-Lagrange equation} \eqref{eq:LagrangeEq}.
 
 \begin{Example}
-Consider the configuration coordinates $\sysCoord = [\Rx^\top, \Ry^\top, \Rz^\top]^\top$ and the velocity coordinates $\sysVel = \w$ related by $\Rd = \R \wedOp(\w)$.
+Consider again the configuration coordinates $\sysCoord = [\Rx^\top, \Ry^\top, \Rz^\top]^\top$ and the velocity coordinates $\sysVel = \w$ related by $\Rd = \R \wedOp(\w)$ as discussed in the previous example \eqref{eq:KinMatSO3}.
+The commutation coefficients were derived in \eqref{eq:BoltzmannSymSattelite}.
+
 For the Lagrangian 
 \begin{align}
 \Lagrangian = \tfrac{1}{2} \w^\top \bodyMOI{}{} \w 
  %+ \tr(\bodyMOSp{}{}(\idMat[3]-\R)) 
 \end{align}
-and taking into account the results from Example \fixme{(??)} we obtain
-and \ref{ex:BoltzmannSymSattelite} we obtain %\ref{ex:PotentialSO3}
+we obain
 \begin{align}
  \Big[ \diff{t} \pdiff[\Lagrangian]{\sysVelCoeff{\LidxI}} + \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \sysVelCoeff{\LidxII} \pdiff[\Lagrangian]{\sysVelCoeff{\LidxIII}} - \kinMatCoeff{\GidxI}{\LidxI} \pdiff[\Lagrangian]{\sysCoordCoeff{\GidxI}} \Big]_{\LidxI=1,2,3}
  = \bodyMOI{}{} \wdot + \w \times \bodyMOI{}{} \w
- %+ \veeTwoOp(\bodyMOSp{}{} \R).
+ %+ \veeTwoOp(\bodyMOSp{}{} \R)
+ .
 \end{align}
 \end{Example}
 

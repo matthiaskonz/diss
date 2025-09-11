@@ -16,7 +16,7 @@ It allows for a quite general parameterization as motivated in the previous sect
  \centering
 % \def\svgwidth{.7\linewidth}
  \input{graphics/RBSConfigurations.pdf_tex}
- \caption{inertial frame and body fixed frames}
+ \caption{reference frame and body fixed frames}
  \label{fig:RBSConfigurations}
 \end{figure}
 
@@ -47,14 +47,18 @@ As motivated in the previous section, it will be convenient to merge position $\
  \bodyHomoCoord{\BidxI}{\BidxII}{}{} &= \begin{bmatrix} \bodyRot{\BidxI}{\BidxII} & \bodyPos{\BidxI}{\BidxII}{} \\ 0 & 1 \end{bmatrix} \in \SpecialEuclideanGroup(3).
 \end{align}
 Then \eqref{eq:rigidBodyRelCoordRules} is equivalent to
-\begin{align}\label{eq:rigidBodyRelCoordRules2}
- \bodyHomoCoord{\BidxI}{\BidxIII} &= \bodyHomoCoord{\BidxI}{\BidxII} \bodyHomoCoord{\BidxII}{\BidxIII},&
- \bodyHomoCoord{\BidxII}{\BidxI} &= \bodyHomoCoord{\BidxI}{\BidxII}^{-1},&
+\begin{subequations}\label{eq:rigidBodyRelCoordRules2}
+\begin{align}
+ \bodyHomoCoord{\BidxI}{\BidxIII} &= \bodyHomoCoord{\BidxI}{\BidxII} \bodyHomoCoord{\BidxII}{\BidxIII},
+\\
+ \bodyHomoCoord{\BidxII}{\BidxI} &= \bodyHomoCoord{\BidxI}{\BidxII}^{-1},
+ \\
  \bodyHomoCoord{\BidxI}{\BidxI} &= \idMat[4],&
  \BidxI, \BidxII, \BidxIII &= 0,\ldots,\numRigidBodies.
 \end{align}
-For a system of $\numRigidBodies$ body fixed frames and a inertial frame there are $(\numRigidBodies+1)^2$ transformations, but due to the rules \eqref{eq:rigidBodyRelCoordRules2}, only $\numRigidBodies$ can be independent.
-So a \RBS can have at most $6\numRigidBodies$ degrees of freedom which is the case if there are no constraints (like joints) between the bodies.
+\end{subequations}
+For a system of $\numRigidBodies$ body fixed frames and a reference frame there are $(\numRigidBodies+1)^2$ transformations, but due to the rules \eqref{eq:rigidBodyRelCoordRules2}, only $\numRigidBodies$ of them can be independent.
+So, a \RBS can have at most $6\numRigidBodies$ degrees of freedom, which is only the case if there are no constraints (like joints) between the bodies.
 Constraints of a joint between body $a$ and $b$ can be captured inside the corresponding transformation $\bodyHomoCoord{\BidxI}{\BidxII}{}{}$.
 %The description of a rigid body system by a set of transformations is shown in the following example.
 We will discuss this in the following example.
@@ -73,8 +77,8 @@ Consider the Tricopter with a suspended load as shown in \autoref{fig:TriV3Confi
 The top part of the figure shows the body fixed frames which are attached to geometrically meaningful points.
 The numbering of the bodies is rather arbitrary.
 
-The Tricopter flies freely in space, i.e.\ there are no constraints between the inertial frame and any body of the system.
-So we chose to describe the configuration of the central body w.r.t. the inertial frame as
+The Tricopter flies freely in space, i.e.\ there are no constraints between the reference frame and any body of the system.
+So we chose to describe the configuration of the central body w.r.t. the reference frame as
 \begin{subequations}\label{eq:configurationMatricesTricopterExample}
 \begin{align}
  \bodyHomoCoord{0}{1} = 
@@ -86,7 +90,7 @@ So we chose to describe the configuration of the central body w.r.t. the inertia
  \end{bmatrix}.
 \end{align}
 The suspended load is a rigid body that is attached by a spherical joint to the central body.
-The body fixed frame of the load was placed in the center of this spherical joint.
+The body fixed frame of the load is placed in the center of this spherical joint.
 As a consequence, the position of the load (the position of its body fixed frame not the position of its center of mass) w.r.t.\ the central body is constant.
 This is reflected by the configuration
 \begin{align}
@@ -129,7 +133,7 @@ The configuration w.r.t.\ the corresponding arm is
 \end{align}
 \end{subequations}
 The set of configurations $\HomoCoordGraph_0 = \{ \bodyHomoCoord{0}{1}, \bodyHomoCoord{1}{2}, \bodyHomoCoord{1}{3}, \bodyHomoCoord{3}{4}, \bodyHomoCoord{1}{5}, \bodyHomoCoord{5}{6}, \bodyHomoCoord{1}{7}, \bodyHomoCoord{7}{8} \}$ form a directed graph as shown at the bottom of \autoref{fig:TriV3ConfigGraph}.
-With them and the rules from \eqref{eq:rigidBodyRelCoordRules2} we can compute the configuration $\bodyHomoCoord{\BidxI}{\BidxII}$ of any body w.r.t.\ any other body or the inertial frame.
+With them and the rules from \eqref{eq:rigidBodyRelCoordRules2} we can compute the configuration $\bodyHomoCoord{\BidxI}{\BidxII}$ of any body w.r.t.\ any other body or the reference frame.
 
 The configurations can be seen as functions $\bodyHomoCoord{\BidxI}{\BidxII}(\sysCoord)$ of the system coordinates
 \begin{align}
@@ -190,6 +194,7 @@ For the composition $\bodyHomoCoord{\BidxI}{\BidxIII}{}{} = \bodyHomoCoord{\Bidx
  = \veeOp\big(\bodyHomoCoord{\BidxIII}{\BidxII} \wedOp(\bodyVel{\BidxI}{\BidxII}) \bodyHomoCoord{\BidxII}{\BidxIII} \big) + \bodyVel{\BidxII}{\BidxIII}
  = \Ad{\bodyHomoCoord{\BidxIII}{\BidxII}} \bodyVel{\BidxI}{\BidxII} + \bodyVel{\BidxII}{\BidxIII}
 \end{align}
+with the adjoint representation introduced in \eqref{eq:defAdjointSE3}.
 % where
 % \begin{align*}
 %  \Ad{\bodyHomoCoord{}{}} = \begin{bmatrix} R & \widehat{r} R \\ 0 & R \end{bmatrix},
@@ -197,7 +202,7 @@ For the composition $\bodyHomoCoord{\BidxI}{\BidxIII}{}{} = \bodyHomoCoord{\Bidx
 %  \Ad{\bodyHomoCoord{}{}^{-1}} = \begin{bmatrix} R^\top & -R^\top \widehat{r} \\ 0 & R^\top \end{bmatrix} = \Ad{\bodyHomoCoord{}{}}^{-1}
 %  .
 % \end{align*}
-Differentiation of the rule for the inverse yields 
+Differentiation of $\bodyHomoCoord{\BidxI}{\BidxII} \bodyHomoCoord{\BidxII}{\BidxI} = \idMat$ yields 
 \begin{align}
  \tdiff{t} \big(\bodyHomoCoord{\BidxI}{\BidxII} \bodyHomoCoord{\BidxII}{\BidxI}\big)
  &= \bodyHomoCoordd{\BidxI}{\BidxII} \bodyHomoCoord{\BidxII}{\BidxI} + \bodyHomoCoord{\BidxI}{\BidxII} \bodyHomoCoordd{\BidxII}{\BidxI}
@@ -293,11 +298,11 @@ Combining this with the kinetic energy \eqref{eq:RigidBodyKineticEnergy} of a si
  = \tfrac{1}{2} \sysVel^\top \underbrace{\sumBodies \bodyJac{0}{\BidxII}^\top \bodyInertiaMat{0}{\BidxII} \bodyJac{0}{\BidxII}}_{\sysInertiaMat} \sysVel.
 \end{align}
 Recall from the previous section, that the constant \textit{body} inertia matrix $\bodyInertiaMat{0}{\BidxII} \in \RealNum^{6\times6}$ collects the inertia parameters of the rigid body with index $\BidxII$ and w.r.t.\ its body fixed frame. 
-The matrix $\sysInertiaMat(\sysCoord) \in \RealNum^{\dimConfigSpace\times\dimConfigSpace}$ is the \textit{system} inertia matrix.
+The matrix $\sysInertiaMat(\sysCoord) \in \RealNum^{\dimConfigSpace\times\dimConfigSpace}$ is called the \textit{system} inertia matrix.
 
 \paragraph{Connection coefficients.}
 \fixme{
-With a rather cumbersome computation (see \fixme{[eq:AppendixSysConnCoeffL}]), it can be shown that the connection coefficients $\ConnCoeffL{\LidxI}{\LidxII}{\LidxIII}$ associated to the system inertia matrix $\sysInertiaMat$ from \eqref{eq:RBSKineticEnergy} can be expressed in terms of the body Jacobians $\bodyJac{0}{\BidxII}$, the body inertia matrices $\bodyInertiaMat{0}{\BidxII}$ and the body connection coefficients $\bodyConnCoeffL{0}{\BidxII}{\LBidxI}{\LBidxII}{\LBidxIII}$ from \eqref{eq:RBConnCoeffRes} or the body commutation coefficients $\bodyBoltzSym{\LBidxIV}{\LBidxI}{\LBidxII}$ from \eqref{eq:RBCommutationCoeff} as
+With a rather cumbersome computation (see [eq: ??]), it can be shown that the connection coefficients $\ConnCoeffL{\LidxI}{\LidxII}{\LidxIII}$ associated to the system inertia matrix $\sysInertiaMat$ from \eqref{eq:RBSKineticEnergy} can be expressed in terms of the body Jacobians $\bodyJac{0}{\BidxII}$, the body inertia matrices $\bodyInertiaMat{0}{\BidxII}$ and the body connection coefficients $\bodyConnCoeffL{0}{\BidxII}{\LBidxI}{\LBidxII}{\LBidxIII}$ from \eqref{eq:RBConnCoeffRes} or the body commutation coefficients $\bodyBoltzSym{\LBidxIV}{\LBidxI}{\LBidxII}$ from \eqref{eq:RBCommutationCoeff} as
 \begin{align}\label{eq:RBSConnCoeff}
  \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII}
  &= \sumBodies \bodyJacCoeff{0}{\BidxII}{\LBidxI}{\LidxI} \big( \bodyInertiaMatCoeff{0}{\BidxII}{\LBidxI\LBidxII} \dirDiff{\LidxIII} \bodyJacCoeff{0}{\BidxII}{\LBidxII}{\LidxII} + \underbrace{\tfrac{1}{2} \big( \bodyBoltzSym{\LBidxIV}{\LBidxI}{\LBidxII} \bodyInertiaMatCoeff{0}{\BidxII}{\LBidxIV\LBidxIII} + \bodyBoltzSym{\LBidxIV}{\LBidxI}{\LBidxIII} \bodyInertiaMatCoeff{0}{\BidxII}{\LBidxIV\LBidxII} - \bodyBoltzSym{\LBidxIV}{\LBidxII}{\LBidxIII} \bodyInertiaMatCoeff{0}{\BidxII}{\LBidxIV\LBidxI} \big)}_{\bodyConnCoeffL{0}{\BidxII}{\LBidxI}{\LBidxII}{\LBidxIII}} \bodyJacCoeff{0}{\BidxII}{\LBidxII}{\LidxII} \bodyJacCoeff{0}{\BidxII}{\LBidxIII}{\LidxIII} \big)
@@ -352,9 +357,8 @@ Similar results are called \textit{the projection equation} in \cite[sec.\ 4.2.5
 There is some controversy (starting in \cite{Desloge:KaneAppell}) about the naming, since the equations result rather directly (as shown above) from the Gibbs-Appell formulation.
 See \cite{Lesser:GeometricInterpretationOfKanesEquations} or \cite[p.\ 714]{Papastavridis:AnalyticalMechanics} for an overview.
 
-\fixme{
-In contrast to the derivations in the sources above, the formulation \eqref{eq:RBSInertiaForce} poses no restrictions on the body fixed frames and allows redundant configuration coordinates.
-}
+In contrast to the sources above, the derivation here does allow for redundant configuration coordinates $\sysCoord$ and general velocity coordinates $\sysVel$.
+This im mostly due to the more general formulation \eqref{eq:DefBodyJacobian} of the body jacobian $\bodyJac{0}{\BidxII}$, wheras the formulation of the inertia matrix $\sysInertiaMat$ and gyroscopic terms $\gyroForce$ should look familiar.
 
 \subsection{Gravitation}
 The potential energy of gravitation of a rigid body system is the sum of the potentials of the individual bodies \eqref{eq:RBGravityEnergyHomo}.
@@ -367,7 +371,7 @@ This is
 \qquad 
  \gravityAccWrench^\top = [\gravityAcc^\top, \tuple{0}_{1\times3} ],
 \end{align}
-where $\bodyInertiaMatp{0}{\BidxII} = \veeMatOp(\bodyInertiaMat{0}{\BidxII})$ is the body inertia matrix and $\gravityAccWrench$ is earth's gravity wrench.
+where $\bodyInertiaMatp{0}{\BidxII} = \veeMatOp(\bodyInertiaMat{0}{\BidxII})$ is the body inertia matrix and $\gravityAccWrench$ is Earth's gravity wrench.
 
 Finally, the generalized force of gravity on a rigid body system may be formulated as
 \begin{multline}\label{eq:RBSGenForceGravity}
@@ -428,7 +432,7 @@ The corresponding dissipation function $\bodyDissFkt{\BidxI}{\BidxII}$ was deriv
 \end{align}
 with the body dissipation matrix $\bodyDissMat{\BidxI}{\BidxII}$.
 Notice that in contrast to stiffness, the dissipation is, in general, not symmetric in the sense $\bodyDissFkt{\BidxI}{\BidxII} \neq \bodyDissFkt{\BidxII}{\BidxI}$.
-But due to $\bodyVel{\BidxI}{\BidxI} = \tuple{0}$ we have $\bodyDissFkt{\BidxI}{\BidxII}=0$.
+But due to $\bodyVel{\BidxI}{\BidxI} = \tuple{0}$ we have $\bodyDissFkt{\BidxI}{\BidxI}=0$.
 For system of rigid bodies we have the dissipation function
 \begin{align}
  \dissFkt = \sum_{\BidxI=0}^{\numRigidBodies} \sum_{\BidxII=0, \BidxII\neq\BidxI}^{\numRigidBodies} \bodyDissFkt{\BidxI}{\BidxII}

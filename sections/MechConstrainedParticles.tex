@@ -363,10 +363,10 @@ This means the coefficients $\ConnCoeffL{\LidxI}{\LidxII}{\LidxIII}$ are complet
 
 A similar, coordinate free derivation can be found in \cite[proof of Theorem 2.7.6]{Abraham:FoundationsOfMechanics} for the proof of the fundamental theorem of Riemannian geometry, i.e.\ the existence and uniqueness of the \textit{Levi-Civita connection}.
 However, all coordinate versions therein are restricted to minimal holonomic coordinates.
-For this \textit{special case}, i.e.\ $\sysCoord = \genCoord$, $\sysVel = \genCoordd$, $\kinMat=\idMat[\dimConfigSpace]$ and consequently $\BoltzSym{}{}{} = 0$, \eqref{eq:DefConnCoeffL} simplifies to the familiar definition of the \textit{Christoffel symbols}, see e.g.\ \cite[p.\,145]{Abraham:FoundationsOfMechanics} or \cite[Vol.\,2, p.\,221]{Spivak:DiffGeo}
-\begin{align}
- \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII} &= \tfrac{1}{2}\Big( \pdiff[\sysInertiaMatCoeff{\LidxI\LidxII}]{\genCoordCoeff{\LidxIII}} + \pdiff[\sysInertiaMatCoeff{\LidxI\LidxIII}]{\genCoordCoeff{\LidxII}} - \pdiff[\sysInertiaMatCoeff{\LidxII\LidxIII}]{\genCoordCoeff{\LidxI}} \Big).
-\end{align}
+For this \textit{special case}, i.e.\ $\sysCoord = \genCoord$, $\sysVel = \genCoordd$, $\kinMat=\idMat[\dimConfigSpace]$ and consequently $\BoltzSym{}{}{} = 0$, \eqref{eq:DefConnCoeffL} simplifies to the familiar definition of the \textit{Christoffel symbols} $\ConnCoeffL{\LidxI}{\LidxII}{\LidxIII} = \tfrac{1}{2}\big( \pdiff[\sysInertiaMatCoeff{\LidxI\LidxII}]{\genCoordCoeff{\LidxIII}} + \pdiff[\sysInertiaMatCoeff{\LidxI\LidxIII}]{\genCoordCoeff{\LidxII}} - \pdiff[\sysInertiaMatCoeff{\LidxII\LidxIII}]{\genCoordCoeff{\LidxI}} \big)$, see e.g.\ \cite[p.\,145]{Abraham:FoundationsOfMechanics} or \cite[Vol.\,2, p.\,221]{Spivak:DiffGeo}.
+%\begin{align} 
+% \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII} &= \tfrac{1}{2}\Big( \pdiff[\sysInertiaMatCoeff{\LidxI\LidxII}]{\genCoordCoeff{\LidxIII}} + \pdiff[\sysInertiaMatCoeff{\LidxI\LidxIII}]{\genCoordCoeff{\LidxII}} - \pdiff[\sysInertiaMatCoeff{\LidxII\LidxIII}]{\genCoordCoeff{\LidxI}} \Big).
+%\end{align}
 In \cite[sec.\,9.2]{Frankel:GeometryOfPhysics} it is pointed out that the name Christoffel symbols is exclusive for the holonomic case, whereas in general $\ConnCoeffL{\LidxI}{\LidxII}{\LidxIII}$ are referred to as the \textit{(Levi-Civita) connection coefficients}.
 To the best of the authors knowledge, the only popular source that states the coordinate version \eqref{eq:DefConnCoeffL} explicitly is \cite[eq.\ 8.24]{Misner:Gravitation}, though restricted to minimal coordinates and in a rather different context of relativistic point masses.
 Since the directional derivative $\dirDiff{\LidxI}$ and the commutation coefficients $\BoltzSym{\LidxV}{\LidxI}{\LidxII}$ are defined in a setting supporting redundant coordinates, so does \eqref{eq:DefConnCoeffL} as definition of the connection coefficients.
@@ -382,28 +382,28 @@ The resulting generalized force on the system is
 \begin{align}
  \genForceGravityCoeff{\LidxI}
  = \sumParticles \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\particleForceGravity{\PidxI}}
- = \sumParticles \particleMass{\PidxI} \sProd{\dirDiff{\LidxI}\particlePos{\PidxI}}{\gravityAcc}.
- = -\dirDiff{\LidxI} \underbrace{\sumParticles \particleMass{\PidxI} \sProd{\particlePos{\PidxI}}{-\gravityAcc}}_{\potentialGravity}.
+ = \sumParticles \particleMass{\PidxI} \sProd{\dirDiff{\LidxI}\particlePos{\PidxI}}{\gravityAcc}
+ = \dirDiff{\LidxI} \underbrace{\sumParticles \particleMass{\PidxI} \sProd{\particlePos{\PidxI}}{-\gravityAcc}}_{\potentialGravity}.
 \label{eq:ParticleSysGravity}
 \end{align}
 The force may also be derived from the \textit{gravitational potential} $\potentialGravity$ of the system which is simply the sum of the potentials of the individual particles.
 %Since it can be derived from a potential $\potentialGravity:\configSpace\rightarrow\RealNum$, it is called a \textit{conservative force}.
 
-The \textit{gravitational mass} $\particleMass{\PidxI}$ in \eqref{eq:ParticleSysGravity} takes the same value as the \textit{inertial mass} in \eqref{eq:DefInertiaForce}.
+The \textit{gravitational mass} $\particleMass{\PidxI}$ in \eqref{eq:ParticleSysGravity} takes the same value as the \textit{inertial mass} from the previous section.
 This is sometimes referred to as the \textit{(Galilean) equivalence principle} and is crucial topic for general relativity, see e.g., \cite[chap.\,16]{Misner:Gravitation}.
 In this context, there is no \textit{absolute} acceleration $\particlePosdd{\PidxI}$, instead, we are interested in the deviation from the free fall acceleration $\gravityAcc$.
 This motivates the following formulation for the sum of generalized inertial and gravitational force
 \begin{multline}
   \genForceInertiaCoeff{\LidxI} + \genForceGravityCoeff{\LidxI} 
-  = -\sumParticles \particleMass{\PidxI} \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\particlePosdd{\PidxI} - \gravityAcc}
-  = -\sumParticles \particleMass{\PidxI} \sProd{\pdiff[\particlePosdd{\PidxI}]{\sysVelCoeffd{\LidxI}}}{\particlePosdd{\PidxI} - \gravityAcc}
+  = \sumParticles \particleMass{\PidxI} \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\particlePosdd{\PidxI} - \gravityAcc}
+  = \sumParticles \particleMass{\PidxI} \sProd{\pdiff[\particlePosdd{\PidxI}]{\sysVelCoeffd{\LidxI}}}{\particlePosdd{\PidxI} - \gravityAcc}
 \\
-  = -\pdiff{\sysVelCoeffd{\LidxI}} \underbrace{\Big(\tfrac{1}{2} \sumParticles \particleMass{\PidxI} \norm{\particlePosdd{\PidxI} - \gravityAcc}^2\Big)}_{\Einsteinian},
+  = \pdiff{\sysVelCoeffd{\LidxI}} \underbrace{\Big(\tfrac{1}{2} \sumParticles \particleMass{\PidxI} \norm{\particlePosdd{\PidxI} - \gravityAcc}^2\Big)}_{\accEnergyInertial},
   \qquad
   \LidxI = 1,\ldots,\dimConfigSpace.
  \label{eq:EinsteinianForce}
 \end{multline}
-The quantity $\Einsteinian$ may be regarded as a metric for the deviation of the system to its natural acceleration, the free fall.
+The quantity $\accEnergyInertial$ may be regarded as a metric for the deviation of the system to its natural acceleration, the free fall.
 
 \newcommand{\particleVelGravity}[1]{\particleStyle{v}_{#1\idxText{G}}}
 Taking this one step further, we may consider the free fall velocities $\particleVelGravity{\PidxI}(t) = \gravityAcc t + \particleStyle{v}_{\PidxI 0}$ with arbitrary initial velocities $\particleStyle{v}_{\PidxI 0} \in \RealNum^3, \PidxI=1,\ldots,\numParticles$ and compute analog to \eqref{eq:InertiaForceKinEnergy}:
@@ -416,7 +416,7 @@ Taking this one step further, we may consider the free fall velocities $\particl
   &= \sumParticles \particleMass{\PidxI}  \Big( \diff{t} \sProd{\pdiff[\particlePosd{\PidxI}]{\sysVelCoeff{\LidxI}}}{\particlePosd{\PidxI} - \particleVelGravity{\PidxI}} - \sProd{\dirDiff{\LidxI} \particlePosd{\PidxI} - \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \pdiff[\particlePosd{\PidxI}]{\sysVelCoeff{\LidxIII}} \sysVelCoeff{\LidxII}}{\particlePosd{\PidxI} - \particleVelGravity{\PidxI}}\Big)
  \nonumber\\
   &= \Big(\diff{t} \pdiff{\sysVelCoeff{\LidxI}} + \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \sysVelCoeff{\LidxII} \pdiff{\sysVelCoeff{\LidxIII}} - \dirDiff{\LidxI} \Big)
-  \underbrace{\Big( \tfrac{1}{2} \sumParticles \particleMass{\PidxI} \norm{\particlePosd{\PidxI} - \particleVelGravity{\PidxI}}^2 \Big)}_{\kineticEnergy_{\idxText{G}}},
+  \underbrace{\Big( \tfrac{1}{2} \sumParticles \particleMass{\PidxI} \norm{\particlePosd{\PidxI} - \particleVelGravity{\PidxI}}^2 \Big)}_{\kineticEnergyInertial},
   \qquad
   \LidxI = 1,\ldots,\dimConfigSpace.
 \end{align}

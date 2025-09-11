@@ -71,6 +71,8 @@ This kinematic relation \eqref{eq:MyKinematics} ensures that the time derivative
 % 
 % \fixme{Construction of $\kinMat$ by matrix inversion}
 
+\clearpage
+
 \begin{Example}
 Consider a single particle constrained to a circle of radius $\rho$ as illustrated in \autoref{fig:ParticleOnCircle}.
 
@@ -82,17 +84,17 @@ Consider a single particle constrained to a circle of radius $\rho$ as illustrat
 \end{minipage}
 
 We use the its Cartesian position $[\sysCoordCoeff{1}, \sysCoordCoeff{2}]^\top \in \RealNum^2$ constrained by $\geoConstraintCoeff{} = (\sysCoordCoeff{1})^2 + (\sysCoordCoeff{2})^2 - \rho^2 = 0$ as configuration coordinates.
-A reasonable choice for the kinematics matrix $\kinMat$ is motivated from
+A reasonable choice for the kinematics matrix $\kinMat$ is
 \begin{align}
  \underbrace{\big[ 2\sysCoordCoeff{1} \ 2\sysCoordCoeff{2} \big]}_{\pdiff[\geoConstraintCoeff{}]{\sysCoord}}
  \underbrace{\begin{bmatrix} -\sysCoordCoeff{2} \\ \sysCoordCoeff{1} \end{bmatrix}}_{\kinMat}
  = 0
 \end{align}
 \end{Example}
-
+\vfill
 \begin{Example}\label{Example:KinMatSO3}
-Consider again the system from Example \fixme{Example:ThreeParticles}.
-Instead of parameterizing the rotation matrix $\R$ by minimal coordinates we now take its 9 coefficients $\sysCoord = [\Rxx, \Ryx, \Rzx, \Rxy, \Ryy, \Rzy, \Rxz, \Ryz, \Rzz]^\top \in \RealNum^{9}$ as configuration coordinates.
+Consider the motivation example of the rigid body orientation from \autoref{sec:MotivationRigidBodyAttitude}.
+Instead of parameterizing the rotation matrix $\R$ by minimal coordinates, we take its 9 coefficients $\sysCoord = [\Rxx, \Ryx, \Rzx, \Rxy, \Ryy, \Rzy, \Rxz, \Ryz, \Rzz]^\top \in \RealNum^{9}$ as configuration coordinates.
 The constraints $\R^\top \R = \idMat[3]$ and $\det\R = 1$ read
 \begin{align}\label{eq:constraintSO3}
  \geoConstraint(\sysCoord) = 

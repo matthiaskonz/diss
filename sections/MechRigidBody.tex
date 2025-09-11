@@ -39,8 +39,8 @@ Textbooks that are more focused on engineering like \cite[sec.\ 8, § 1]{Hamel:T
 Both modeling assumptions eventually lead to the same equations of motion when using the same generalized coordinates.
 They differ in the computation of the inertial parameters of total mass, center of mass and moment of inertia:
 The physics perspective uses a finite sum over the particles, whereas the engineering point of view requires an integral over the body volume.
-
 This work will consider a finite number of particles.
+
 In contrast to the sources mentioned above, this section will investigate apart from inertia and gravitation, also stiffness and damping for a rigid body.
 In particular for the latter two parts, the model of concentrated particles is more intuitive in the authors humble opinion.
 
@@ -60,7 +60,7 @@ With this, the position of any particle of the body may then be written as
 \begin{align}\label{eq:RBParticlePos}
  \particlePos{\PidxI} = \r + \R \particleBodyPos{\PidxI}, \quad \PidxI=1,\ldots,\numParticles
 \end{align}
-where the relative position $\particleBodyPos{\PidxI} \in \RealNum^3$ to the body fixed frame is \textit{constant}.
+where the relative particle positions $\particleBodyPos{\PidxI} \in \RealNum^3$ to the body fixed frame are \textit{constant}.
 Consequently, the motion of the rigid body is completely captured by the position $\r(t) \in \RealNum^3$ and orientation $\R(t) \in \SpecialOrthogonalGroup(3)$ of the body fixed frame.
 
 \paragraph*{Usefulness of these particular coordinates.}
@@ -79,7 +79,7 @@ It uses a fixed number of $\numCoord=12$ coordinates and constraints and respect
 Furthermore, the interpretation of $\r$ and the columns of $\R$ as a body fixed frame are quite intuitive for practical applications.
 
 \paragraph*{Velocity.}
-For parameterization of the velocity of the rigid body we will use the body fixed velocity $\v(t)\in \RealNum^3$ and the angular velocity $\w(t)\in \RealNum^3$ which are related to the configuration by
+For parameterization of the velocity of the rigid body, we will use the body fixed velocity $\v(t)\in \RealNum^3$ and the angular velocity $\w(t)\in \RealNum^3$ which are related to the configuration by
 \begin{align}\label{eq:RBKinematicEq1}
  \rd = \R \v, \qquad \Rd = \R \wedOp(\w).
 \end{align}
@@ -98,8 +98,8 @@ With this we may express the velocity and accelerations of the body particles as
 \end{subequations}
 
 \paragraph*{Compliance with the framework.}
-In order to comply to the framework from the previous chapter we may group the configuration coordinates as $\sysCoord = [\r^\top, \Rx^\top, \Ry^\top, \Rz^\top]^\top \in \configSpace \subset\RealNum^{12}$ and their geometric constraint as $\geoConstraint(\sysCoord) = \tuple{0}$ are the constraints of $\SpecialOrthogonalGroup(3)$ as discussed in \fixme{[REF]}.
-The kinematic relation to the chosen velocity coordinates $\sysVel$ is
+In order to comply to the framework from the previous chapter we may group the configuration coordinates as $\sysCoord = [\r^\top, \Rx^\top, \Ry^\top, \Rz^\top]^\top \in \configSpace \subset\RealNum^{12}$ and their geometric constraint as $\geoConstraint(\sysCoord) = \tuple{0}$ are the constraints of $\SpecialOrthogonalGroup(3)$ as given in \eqref{eq:constraintSO3}.
+The vector form of the kinematic relation \eqref{eq:RBKinematicEq1} is 
 \begin{align}\label{eq:RBKinematicEq2}
  \underbrace{\begin{bmatrix} \rd \\ \Rxd \\ \Ryd \\ \Rzd  \end{bmatrix}}_{\sysCoordd}
  = 
@@ -114,7 +114,7 @@ The kinematic relation to the chosen velocity coordinates $\sysVel$ is
 \end{align}
 
 \paragraph*{Commutation coefficients.}
-Plugging the kinematic matrix $\kinMat$ from into the definition \eqref{eq:DefCommutationCoeff} of the commutation symbols $\bodyBoltzSym{}{}{}$ yields
+Plugging the kinematic matrix $\kinMat$ from \eqref{eq:RBKinematicEq2} into the definition \eqref{eq:DefCommutationCoeff} of the commutation symbols $\bodyBoltzSym{}{}{}$ yields
 \begin{align}\label{eq:RBCommutationCoeff}
  \bodyBoltzSym{1}{2}{6} = \bodyBoltzSym{1}{5}{3} = 
  \bodyBoltzSym{2}{3}{4} = \bodyBoltzSym{2}{6}{1} =
@@ -517,7 +517,7 @@ On $\RealNum^6$ we define it as
  %\SpecialEuclideanAlgebra(3) &= \{ \wedOp\bodyVel{}{} \, | \, \bodyVel{}{} \in \RealNum^6 \}.
 \end{align}
 \end{subequations}
-Its inverse is denoted $\veeOp(\cdot)$, i.e.\ $\veeOp(\wedOp(\sysVel)=\sysVel$.
+Its inverse is denoted $\veeOp(\cdot)$, i.e.\ $\veeOp(\wedOp(\sysVel))=\sysVel$.
 The $\wedOp$ and $\veeOp$ operators are well established in the literature, see e.g.\ \cite[sec.\ 2.3.2]{Murray:Robotic}.
 
 Using the $\wedOp$ operator may rewrite the rigid body kinematics from \eqref{eq:RBKinematicEq1} in matrix form as:
@@ -564,6 +564,7 @@ Define
 \begin{align}
  \G &= \begin{bmatrix} \R & \r \\ \mat{0} & 1 \end{bmatrix} \, :&
  \Ad{\G} &= \begin{bmatrix} \R & \wedOp(\r) \R \\ \mat{0} & \R \end{bmatrix}&
+ \label{eq:defAdjointSE3}
 \\
 %\intertext{and}
  \bodyVel{}{} &= \begin{bmatrix} \v \\ \w \end{bmatrix} \, :&
@@ -591,20 +592,21 @@ Though the Lie group theory can be extremely useful for rigid body mechanics, fo
 
 
 
-\paragraph*{Inner product.}
-For matrices $\mat{A}, \mat{B} \in \RealNum^{n\times m}$ and a symmetric, positive definite matrix $ \mat{K} \in \SymMatP(n)$, define the \textit{weighted} Frobenius inner product as
-\begin{align}%\label{eq:DefFrobeniusInnerProduct}
- \sProd[\mat{K}]{\mat{A}}{\mat{B}} = \tr(\mat{A}^\top \mat{K} \mat{B}).
-\end{align}
-Its induced norm and induced metric are
-\begin{align}
- \norm[\mat{K}]{\mat{A}} = \sqrt{\sProd[\mat{K}]{\mat{A}}{\mat{A}}}
-\qquad
- \metric[\mat{K}]{\mat{A}}{\mat{B}} = \norm[\mat{K}]{\mat{A}-\mat{B}}.
-\end{align}
-Note that this contains the common Frobenius inner product/norm for $\mat{K}=\idMat[n]$.
-Furthermore, it contains the common dot product and Euclidean norm/metric for $\mat{A}, \mat{B} \in \RealNum^{n}$.
-Thus, it is compatible with the notation used so far if we identify: $\sProd[{\idMat[n]}]{\cdot}{\cdot} \equiv \sProd[]{\cdot}{\cdot}$ and $\norm[{\idMat[n]}]{\cdot} \equiv \norm[]{\cdot}$.
+% \paragraph*{Inner product.}
+% For matrices $\mat{A}, \mat{B} \in \RealNum^{n\times m}$ and a symmetric, positive definite matrix $ \mat{K} \in \SymMatP(n)$, define the \textit{weighted} Frobenius inner product as
+% \begin{align}%\label{eq:DefFrobeniusInnerProduct}
+%  \sProd[\mat{K}]{\mat{A}}{\mat{B}} = \tr(\mat{A}^\top \mat{K} \mat{B}).
+% \end{align}
+% Its induced norm and induced metric are
+% \begin{align}
+%  \norm[\mat{K}]{\mat{A}} = \sqrt{\sProd[\mat{K}]{\mat{A}}{\mat{A}}}
+% \qquad
+%  \metric[\mat{K}]{\mat{A}}{\mat{B}} = \norm[\mat{K}]{\mat{A}-\mat{B}}.
+% \end{align}
+% Note that this contains the common Frobenius inner product/norm for $\mat{K}=\idMat[n]$.
+% Furthermore, it contains the common dot product and Euclidean norm/metric for $\mat{A}, \mat{B} \in \RealNum^{n}$.
+% Thus, it is compatible with the notation used so far if we identify: $\sProd[{\idMat[n]}]{\cdot}{\cdot} \equiv \sProd[]{\cdot}{\cdot}$ and $\norm[{\idMat[n]}]{\cdot} \equiv \norm[]{\cdot}$.
+
 % For $\protoX_i \in \RealNum^{n\times n}$ and $\R \in \SpecialOrthogonalGroup(n)$ we have
 % \begin{subequations}
 % \begin{align}
@@ -628,10 +630,28 @@ Thus, it is compatible with the notation used so far if we identify: $\sProd[{\i
 %  &= \sProd[\G \mat{K} \G^\top]{\protoXi_1^\top}{\protoXi_2^\top}.
 % \end{align} 
 % \end{subequations}
-%Note that this case includes in particular $\protoXi_1, \protoXi_2 \in \SpecialEuclideanAlgebra(n)$.
+% Note that this case includes in particular $\protoXi_1, \protoXi_2 \in \SpecialEuclideanAlgebra(n)$.
+
 
 \paragraph*{Rigid body energies.}
-Finally, using the notation introduced above, we may rewrite the kinetic energy $\kineticEnergy$ of a free rigid body \eqref{eq:RigidBodyKineticEnergy}, the acceleration energy $\accEnergy$ from \eqref{eq:RigidBodyAccEnergy}, the dissipation function $\dissFkt$ in \eqref{eq:RBDissFkt}, the potential energy $\potentialEnergy$ due to linear springs \eqref{eq:RBStiffnessPotential3} and the potential energy $\potentialGravity$ due to earth's gravitation from \eqref{eq:RBPotentialEnergyGravity} as
+Notice that for $\protox, \particleBodyPos{\PidxI} \in \RealNum^{n}$, $\protoX \in \RealNum^{n\times n}$ we have
+\begin{align}
+ \sumParticles \particleMass{\PidxI} \norm{\protox + \protoX \particleBodyPos{\PidxI}}^2
+ %= \sumParticles \particleMass{\PidxI} (\protox + \protoX \particleBodyPos{\PidxI})^\top (\protox + \protoX \particleBodyPos{\PidxI})
+ &= \sumParticles \particleMass{\PidxI} \tr\big( (\protox + \protoX \particleBodyPos{\PidxI})(\protox + \protoX \particleBodyPos{\PidxI})^\top \big)
+\nonumber\\
+ &= \sumParticles \particleMass{\PidxI} \tr\left( \left(\begin{bmatrix} \protoX & \protox \\ \mat{0} & 0 \end{bmatrix}\begin{bmatrix} \particleBodyPos{\PidxI}\\ 1 \end{bmatrix} \right) \left(\begin{bmatrix} \protoX & \protox \\ \mat{0} & 0 \end{bmatrix}\begin{bmatrix} \particleBodyPos{\PidxI}\\ 1 \end{bmatrix} \right)^\top \right)
+\nonumber\\
+ &= \tr\bigg( \underbrace{\begin{bmatrix} \protoX & \protox \\ \mat{0} & 0 \end{bmatrix}}_{\protoXi} \underbrace{\left( \sumParticles \particleMass{\PidxI} \begin{bmatrix} \particleBodyPos{\PidxI} \particleBodyPos{\PidxI}^\top & \particleBodyPos{\PidxI}^\top \\ \particleBodyPos{\PidxI} & 1 \end{bmatrix} \right)}_{\bodyInertiaMatp{}{}} \underbrace{\begin{bmatrix} \protoX^\top & \mat{0} \\ \protox^\top & 0 \end{bmatrix}}_{\protoXi^\top} \bigg)
+\nonumber\\
+ &= \norm[\bodyInertiaMatp{}{}]{\protoXi^\top}^2
+\end{align}
+with the weighted Frobenius norm motivated in \eqref{eq:DefMatrixNorm}.
+Furthermore, for the special case $\protoXi = \wedOp \bodyVel{}{}$ we have due to \eqref{eq:EqVeeMatOp}:
+\begin{align}
+ \norm[\bodyInertiaMatp{}{}]{\wedOp(\bodyVel{}{})^\top}^2 = \norm[\veeMatOp\bodyInertiaMatp{}{}]{\bodyVel{}{}}^2,
+\end{align}
+Using this, we may rewrite the kinetic energy $\kineticEnergy$ of a free rigid body \eqref{eq:RigidBodyKineticEnergy}, the acceleration energy $\accEnergy$ from \eqref{eq:RigidBodyAccEnergy}, the dissipation function $\dissFkt$ in \eqref{eq:RBDissFkt}, the potential energy $\potentialEnergy$ due to linear springs \eqref{eq:RBStiffnessPotential3} and the potential energy $\potentialGravity$ due to earth's gravitation from \eqref{eq:RBPotentialEnergyGravity} as
 \begin{subequations}
 \begin{align}
  \kineticEnergy
@@ -639,11 +659,21 @@ Finally, using the notation introduced above, we may rewrite the kinetic energy 
  = \tfrac{1}{2} \norm[\bodyInertiaMatp{}{}]{\bodyHomoCoordd{}{}^\top}^2
  = \tfrac{1}{2} \norm[\bodyInertiaMat{}{}]{\bodyVel{}{}}^2
 \\
+ \kineticEnergyInertial
+ &= \tfrac{1}{2} \sumParticles \particleMass{\PidxI} \norm{\overbrace{\rd + \bodyRotd{}{}{}{} \particleBodyPos{\PidxI}}^{\particlePosd{\PidxI}} - \gravityAcc t}^2
+ = \tfrac{1}{2} \norm[\bodyInertiaMatp{}{}]{(\bodyHomoCoordd{}{} - \wedOp(\gravityAccWrench t))^\top}^2
+\qquad
+ \gravityAccWrench = \begin{bmatrix} \gravityAcc \\ \tuple{0}_{3\times1} \end{bmatrix}
+\\
  \label{eq:RBAccEnergyHomo}
  \accEnergy 
  &= \tfrac{1}{2} \sumParticles \particleMass{\PidxI} \norm{\overbrace{\bodyPosdd{}{}{} + \bodyRotdd{}{}{}{} \particleBodyPos{\PidxI}}^{\particlePosdd{\PidxI}}}^2
  = \tfrac{1}{2} \norm[\bodyInertiaMatp{}{}]{\bodyHomoCoorddd{}{}^\top}^2
 % = \tfrac{1}{2} \norm[\bodyInertiaMatp{}{}]{(\wedOp(\bodyVeld{}{}) + \wedOp(\bodyVel{}{})^2)^\top}^2
+\\
+ \accEnergyInertial 
+ &= \tfrac{1}{2} \sumParticles \particleMass{\PidxI} \norm{\overbrace{\bodyPosdd{}{}{} + \bodyRotdd{}{}{}{} \particleBodyPos{\PidxI}}^{\particlePosdd{\PidxI}} - \gravityAcc}^2
+ = \tfrac{1}{2} \norm[\bodyInertiaMatp{}{}]{(\bodyHomoCoorddd{}{} - \wedOp(\gravityAccWrench))^\top}^2
 \\
  \dissFkt
  &= \tfrac{1}{2} \sumParticles \particleDamping{\PidxI} \norm{\overbrace{\rd + \bodyRotd{}{}{}{} \particleBodyPos{\PidxI}}^{\particlePosd{\PidxI}}}^2
@@ -660,8 +690,8 @@ Finally, using the notation introduced above, we may rewrite the kinetic energy 
  \potentialGravity 
  &= \sumParticles \sProd{\overbrace{\r + \R \particleBodyPos{\PidxI}}^{\particlePos{\PidxI}}}{-\particleMass{\PidxI} \gravityAcc}
  = \sProd[\bodyInertiaMatp{}{}]{\G^\top}{\wedOp(-\gravityAccWrench)^\top},
-\qquad
- \gravityAccWrench^\top = [ \gravityAcc^\top, \tuple{0}_{1\times3} ].
+%\qquad
+% \gravityAccWrench^\top = [ \gravityAcc^\top, \tuple{0}_{1\times3} ].
 \end{align}
 \end{subequations}
 where
@@ -704,7 +734,7 @@ The corresponding forces forces which were already derived in the previous subse
 % = \pdiff{\bodyVel{}{}} \tr \big( \wedOp(\bodyVel{}{}) \bodyStiffMatp{}{} (\idMat[4] \!-\! \bodyHomoCoord{}{}^{-1} \bodyHomoCoordR{}{})^\top \big)
  &= \veeTwoOp \big( (\idMat[4] - \bodyHomoCoord{}{}^{-1} \bodyHomoCoordR{}{}) \bodyStiffMatp{}{} \big)
 \\
- \bodyGenForceGravity{}{} = \differential\potentialGravity
+ \genForceGravity = \differential\potentialGravity
  &= \veeTwoOp \big( \bodyHomoCoord{}{}^{\top} \wedOp(-\gravityAccWrench) \bodyInertiaMatp{}{} \big)
  = -\bodyInertiaMat{}{} \Ad{\G}^{-1} \gravityAccWrench.
 \end{align} 
@@ -721,6 +751,8 @@ Combining the results above, the equations of motion of a free rigid body subjec
 \end{align} 
 \end{subequations}
 Thee are three sets of ingredients:
-The chosen coordinates are collected within $\bodyHomoCoord{}{}(t)\in\SpecialEuclideanGroup(3)$ and $\bodyVel{}{}(t)\in\RealNum^6$.
-The matrices $\bodyInertiaMatp{}{}, \bodyDissMatp{}{}, \bodyStiffMatp{}{} \in \SymMat(4)$ capture the distribution of mass, damping and stiffness.
-External influences are collected within the gravity wrench $\gravityAccWrench^\top = [ \gravityAcc^\top, \tuple{0}_{1\times3} ]$ and the generalized external force $\genForceEx(t)\in\RealNum^6$.
+\begin{itemize}
+\item The chosen coordinates are collected within $\bodyHomoCoord{}{}(t)\in\SpecialEuclideanGroup(3)$ and $\bodyVel{}{}(t)\in\RealNum^6$.
+\item The matrices $\bodyInertiaMatp{}{}, \bodyDissMatp{}{}, \bodyStiffMatp{}{} \in \SymMat(4)$ capture the distribution of mass, damping and stiffness.
+\item External influences are collected within the gravity wrench $\gravityAccWrench^\top = [ \gravityAcc^\top, \tuple{0}_{1\times3} ]$, the equilibrium configuration of the springs $\bodyHomoCoordR{}{}(t) \in \SpecialEuclideanGroup(3)$ and the generalized external force $\genForceEx(t)\in\RealNum^6$.
+\end{itemize}

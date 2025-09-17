@@ -81,6 +81,21 @@ The total energy $\totalEnergyC = \kineticEnergyC + \potentialEnergyC$, $\totalE
 The remaining initial condition $\jointAngleE(0) = \pm\pi$ and $\jointAngleEd(0)=0$ is instable, see \autoref{fig:PhasePlotSO2}.
 As a physical interpretation: the controlled dynamics coincide with the dynamics of a damped physical pendulum.
 
+\begin{figure}
+ \centering
+ \input{graphics/PhasePlotSO2.pdf_tex}
+ \caption{Phase plot for \eqref{eq:RevoluteJointClosedLoopApproachEnergy}, left, and for \eqref{eq:RevoluteJointCtrlLin}, right}
+ \label{fig:PhasePlotSO2}
+\end{figure}
+\begin{figure}
+ \centering
+ \appendtographicspath{{graphics/RevoluteJoint/}}
+ \input{graphics/RevoluteJoint/RevoluteJointSimRes}
+ \caption{Simulation result for the revolute joint: gray line: reference, dashed line: particle-based approach, solid line: energy-based approach, dotted line: linear approach}
+ \label{fig:RevoluteJointSimRes}
+\end{figure}
+
+
 \paragraph{Linear control.}
 Since the model \eqref{eq:RevoluteJointModel} is a linear differential equation, the following linear closed loop equation might also be reasonable
 \begin{align}\label{eq:RevoluteJointCtrlLin}
@@ -90,20 +105,8 @@ The difference between the closed loop \eqref{eq:RevoluteJointClosedLoopApproach
 The linear control law leads to non-smooth phase curves at $\jointAngle = \pm\pi$, which is the consequence of the linear design for a system whose configuration space is actually $\Sphere^1 \ncong \RealNum$.
 See \cite[sec.\ 1.2]{Konz:AT} for a deeper discussion.
 
-\begin{figure}[ht]
- \centering
- \input{graphics/PhasePlotSO2.pdf_tex}
- \caption{Phase plot for \eqref{eq:RevoluteJointClosedLoopApproachEnergy}, left, and for \eqref{eq:RevoluteJointCtrlLin}, right}
- \label{fig:PhasePlotSO2}
-\end{figure}
 
 \paragraph{Simulation results.}
 \autoref{fig:RevoluteJointSimRes} shows simulation results comparing the three different approaches \eqref{eq:RevoluteJointClosedLoopApproachParticles}, \eqref{eq:RevoluteJointClosedLoopApproachEnergy} and \eqref{eq:RevoluteJointCtrlLin} tracking a reference $\jointAngleR(t) = \tfrac{\pi}{2}\sin(\tfrac{2\pi}{2.5}t)$.
 Evidently, all approaches fulfill the control objective, i.e. the joint angle $\jointAngle$ converges to its reference $\jointAngleR$.
-\begin{figure}[ht]
- \centering
- \appendtographicspath{{graphics/RevoluteJoint/}}
- \input{graphics/RevoluteJoint/RevoluteJointSimRes}
- \caption{Simulation result for the revolute joint: gray line: reference, dashed line: particle-based approach, solid line: energy-based approach, dotted line: linear approach}
- \label{fig:RevoluteJointSimRes}
-\end{figure}
+

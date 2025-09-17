@@ -1,0 +1,52 @@
+\thispagestyle{plain}
+
+% \section*{Kurzfassung}
+% Der theoretische Teil dieser Arbeit befasst sich mit der Modellierung und Folgeregelung von Starrkörpersystemen.
+% Ein Starrkörpersystem besteht aus miteinander verkoppelten starren Körpern, welche wiederum als Menge von speziell verkoppelten Massepunkten angesehen werden können.
+% 
+% Das erste Kapitel diskutiert allgemeine Systeme von verkoppelten Massepunkten.
+% Ziel ist die Herleitung von Energien und Bewegungsgelichungen und deren Zusammenhang.
+% Im Kontrast zum Großteil der Literator wird hier eine recht allgemeine Parametrierung in Positions- und Geschwindigkeitskoordinaten betrachtet.
+% 
+% Im zweiten Kapitel wird diese Theorie auf die spezielleren Fälle eines einzelnen freien Starrkörperes und allgemeiner Starrkörpersysteme angewendet.
+% Als Resultat ergeben sich in kompakte Formulierungen für die Starrkörperenergien als auch für die Bewegungsgleichungen, welche in dieser Form wohl noch nicht in der Literatur etabliert sind.
+% 
+% Im dritten Kapitel wird ein Ansatz zur Folgeregelung von Starrköpersystemen durch statische Zustandsrückführung präsentiert.
+% Zunächst wird ein, basierend auf den Erkentnissen der Modellierung, allgemeines, aber geometrisch passendes Wunschverhalten definiert.
+% Das Regelgesetz ergibt sich aus der Minimierung der Differenz von realisierbarer Beschleunigung und Wunschbeschleunigung.
+% Die Performance dieses Ansatzes wird an meheren Beispielen und Simulationsergebnissen diskutiert.
+% 
+% Zur praktischen Evaluation des Reglerkonzepts werden die am LSR entwickelten Tri- und Quadcopter verwendet.
+% Die Performance des realisierten Regelkonzepts wird an meherern aerobatischen Beispielmaneuvern demonstriert.
+% 
+% \clearpage
+
+\section*{Abstract}
+Many machines, vehicles and robots may be modeled as rigid body systems, i.e.\ a number of interconnected, undeformable bodies subject to inertia, gravity, and other forces.
+Energy-based methods for derivation of their equations of motion, like the Lagrange formalism, are standard in engineering education and well established in the dedicated literature.
+These algorithms commonly rely on the use of a minimal set of generalized coordinates.
+This is appropriate for many applications, e.g. machines containing only one-dimensional joints.
+For systems whose configuration space is nonlinear, e.g. mobile robots whose configiguration space contains the rigid body attitude, the use of minimal coordinates necessarily leads to singularities.
+From the point of view of differential geometry, this is a well known fact.
+
+This work resolves this problem by the use of (possibly) redundant configuration coordinates and (possibly) nonholonomic velocity coordinates.
+The second chapter reviews several established formalisms of analytical mechanics and states them in terms of these more general coordinates.
+The third chapter applies these results to rigid body systems.
+Though inertia is the crucial part of the dynamics, this work also investigates dissipation and stiffness.
+Finally, it presents an algorithm for the derivation of global equations of motion of general rigid body systems.
+
+The literature states computed-torque is a standard approach for tracking control of fully actuated mechanical systems.
+However, this recipe relies on minimal coordinates and consequently suffers from the problems mentioned above.
+There is no established ``standard'' approach for the control of underactuated systems.
+
+This work presents three sightly different algorithms for tracking control of general rigid body systems by means of static state feedback.
+These essentially minimize the distance between the actual realizable acceleration of the model and a desired acceleration computed from a stable prototype system.
+The prototype system shares the geometry and kinematics of the actual model, but may have different constitutive properties (inertia, damping, stiffness).
+The resulting control law can be computed globally and explicitly for any rigid body system.
+The resulting closed loop system (which may differ from the prototype in the underactuated case), is invariant to the chosen coordinates, i.e.\ its formulation is covariant.
+However, so far, there is no general proof of stability.
+The performance of the proposed approaches are discussed on several examples and simulation results.
+
+The last chapter of this work discusses the experimental realization of the control approach to two small UAVs.
+The performance is demonstrated on tracking control for several aerobatic maneuvers.
+

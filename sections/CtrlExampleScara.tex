@@ -264,7 +264,7 @@ For both parameterizations the controlled total energy $\totalEnergyC$ converges
 The crucial difference between the two parameterizations is, though the tool position $\toolPos$ tracks its reference in both cases, the joint angles $\jointAngle[1], \jointAngle[2]$ do not for the second parameterization.
 The reason for this is best understood when looking at the controlled potential energy $\potentialEnergyC$ illustrated in \autoref{fig:SCARAPotentials}:
 For parameterization 2 the potential has two minima $\potentialEnergyC=0$ for which the tool is at its reference position, but with different joint angles.
-This holds for any tool position except the ones on the boundary of the workspace where $\jointAngle[2]=0$ or $\jointAngle[2]=\pi$.
+This is true for any tool position except the ones on the boundary of the workspace where $\jointAngle[2]=0$ or $\jointAngle[2]=\pi$.
 
 Which of the two parameterizations is ``better'' probably depends on the practical control task:
 If the actual joint configuration $(\jointAngle[1], \jointAngle[2])$ matters then the control parameters associated with them, i.e.\ $\bodyMOSCoeffC{0}{1}{\idxZ}, \bodyMODCoeffC{0}{1}{\idxZ}, \ldots$, are more suited for the control design.

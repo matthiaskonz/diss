@@ -50,8 +50,8 @@ With this, the solution of \eqref{eq:CtrlGaussPrinciple} can be computed from
  &= \underbrace{\pdiff{\sysVelCoeffd{\LidxI}} \underbrace{\sumParticles \tfrac{1}{2} \particleMassC{\PidxI}      \norm{\particlePosEdd{\PidxI}}^2}_{\accEnergyC}}_{\genForceInertiaCoeffC{\LidxI}}
   + \underbrace{\pdiff{\sysVelCoeff{\LidxI}}  \underbrace{\sumParticles \tfrac{1}{2} \particleDampingC{\PidxI}   \norm{\particlePosEd{\PidxI}}^2}_{\dissFktC}}_{\genForceDissCoeffC{\LidxI}}
   + \underbrace{\dirDiff{\LidxI}              \underbrace{\sumParticles \tfrac{1}{2} \particleStiffnessC{\PidxI} \norm{\particlePosE{\PidxI}}^2}_{\potentialEnergyC}}_{\genForceStiffCoeffC{\LidxI}}
-  = 0, \quad \LidxI = 1,\ldots,\dimConfigSpace.
-\nonumber\\[-5ex]
+  = 0, \ \LidxI = 1,\ldots,\dimConfigSpace.
+\nonumber\\[-4ex]
 \label{eq:SolCtrlGaussPrinciple}
 \end{align}
 Here we introduced formulations for the \textit{controlled acceleration energy} $\accEnergyC(\sysCoord, \sysVel, \sysVeld, \sysCoordR, \sysVelR, \sysVelRd)$, the \textit{controlled dissipation function} $\dissFktC(\sysCoord, \sysVel, \sysCoordR, \sysVelR)$ and the \textit{controlled potential energy} $\potentialEnergyC(\sysCoord, \sysCoordR)$.
@@ -63,7 +63,7 @@ It is worth noting that the inertia force $\genForceInertiaC$ could also be deri
 Also note that all the defined ``energies'' are symmetric in the sense that $\potentialEnergy(\sysCoord, \sysCoordR) = \potentialEnergyC(\sysCoordR, \sysCoord)$, etc..
 
 The corresponding forces expressed more explicitly are 
-\begin{subequations}\label{eq:CtrlGaussPrincipleForces}
+\begin{subequations}\label{eq:CtrlGaussPrincipleForces} 
 \begin{align}
  \genForceInertiaCoeffC{\LidxI} = \pdiff[\accEnergyC]{\sysVelCoeffd{\LidxI}} &= 
    \underbrace{\sumParticles \particleMassC{\PidxI} \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}(\sysCoord)}{\dirDiff{\LidxII} \particlePos{\PidxI}(\sysCoord)}}_{\sysInertiaMatCoeffC{\LidxI\LidxII}(\sysCoord)} \sysVelCoeffd{\LidxII}
@@ -163,7 +163,7 @@ It is, however, for the very special case of $\sysVelR = \tuple{0}$, i.e.\ prove
 \subsection{Free rigid body}\label{sec:CtrlApproachParticlesSingleBody}
 Consider the free rigid body discussed in \autoref{sec:RB} as a special case of a particle system.
 As motivated there we use the position $\r(t)\in \RealNum^3$ and orientation matrix $\R(t)\in\SpecialOrthogonalGroup(3)$ merged into the configuration matrix $\bodyHomoCoord{}{}(t) = \left[\begin{smallmatrix} \R(t) & \r(t) \\ \mat{0} & 1 \end{smallmatrix}\right] \in \SpecialEuclideanGroup(3)$ as configuration coordinates.
-Expressing the particle positions as $\particlePos{\PidxI} = \bodyPos{}{} + \bodyRot{}{} \particleBodyPos{\PidxI}$ and applying the same calculations as in \autoref{sec:RBMathEnergies} we can write the energies from \eqref{eq:SolCtrlGaussPrinciple} as
+Expressing the particle positions as $\particlePos{\PidxI} = \bodyPos{}{} + \bodyRot{}{} \particleBodyPos{\PidxI}$ and applying the same calculations as in \eqref{eq:RBProtoEnergy} we can write the energies from \eqref{eq:SolCtrlGaussPrinciple} as
 \begin{subequations}\label{eq:RBCtrlEnergiesParticles}
 \begin{align}
  \potentialEnergyC &= \sumParticles \tfrac{1}{2} \particleStiffnessC{\PidxI} \norm{\particlePos{\PidxI} - \particlePosR{\PidxI}}^2
@@ -196,7 +196,7 @@ As before we can interpret the entries of the \textit{desired inertia matrix} $\
 The analog holds for the entries of the \textit{desired damping matrix} $\bodyDissMatC{}{} = \veeMatOp(\bodyDissMatCp{}{})$ and the \textit{desired stiffness matrix} $\bodyStiffMatC{}{} = \veeMatOp(\bodyStiffMatCp{}{})$.
 
 Introduce the translational $\v(t) \in \RealNum^3$ and angular velocity $\w(t)\in \RealNum^3$ merged into $\bodyVel{}{} = [\v^\top, \w^\top]^\top = \veeOp(\bodyHomoCoord{}{}^{-1} \bodyHomoCoordd{}{})$ as velocity coordinates.
-Furthermore, we introduce the \textit{configuration error} $\bodyHomoCoordE{}{} = \bodyHomoCoordR{}{}^{-1} \bodyHomoCoord{}{}$ and exploit the invariance \eqref{eq:InnerProductSE3LeftTranslation} of the norm to left translation of the argument to express the desired energies \eqref{eq:RBCtrlEnergiesParticles} as
+Furthermore, we introduce the \textit{configuration error} $\bodyHomoCoordE{}{} = \bodyHomoCoordR{}{}^{-1} \bodyHomoCoord{}{}$ and exploit the invariance of the norm to left translation of the argument to express the desired energies \eqref{eq:RBCtrlEnergiesParticles} as
 \begin{subequations}
 \begin{align}
 %  \potentialEnergyC(\bodyHomoCoordE{}{}) &= \tfrac{1}{2} \norm[\bodyStiffMatCp{}{}]{\big(\idMat[4] - \bodyHomoCoordE{}{}^{-1}\big)^\top}^2
@@ -211,9 +211,10 @@ Furthermore, we introduce the \textit{configuration error} $\bodyHomoCoordE{}{} 
  \accEnergyC &= \tfrac{1}{2} \norm[\bodyInertiaMatCp{}{}]{\big(\wedOp(\bodyVeld{}{}) + \wedOp(\bodyVel{}{})^2 - \bodyHomoCoordE{}{}^{-1} \big( \wedOp(\bodyVelRd{}{}) + \wedOp(\bodyVelR{}{})^2 \big)\big)^\top}^2
 \\
  \kineticEnergyC &= \tfrac{1}{2} \norm[\bodyInertiaMatCp{}{}]{\big(\wedOp(\bodyVel{}{}) - \bodyHomoCoordE{}{}^{-1} \wedOp(\bodyVelR{}{}) \big)^\top}^2
+ .
 \end{align}
 \end{subequations}
-Using the $\veeTwoOp$-operator defined in \eqref{eq:DefVeeTwoOp} the resulting forces can be expressed as
+The resulting forces can be expressed as
 \begin{subequations}\label{eq:RBCtrlParticles}
 \begin{align}
  \genForceStiffC
@@ -260,11 +261,11 @@ The characteristic polynomial of the first order approximation of the system abo
 
 \fixme{blah}
 
-In contrast to this, the characteristic polynomial resulting from the computed torque method (see \autoref{sec:ComputedTorque}) for this system is $\det(\idMat[6] \lambda^2 + \mat{K}_1 \lambda + \mat{K}_2)$, which has $\dimConfigSpace(\dimConfigSpace+1) = 42$ tuning parameters within the matrixes $\mat{K}_1,\mat{K}_2\in\SymMatP(6)$.
+In contrast to this, the characteristic polynomial resulting from the computed torque method (see \fixme{sec:ComputedTorque}) for this system is $\det(\idMat[6] \lambda^2 + \mat{K}_1 \lambda + \mat{K}_2)$, which has $\dimConfigSpace(\dimConfigSpace+1) = 42$ tuning parameters within the matrixes $\mat{K}_1,\mat{K}_2\in\SymMatP(6)$.
 
 \fixme{blah}
 
-A possible generalization of the rigid body potential $\potentialEnergyC$ which works with all $\tfrac{1}{2}n(n+1) = 21$ tuning parameters in a matrix $\bodyStiffMatC{}{} \in \SymMatP(6)$ is given in \autoref{sec:GenRigidBodyPotential}.
+A possible generalization of the rigid body potential $\potentialEnergyC$ which works with all $\tfrac{1}{2}n(n+1) = 21$ tuning parameters in a matrix $\bodyStiffMatC{}{} \in \SymMatP(6)$ is given in \fixme{sec:GenRigidBodyPotential}.
 
 % \paragraph{Total energy.}
 % \newcommand{\GEbodyVelR}{\mat{\mathsf{\Xi}}_{\idxRef}}

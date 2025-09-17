@@ -1,6 +1,6 @@
 \subsection{PVTOL}
-The planar vertical take off landing aircraft (PVTOL), \autoref{fig:PVTOLModel}, is a common benchmark problem discussed in e.g.\ \cite{Hauser:PVTOL} or \cite{Fliess:LieBacklund}.
-\begin{figure}[ht]
+The planar vertical take off landing aircraft (PVTOL) as depicted in \autoref{fig:PVTOLModel}, is a common benchmark problem discussed in e.g.\ \cite{Hauser:PVTOL} or \cite{Fliess:LieBacklund}.
+\begin{figure}
  \centering
 % \def\svgwidth{.5\textwidth}
  \input{graphics/PVTOLModel.pdf_tex}
@@ -53,20 +53,20 @@ Overall, we have the kinetic equation
 % \end{align}
 
 \paragraph{Reference trajectory.}
-For the following we chose the left complement $\sysInputMatLComp = [1, 0, -\tfrac{\sin\beta}{l \cos\beta}]$.
-The condition for the reference from \eqref{eq:MatchingForceZeroError} for this example is
+For the following we chose $\sysInputMatLComp = [1, 0, -\tfrac{\sin\beta}{l \cos\beta}]$ as a left complement to $\sysInputMat$.
+With this, the matiching condition for the reference from \eqref{eq:MatchingForceZeroError} reads
 \begin{align}
  \lambda^{\text{ZeroError}} = \m \big(\vRxd - \underbrace{\tfrac{\Jz \sin\beta}{\m \ArmRadius \cos\beta}}_{\eps} \wRzd - \wRz \vRy + \gravityAccConst \sin\tiltAngleR \big) = 0
 \end{align}
 This can be fulfilled by parameterizing the configuration through the flat output $y_{1\idxRef} = \rRx - \eps \sin\tiltAngleR$, $y_{2\idxRef} = \rRy + \eps \cos\tiltAngleR$ (see e.g.\ \cite{Fliess:LieBacklund}), i.e.
 \begin{align}
- \rxR &= y_{1\idxRef} - \eps \frac{\ddot{y}_{1\idxRef}}{\sqrt{\ddot{y}_{1\idxRef}^2 + (\ddot{y}_{1\idxRef}+\gravityAccConst)^2}},
+ \rxR &= y_{1\idxRef} - \eps \frac{\ddot{y}_{1\idxRef}}{\sqrt{\ddot{y}_{1\idxRef}^2 + (\ddot{y}_{2\idxRef}+\gravityAccConst)^2}},
 \\
- \ryR &= y_{2\idxRef} - \eps \frac{\ddot{y}_{2\idxRef}-\gravityAccConst}{\sqrt{\ddot{y}_{1\idxRef}^2 + (\ddot{y}_{1\idxRef}+\gravityAccConst)^2}},
+ \ryR &= y_{2\idxRef} - \eps \frac{\ddot{y}_{2\idxRef}-\gravityAccConst}{\sqrt{\ddot{y}_{1\idxRef}^2 + (\ddot{y}_{2\idxRef}+\gravityAccConst)^2}},
 \\
- \tiltAngle_{\idxRef} &= \atanTwo(\ddot{y}_{2\idxRef}, \ddot{y}_{1\idxRef}+\gravityAccConst).
+ \tiltAngle_{\idxRef} &= \atanTwo(\ddot{y}_{1\idxRef}, \ddot{y}_{2\idxRef}+\gravityAccConst).
 \end{align}
-Note that this parameterization fails if $\ddot{y}_{1\idxRef} = \ddot{y}_{1\idxRef}+\gravityAccConst = 0$, i.e. the body is in free fall.
+Note that this parameterization fails if $\ddot{y}_{1\idxRef} = \ddot{y}_{2\idxRef}+\gravityAccConst = 0$, i.e. the body is in free fall.
 
 % \begin{align}
 %  \matchingForceR = \m (\ddot{y}_{1\idxRef} \cos\tiltAngleR + (\ddot{y}_{2\idxRef} + \gravityAccConst) \sin\tiltAngleR) = 0
@@ -185,18 +185,21 @@ Set a desired polynomial of forth degree $\EigenVal^4 + p_3 \EigenVal^3 + p_2 \E
 \\
  \dc &= \frac{\mc\, p_1^2}{p_1 p_2 - p_0 p_3},&
  \scy &= \varepsilon + \frac{\gravityAccConst\, p_1}{p_1 p_2 - p_0 p_3},&
- \kapcz &= \frac{\mc \gravityAccConst^2 (p_1 p_2 p_3 - p_1^2 - p_0 p_3)}{p_1 (p_1 p_2 - p_0 p_3)},
+ \kapcz &= \frac{\mc \gravityAccConst^2 (p_1 p_2 p_3 - p_1^2 - p_0 p_3)}{p_1 (p_1 p_2 - p_0 p_3)}, 
 \end{align}
 Note that the Hurwitz criterion ($p_0, p_1, p_2, p_3, p_1 p_2 - p_0 p_3, p_1 p_2 p_3 - p_1^2 - p_0 p_3^2 > 0$) implies the positive definiteness of the inertia $\sysInertiaMatC$ and stiffness matrix $\sysStiffMatC$.
 Even though the damping matrix $\sysDissMatC$ is only positive semidefinite the \textit{local} attractiveness of the nonlinear system can be concluded by Lyapunov's indirect method.
 
-\paragraph{Mechanical interpretation.}
-\begin{figure}[ht]
+\begin{figure}
  \centering
  \input{graphics/PVTOLPendulum.pdf_tex}
  \caption{Interpretation of the controlled PVTOL as a mechanical system}
  \label{fig:PVTOLPendulum}
 \end{figure}
+
+\paragraph{Mechanical interpretation.}
+
+\cite{Konz:AT}
 
 
 % \paragraph{Flatness based control}

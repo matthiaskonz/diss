@@ -1,7 +1,8 @@
 \section{Constant reference and Linearization}\label{sec:CtrlLinearization}
 \paragraph{Constant reference.}
-For a constant reference configuration $\sysCoordR = \const \, \Rightarrow \, \sysVelR, \sysVelRd = \tuple{0}$, the three control templates lead identical system
-\begin{subequations}\label{eq:ClosedLoopStab}
+For a constant reference configuration $\sysCoordR = \const \, \Rightarrow \, \sysVelR, \sysVelRd = \tuple{0}$, the three proposed control templates lead to the same system
+\begin{subequations}
+\label{eq:ClosedLoopStab}
 \begin{align}
  \sysCoordd = \kinMat(\sysCoord) \sysVel,
 \qquad
@@ -11,7 +12,7 @@ where
 \begin{align}
  \sysInertiaMatC(\sysCoord) &= \sumBodiesAB \big(\bodyJac{\BidxI}{\BidxII}(\sysCoord)\big)^\top \bodyInertiaMatC{\BidxI}{\BidxII} \bodyJac{\BidxI}{\BidxII}(\sysCoord),
 \\
- \gyroForceC(\sysCoord, \sysVel) &= \sumBodiesAB \big(\bodyJac{\BidxI}{\BidxII}(\sysCoord)\big)^\top \big(\bodyInertiaMat{\BidxI}{\BidxII} \bodyJacd{\BidxI}{\BidxII}(\sysCoord, \sysVel) - \ad{\bodyJac{\BidxI}{\BidxII}(\sysCoord)\sysVel}^\top \bodyInertiaMat{\BidxI}{\BidxII}\bodyJac{\BidxI}{\BidxII}(\sysCoord) \big) \sysVel
+ \gyroForceC(\sysCoord, \sysVel) &= \sumBodiesAB \big(\bodyJac{\BidxI}{\BidxII}(\sysCoord)\big)^\top \big(\bodyInertiaMatC{\BidxI}{\BidxII} \bodyJacd{\BidxI}{\BidxII}(\sysCoord, \sysVel) - \ad{\bodyJac{\BidxI}{\BidxII}(\sysCoord)\sysVel}^\top \bodyInertiaMatC{\BidxI}{\BidxII}\bodyJac{\BidxI}{\BidxII}(\sysCoord) \big) \sysVel
 \\
  \sysDissMatC(\sysCoord) &= \sumBodiesAB \big(\bodyJac{\BidxI}{\BidxII}(\sysCoord)\big)^\top \bodyDissMatC{\BidxI}{\BidxII} \bodyJac{\BidxI}{\BidxII}(\sysCoord),
 \\

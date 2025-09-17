@@ -4,17 +4,13 @@ Unfortunately, it did, in general, not turn out to be useful for stability analy
 In this section we like to motivate yet another approach for the design of a closed loop dynamics for the tracking problem which is based on the total energy as Lyapunov function.
 
 \subsection{Overall structure}
+The general structure of this approach follows \cite{Bullo:TrackingAutomatica}.
+
 \paragraph*{Total energy.}
 Initially we drop the rigid body structure of the system and only consider the coordinates $\sysCoord, \sysVel$ and their kinematic relation $\sysCoordd = \kinMat(\sysCoord) \sysVel$.
-% For quantification of the configuration error we stick to the potential $\potentialEnergyC(\sysCoord, \sysCoordR) \geq 0$.
-% For quantification of the velocity error we introduce the the \textit{(system) error velocity} $\sysCoordE(t)\in \RealNum^{\dimConfigSpace}$ as 
-% \begin{align}\label{eq:DefSystemErrorVelocity}
-%  \sysVelE &= \sysVel-\sysTransportMap(\sysCoord, \sysCoordR)\sysVelR
-% \end{align}
-% with the yet to define \textit{transport map} $\sysTransportMap(\sysCoord,\sysCoordR) \in \RealNum^{\dimConfigSpace\times\dimConfigSpace}$ with .
 Define the ``total error energy'' as
-\begin{align}%\label{eq:DefTotalErrorEnergy}
- \totalEnergyC(\sysCoord, \sysVel, \sysCoordR, \sysVelR) = \underbrace{\tfrac{1}{2} \norm[\sysInertiaMatC(\sysCoord)]{\overbrace{\sysVel-\sysTransportMap(\sysCoord, \sysCoordR)\sysVelR}^{\sysVelE}}^2}_{\kineticEnergyC} + \potentialEnergyC(\sysCoord, \sysCoordR)
+\begin{align}\label{eq:DefTotalErrorEnergy}
+ \totalEnergyC(\sysCoord, \sysVel, \sysCoordR, \sysVelR) = \underbrace{\tfrac{1}{2} \norm[\sysInertiaMatC(\sysCoord)]{\overbrace{\sysVel-\sysTransportMap(\sysCoord, \sysCoordR)\sysVelR}^{\sysVelE}}^2}_{\kineticEnergyC} \ + \ \potentialEnergyC(\sysCoord, \sysCoordR)
 \end{align}
 with the positive definite error potential $\potentialEnergyC: \configSpace \times \configSpace \rightarrow \RealNumP$, $\potentialEnergyC(\sysCoord, \sysCoordR) = 0 \ \Leftrightarrow \ \sysCoord = \sysCoordR$ and the positive definite inertia matrix $\sysInertiaMatC(\sysCoord)\in\SymMatP(\dimConfigSpace)$.
 So far the transport map $\sysTransportMap: \configSpace \times \configSpace \rightarrow \RealNum^{\dimConfigSpace\times\dimConfigSpace}$ may be any regular matrix with $\sysTransportMap(\sysCoord, \sysCoord) = \idMat[\dimConfigSpace]$.
@@ -39,265 +35,49 @@ The second term vanishes if we require the transport map $\sysTransportMap$ to f
 \begin{align}\label{eq:ReqTransportMap}
  \differentialR\potentialEnergyC = -\sysTransportMap^\top \differential\potentialEnergyC.
 \end{align}
-The first term is non-positive if we set the closed loop kinetics as 
+With a positive definite damping matrix $\sysDissMatC \in \SymMatP(\dimConfigSpace)$ and a yet to define skew symmetric matrix $\accCtrl{\mat{S}} = -\accCtrl{\mat{S}}^\top \in \RealNum^{\dimConfigSpace\times\dimConfigSpace}$ we set the closed loop kinetics as
 \begin{align}\label{eq:CtrlApprochEnergyKineticsFirst}
- %\underbrace{\sysInertiaMatC \sysVelEd + (\sysInertiaMatCd + \accCtrl{\mat{S}}) \sysVelE}_{\genForceInertiaC}+ \underbrace{\sysDissMatC\sysVelE}_{\genForceDissC} + \underbrace{\differential\potentialEnergyC}_{\genForceStiffC} = \tuple{0}.
- \sysInertiaMatC \sysVelEd + (\tfrac{1}{2}\sysInertiaMatCd + \accCtrl{\mat{S}}) \sysVelE + \sysDissMatC\sysVelE + \differential\potentialEnergyC = \tuple{0}.
+ \sysInertiaMatC \sysVelEd + \tfrac{1}{2}\sysInertiaMatCd \sysVelE + \differential\potentialEnergyC = -(\sysDissMatC + \accCtrl{\mat{S}})\sysVelE.
 \end{align}
-with the positive definite damping matrix $\sysDissMatC \in \SymMatSP(\dimConfigSpace)$ and a skew symmetric matrix $\accCtrl{\mat{S}} = -\accCtrl{\mat{S}}^\top \in \RealNum^{\dimConfigSpace\times\dimConfigSpace}$.
-Plugging the closed loop kinetics \eqref{eq:CtrlApprochEnergyKineticsFirst} and the requirement on the transport map \eqref{eq:ReqTransportMap} into the change of energy \eqref{eq:CtrlApprochEnergyBalanceOfEnergyFirst} yields
+Plugging the closed loop kinetics \eqref{eq:CtrlApprochEnergyKineticsFirst} and the requirement on the transport map \eqref{eq:ReqTransportMap} into the change of energy \eqref{eq:CtrlApprochEnergyBalanceOfEnergyFirst} we obtain
 \begin{align}
- \totalEnergyCd = -\sysVelE^\top \sysDissMatC \sysVelE = -\norm[\sysDissMatC]{\sysVelE}^2 = -2\dissFktC.
+ \totalEnergyCd = -\sysVelE^\top \sysDissMatC \sysVelE = -\norm[\sysDissMatC]{\sysVelE}^2.
 \end{align}
+Since $\tdiff{t} \totalEnergyC$ is only negative semidefinite, we can only conclude stability but not attractiveness.
+One can pursue the prove of attractiveness by adding a cross term as done in \cite[sec.\ 4.2]{Bullo:TrackingAutomatica}.
 
 \paragraph{Covariance of the closed loop.}
 The skew symmetric matrix $\accCtrl{\mat{S}}$ cancels out in the balance of energy, so is of no interest for tuning purposes.
 Instead it is used to ensure that the closed loop \eqref{eq:CtrlApprochEnergyKineticsFirst} is \textit{covariant}, i.e.\ its definition is unchanged under a change of coordinates.
 While the stiffness force $\genForceStiffCoeffC{\LidxI} = \dirDiff{\LidxI} \potentialEnergyC$ and the dissipative force $\genForceDissCoeffC{\LidxI} = \sysDissMatCoeffC{\LidxI\LidxII} \sysVelCoeffE{\LidxII}$ are tensors, the inertia force $\genForceInertiaCoeffC{\LidxI} = \sysInertiaMatCoeffC{\LidxI\LidxII} \sysVelCoeffEd{\LidxII} + \tfrac{1}{2} \dirDiff{\LidxIII} \sysInertiaMatCoeffC{\LidxI\LidxII} \sysVelCoeff{\LidxIII} \sysVelCoeffE{\LidxII} + \accCtrl{S}_{\LidxI\LidxII} \sysVelCoeffE{\LidxII}$ is not.
 A universal way is to derive a transformation law and put it as an additional requirement for the closed loop.
-The rather lengthy compututation is given in \autoref{sec:TrafoRules}.
-It shoves that there are many co-vectors $\genForceInertiaC$ such that $\dot{\kineticEnergyC} = \sysVelCoeffE{\LidxI} \genForceInertiaCoeffC{\LidxI}$.
+This would still not lead to a unique definition for $\accCtrl{\mat{S}}$.
 
-However, a unique choice can be done by recognizing the kinetic energy $\kineticEnergyC$ as a Riemannian metric, respectively the inerita matrix $\sysInertiaMatC$ as its coefficients, and using the \textit{Levi-Civita connection}.
-The derivation requires more notation of differential geometry and is done in \autoref{sec:TrafoRules}.
-The result takes the familiar form
-\begin{align}
- \dot{\kineticEnergy}
- = \sysVelCoeffE{\LidxI} \underbrace{\big( \sysInertiaMatCoeff{\LidxI\LidxII} \sysVelCoeffEd{\LidxII} + \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII}\sysVelCoeff{\LidxIII} \sysVelCoeffE{\LidxII} \big)}_{\genForceInertiaCoeffC{\LidxI}}
-\end{align}
-
-\fixme{
-For the coefficients $\genForceInertiaCoeffC{\LidxI}$ to form a tensor we can derive the transformation rule (under a change of coordinates $\sysVelCoeff{\LidxI} = \BasisChangeCoeff{\LidxI}{\LidxWI}(\sysCoord) \sysVelCoeffW{\LidxWI}$ see \autoref{sec:TrafoRules})
-\begin{align}
- \genForceInertiaCoeffW{\LidxWI} &= \sysInertiaMatCoeffW{\LidxWI\LidxWII} \sysVelCoeffWEd{\LidxWII} + \tfrac{1}{2} \dirDiff{\LidxWIII} \sysInertiaMatCoeffW{\LidxWI\LidxWII} \sysVelCoeffW{\LidxWIII} \sysVelCoeffWE{\LidxWII} + \accW{S}_{\LidxWI\LidxWII} \sysVelCoeffWE{\LidxWII}
-\nonumber \\
- &= \BasisChangeCoeff{\LidxI}{\LidxWI} \sysInertiaMatCoeff{\LidxI\LidxII} \BasisChangeCoeff{\LidxII}{\LidxWII} \big( \iBasisChangeCoeff{\LidxWII}{\LidxIII} \sysVelCoeffEd{\LidxIII} + \dirDiff{\LidxIV} \iBasisChangeCoeff{\LidxWII}{\LidxIII} \sysVelCoeff{\LidxIV} \sysVelCoeffE{\LidxIII} \big)
-\nonumber \\
- &+ \tfrac{1}{2} \big( \BasisChangeCoeff{\LidxI}{\LidxWI} \BasisChangeCoeff{\LidxII}{\LidxWII} \BasisChangeCoeff{\LidxIII}{\LidxWIII} \dirDiff{\LidxIII} \sysInertiaMatCoeff{\LidxI\LidxII} + ( \BasisChangeCoeff{\LidxII}{\LidxWII} \partial_{\LidxWIII} \BasisChangeCoeff{\LidxI}{\LidxWI} + \BasisChangeCoeff{\LidxI}{\LidxWI} \partial_{\LidxWIII} \BasisChangeCoeff{\LidxII}{\LidxWII} )\sysInertiaMatCoeff{\LidxI\LidxII} \big) \iBasisChangeCoeff{\LidxWIII}{\LidxIV}  \sysVelCoeff{\LidxIV}  \iBasisChangeCoeff{\LidxWII}{\LidxV} \sysVelCoeffE{\LidxV}
-\nonumber \\
- &+ \accW{S}_{\LidxWI\LidxWII} \iBasisChangeCoeff{\LidxWII}{\LidxII} \sysVelCoeffE{\LidxII} 
-\nonumber \\
- &= \BasisChangeCoeff{\LidxI}{\LidxWI} \sysInertiaMatCoeff{\LidxI\LidxII} \sysVelCoeffEd{\LidxII}
-  + \BasisChangeCoeff{\LidxI}{\LidxWI} \sysInertiaMatCoeff{\LidxI\LidxII} \BasisChangeCoeff{\LidxII}{\LidxWII} \dirDiff{\LidxIV} \iBasisChangeCoeff{\LidxWII}{\LidxIII} \sysVelCoeff{\LidxIV} \sysVelCoeffE{\LidxIII}
-\nonumber \\
- &+ \tfrac{1}{2} \BasisChangeCoeff{\LidxI}{\LidxWI} \dirDiff{\LidxIII} \sysInertiaMatCoeff{\LidxI\LidxII} \sysVelCoeff{\LidxIII} \sysVelCoeffE{\LidxII}
-  + \tfrac{1}{2} \BasisChangeCoeff{\LidxI}{\LidxWI} \iBasisChangeCoeff{\LidxWIII}{\LidxI} \partial_{\LidxIV} \BasisChangeCoeff{\LidxIII}{\LidxWIII} \sysInertiaMatCoeff{\LidxIII\LidxII} \sysVelCoeff{\LidxIV} \sysVelCoeffE{\LidxII}
-  + \tfrac{1}{2} \BasisChangeCoeff{\LidxI}{\LidxWI} \dirDiff{\LidxIII} \BasisChangeCoeff{\LidxII}{\LidxWII} \sysInertiaMatCoeff{\LidxI\LidxII}  \sysVelCoeff{\LidxIII}  \iBasisChangeCoeff{\LidxWII}{\LidxV} \sysVelCoeffE{\LidxV}
-\nonumber \\
- &+ \BasisChangeCoeff{\LidxI}{\LidxWI} \iBasisChangeCoeff{\LidxWIII}{\LidxI} \accW{S}_{\LidxWIII\LidxWII} \iBasisChangeCoeff{\LidxWII}{\LidxII} \sysVelCoeffE{\LidxII} 
-\nonumber \\
- &= \BasisChangeCoeff{\LidxI}{\LidxWI} \Big(
-    \sysInertiaMatCoeff{\LidxI\LidxII} \sysVelCoeffEd{\LidxII} +  \tfrac{1}{2} \dirDiff{\LidxIII} \sysInertiaMatCoeff{\LidxI\LidxII} \sysVelCoeff{\LidxIII} \sysVelCoeffE{\LidxII}
-\nonumber \\
-  &\qquad+ \underbrace{\big( 
-   \iBasisChangeCoeff{\LidxWIII}{\LidxI} \accW{S}_{\LidxWIII\LidxWII} \iBasisChangeCoeff{\LidxWII}{\LidxII}
-  + \big( \sysInertiaMat[\LidxI\LidxIV] \BasisChangeCoeff{\LidxIV}{\LidxWII} \dirDiff{\LidxIII} \iBasisChangeCoeff{\LidxWII}{\LidxII}
-  + \tfrac{1}{2} \iBasisChangeCoeff{\LidxWIII}{\LidxI} \dirDiff{\LidxIII} \BasisChangeCoeff{\LidxIV}{\LidxWIII} \sysInertiaMat[\LidxIV\LidxII] 
-  + \tfrac{1}{2} \dirDiff{\LidxIII} \BasisChangeCoeff{\LidxV}{\LidxWII} \sysInertiaMatCoeff{\LidxI\LidxV} \iBasisChangeCoeff{\LidxWII}{\LidxII} \big) \sysVelCoeff{\LidxIII}
- \big)}_{S_{\LidxI\LidxII}} \sysVelCoeffE{\LidxII}
- \Big)
-\end{align}
-So 
-\begin{align}
- \accW{\accCtrl{S}}'_{\LidxWI\LidxWII} &= \BasisChangeCoeff{\LidxI}{\LidxWI} \BasisChangeCoeff{\LidxII}{\LidxWII} \accCtrl{S}'_{\LidxI\LidxII}
-  + \tfrac{1}{2} \sysInertiaMatCoeffC{\LidxI\LidxII} \big( \BasisChangeCoeff{\LidxI}{\LidxWI} \dirDiff{\LidxIII} \BasisChangeCoeff{\LidxII}{\LidxWII} - \BasisChangeCoeff{\LidxII}{\LidxWII} \dirDiff{\LidxIII} \BasisChangeCoeff{\LidxI}{\LidxWI} \big) \sysVelCoeff{\LidxIII}
-\end{align}
-\begin{align}\label{eq:TrafoRuleS}
- \accW{\accCtrl{S}}_{\LidxWI\LidxWII} 
- = \accCtrl{S}_{\LidxI\LidxII} \BasisChangeCoeff{\LidxI}{\LidxWI} \BasisChangeCoeff{\LidxII}{\LidxWII}
- + \tfrac{1}{2} \sysInertiaMatCoeffC{\LidxI\LidxII} \big( \BasisChangeCoeff{\LidxI}{\LidxWI} \dirDiff{\LidxWIII} \BasisChangeCoeff{\LidxII}{\LidxWII} - \BasisChangeCoeff{\LidxII}{\LidxWII} \dirDiff{\LidxWIII} \BasisChangeCoeff{\LidxI}{\LidxWI} \big) \sysVelCoeffW{\LidxWIII},
-\qquad
- \LidxWI,\LidxWII = 1,\ldots,\dimConfigSpace.
-\end{align}
-Recall the coefficients $\ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII}$ of the Levi-Civita connection for the chosen metric $\sysInertiaMatC$:
+However, regarding $\sysInertiaMatCoeffC{\LidxI\LidxII}$ as the coefficients of a Riemannian metric, there are the coefficients of the unique Levi Civita connection already encountered in \eqref{eq:DefConnCoeffL}:
 \begin{align}
  \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII} &= \tfrac{1}{2}\big( \partial_\LidxIII \sysInertiaMatCoeffC{\LidxI\LidxII} + \partial_\LidxII \sysInertiaMatCoeffC{\LidxI\LidxIII} - \partial_\LidxI \sysInertiaMatCoeffC{\LidxII\LidxIII} + \BoltzSym{\LidxV}{\LidxI}{\LidxII} \sysInertiaMatCoeffC{\LidxV\LidxIII} + \BoltzSym{\LidxV}{\LidxI}{\LidxIII} \sysInertiaMatCoeffC{\LidxV\LidxII} - \BoltzSym{\LidxV}{\LidxII}{\LidxIII} \sysInertiaMatCoeffC{\LidxV\LidxI} \big),
 \quad
  \LidxI, \LidxII, \LidxIII = 1,\ldots,\dimConfigSpace
-\end{align}
-and their transformation rule
-\begin{align}%\label{eq:TrafoConnCoeff}
- \ConnCoeffWLC{\LidxWI}{\LidxWII}{\LidxWIII} &= \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII} \BasisChangeCoeff{\LidxI}{\LidxWI} \BasisChangeCoeff{\LidxII}{\LidxWII} \BasisChangeCoeff{\LidxIII}{\LidxWIII} + \sysInertiaMatCoeffC{\LidxI\LidxII} \BasisChangeCoeff{\LidxI}{\LidxWI} \partial_{\LidxWIII} \BasisChangeCoeff{\LidxII}{\LidxWII},
-\qquad
- \LidxWI, \LidxWII, \LidxWIII = 1,\ldots,\dimConfigSpace.
-\end{align}
-With this one definition for $\accCtrl{S}_{\LidxI\LidxII}$ that obeys \eqref{eq:TrafoRuleS} is
-\begin{align}
- \accCtrl{S}_{\LidxI\LidxII} &= \tfrac{1}{2} \big( \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII} - \ConnCoeffLC{\LidxII}{\LidxI}{\LidxIII} \big) \sysVelCoeff{\LidxIII},
-\qquad
- \LidxI,\LidxII = 1,\ldots,\dimConfigSpace.
-\end{align}
-Plugging this into \eqref{eq:DefInertiaForceFirst} we finally obtain a covariant and energy conserving inertia force as
-\begin{align}
- \genForceInertiaCoeff{\LidxI} = \sysInertiaMatCoeffC{\LidxI\LidxII} \sysVelCoeffEd{\LidxII} + \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII} \sysVelCoeff{\LidxIII} \sysVelCoeffE{\LidxII},
-\qquad
- \LidxI = 1,\ldots,\dimConfigSpace.
-\end{align}
-Note that $\genForceInertiaC$ from this definition can not be derived by Lagrange's formulation from the kinetic energy $\kineticEnergyC$.
-It is however completely determined by given metric coefficients $\sysInertiaMatC$.
-\\
-The definition of the inertia force $\genForceInertiaC$ is not unique: For any antisymmetric \textit{tensor} $S'_{\LidxI\LidxII} = -S'_{\LidxII\LidxI}$ the inertia force $\genForceInertiaCoeffC{\LidxI} + S'_{\LidxI\LidxII} \sysVelCoeffE{\LidxII}$ is covariant and energy conserving as well.
-\\
-Define the closed loop kinematics as
-\begin{align}%\label{eq:desiredErrorKineticsEnergy}
- \underbrace{\sysInertiaMatCoeffC{\LidxI\LidxII} \sysVelCoeffEd{\LidxII} + \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII} \sysVelCoeff{\LidxIII} \sysVelCoeffE{\LidxII}}_{\genForceInertiaCoeffC{\LidxI}}
- + \underbrace{\sysDissMatCoeffC{\LidxI\LidxII} \sysVelCoeffE{\LidxII}}_{\genForceDissCoeffC{\LidxI}}
- + \underbrace{\dirDiff{\LidxI} \potentialEnergyC}_{\genForceStiffCoeffC{\LidxI}}
- &= 0,
-\qquad
- \LidxI = 1,\ldots,\dimConfigSpace.
-\end{align}
-\paragraph{Error potential and velocity.}
-The first thing we need is a quantification of how far the system configuration $\sysCoord(t) \in \configSpace$ is away from its desired configuration $\sysCoordR(t) \in \configSpace$:
-For this consider the \textit{error potential} as a smooth, positive definite function $\potentialEnergyC: \configSpace \times \configSpace \rightarrow \RealNum$, i.e.\
-\begin{align}\label{eq:DefErrorPotential}
- \potentialEnergyC(\sysCoord, \sysCoordR) \geq 0,
-\qquad
- \potentialEnergyC(\sysCoord, \sysCoordR) = 0 \ \Leftrightarrow \ \sysCoord = \sysCoordR .
-\end{align}
-For the following we require the existence of a \textit{transport map} as introduced in \cite{Bullo:TrackingAutomatica}.
-That is a smooth function $\sysTransportMap: \configSpace \times \configSpace \rightarrow \RealNum^{\dimConfigSpace\times\dimConfigSpace}$ such that
-\begin{align}\label{eq:DefTransportMap}
- \underbrace{\kinMatCoeff{\GidxI}{\LidxI}(\sysCoordR) \pdiff[\potentialEnergyC]{\sysCoordCoeffR{\GidxI}}(\sysCoord, \sysCoordR)}_{\dirDiffR{\LidxI} \potentialEnergyC(\sysCoord, \sysCoordR)}
- = -\sysTransportMapCoeff{\LidxII}{\LidxI}(\sysCoord, \sysCoordR) \underbrace{\kinMatCoeff{\GidxI}{\LidxII}(\sysCoord) \pdiff[\potentialEnergyC]{\sysCoordCoeff{\GidxI}}(\sysCoord, \sysCoordR)}_{\dirDiff{\LidxII} \potentialEnergyC(\sysCoord, \sysCoordR)},
-\qquad
- \LidxI = 1,\ldots,\dimConfigSpace.
-\end{align}
-From this we obtain the relation
-\begin{align}\label{eq:ChangeErrorPotential}
- \tdiff{t} \potentialEnergyC = \sysVelCoeff{\LidxI} \dirDiff{\LidxII} \potentialEnergyC + \sysVelCoeffR{\LidxI} \dirDiffR{\LidxII} \potentialEnergyC
- = \underbrace{(\sysVelCoeff{\LidxI} - \sysTransportMapCoeff{\LidxI}{\LidxII} \sysVelCoeffR{\LidxII})}_{\sysVelCoeffE{\LidxI}} \ \underbrace{\dirDiff{\LidxI} \potentialEnergyC}_{\genForceStiffCoeffC{\LidxI}}
  .
 \end{align}
-Essentially the transport map gives a mean to compare the actual velocity $\sysVel$ and the reference velocity $\sysVelR$ which live on different tangent spaces, thus giving a reasonable definition for the \textit{error velocity} $\sysVelE$.
-Note that $\sysTransportMap$ are the coefficients of a tensor, (see \eqref{eq:TrafoCoordTransportMap} and \eqref{eq:TrafoVelTransportMap}), so the existence of a transport map is independent of the particular choice of coordinates.
-}
+This motivates the inertia force in the clearly covariant form
+\begin{align}
+ \genForceInertiaCoeffC{\LidxI} = \sysInertiaMatCoeffC{\LidxI\LidxII} \sysVelCoeffEd{\LidxII} + \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII}\sysVelCoeff{\LidxIII} \sysVelCoeffE{\LidxII}.
+\end{align}
+It may be realized by setting $\accCtrl{S}_{\LidxI\LidxII} = \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII}\sysVelCoeff{\LidxIII} - \tfrac{1}{2}\sysInertiaMatCoeffCd{\LidxI\LidxII} = \tfrac{1}{2}(\ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII} - \ConnCoeffLC{\LidxII}{\LidxI}{\LidxIII})\sysVelCoeff{\LidxIII} = -\accCtrl{S}_{\LidxII\LidxI}$ in \eqref{eq:CtrlApprochEnergyKineticsFirst}.
 
-\fixme{
-\paragraph{Kinetic error energy and inertia force.}
-Having a notion for the error velocity, we may define the kinetic error energy
-\begin{align}\label{eq:DefKineticErrorEnergy}
- \kineticEnergyC(\sysCoord, \sysVel, \sysCoordR, \sysVelR) = \tfrac{1}{2} \sysInertiaMatCoeffC{\LidxI\LidxII}(\sysCoord) \underbrace{(\sysVelCoeff{\LidxI} - \sysTransportMapCoeff{\LidxI}{\LidxIII}(\sysCoord, \sysCoordR) \sysVelCoeffR{\LidxIII})}_{\sysVelCoeffE{\LidxI}} \underbrace{(\sysVelCoeff{\LidxII} - \sysTransportMapCoeff{\LidxII}{\LidxIV}(\sysCoord, \sysCoordR) \sysVelCoeffR{\LidxIV})}_{\sysVelCoeffE{\LidxII}}  \ \geq \, 0
-\end{align}
-with a symmetric and positive definite inertia matrix $\sysInertiaMatC(\sysCoord) \in\SymMatP(\dimConfigSpace)$.
-We associate the inertia force $\genForceInertiaC$ with the kinetic energy through
-\begin{align}\label{eq:ChangeKineticErrorEnergy}
- \tdiff{t} \kineticEnergyC 
- = \sysVelCoeffE{\LidxI} \underbrace{\big( \sysInertiaMatCoeffC{\LidxI\LidxII} \sysVelCoeffEd{\LidxII} + \tfrac{1}{2} \dirDiff{\LidxIII} \sysInertiaMatCoeffC{\LidxI\LidxII} \sysVelCoeff{\LidxIII} \sysVelCoeffE{\LidxII} \big)}_{\neq\,\genForceInertiaCoeffC{\LidxI}}
- \mustbe \sysVelCoeffE{\LidxI} \genForceInertiaCoeffC{\LidxI}.
-\end{align}
-It is crucial to note that the marked terms are \textit{not} covariant, so do not form a tensor.
-To resolve this we add the antisymmeteric coefficients $\accCtrl{S}_{\LidxI\LidxII} = -\accCtrl{S}_{\LidxII\LidxI}$ and define the inertia force as
-\begin{align}\label{eq:DefInertiaForceFirst}
- \genForceInertiaCoeffC{\LidxI} &= \sysInertiaMatCoeffC{\LidxI\LidxII} \sysVelCoeffEd{\LidxII} + \tfrac{1}{2} \dirDiff{\LidxIII} \sysInertiaMatCoeffC{\LidxI\LidxII} \sysVelCoeff{\LidxIII} \sysVelCoeffE{\LidxII} + \accCtrl{S}_{\LidxI\LidxII} \sysVelCoeffE{\LidxII},
-\qquad
- \LidxI = 1,\ldots,\dimConfigSpace.
-\end{align}
-For the coefficients $\genForceInertiaCoeffC{\LidxI}$ to form a tensor we can derive the transformation rule (under a change of coordinates $\sysVelCoeff{\LidxI} = \BasisChangeCoeff{\LidxI}{\LidxWI}(\sysCoord) \sysVelCoeffW{\LidxWI}$ see \autoref{sec:TrafoRules})
-% \begin{align}
-%  \genForceInertiaW[\LidxWI] &= \sysInertiaMatCoeffW{\LidxWI\LidxWII} \sysVelWEd[\LidxWII] + \tfrac{1}{2} \dirDiff{\LidxWIII} \sysInertiaMatCoeffW{\LidxWI\LidxWII} \sysVelCoeffW{\LidxWIII} \sysVelWE[\LidxWII] + \accW{S}_{\LidxWI\LidxWII} \sysVelWE[\LidxWII]
-% \nonumber \\
-%  &= \BasisChangeCoeff{\LidxI}{\LidxWI} \sysInertiaMatCoeff{\LidxI\LidxII} \BasisChangeCoeff{\LidxII}{\LidxWII} \big( \iBasisChangeCoeff{\LidxWII}{\LidxIII} \sysVelCoeffEd{\LidxIII} + \dirDiff{\LidxIV} \iBasisChangeCoeff{\LidxWII}{\LidxIII} \sysVelCoeff{\LidxIV} \sysVelCoeffE{\LidxIII} \big)
-% \nonumber \\
-%  &+ \tfrac{1}{2} \big( \BasisChangeCoeff{\LidxI}{\LidxWI} \BasisChangeCoeff{\LidxII}{\LidxWII} \BasisChangeCoeff{\LidxIII}{\LidxWIII} \dirDiff{\LidxIII} \sysInertiaMatCoeff{\LidxI\LidxII} + ( \BasisChangeCoeff{\LidxII}{\LidxWII} \partial_{\LidxWIII} \BasisChangeCoeff{\LidxI}{\LidxWI} + \BasisChangeCoeff{\LidxI}{\LidxWI} \partial_{\LidxWIII} \BasisChangeCoeff{\LidxII}{\LidxWII} )\sysInertiaMatCoeff{\LidxI\LidxII} \big) \iBasisChangeCoeff{\LidxWIII}{\LidxIV}  \sysVelCoeff{\LidxIV}  \iBasisChangeCoeff{\LidxWII}{\LidxV} \sysVelCoeffE{\LidxV}
-% \nonumber \\
-%  &+ \accW{S}_{\LidxWI\LidxWII} \iBasisChangeCoeff{\LidxWII}{\LidxII} \sysVelCoeffE{\LidxII} 
-% \nonumber \\
-%  &= \BasisChangeCoeff{\LidxI}{\LidxWI} \sysInertiaMatCoeff{\LidxI\LidxII} \sysVelCoeffEd{\LidxII}
-%   + \BasisChangeCoeff{\LidxI}{\LidxWI} \sysInertiaMatCoeff{\LidxI\LidxII} \BasisChangeCoeff{\LidxII}{\LidxWII} \dirDiff{\LidxIV} \iBasisChangeCoeff{\LidxWII}{\LidxIII} \sysVelCoeff{\LidxIV} \sysVelCoeffE{\LidxIII}
-% \nonumber \\
-%  &+ \tfrac{1}{2} \BasisChangeCoeff{\LidxI}{\LidxWI} \dirDiff{\LidxIII} \sysInertiaMatCoeff{\LidxI\LidxII} \sysVelCoeff{\LidxIII} \sysVelCoeffE{\LidxII}
-%   + \tfrac{1}{2} \BasisChangeCoeff{\LidxI}{\LidxWI} \iBasisChangeCoeff{\LidxWIII}{\LidxI} \partial_{\LidxIV} \BasisChangeCoeff{\LidxIII}{\LidxWIII} \sysInertiaMatCoeff{\LidxIII\LidxII} \sysVelCoeff{\LidxIV} \sysVelCoeffE{\LidxII}
-%   + \tfrac{1}{2} \BasisChangeCoeff{\LidxI}{\LidxWI} \dirDiff{\LidxIII} \BasisChangeCoeff{\LidxII}{\LidxWII} \sysInertiaMatCoeff{\LidxI\LidxII}  \sysVelCoeff{\LidxIII}  \iBasisChangeCoeff{\LidxWII}{\LidxV} \sysVelCoeffE{\LidxV}
-% \nonumber \\
-%  &+ \BasisChangeCoeff{\LidxI}{\LidxWI} \iBasisChangeCoeff{\LidxWIII}{\LidxI} \accW{S}_{\LidxWIII\LidxWII} \iBasisChangeCoeff{\LidxWII}{\LidxII} \sysVelCoeffE{\LidxII} 
-% \nonumber \\
-%  &= \BasisChangeCoeff{\LidxI}{\LidxWI} \Big(
-%     \sysInertiaMatCoeff{\LidxI\LidxII} \sysVelCoeffEd{\LidxII} +  \tfrac{1}{2} \dirDiff{\LidxIII} \sysInertiaMatCoeff{\LidxI\LidxII} \sysVelCoeff{\LidxIII} \sysVelCoeffE{\LidxII}
-% \nonumber \\
-%   &\qquad+ \underbrace{\big( 
-%    \iBasisChangeCoeff{\LidxWIII}{\LidxI} \accW{S}_{\LidxWIII\LidxWII} \iBasisChangeCoeff{\LidxWII}{\LidxII}
-%   + \big( \sysInertiaMat[\LidxI\LidxIV] \BasisChangeCoeff{\LidxIV}{\LidxWII} \dirDiff{\LidxIII} \iBasisChangeCoeff{\LidxWII}{\LidxII}
-%   + \tfrac{1}{2} \iBasisChangeCoeff{\LidxWIII}{\LidxI} \dirDiff{\LidxIII} \BasisChangeCoeff{\LidxIV}{\LidxWIII} \sysInertiaMat[\LidxIV\LidxII] 
-%   + \tfrac{1}{2} \dirDiff{\LidxIII} \BasisChangeCoeff{\LidxV}{\LidxWII} \sysInertiaMatCoeff{\LidxI\LidxV} \iBasisChangeCoeff{\LidxWII}{\LidxII} \big) \sysVelCoeff{\LidxIII}
-%  \big)}_{S_{\LidxI\LidxII}} \sysVelCoeffE{\LidxII}
-%  \Big)
+
+%\begin{RedBox}
+%The desired error kinetics for the energy based approach have the form
+%\begin{align}\label{eq:desiredErrorKineticsEnergy}
+% \underbrace{\sysInertiaMatCoeffC{\LidxI\LidxII} \sysVelCoeffEd{\LidxII} + \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII} \sysVelCoeff{\LidxIII} \sysVelCoeffE{\LidxII}}_{\genForceInertiaCoeffC{\LidxI}}
+% + \underbrace{\sysDissMatCoeffC{\LidxI\LidxII} \sysVelCoeffE{\LidxII}}_{\genForceDissCoeffC{\LidxI}}
+% + \underbrace{\dirDiff{\LidxI} \potentialEnergyC}_{\genForceStiffCoeffC{\LidxI}}
+%  &= 0,
+% \qquad
+%  \LidxI = 1,\ldots,\dimConfigSpace.
 % \end{align}
-% So 
-% \begin{align}
-%  \accW{\accCtrl{S}}'_{\LidxWI\LidxWII} &= \BasisChangeCoeff{\LidxI}{\LidxWI} \BasisChangeCoeff{\LidxII}{\LidxWII} \accCtrl{S}'_{\LidxI\LidxII}
-%   + \tfrac{1}{2} \sysInertiaMatCoeffC{\LidxI\LidxII} \big( \BasisChangeCoeff{\LidxI}{\LidxWI} \dirDiff{\LidxIII} \BasisChangeCoeff{\LidxII}{\LidxWII} - \BasisChangeCoeff{\LidxII}{\LidxWII} \dirDiff{\LidxIII} \BasisChangeCoeff{\LidxI}{\LidxWI} \big) \sysVelCoeff{\LidxIII}
-% \end{align}
-\begin{align}\label{eq:TrafoRuleS}
- \accW{\accCtrl{S}}_{\LidxWI\LidxWII} 
- = \accCtrl{S}_{\LidxI\LidxII} \BasisChangeCoeff{\LidxI}{\LidxWI} \BasisChangeCoeff{\LidxII}{\LidxWII}
- + \tfrac{1}{2} \sysInertiaMatCoeffC{\LidxI\LidxII} \big( \BasisChangeCoeff{\LidxI}{\LidxWI} \dirDiff{\LidxWIII} \BasisChangeCoeff{\LidxII}{\LidxWII} - \BasisChangeCoeff{\LidxII}{\LidxWII} \dirDiff{\LidxWIII} \BasisChangeCoeff{\LidxI}{\LidxWI} \big) \sysVelCoeffW{\LidxWIII},
-\qquad
- \LidxWI,\LidxWII = 1,\ldots,\dimConfigSpace.
-\end{align}
-Recall the coefficients $\ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII}$ of the Levi-Civita connection for the chosen metric $\sysInertiaMatC$:
-\begin{align}
- \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII} &= \tfrac{1}{2}\big( \partial_\LidxIII \sysInertiaMatCoeffC{\LidxI\LidxII} + \partial_\LidxII \sysInertiaMatCoeffC{\LidxI\LidxIII} - \partial_\LidxI \sysInertiaMatCoeffC{\LidxII\LidxIII} + \BoltzSym{\LidxV}{\LidxI}{\LidxII} \sysInertiaMatCoeffC{\LidxV\LidxIII} + \BoltzSym{\LidxV}{\LidxI}{\LidxIII} \sysInertiaMatCoeffC{\LidxV\LidxII} - \BoltzSym{\LidxV}{\LidxII}{\LidxIII} \sysInertiaMatCoeffC{\LidxV\LidxI} \big),
-\quad
- \LidxI, \LidxII, \LidxIII = 1,\ldots,\dimConfigSpace
-\end{align}
-and their transformation rule
-\begin{align}%\label{eq:TrafoConnCoeff}
- \ConnCoeffWLC{\LidxWI}{\LidxWII}{\LidxWIII} &= \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII} \BasisChangeCoeff{\LidxI}{\LidxWI} \BasisChangeCoeff{\LidxII}{\LidxWII} \BasisChangeCoeff{\LidxIII}{\LidxWIII} + \sysInertiaMatCoeffC{\LidxI\LidxII} \BasisChangeCoeff{\LidxI}{\LidxWI} \partial_{\LidxWIII} \BasisChangeCoeff{\LidxII}{\LidxWII},
-\qquad
- \LidxWI, \LidxWII, \LidxWIII = 1,\ldots,\dimConfigSpace.
-\end{align}
-With this one definition for $\accCtrl{S}_{\LidxI\LidxII}$ that obeys \eqref{eq:TrafoRuleS} is
-\begin{align}
- \accCtrl{S}_{\LidxI\LidxII} &= \tfrac{1}{2} \big( \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII} - \ConnCoeffLC{\LidxII}{\LidxI}{\LidxIII} \big) \sysVelCoeff{\LidxIII},
-\qquad
- \LidxI,\LidxII = 1,\ldots,\dimConfigSpace.
-\end{align}
-Plugging this into \eqref{eq:DefInertiaForceFirst} we finally obtain a covariant and energy conserving inertia force as
-\begin{align}
- \genForceInertiaCoeff{\LidxI} = \sysInertiaMatCoeffC{\LidxI\LidxII} \sysVelCoeffEd{\LidxII} + \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII} \sysVelCoeff{\LidxIII} \sysVelCoeffE{\LidxII},
-\qquad
- \LidxI = 1,\ldots,\dimConfigSpace.
-\end{align}
-Note that $\genForceInertiaC$ from this definition can not be derived by Lagrange's formulation from the kinetic energy $\kineticEnergyC$.
-It is however completely determined by given metric coefficients $\sysInertiaMatC$.
-\\
-The definition of the inertia force $\genForceInertiaC$ is not unique: For any antisymmetric \textit{tensor} $S'_{\LidxI\LidxII} = -S'_{\LidxII\LidxI}$ the inertia force $\genForceInertiaCoeffC{\LidxI} + S'_{\LidxI\LidxII} \sysVelCoeffE{\LidxII}$ is covariant and energy conserving as well.
-}
-
-\fixme{
-\paragraph{Total error energy and dissipation.}
-Define the \textit{total error energy} $\totalEnergyC$ as 
-\begin{align}\label{eq:DefTotalErrorEnergy}
- \totalEnergyC(\sysCoord, \sysVel, \sysCoordR, \sysVelR) = \kineticEnergyC(\sysCoord, \sysVel, \sysCoordR, \sysVelR) + \potentialEnergyC(\sysCoord, \sysCoordR) \geq 0.
-\end{align}
-The definitions of the error potential \eqref{eq:DefErrorPotential} and the kinetic error energy \eqref{eq:DefKineticErrorEnergy} imply
-\begin{align}
- \totalEnergyC(\sysCoord, \sysVel, \sysCoordR, \sysVelR) = 0 \quad \Leftrightarrow \quad \sysCoord = \sysCoordR, \ \sysVel = \sysVelR.
-\end{align}
-Next we define a dissipative force $\genForceDissCoeff{\LidxI} = \sysDissMatCoeffC{\LidxI\LidxII} \sysVelCoeffE{\LidxII}$, with the symmetric positive semi-definite dissipation matrix $\sysDissMatC(\sysCoord) \in \SymMatSP(\dimConfigSpace)$ and associate it with the change of the total energy by
-%With \eqref{eq:ChangeErrorPotential} and \eqref{eq:ChangeKineticErrorEnergy} we can write the change of the total energy as
-\begin{align}
- \tdiff{t} \totalEnergyC = \sysVelCoeffE{\LidxI} \big( \genForceInertiaCoeffC{\LidxI} + \genForceStiffCoeffC{\LidxI} \big) \mustbe -\sysVelCoeffE{\LidxI} \genForceDissCoeffC{\LidxI}.
-\end{align}
-As above this implies $\genForceInertiaCoeffC{\LidxI} + \genForceStiffCoeffC{\LidxI} + \genForceDissCoeffC{\LidxI} = S''_{\LidxI\LidxII} \sysVelCoeffE{\LidxII}$ where $\mat{S}''$ can be the coefficients of any skew symmetric tensor.
-For simplicity we chose $\mat{S}'' = \mat{0}$ and formulate the resulting controlled kinetics:
-}
-
-\begin{RedBox}
-The desired error kinetics for the energy based approach have the form
-\begin{align}\label{eq:desiredErrorKineticsEnergy}
- \underbrace{\sysInertiaMatCoeffC{\LidxI\LidxII} \sysVelCoeffEd{\LidxII} + \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII} \sysVelCoeff{\LidxIII} \sysVelCoeffE{\LidxII}}_{\genForceInertiaCoeffC{\LidxI}}
- + \underbrace{\sysDissMatCoeffC{\LidxI\LidxII} \sysVelCoeffE{\LidxII}}_{\genForceDissCoeffC{\LidxI}}
- + \underbrace{\dirDiff{\LidxI} \potentialEnergyC}_{\genForceStiffCoeffC{\LidxI}}
- &= 0,
-\qquad
- \LidxI = 1,\ldots,\dimConfigSpace.
-\end{align}
-\end{RedBox}
-
-Since $\tdiff{t} \totalEnergyC$ is only negative semidefinite, we can only conclude stability but not attractiveness.
-One can pursue the prove of attractiveness by adding a cross term as done in \cite{Bullo:TrackingAutomatica}.
+% \end{RedBox}
 
 % \paragraph{Explicit control law.}
 % The closed loop \eqref{eq:desiredErrorKinetics} can be written in a similar form as the model
@@ -341,7 +121,7 @@ Choosing the desired inertia identical to the model inertia $\sysInertiaMatC = \
 The resulting control law is
 \begin{align}
  \genForceImpressed = \sysInertiaMat(\genCoord) \genCoordRdd + \ConnMat(\genCoord, \genCoordd) \genCoordRd - \sysDissMatC \genCoordEd - \sysStiffMatC \genCoordE.
-\end{align}
+\end{align} 
 This approach is commonly called \textit{joint proportional derivative controller} \cite[sec.\,9.1.1]{Slotine:AppliedNonlinearControl} or \textit{augmented PD control law} \cite[sec.\,4.5.3]{Murray:Robotic}, \cite[sec.\,8.2]{Spong:RobotModelingAndControl}.
 
 \paragraph{Computed torque.}
@@ -355,7 +135,7 @@ The resulting control law is
 \end{align}
 This approach is commonly called \textit{computed torque} \cite[sec.\,4.5.2]{Murray:Robotic}, \cite[sec.\,9.1.2]{Slotine:AppliedNonlinearControl} or \textit{inverse dynamics control} \cite[sec.\,8.3]{Spong:RobotModelingAndControl}.
 
-These well established approaches are contained within the derived framework \eqref{eq:desiredErrorKineticsEnergy}.
+These well established approaches are contained within the derived framework.
 However, as argued in the introduction of this chapter, the use of the Euclidean metric \eqref{eq:EuclideanMetricPotential} only makes sense if the configuration space is indeed an Euclidean space.
 Application of this approach to e.g.\ the rigid body orientation would lead to quite awkward motion.
 
@@ -379,7 +159,15 @@ The time derivative of the potential is
 \nonumber\\
  &= \underbrace{(\bodyVel{}{} - \Ad{\bodyHomoCoord{}{}^{-1}\bodyHomoCoordR{}{}} \bodyVelR{}{})}_{\sysVelE}\vphantom{|}^\top \underbrace{\veeTwoOp\big( (\idMat[4] - \bodyHomoCoord{}{}^{-1}\bodyHomoCoordR{}{}) \bodyStiffMatCp{}{} \big)}_{\differential \potentialEnergyC}.
 \end{align}
-Recalling the identity $\differential \potentialEnergyC = \spdiff[\dot{\potentialEnergyC}]{\sysVel}$, it is evident that $\sysTransportMap = \Ad{\bodyHomoCoord{}{}^{-1}\bodyHomoCoordR{}{}}$ is a transport map for this potential.
+Recalling the identity $\differential \potentialEnergyC = \spdiff[\dot{\potentialEnergyC}]{\sysVel}$, it is evident that $\sysTransportMap = \Ad{\bodyHomoCoord{}{}^{-1}\bodyHomoCoordR{}{}}$ is a transport map for this potential
+\footnote{
+It should be noted that the transport map given in \eqref{eq:TimeDerivativeRigidBodxPotential} is not unique.
+One can check by direct calculation that the following matrix also fulfills the required relation \eqref{eq:ReqTransportMap}:
+\begin{align}\label{eq:RigidBodyAlternativeTransportMap}
+ \sysTransportMap = \begin{bmatrix} \R^\top\RR & \wedOp\hc\,\R^\top\RR - \R^\top\RR \wedOp\hc \\ \mat{0} & \R^\top\RR \end{bmatrix}.
+\end{align}
+}
+.
 The potential $\potentialEnergyC$ and the resulting force $\genForceStiffC = \differential \potentialEnergyC $ coincides with the ones given for the previous approaches, already explicitly stated in \eqref{eq:GenForceStiffRigidBodyCtrl}.
 % \begin{align}\label{eq:TransportMapRigidBody}
 %  \differentialR \potentialEnergyC = \tpdiff[\dot{\potentialEnergyC}]{\bodyVelR{}{}}
@@ -398,19 +186,18 @@ The potential $\potentialEnergyC$ and the resulting force $\genForceStiffC = \di
 %  \end{bmatrix}
 % \end{align}
 
-\paragraph{Damping and Inertia.}
-As for the previous approaches, let the damping and inertia matrices have the structure $\sysDissMatC = \veeMatOp\bodyDissMatCp{}{}$ and $\sysInertiaMatC = \veeMatOp\bodyInertiaMatCp{}{}$ with $\bodyDissMatCp{}{}, \bodyInertiaMatCp{}{} \in \SymMatP(4)$.
-The entries may be interpreted as controlled total mass $\mc$, controlled center of mass $\sc$ etc. as stated in \eqref{eq:CtrlMDK}.
-Plugging these matrices into \eqref{eq:desiredErrorKineticsEnergy} we find the controlled dissipation force $\genForceDissC$ and controlled inertial force $\genForceInertiaC$ as
+\paragraph{Damping.}
+Using the same damping matrix $\sysDissMatC = \veeMatOp\bodyDissMatCp{}{}$ with $\bodyDissMatCp{}{} \in \SymMatP(4)$ as with the body based approach, we find the same damping force \eqref{eq:RBCtrlBodyDiss}. 
+
+
+\paragraph{Inertia.}
+Using the same inertia matrix as for the body based approach $\sysInertiaMatC = \veeMatOp\bodyInertiaMatCp{}{}$ with $\bodyInertiaMatCp{}{} \in \SymMatP(4)$ we find the controlled inertial force $\genForceInertiaC$ as
 \begin{align}\label{eq:RBCtrlEnergy}
- \genForceDissC 
- &= \underbrace{\begin{bmatrix} \dc \,\idMat[3] & \!\!\dc (\wedOp\lc)^\top \\ \dc \wedOp\lc & \sigc \end{bmatrix}}_{\sysDissMatC} \underbrace{\begin{bmatrix} \vE \\ \wE \end{bmatrix}}_{\sysVelE},
-\\
  \genForceInertiaC
  &= \underbrace{\begin{bmatrix} \mc \idMat[3] & \!\!\mc (\wedOp\sc)^\top \\ \mc \wedOp\sc & \Jc \end{bmatrix}}_{\sysInertiaMatC} \underbrace{\begin{bmatrix} \vEd \\ \wEd \end{bmatrix}}_{\sysVelEd}
  +  \underbrace{\begin{bmatrix} \mc \wedOp\w & -\mc \wedOp\w \wedOp\sc \\ \mc \wedOp\sc \wedOp\w & \wedOp(\wedMatOp\Jc\,\w) \end{bmatrix}}_{\ConnMatC(\sysVel) = -\ConnMatC^\top\!(\sysVel)} \underbrace{\begin{bmatrix} \vE \\ \wE \end{bmatrix}}_{\sysVelE}.
 \end{align}
-This result is very similar to the previous body based approach \eqref{eq:ClosedLoopRBApproach2}, only differing by replacing $\ConnMatC(\sysVel)$ with $\ConnMatC(\sysVelE)$.
+This result is similar to the previous body based approach \eqref{eq:ClosedLoopRBApproach2}, only differing by replacing $\ConnMatC(\sysVel)$ with $\ConnMatC(\sysVelE)$.
 Consequently with this approach the closed loop dynamics are not autonomous.
 
 % \paragraph{Error coordinates and velocity.}
@@ -439,12 +226,12 @@ Consequently with this approach the closed loop dynamics are not autonomous.
 %  \underbrace{\begin{bmatrix} \vR \\ \wR \end{bmatrix}}_{\bodyVelR{}{}}.
 % \end{align}
 
-\paragraph{An alternative transport map.}
-It should be noted that the transport map given in \eqref{eq:TimeDerivativeRigidBodxPotential} is not unique.
-One can check by direct calculation that the following matrix also fulfills the required relation \eqref{eq:DefTransportMap}:
-\begin{align}\label{eq:RigidBodyAlternativeTransportMap}
- \sysTransportMap = \begin{bmatrix} \R^\top\RR & \wedOp\hc\,\R^\top\RR - \R^\top\RR \wedOp\hc \\ \mat{0} & \R^\top\RR \end{bmatrix}.
-\end{align}
+% \paragraph{An alternative transport map.}
+% It should be noted that the transport map given in \eqref{eq:TimeDerivativeRigidBodxPotential} is not unique.
+% One can check by direct calculation that the following matrix also fulfills the required relation \eqref{eq:ReqTransportMap}:
+% \begin{align}\label{eq:RigidBodyAlternativeTransportMap}
+%  \sysTransportMap = \begin{bmatrix} \R^\top\RR & \wedOp\hc\,\R^\top\RR - \R^\top\RR \wedOp\hc \\ \mat{0} & \R^\top\RR \end{bmatrix}.
+% \end{align}
 
 % \paragraph{Linearization.}
 % For a small deviation of the system state to its reference, the error can be captured by $\LinErrorCoord_r(t), \LinErrorCoord_R(t) \in \RealNum^3$.
@@ -489,11 +276,12 @@ Note that the body matrices do not have to be positive definite, only the result
 \paragraph{Transport map.}
 The potential $\potentialEnergyC$ and the resulting force $\differential \potentialEnergyC$ are identical to the previous approaches, see e.g.\ \eqref{eq:GenForceStiffControlParticles}.
 For this energy based approach we require the existence of a transport map.
-The condition \eqref{eq:DefTransportMap} for the transport map $\sysTransportMap$ with the given potential \eqref{eq:GenForceStiffControlEnergy} is equivalent to
+The condition \eqref{eq:ReqTransportMap} for the transport map $\sysTransportMap$ with the given potential \eqref{eq:GenForceStiffControlEnergy} may be expanded to
 \begin{align}
 %\sum_{\BidxI, \BidxII} \big( \bodyJac{\BidxI}{\BidxII}(\sysCoord) \sysTransportMap(\sysCoord, \sysCoordR) - \Ad{\bodyHomoCoord{\BidxI}{\BidxII}^{-1}(\sysCoord)\, \bodyHomoCoord{\BidxI}{\BidxII}(\sysCoordR)} \bodyJac{\BidxI}{\BidxII}(\sysCoordR)\big)^\top \bodyGenForceStiffC{\BidxI}{\BidxII}(\sysCoord, \sysCoordR) &= \tuple{0}.
  \sumBodiesAB \big( \bodyJac{\BidxI}{\BidxII} \sysTransportMap - \Ad{\bodyHomoCoordE{\BidxI}{\BidxII}^{-1}} \bodyJacR{\BidxI}{\BidxII}\big)^\top \veeTwoOp\big((\idMat[4]-\bodyHomoCoordE{\BidxI}{\BidxI}^{-1})\bodyStiffMatCp{\BidxI}{\BidxII}\big) &= \tuple{0}.
 \end{align}
 with the shorthand notation $\bodyHomoCoordE{\BidxI}{\BidxII} = \bodyHomoCoord{\BidxI}{\BidxII}^{-1}(\sysCoordR) \bodyHomoCoordE{\BidxI}{\BidxII}(\sysCoord)$ and $\bodyJacR{\BidxI}{\BidxII} = \bodyJac{\BidxI}{\BidxII}(\sysCoordR)$.
 There is no general solution for this, the transport map $\sysTransportMap$ has to be computed for each example individually.
+A major caviat of this approach is that there is no general guaranty on the existence of a transport map.
 

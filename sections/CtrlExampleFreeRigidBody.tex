@@ -1,4 +1,4 @@
-\subsection{Decoupling of translational and rotational motion}\label{sec:DecouplingRigidBody}
+\subsection{Free rigid body: decoupling of translational and rotational motion}\label{sec:DecouplingRigidBody}
 The closed loop equations for a (free) three dimensional rigid body were given in \autoref{sec:CtrlApproachParticlesSingleBody}, \autoref{sec:CtrlApproachBodySingleBody} and \autoref{sec:CtrlApproachEnergySingleBody}.
 The reduced equations for the planar case were given in \autoref{sec:CtrlPlanarRigidBody}.
 For most applications we like to \textit{decouple} the translational and the rotational motion of the body.
@@ -35,7 +35,7 @@ The translational dynamics for the different approaches and given transport map 
 \paragraph{Translational energy.}
 For the rigid body we can split the total energy $\totalEnergyC = \totalEnergyC_{\r} + \totalEnergyC_{\R}$ into a part associated with the position $\totalEnergyC_{\r}$ and one associated with the orientation $\totalEnergyC_{\R}$.
 The rotational energies for the corresponding approaches coincide with the ones given in \autoref{sec:CtrlExampleRigidBodyOrientation} (\autoref{sec:CtrlExampleRevoluteJoint} for the planar case).
-The translational energies and their derivatives are
+The translational energies and their change along the solutions of \eqref{eq:RigidBodyPosErrorDyn} are
 \begin{subequations}
 \begin{align}
  &\text{particle-based:}&
@@ -65,6 +65,13 @@ The crucial observation is that for all approaches the translational dynamics an
 For a constant reference orientation $\RR = \const$ and consequently $\wR = \tuple{0}$ all four approaches are equivalent.
 Furthermore it is worth noting that the error dynamics as well as the energies are invariant to the reference trajectory $t\mapsto\rR(t)$ for the position.
 
+\begin{figure}
+ \centering
+ \includegraphics{PlanarRigidBody/RBCtrlPosError}
+ \caption{Simulation result for the planar rigid body. The solid line: energy-based approach with $\sysTransportMap = \Ad{\bodyHomoCoord{}{}^{-1}\bodyHomoCoordR{}{}}$, dashed line: particle-based approach, dotted line: body-based approach.}
+ \label{fig:RBCtrlPosError}
+\end{figure}
+
 \paragraph{Simulation.}
 The difference between these cases will be discussed on simulation results for the simpler, yet as illustrative, example of a planar rigid body:
 The reference configuration is $\rxR(t) = \ryR(t) = 0$ and $\alpha_{\idxRef}(t) = \pi t$ which yields the constant reference velocity $\sysVelR(t) = [0,0,\pi]$.
@@ -84,12 +91,6 @@ Even though the energy based approach with the transport map from \eqref{eq:Time
 Which approach is most desirable, depends given application.
 For indoor robots (like the multicopters discussed in the next chapter) it is probably most desirable if it corrects its position error following a straight line in the inertial frame.
 
-\begin{figure}[ht]
- \centering
- \includegraphics{PlanarRigidBody/RBCtrlPosError}
- \caption{Simulation result for the planar rigid body. The solid line: energy-based approach with $\sysTransportMap = \Ad{\bodyHomoCoord{}{}^{-1}\bodyHomoCoordR{}{}}$, dashed line: particle-based approach, dotted line: body-based approach.}
- \label{fig:RBCtrlPosError}
-\end{figure}
 
 % \paragraph{Approach 2}
 % \begin{align*}

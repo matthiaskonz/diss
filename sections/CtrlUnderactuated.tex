@@ -12,7 +12,7 @@ The system model has still the form of \eqref{eq:CtrlSysMdl}:
  \sysInertiaMat(\sysCoord) \sysVeld + \sysForce(\sysCoord, \sysVel) = \sysInputMat(\sysCoord) \sysInput.
 \end{align}
 For a fully actuated system, i.e.\ $\rank\sysInputMat = \dimConfigSpace$, the combination of \eqref{eq:CtrlClosedLoopUnderactuated} and \eqref{eq:CtrlSysMdlUnderactuated} can be solved for the system input $\sysInput$ yielding the actual control law.
-For an underactuated system, i.e.\ $\rank\sysInputMat = \numInputs < \dimConfigSpace$, this is not possible.
+For an underactuated system, i.e.\ $\rank\sysInputMat = \numInputs < \dimConfigSpace$, this is generally not possible.
 
 %In this section we discuss an approach for the tracking control of underactuated mechanical systems.
 
@@ -79,7 +79,7 @@ The goal of this subsection is to construct a basis for this subspace.
 
 Let $\sysInputMatLComp \in \RealNum^{\dimConfigSpace-\numInputs}$ be any orthogonal complement to $\sysInputMat$, i.e.\ $\rank \sysInputMatLComp = \dimConfigSpace-\numInputs$ and $\sysInputMat^\top \sysInputMatLComp = \mat{0}$.
 The columns of $\sysInertiaMatC^{-1} \sysInertiaMat \sysInputMatLComp$ are orthogonal to the columns of $\sysInertiaMat^{-1} \sysInputMat$ under the metric $\sProd[\sysInertiaMatC]{\cdot}{\cdot}$ and span the image of $\mat{P}^\bot$.
-Using some basic properties of orthogonal projectors (see \autoref{sec:OrthogonalProjectors}) we can formulate
+Using some basic properties of orthogonal projectors (see \fixme{sec:OrthogonalProjectors}) we can formulate
 \begin{align}
  \mat{P}^\bot = \sysInertiaMatC^{-1} \sysInertiaMat \sysInputMatLComp \underbrace{\big( (\sysInputMatLComp)^\top \sysInertiaMat \sysInertiaMatC^{-1} \sysInertiaMat \sysInputMatLComp \big)^{-1}}_{=\,\mat{S}\,\in\,\SymMatP(\dimConfigSpace-\numInputs)} (\sysInputMatLComp)^\top \sysInertiaMat,
 % \quad
@@ -166,7 +166,4 @@ with $\mat{H}$ and $\sysInput_0$ defined in \eqref{eq:GaussianUnderactuated}.
 Given that $\mat{H} \in \SymMatP(\numInputs)$ is positive definite and $\mathbb{U}$ is convex, this problem has a unique solution, though it usually has to be computed numerically.
 For the following simulation results the \textsc{Matlab} function \texttt{quadprog} was used and a C++ implementation of the Active-Set algorithm from \cite[Algorithm 16.3]{Nocedal:NumericalOptimization} was used for the real-time implementation on the Multicopters.
 
-\fixme{
-It should be stressed that this approach does not blah stability
-}
 

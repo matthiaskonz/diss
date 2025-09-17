@@ -635,7 +635,7 @@ Though the Lie group theory can be extremely useful for rigid body mechanics, fo
 
 \paragraph*{Rigid body energies.}
 Notice that for $\protox, \particleBodyPos{\PidxI} \in \RealNum^{n}$, $\protoX \in \RealNum^{n\times n}$ we have
-\begin{align}
+\begin{align}\label{eq:RBProtoEnergy}
  \sumParticles \particleMass{\PidxI} \norm{\protox + \protoX \particleBodyPos{\PidxI}}^2
  %= \sumParticles \particleMass{\PidxI} (\protox + \protoX \particleBodyPos{\PidxI})^\top (\protox + \protoX \particleBodyPos{\PidxI})
  &= \sumParticles \particleMass{\PidxI} \tr\big( (\protox + \protoX \particleBodyPos{\PidxI})(\protox + \protoX \particleBodyPos{\PidxI})^\top \big)

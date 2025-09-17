@@ -445,24 +445,25 @@ Finally, the generalized force due to viscous friction on a rigid body system ma
  \genForceDiss = \pdiff[\dissFkt]{\sysVel} = \sysDissMat \sysVel
 \end{align}
 
-\subsection{Summary}
-There are three ingredients:
+\subsection{Summary}\label{sec:MechRBSSummary}
+Given a rigid body system subject to inertia, gravity, dissipation and linear springs as discussed in this section, the equation of motion may be derived as follows.
+The description of the system consists of:
 \begin{enumerate}
- \item the chosen parameterization in the configuration coordinates $\sysCoord$, the velocity coordinates $\sysVel$ and their relation captured by the kinematics matrix $\kinMat$
- \item the rigid body graph $\bodyHomoCoord{\BidxI}{\BidxII}$ that maps the coordinates to the rigid body configuration.
+ \item the chosen parameterization in the configuration coordinates $\sysCoord$, the velocity coordinates $\sysVel$ and their relation captured by the kinematics matrix $\kinMat$.
+ \item a set of transformation matrices $\bodyHomoCoord{\BidxI}{\BidxII}(\sysCoord)$ that maps the coordinates to the chosen rigid body frames. 
+ They must form a connected graph including all body frames and the reference frame.
  \item the constitutive parameters merged into the inertia matrices $\bodyInertiaMatp{0}{\BidxII}$, dissipation matrices $\bodyDissMatp{\BidxI}{\BidxII}$, stiffness matrices $\bodyStiffMatp{\BidxI}{\BidxII}$, their corresponding minimum $\bodyHomoCoordR{\BidxI}{\BidxII}$ and the gravity vector $\gravityAcc$.
- It should be stressed that these are independent of the chosen coordinates.
+ It should be stressed that these only depend on the body frames, but are independent of the chosen coordinates.
 \end{enumerate}
-% There is an algorithm that takes the system parameterization $(\sysCoord, \sysVel, \kinMat)$, the 
-% \begin{align}
-%  \big( \sysCoord, \sysVel, \kinMat, \bodyHomoCoord{\BidxI}{\BidxII}, \bodyInertiaMatp{0}{\BidxII}, \bodyDissMatp{\BidxI}{\BidxII}, \bodyStiffMatp{\BidxI}{\BidxII}, \bodyHomoCoordR{\BidxI}{\BidxII}, \gravityAcc \big) \ \mapsto \ \big( \sysInertiaMat, \gyroForce, \genForceDiss, \genForceStiff, \genForceGravity \big)
-% \end{align}
-% which is
-
-Based on this input we may compute the equations of motion in three steps:
+Given these inputs, there is an algorithm 
+\begin{align}
+ \big( \sysCoord, \sysVel, \kinMat, \bodyHomoCoord{\BidxI}{\BidxII}, \bodyInertiaMatp{0}{\BidxII}, \bodyDissMatp{\BidxI}{\BidxII}, \bodyStiffMatp{\BidxI}{\BidxII}, \bodyHomoCoordR{\BidxI}{\BidxII}, \gravityAcc \big) \ \mapsto \ \big( \sysInertiaMat, \gyroForce, \genForceDiss, \genForceStiff, \genForceGravity \big)
+\end{align}
+that computes the relevant parts of the equation of motion.
+It may be summarized as
 \begin{enumerate}
 \item compute the body Jacobians for the given configurations:
-\begin{align}\label{eq:RBSAlogJacobian}
+\begin{align}\label{eq:RBSAlgoJacobian}
  \bodyJac{\BidxI}{\BidxII}(\sysCoord) = \pdiff{\sysCoordd} \veeOp\Big( \bodyHomoCoord{\BidxII}{\BidxI}(\sysCoord) \diff{t} \big(\bodyHomoCoord{\BidxI}{\BidxII}(\sysCoord) \big) \Big) \kinMat(\sysCoord)
 \end{align}
 \item use the group rules to compute the missing configurations and Jacobians
@@ -491,7 +492,8 @@ Based on this input we may compute the equations of motion in three steps:
 \\
  \genForceStiff &= \sumBodiesAB \bodyJac{\BidxI}{\BidxII}^\top \veeTwoOp \big( (\idMat[4] - \bodyHomoCoord{\BidxII}{\BidxI} \bodyHomoCoordR{\BidxI}{\BidxII}) \bodyStiffMatp{\BidxI}{\BidxII} \big)
 \\
- \genForceGravity &= \sumBodies \bodyJac{0}{\BidxII}^\top \veeMatOp(\bodyInertiaMatp{0}{\BidxII}) \Ad{\bodyHomoCoord{\BidxII}{0}} \gravityAccWrench, \qquad \gravityAccWrench = [\gravityAcc^\top, \tuple{0}_{1\times3}]^\top
+ %\genForceGravity &= \sumBodies \bodyJac{0}{\BidxII}^\top \veeMatOp(\bodyInertiaMatp{0}{\BidxII}) \Ad{\bodyHomoCoord{\BidxII}{0}} \gravityAccWrench, \qquad \gravityAccWrench = [\gravityAcc^\top, \tuple{0}_{1\times3}]^\top
+ \genForceGravity &= \sumBodies \bodyJac{0}{\BidxII}^\top \veeTwoOp \big( \bodyHomoCoord{0}{\BidxII}^{\top} \wedOp(-\gravityAccWrench) \bodyInertiaMatp{0}{\BidxII} \big), \qquad \gravityAccWrench = [\gravityAcc^\top, \tuple{0}_{1\times3}]^\top
 %\\
 % \sysForce &= \gyroForce + \sysDissMat\sysVel + \genForceStiff + \genForceGravity
 %  \kineticEnergy &= \tfrac{1}{2} \norm[\sysInertiaMat]{\sysVel}^2
@@ -503,7 +505,8 @@ Based on this input we may compute the equations of motion in three steps:
 %  \potentialGravity &= \sumBodies \sProd[\bodyInertiaMatp{0}{\BidxII}]{\bodyHomoCoord{0}{\BidxII}^\top}{\wedOp(\gravityAccWrench)},
 \end{align}
 \end{subequations} 
-\item explicit equations of motion
+\end{enumerate}
+The explicit equations of motion reads
 \begin{subequations}
 \begin{align}
  \sysCoordd &= \kinMat \sysVel, 
@@ -511,9 +514,6 @@ Based on this input we may compute the equations of motion in three steps:
  \sysVeld &= \sysInertiaMat^{-1}(\genForceEx - \gyroForce - \sysDissMat\sysVel - \genForceStiff - \genForceGravity).
 \end{align}
 \end{subequations} 
-\end{enumerate}
-
-The first step \eqref{eq:RBSAlogJacobian} requires differentiation, so must be performed symbolically.
+The first step \eqref{eq:RBSAlgoJacobian} requires differentiation, so must be performed symbolically.
 The remaining steps only require basic linear algebra, so can be preformed numerically.
 For small systems it might be still reasonable to compute $\sysInertiaMat(\sysCoord)$ symbolically, but for larger systems the explicit expressions can be overwhelming even for contemporary computers.
-

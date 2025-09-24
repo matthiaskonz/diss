@@ -53,8 +53,8 @@
     \put(0.51840366,0.24681739){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{$\alpha$}}}%
     \put(0.54648463,0.00368571){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{$\rx$}}}%
     \put(0.19103165,0.16039178){\color[rgb]{0,0,0}\makebox(0,0)[rb]{\smash{$\ry$}}}%
-    \put(0.67152047,0.40179733){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\bodyCOSC{}{}{2}=\bodyCODC{}{}{2}$}}}%
-    \put(0.64570812,0.32100983){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\bodyCOMC{}{}{2}$}}}%
+    \put(0.67152047,0.40179733){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\hcy=\lcy$}}}%
+    \put(0.64570812,0.32100983){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\scy$}}}%
     \put(0.36181569,0.25060972){\color[rgb]{0,0,0}\makebox(0,0)[rb]{\smash{$\tfrac{\bodyStiffnessC{}{}}{2}$}}}%
     \put(0.6211598,0.25581136){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\varepsilon$}}}%
     \put(0.28548539,0.4304349){\color[rgb]{0,0,0}\makebox(0,0)[rb]{\smash{$\tfrac{\bodyStiffnessC{}{}}{2}$}}}%

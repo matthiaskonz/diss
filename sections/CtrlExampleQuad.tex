@@ -1,5 +1,5 @@
 \subsection{Quadcopter}
-Consider a Quadcopter \autoref{fig:QuadModel}
+
 \begin{figure}[ht]
  \centering
 % \def\svgwidth{.5\textwidth}
@@ -9,11 +9,12 @@ Consider a Quadcopter \autoref{fig:QuadModel}
 \end{figure}
 
 \paragraph{Model.}
-Kinematics
-\begin{align}\label{eq:QuadcopterKinematics}
- \rd = \R\v, \quad \Rd = \R\wedOp(\w)
-\end{align}
-Kinetics
+Mechanically, a quadcopter is a free 3d rigid body subject to gravity and the specific actuation as illustrated in \autoref{fig:QuadModel}.
+It is reasonable to chose the center of mass as the reference point and assume that the body frame coincides with the priciple axes of inertia.
+%\begin{align}\label{eq:QuadcopterKinematics}
+% \rd = \R\v, \quad \Rd = \R\wedOp(\w)
+%\end{align}
+Then the kinetic equation takes the form
 \begin{align}\label{eq:QuadcopterKinetics}
  \underbrace{\!\begin{bmatrix}
   m & 0 & 0 & 0 & 0 & 0 \\
@@ -45,25 +46,26 @@ Kinetics
  \underbrace{\!\begin{bmatrix} \PropForce[1] \\ \PropForce[2] \\ \PropForce[3] \\ \PropForce[4] \end{bmatrix}\!}_{\sysInput}
 \end{align}
 
-
-\paragraph{Closed loop template.}
-The quadcopter is just a free rigid body with a particular actuation, so the closed loop templates coincide with the ones given in \autoref{sec:CtrlApproachParticlesSingleBody}, \autoref{sec:CtrlApproachBodySingleBody} and \autoref{sec:CtrlApproachEnergySingleBody}.
-Due to symmetry considerations we set $\scx = \scy = 0$, $\Jcxx=\Jcyy$, $\Jcxy=\Jcxz=\Jcyz=0$ and analog for the stiffness and damping parameters.
-
-\paragraph{Matching}
+\paragraph{Reference trajectory.}
 An obvious left complement for $\sysInputMat$ is
 \begin{align}
- \sysInputMatLComp = \begin{bmatrix} 1 & 0 \\ 0 & 1 \\ 0 & 0 \\ 0 & 0 \\ 0 & 0 \\ 0 & 0 \end{bmatrix}.
+ (\sysInputMatLComp)^\top = \begin{bmatrix} 1 & 0 & 0 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 & 0 & 0 \end{bmatrix}.
 \end{align}
-As the actual matching force $\tuple{\lambda}$ is extremely cumbersome, we will consider its first order approximation first:
-The reference part is
+With this, the matiching condition for the reference from \eqref{eq:MatchingForceZeroError} are just the two first equations of \eqref{eq:QuadcopterKinetics}:
 \begin{align}
- \tuple{\lambda}^{\text{ZeroError}} = m \begin{bmatrix} \vxRd + \vzR\wyR-\vyR\wzR + \RRzx\gravityAccConst \\ \vyRd + \vxR\wzR-\vzR\wxR + \RRzy \gravityAccConst \end{bmatrix}
+ \tuple{\lambda}^{\text{ZeroError}} = m \begin{bmatrix} \vxRd + \vzR\wyR-\vyR\wzR + \RRzx\gravityAccConst \\ \vyRd + \vxR\wzR-\vzR\wxR + \RRzy \gravityAccConst \end{bmatrix} = \tuple{0}
+ .
 \end{align}
-which is just the first two coefficients of \eqref{eq:QuadcopterKinetics}.
-Combining this with the kinematic relation $\sysCoordRd = \kinMat(\sysCoordR)\sysVelR$ .. flat output.. see \cite{Konz:QuadrotorMovingFrame}
+This may be easily resolved by formulating the reference trajectory in terms of the systems flat output $\r$ and some parameterization of the orientation about the body fixed z-axis as done in \cite{Konz:QuadrotorMovingFrame}.
 
-With the linearized system matrices
+\paragraph{Closed loop template.}
+As the quadcopter is just a free rigid body with a particular actuation, the closed loop templates coincide with the ones given in \autoref{sec:CtrlApproachParticlesSingleBody}, \autoref{sec:CtrlApproachBodySingleBody} and \autoref{sec:CtrlApproachEnergySingleBody}.
+Due to symmetry considerations we set $\scx = \scy = 0$, $\Jcxx=\Jcyy$, $\Jcxy=\Jcxz=\Jcyz=0$ and analog for the stiffness and damping parameters.
+
+\paragraph{Matching.}
+The explicit matching conditions are too cumbersome to be displayed here.
+Instead we start again with the linearized version:
+The linearized system matrices for model and closed loop template are
 \begin{align*}
  \sysInertiaMatLin &= 
  \begin{bmatrix}
@@ -79,7 +81,7 @@ With the linearized system matrices
   \mc & 0 & 0 & 0 & \mc\scz & 0 \\
   0 & \mc & 0 & -\mc\scz & 0 & 0 \\
   0 & 0 & \mc & 0 & 0 & 0 \\
-  0 & -\mc\scz & 0 & \!\Jcy+\mc\scz^2\! & 0 & 0 \\
+  0 & -\mc\scz & 0 & \!\Jcx+\mc\scz^2\! & 0 & 0 \\
   \mc\scz & 0 & 0 & 0 & \!\Jcx+\mc\scz^2\! & 0 \\
   0 & 0 & 0 & 0 & 0 & \!\Jcz\! \\
  \end{bmatrix},
@@ -98,7 +100,7 @@ With the linearized system matrices
   \dc & 0 & 0 & 0 & \dc\lcz & 0 \\
   0 & \dc & 0 & -\dc\lcz & 0 & 0 \\
   0 & 0 & \dc & 0 & 0 & 0 \\
-  0 & -\dc\lcz & 0 & \!\sigcy+\dc\lcz^2\! & 0 & 0 \\
+  0 & -\dc\lcz & 0 & \!\sigcx+\dc\lcz^2\! & 0 & 0 \\
   \dc\lcz & 0 & 0 & 0 & \!\sigcx+\dc\lcz^2\! & 0 \\
   0 & 0 & 0 & 0 & 0 & \!\sigcz\! \\
  \end{bmatrix},
@@ -117,12 +119,12 @@ With the linearized system matrices
   \kc & 0 & 0 & 0 & \kc\hcz & 0 \\
   0 & \kc & 0 & -\kc\hcz & 0 & 0 \\
   0 & 0 & \kc & 0 & 0 & 0 \\
-  0 & -\kc\hcz & 0 & \!\kapcy+\kc\hcz^2\! & 0 & 0 \\
+  0 & -\kc\hcz & 0 & \!\kapcx+\kc\hcz^2\! & 0 & 0 \\
   \kc\hcz & 0 & 0 & 0 & \!\kapcx+\kc\hcz^2\! & 0 \\
   0 & 0 & 0 & 0 & 0 & \!\kapcz\! \\
  \end{bmatrix}.
 \end{align*}
-the linearized matching condition is
+Taking into account the symmetries between x and y directions, the remaining linearized matching conditions are
 \begin{subequations}
 \begin{align}
  \kc(\Jcx - \mc\scz(\hcz - \scz)) &= 0
@@ -142,17 +144,32 @@ the linearized matching condition is
 % -\mc\scz\sigcy + \dc\lcz(\Jcy - \mc\scz(\lcz - \scz)) &= 0
 \end{align} 
 \end{subequations}
-These terms vanish for
+It is not surprising that these are identical to the previously encountered conditions \eqref{eq:PVTOLMatchingCondLin} for the PVTOL for $\eps=0$.
+Consequently we use the same solution
 \begin{align}
  \lcz &= \hcz,&
- \Jcx &= \mc\scz(\hcz \!-\! \scz),&
- \sigcx &= 0,&
- \kapcx &= \mc\gravityAccConst(\hcz \!-\! \scz).
+ \Jcx = \Jcy &= \mc\scz(\hcz \!-\! \scz),&
+ \sigcx = \sigcy &= 0,&
+ \kapcx = \kapcy &= \mc\gravityAccConst(\hcz \!-\! \scz).
 \end{align}
-Even with these the ...
-\begin{align}
- \tilde{\sysForce} = \frac{1}{\m\hcz}\begin{bmatrix} \Jcz\wx\wz - \tfrac{1}{2}\kapcz(\Rxz+\Rzx) \\ \Jcz\wy\wz - \tfrac{1}{2}\kapcz(\REyz+\REzy) \\ 0 \\ 0 \\ 0 \\ 0 \end{bmatrix}
+which leaves the tuning parameters $\mc, \dc, \kc, \scz, \hcz$ and $\Jcz, \sigcz, \kapcz$.
+
+Even with the linearized matching condtions fulfilled, the nonlinear matching condition is still to cumbersome to be displayed here.
+For the case of a constant reference velocity $\vRd = \tuple{0}$ and its implications on the reference attitude, $\wRx=\wRy=0$, we have the residual matching force
+\begin{align} 
+ \tilde{\sysForce} = \frac{\mc}{\m\hcz}\begin{bmatrix} \Jcz\wx\wz - \tfrac{1}{2}\kapcz(\RExz+\REzx) \\ \Jcz\wy\wz - \tfrac{1}{2}\kapcz(\REyz+\REzy) \\ 0 \\ 0 \\ 0 \\ 0 \end{bmatrix}
+ .
 \end{align}
 
-\cite{Konz:GaussTrackingControl}
+\paragraph{Tuning.}
+The first set of parameters $\mc, \dc, \kc, \scz, \hcz$ may be tuned just as presented for the PVTOL, see \autoref{fig:PVTOLPendulum}.
+The parameters accociated with the heading control may be set to $\sigcz=2\Jcz\zeta\omega_0$ and $\kapcz=\Jcz\omega_0^2$ to obtain a desired bandwidth $\omega_0$ and damping ratio $\zeta$.
+The corresponding moment of inertia $\Jcz > 0$ may be adjusted in relation to $\Jcx$ as a priority factor between heading control and tilt control.
+This is most crucial if the quatcopter propellers are at their constraints and the control has to find a trade-off between maintaining its tilt (and consequently its position), or the heading.
+For most applications heading is less important than tilt so one may set $\Jcz = 0.1\,\Jcx$ as was done for the experiments with the LSR quadcopter presented in the next section.
 
+
+\paragraph{Simulation results.}
+The body based approach proposed here was also discussed in \cite{Konz:GaussTrackingControl} which also showed simulation results for a looping trajectory.
+Furthermore, this approch was implemented for the experimental setup in the LSR quadcopter.
+The results are discussed in detail in the next chapter.

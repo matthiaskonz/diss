@@ -18,16 +18,17 @@ With the same coordinates as for the previous examples, the equations of motion 
   1 & 0 & 1 & 0 \\
   0 & \sin\PropInc & 0 & -\sin\PropInc \\
   0 & \cos\PropInc & 0 & \cos\PropInc \\
-  0 & \PropPosY \cos\PropInc - \PropPosZ \sin\PropInc & 0 & -\PropPosY \cos\PropInc + \PropPosZ \sin\PropInc \\
+  0 & \PropPosY' & 0 & -\PropPosY' \\
   \PropPosZ & 0 & \PropPosZ & 0 \\
   -\PropPosY & 0 & \PropPosY & 0 \\
  \end{bmatrix}}_{\sysInputMat}
  \underbrace{\begin{bmatrix} \PropForce[1] \sin\PropTilt[1] \\ \PropForce[1] \cos\PropTilt[1] \\ \PropForce[2] \sin\PropTilt[2] \\ \PropForce[2] \cos\PropTilt[2] \end{bmatrix}}_{\sysInput}
  .
 \end{align}
+with $\PropPosY' = \PropPosY \cos\PropInc - \PropPosZ \sin\PropInc$.
 The transformation of the actual control inputs $\PropForce[1]$, $\PropForce[2]$ and $\PropTilt[1]$, $\PropTilt[2]$ to a auxiliary input $\sysInput$ is used to achieve the linear form $\genForceInput = \sysInputMat\sysInput$.
 Within the input constraints $2\,\unit{N} \leq \PropForce[i] \leq 14\,\unit{N}$, $-30^\circ \leq \PropTilt[i] \leq 30^\circ$, $i=1,2$ this transformation is bijective.
-To account for the original constraints in transformed input $\sysInput\in \RealNum^4$ a convex approximation illustrated in \autoref{fig:BicopterInputConstraintApprox} is used.
+To account for the original constraints in the transformed input $\sysInput\in \RealNum^4$, a convex approximation illustrated in \autoref{fig:BicopterInputConstraintApprox} is used.
 These constraints can be written in the required form $\sysInputConstMat \sysInput \leq \sysInputConstVec$.
 
 \begin{figure}[ht]
@@ -37,33 +38,24 @@ These constraints can be written in the required form $\sysInputConstMat \sysInp
  \label{fig:BicopterInputConstraintApprox}
 \end{figure}
 
-% acceleration constraint
-% \begin{align}
-%  \vxd + \wy\vz - \wz\vy + \epsX \big(\wyd + \tfrac{\Jx-\Jz}{\Jy}\wx\wz\big) + \Rzx \gravityAccConst &= 0,
-% \\
-%  \vyd + \wz\vx - \wx\vz - \epsY \big(\wxd + \tfrac{\Jz-\Jy}{\Jx}\wy\wz\big) + \Rzy \gravityAccConst &= 0,
-% \end{align}
-
-\paragraph{Closed loop template.}
-Mechanically the bicopter is just a free rigid body, so the control template from \fixme{(??)} is reasonable.
-Due to symmetry of the mechanical model we set the center of mass on the body fixed vertical axis and set the principle axis of inertia to be parallel to the body fixed axis, i.e.\ $\scx=\scy=0$ and $\Jc=\diag(\Jcx, \Jcy, \Jcz)$ and the same for damping and stiffness.
-
-\paragraph{Matching}
+\paragraph{Reference trajectory.}
+A possible left complement for $\sysInputMat$ is
 \begin{align}
- \sysInputMatLComp = \begin{bmatrix} \PropPosZ & 0 & 0 & 0 & -1 & 0 \\ 0 & \PropPosY\cos\PropInc-\PropPosZ\sin\PropInc & 0 & \sin\PropInc & 0 & 0 \end{bmatrix}
+ (\sysInputMatLComp)^\top = \begin{bmatrix} \PropPosZ & 0 & 0 & 0 & -1 & 0 \\ 0 & \PropPosY' & 0 & -\sin\PropInc & 0 & 0 \end{bmatrix}
 \end{align}
-
-constraints on parameters
-\begin{align} 
- \lcz &= \hcz,
-\\
- \Jcx &= \mc (\hcz-\scz)(\scz-\epsy),&
- \sigcx &= 0,&
- \kapcx &= \mc \gravityAccConst (\hcz-\scz),
-\\
- \Jcy &= \mc(\hcz-\scz) (\scz-\epsx),&
- \sigcy &= 0,&
- \kapcy &= \mc \gravityAccConst (\hcz-\scz).
+With this, the matching condition for the reference from \eqref{eq:MatchingForceZeroError} is
+\begin{align}
+ \tuple{\lambda}^{\text{ZeroError}} = 
+% \begin{bmatrix} 
+%  m \PropPosZ (\vxd + \vy\wz \!-\! \vz\wy + \Rzx\gravityAccConst ) - (\Jy\wyd + (\Jx-\Jz)\wx\wz)  \\
+%  \PropPosY' m (\vyd + \vx\wz \!-\! \vz\wx + \Rzy\gravityAccConst) - \sin\PropInc (\Jx \wxd + (\Jz-\Jy)\wy\wz)
+% \end{bmatrix}
+ \begin{bmatrix} 
+  m \PropPosZ  \big( \vxd + \vy\wz \!-\! \vz\wy - \epsx (\wyd + \tfrac{\Jx-\Jz}{\Jy} \wx\wz) + \Rzx\gravityAccConst \big)  \\
+  m \PropPosY' \big( \vyd + \vx\wz \!-\! \vz\wx + \epsy (\wxd + \tfrac{\Jz-\Jy}{\Jx} \wy\wz) + \Rzy\gravityAccConst \big)
+ \end{bmatrix}
+ = \tuple{0}
+ .
 \end{align}
 where
 \begin{align}
@@ -71,32 +63,63 @@ where
 \qquad
  \epsy = \tfrac{\Jx \sin\PropInc}{\m (\PropPosY \cos\PropInc - \PropPosZ \sin\PropInc)}.
 \end{align}
-This leaves the tuning parameters $\mc, \dc, \kc, \scz, \hcz$ and $\Jcz, \sigcz, \kapcz$.
+For the general case\footnote{Even in the case $\epsx=\epsy\neq0$ we would need $\Jx=\Jy=\Jz$ for $\r+\R \tuple{\eps}$ to be a flat output. The case $\epsx=0$ implies $\Jy=0$, which does not make physical sense.} 
+$\epsx\neq\epsy$ this system is probably not flat, so parameterization of a feasible reference trajectory is not trivial.
 
-The remaining matching force is
+\paragraph{Closed loop template.}
+As for the quadcopter, the closed loop templates are that of a free rigid body i.e.\ \autoref{sec:CtrlApproachParticlesSingleBody}, \autoref{sec:CtrlApproachBodySingleBody} and \autoref{sec:CtrlApproachEnergySingleBody}.
+However, in contrast to the quadcopter there are no assumtions on symmetries in the constitutive parameters.
+
+\paragraph{Matching.}
+As before we first consider the linearized matching condtions:
+It turns out that asymmetries in the constitutive parameters are not useful for resolving matching constraints.
+So we set $\Jcxy=\Jcxz=\Jcyz=0$, $\scx=\scy=0$ and the same for damping and stiffness.
+The remaining linearized matching conditions may be fulfilled by constraining the parameters as
+\begin{subequations}
+\begin{align} 
+ \lcz = \hcz,
+\qquad
+ \sigcx = \sigcy = 0,
+\qquad
+ \kapcx = \kapcy = \mc \gravityAccConst (\hcz-\scz),
+\\
+ \Jcx = \mc (\hcz-\scz)(\scz-\epsy),
+\qquad
+ \Jcy = \mc(\hcz-\scz) (\scz-\epsx),
+\end{align}
+\end{subequations}
+which leaves the tuning parameters $\mc, \dc, \kc, \scz, \hcz$ and $\Jcz, \sigcz, \kapcz$.
+Note, in contrast to the quadcopter, that $\epsx \neq \epsy$ implies $\Jcx \neq \Jcy$ and since the remaining relevant parameters are identical, the closed loop dynamics for x and y are different from another.
+
+The remaining matching force in the stabilization case $\sysVelR = \tuple{0}$ is
 \begin{align}
- \tilde{\genForce} = 
- \begin{bmatrix} 1 & 0 \\ 0 & 1 \\ 0 & 0 \\ 0 & -\epsy \\ \epsx & 0 \\ 0 & 0 \end{bmatrix}
- \begin{bmatrix}[2]
-  \frac{1}{\hcz-\epsx} \big( \Jcz - \mc(\hcz-\scz) (\tfrac{\Jx-\Jz}{\Jy}\epsx - \epsy) \wx\wz - \tfrac{\kapcz}{2}(\Rxz+\Rzx) \big) \\
-  \frac{1}{\hcz-\epsy} \big( \Jcz - \mc(\hcz-\scz) (\tfrac{\Jy-\Jz}{\Jx}\epsy - \epsx) \wx\wz - \tfrac{\kapcz}{2}(\Ryz+\Rzy) \big)
-%   \frac{\Jcz - \mc(\hcz-\scz) \big(\tfrac{\Jx-\Jz}{\Jy}\epsx - \epsy\big)}{\hcz-\epsx} \wx\wz - \tfrac{\kapcz}{2(\hcz-\epsx)}(\Rxz+\Rzx) \\
-%   \frac{\Jcz - \mc(\hcz-\scz) \big(\tfrac{\Jy-\Jz}{\Jx}\epsy - \epsx\big)}{\hcz-\epsy} \wx\wz - \tfrac{\kapcz}{2(\hcz-\epsy)}(\Ryz+\Rzy)
+ \tilde{\sysForce} = \frac{\mc}{m}
+ \begin{bmatrix} \frac{1}{\hcz-\epsx} & 0 \\ 0 & \frac{1}{\hcz-\epsy} \\ 0 & 0 \\ 0 & -\frac{\epsy}{\hcz-\epsy} \\ \frac{\epsx}{\hcz-\epsx} & 0 \\ 0 & 0 \end{bmatrix}
+ \begin{bmatrix}
+  \big( \Jcz - \mc(\hcz-\scz) (\tfrac{\Jx-\Jz}{\Jy}\epsx - \epsy) \big) \wy\wz - \tfrac{1}{2} \kapcz (\RExz+\REzx) \\
+  \big( \Jcz - \mc(\hcz-\scz) (\tfrac{\Jy-\Jz}{\Jx}\epsy - \epsx) \big) \wx\wz - \tfrac{1}{2} \kapcz (\REyz+\REzy)
  \end{bmatrix}
 \end{align}
 
-\paragraph{Simulation result.}
-
-\begin{figure}[ht]
+\begin{figure}
  \centering
  \includegraphics[]{Bicopter/BicopterCircleSimSnapshots.pdf}
- \caption{Simulation result for the Bicopter}
+ \caption{Snapshots for the simulation of the bicopter}
  \label{fig:BicopterCircleSimSnapshots}
 \end{figure}
 
 \begin{figure}[p]
  \centering
  \includegraphics[]{Bicopter/BicopterCircleSimRes.pdf}
- \caption{Simulation result for the Bicopter}
+ \caption{Simulation result for the bicopter}
  \label{fig:BicopterCircleSimRes}
 \end{figure}
+
+
+\paragraph{Simulation result.}
+Since the bicopter model is probably not flat, generation of a feasible reference trajectory is not trivial. 
+For the simulation example here we exploited that, if we set $\rRx = 0$ and $\Rxx=1$, the motion is constrained to the yz plane and the remaining model is essentially a PVTOL.
+
+As a challanging reference trajectory a vertical circle was chosen.
+
+

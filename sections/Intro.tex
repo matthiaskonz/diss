@@ -90,6 +90,14 @@ In particular, the four propeller quadcopter configuration has became quite popu
 
 The \textit{Chair of Systems Theory and Control Engineering} at Saarland University has developed realizations of a quadcopter and a tricopter with three tiltable propellers (see \autoref{fig:introLsrMulticopters}).
 A bicopter with two titlable and inclined propellers has been studied through simulations.
+In particular the lsr-quadcopter has an excellent thrust to weight ratio and is consequently well suited for aggressive, aerobatic maneuvers, e.g. a looping as shown in \autoref{fig:introQuadLoopSnapshots}.
+
+\begin{figure}[ht]
+ \centering
+ \includegraphics[width=.6\linewidth]{graphics/QuadLoopSnapshots}
+ \caption{Snapshots of the lsr-quadcopter tracking a looping trajectory}
+ \label{fig:introQuadLoopSnapshots}
+\end{figure}
 
 From a mechanical point of view, these multicopters may be modelled as a free rigid body moving within Earth's gravity.
 The difference between them is only the placement of the actuators:
@@ -159,10 +167,12 @@ Evaluation of Lagrange's equation \eqref{eq:LagrangeEq} yields the equations of 
 \end{multline}
 The entries in $\sysForce$ are not displayed here since they would fill several lines and are actually not of relevance here.
 What is crucial here is that the model has singularities at $\pit=\pm\tfrac{\pi}{2}$: $\det\sysInertiaMat = \Jx\Jy\Jz\cpit^2$ and $\det\kinBasisMat = \cpit$.
-Consequently this model is neither suited for a global simulation nor for application of computed torque control.
+For the previous example of aerobatic motions it is should be evident that singularities of this form would be unacceptable for simulation and control design. 
+
+%Consequently this model is neither suited for a global simulation nor for application of computed torque control.
 
 \paragraph{Euler's rotation equations.}
-For this particular example one finds another formulation of the equations of motion directly in most textbooks on mechanics, e.g.\ \cite[p.\,143]{Arnold:MathematicalMethodsOfClassicalMechanics} or \cite[p.\,145]{Schwertassek:MultibodySystems}:
+For the particular example of the rigid body orientation one finds another formulation of the equations of motion directly in most textbooks on mechanics, e.g.\ \cite[p.\,143]{Arnold:MathematicalMethodsOfClassicalMechanics} or \cite[p.\,145]{Schwertassek:MultibodySystems}:
 %They are commonly called \textit{Euler's rotation equations}:
 \begin{subequations}\label{eq:ExampleEulerEq}
 \begin{align}

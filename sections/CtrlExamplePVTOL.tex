@@ -9,24 +9,9 @@ The planar vertical take off landing aircraft (PVTOL) as depicted in \autoref{fi
 \end{figure}
 
 \paragraph{Model.}
-We choose the position $(\rx, \ry)$ of the center of mass and the tilt angle $\tiltAngle$ as configuration coordinates.
-So the body configuration is
-\begin{align}
- \bodyHomoCoord{0}{1} = \begin{bmatrix} \cos\tiltAngle & -\sin\tiltAngle & 0 & \rx \\ \sin\tiltAngle & \cos\tiltAngle & 0 & \ry \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}.
-\end{align}
-Note that in these coordinates the gravity acceleration has the components $\gravityAcc = [0,-\gravityAccConst,0]^\top$, so the potential energy due to gravity is $\potentialEnergy = \m \gravityAccConst \ry$.
-In contrast to the sources mentioned above, we use the coefficients $(\vx, \vy)$ of the absolute velocity w.r.t.\ the body fixed frame and the angular velocity $\wz$ of the body tilt as velocity coordinates.
-The kinematic relation is 
-\begin{align}
- \ddt
- \underbrace{\begin{bmatrix} \rx \\ \ry \\ \tiltAngle \end{bmatrix}}_{\sysCoord}
- &= 
- \underbrace{\begin{bmatrix} \cos\tiltAngle & -\sin\tiltAngle & 0 \\ \sin\tiltAngle & \cos\tiltAngle & 0 \\ 0 & 0 & 1 \end{bmatrix}}_{\kinMat}
- \underbrace{\begin{bmatrix} \vx \\ \vy \\ \wz \end{bmatrix}}_{\sysVel}.
-\end{align}
-Let $\m$ be the total mass of the PVTOL and $\Jz$ the moment of inertia around the center of mass.
-The propeller thrusts are $F_\text{r}$, $F_\text{l}$ according to \autoref{fig:PVTOLModel}.
-Overall, we have the kinetic equation
+The model of the PVTOL is a planar rigid body alredy discussed in \autoref{sec:CtrlPlanarRigidBody} supplemented with gravity and the specific actuation $F_\text{r}$, $F_\text{l}$ depicted in \autoref{fig:PVTOLModel}.
+Here, we chose the body fixed frame to be positioned at the center of mass, i.e.\ $\sx = \sy = 0$.
+The kinetic equation takes the form
 \begin{align}
  \underbrace{\begin{bmatrix} \m & 0 & 0 \\ 0 & \m & 0 \\ 0 & 0 & \Jz \end{bmatrix}}_{\sysInertiaMat}
  \underbrace{\begin{bmatrix} \vxd \\ \vyd \\ \wzd \end{bmatrix}}_{\sysVeld}
@@ -73,8 +58,8 @@ Note that this parameterization fails if $\ddot{y}_{1\idxRef} = \ddot{y}_{2\idxR
 % \end{align}
 
 \paragraph{Closed loop.}
-The PVTOL model is just a planar rigid body with particular actuation. 
-So its  closed loop template coincides with the one for the planar rigid body from \autoref{sec:CtrlPlanarRigidBody}, but for symmetry reasons we choose the parameters $\hcx=\lcx=\scx=0$.
+As for the model, the closed loop templates are the ones the planar rigid body from \autoref{sec:CtrlPlanarRigidBody}. 
+Due to symmetry reasons we set the parameters $\hcx=\lcx=\scx=0$.
 % \begin{align}
 %  \potentialEnergyC &= \tfrac{1}{2} \kc \big( (\rEx - \hcy \sin\tiltAngleE)^2 + (\rEy + \hcy(\cos\tiltAngleE-1))^2 \big) + \kapcz (1-\cos\tiltAngleE),
 % \\
@@ -114,7 +99,7 @@ Instead we will investigate its linear approximation about any reference traject
 \end{align}
 \end{subequations}
 The conditions for $(\sysInputMatLComp)^\top \big( \sysInertiaMatLin \sysInertiaMatCLin^{-1} \sysDissMatCLin - \sysDissMatLin\big) = \mat{0}$ and $(\sysInputMatLComp)^\top \big( \sysInertiaMatLin \sysInertiaMatCLin^{-1} \sysStiffMatCLin - \sysStiffMatLin\big) = \mat{0}$ for the linearized matching force from \eqref{eq:MatchingForceLin} to vanish are equivalent to
-\begin{subequations}
+\begin{subequations}\label{eq:PVTOLMatchingCondLin}
 \begin{align}
  \kc \big( \Jcz - \mc(\hcy - \scy)(\scy - \eps) \big) &= 0,
 \\
@@ -133,7 +118,12 @@ One solution for this is
  \kapcz &= \mc \gravityAccConst (\hcy-\scy)
 \end{align}
 which leaves the parameters $\kc, \dc, \mc, \hcy, \scy$ for tuning.
-The resulting matching force is
+For the energies to be positive (semi) definite, i.e.\ $\sysInertiaMatC > 0$, $\sysDissMatC \geq 0$ and $\potentialEnergyC > 0$ we need
+\begin{align}
+ \kc, \dc, \mc > 0, \qquad \hcy > \scy > \eps.
+\end{align}
+
+The remaining matching force is
 \begin{align}
  \tilde{\sysForce} = \frac{\mc(\hcy-\scy)}{m(\hcy-\eps)} \begin{bmatrix} 1 \\ 0 \\ -\eps \end{bmatrix} \lambda
 \end{align}
@@ -148,13 +138,28 @@ where $\lambda$ for the corresponding approach is
 \end{align} 
 \end{subequations}
 where $a_{\idxY\idxRef} = \vyRd + \vxR\wzR + \gravityAccConst(\cos\tiltAngleR - 1)$. 
+Note that for a constant reference motion $\vRd = 0$ (which implies $\tiltAngleR = 0$) the matching force vanishes $\lambda = 0$ for all approaches.
 
-\paragraph{Tuning.}
-For the energies to be positive (semi) definite, we need $\sysInertiaMatC > 0$, $\sysDissMatC \geq 0$ and $\potentialEnergyC > 0$ which means for the remaining tuning parameters
-\begin{align}
- \kc, \dc, \mc > 0, \qquad \hcy > \scy > \eps.
-\end{align}
 
+\begin{figure}
+ \centering
+ \input{graphics/PVTOLPendulum2.pdf_tex}
+ \caption{Interpretation of the controlled PVTOL as a mechanical system} 
+ \label{fig:PVTOLPendulum}
+\end{figure}
+
+\paragraph{Mechanical interpretation.}
+The closed loop template is a planar rigid body with attached springs and dampers as motivated in \autoref{sec:RB} but without gravity.
+Taking into account the parameter constraints \eqref{eq:PVTOLMatchingSolution}, the controlled PVTOL corresponds to the mechanical system illustrated in \autoref{fig:PVTOLPendulum}.
+The condition $\hcy > \scy$ implies that the center of mass must be below the center of stiffness.
+As dicussed in \autoref{sec:DecouplingRigidBody}, $\hcy \neq \scy$ results in a coupling between translational and rotational motion.
+From a stability/attractiveness point of view this is necessary: As there is no inherent rotational dissipation $\sigcz = 0$, the correponding energy is dissipated through its coupling to the translational motion.
+The coupling also reflects the characteristic behaviour of the PVTOL that tilting is required for sideways motion.
+
+
+
+\paragraph{Pole placement.}
+Even if the tuning parameters might be mechanically intuitive, a classic pole placement approach can be instructive:
 The characteristic polynomial of the linearized system is
 % \begin{align}
 %  \det (\sysInertiaMatC \EigenVal^2 + \sysDissMatC \EigenVal + \sysStiffMatC) = 0
@@ -177,7 +182,7 @@ The characteristic polynomial of the linearized system is
  + \tfrac{\dc \gravityAccConst}{\mc (\scy-\eps)} \EigenVal
  + \tfrac{\kc \gravityAccConst}{\mc (\scy-\eps)} \big)
 \end{multline}
-Set a desired polynomial of forth degree $\EigenVal^4 + p_3 \EigenVal^3 + p_2 \EigenVal^2 + p_1 \EigenVal + p_0$ we get the parameters
+From a desired polynomial of forth degree $\EigenVal^4 + p_3 \EigenVal^3 + p_2 \EigenVal^2 + p_1 \EigenVal + p_0$ we get the parameters
 \begin{align}
  \kc &= \frac{\mc \, p_0 p_1}{p_1 p_2 - p_0 p_3},&
  \hcy &= \eps + \frac{\gravityAccConst\, p_3}{p_1},&
@@ -187,19 +192,14 @@ Set a desired polynomial of forth degree $\EigenVal^4 + p_3 \EigenVal^3 + p_2 \E
  \scy &= \varepsilon + \frac{\gravityAccConst\, p_1}{p_1 p_2 - p_0 p_3},&
  \kapcz &= \frac{\mc \gravityAccConst^2 (p_1 p_2 p_3 - p_1^2 - p_0 p_3)}{p_1 (p_1 p_2 - p_0 p_3)}, 
 \end{align}
-Note that the Hurwitz criterion ($p_0, p_1, p_2, p_3, p_1 p_2 - p_0 p_3, p_1 p_2 p_3 - p_1^2 - p_0 p_3^2 > 0$) implies the positive definiteness of the inertia $\sysInertiaMatC$ and stiffness matrix $\sysStiffMatC$.
-Even though the damping matrix $\sysDissMatC$ is only positive semidefinite the \textit{local} attractiveness of the nonlinear system can be concluded by Lyapunov's indirect method.
+and leaves an arbitrary choice for $\mc > 0$.
+Note that the Hurwitz criterion ($p_0, p_1, p_2, p_3, p_1 p_2 - p_0 p_3, p_1 p_2 p_3 - p_1^2 - p_0 p_3^2 > 0$) implies that $\kc, \dc, \Jcz, \kapcz > 0$ which ultimatly implies positive definiteness of the total energy and non-negativity of its derivative.
 
-\begin{figure}
- \centering
- \input{graphics/PVTOLPendulum.pdf_tex}
- \caption{Interpretation of the controlled PVTOL as a mechanical system}
- \label{fig:PVTOLPendulum}
-\end{figure}
+\paragraph{Simulation.}
+A very similar control design approch for the PVTOL was presented in \cite{Konz:AT}.
+Therein on finds two examplary simulation results for stabilization and tracking or a looping trajectory.
 
-\paragraph{Mechanical interpretation.}
-
-\cite{Konz:AT}
+The PVTOL is a simpler version of the 3d bicopter which will be discussed in the following and the simulation results there also apply to the PVTOL.
 
 
 % \paragraph{Flatness based control}

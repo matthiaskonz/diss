@@ -101,12 +101,31 @@ The remaining matching force in the stabilization case $\sysVelR = \tuple{0}$ is
  \end{bmatrix}
 \end{align}
 
-\begin{figure}
+\paragraph{Simulation result.}
+Since the bicopter model is probably not flat, generation of a feasible reference trajectory is not trivial. 
+For the simulation example here we exploited that, if we set $\rRx = 0$ and $\RRxx=1$, the motion is constrained to the yz plane and the remaining model is essentially a PVTOL.
+The reference trajectory chosen for this example is a vertical circle with constant arc speed in the yz plane, similar to the examples presented in \cite{Konz:AT} and \cite{Konz:GaussTrackingControl}.
+As shown in \autoref{sec:CtrlExamplePVTOL}, the position trajectory determines the tilt trajectory through flatness.
+The circle arc speed was chosen such that the bicopter is upside down at the higest point of the circle.
+
+As initial condition for the simulation we chose a position error of $0.5\,\unit{m}$ in all directions and heading error of $90^\circ$. 
+This guarantees that all parts of the control are exited.
+
+\begin{figure}[t]
  \centering
  \includegraphics[]{Bicopter/BicopterCircleSimSnapshots.pdf}
  \caption{Snapshots for the simulation of the bicopter}
  \label{fig:BicopterCircleSimSnapshots}
 \end{figure}
+
+The simulation result for the position trajectory with snapshots of a bicopter mockup for the first $3\,\unit{s}$ is shown in \autoref{fig:BicopterCircleSimSnapshots}.
+The red lines indicate the propeller tilt and the thurst magnitude.
+The resulting time graphs are shown in \autoref{fig:BicopterCircleSimRes}.
+Roughly, during the first loop, or the first $2\,\unit{s}$, the state trajectory converges to its reference and tracks it for the remaining simulation time.
+This is also quantified by the error energy $\totalEnergyC$ in the bottom of \autoref{fig:BicopterCircleSimRes}.
+There, one may also see that $\totalEnergyCd \neq \accCtrl{\mathcal{P}}$ which is most notably during the time around $t=0.5\,\unit{s}$ when input constraints are active, but also due to the nonvanishing matching force $\tilde{\sysForce}$.
+Nevertheless, if we neglegt the parts where the input constraints are active, the error energy is converging to zero.
+So, even for this arguably challenging example, the control objective is achieved.
 
 \begin{figure}[p]
  \centering
@@ -114,12 +133,3 @@ The remaining matching force in the stabilization case $\sysVelR = \tuple{0}$ is
  \caption{Simulation result for the bicopter}
  \label{fig:BicopterCircleSimRes}
 \end{figure}
-
-
-\paragraph{Simulation result.}
-Since the bicopter model is probably not flat, generation of a feasible reference trajectory is not trivial. 
-For the simulation example here we exploited that, if we set $\rRx = 0$ and $\Rxx=1$, the motion is constrained to the yz plane and the remaining model is essentially a PVTOL.
-
-As a challanging reference trajectory a vertical circle was chosen.
-
-

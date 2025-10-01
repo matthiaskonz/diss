@@ -331,12 +331,12 @@ The left side corresponds to the most common hover case $\PropVelStat[1] = \Prop
 Obviously the pole-zero cancellation only holds for the hover case but even for the worst case points $G_{44}$ only differs slightly from its design.
 Furthermore one can see that the influence of the off-diagonal entries is restricted to high frequencies.
 
-\begin{figure}[ht]
- \centering
- \includegraphics{graphics/QuadActuatorDynamics/BodeQuadActorDyn.pdf}
- \caption{Bode magnitude plot of the normalized transfer matrix $\GenForceTransferFunctionNorm$ at different expansion points}
- \label{fig:BodeQuadActorDyn}
-\end{figure}
+%\begin{figure}[ht]
+% \centering
+% \includegraphics{graphics/QuadActuatorDynamics/BodeQuadActorDyn.pdf}
+% \caption{Bode magnitude plot of the normalized transfer matrix $\GenForceTransferFunctionNorm$ at different expansion points}
+% \label{fig:BodeQuadActorDyn}
+%\end{figure}
 
 \paragraph{Comparison to static approach.}
 The proposed filter \eqref{eq:QuadActuatorFilterDesign} might seem complicated.
@@ -364,12 +364,12 @@ The resulting Bode magnitude plot is shown on the right side of \autoref{fig:Bod
 It is already a significant improvement compared to the right side but is much worse as the previous result shown in \autoref{fig:BodeQuadActorDyn}.
 Moreover, the magnitude of the off-diagonal transfer functions at low frequencies is much higher for both cases in \autoref{fig:BodeQuadActorDynTraditional} than in \autoref{fig:BodeQuadActorDyn}.
 
-\begin{figure}[ht]
- \centering
- \includegraphics{graphics/QuadActuatorDynamics/BodeQuadActorDynTraditional.pdf}
- \caption{Bode magnitude plot of the normalized transfer matrix $\GenForceTransferFunctionNorm$ at different expansion points (static approach)}
- \label{fig:BodeQuadActorDynTraditional}
-\end{figure}
+%\begin{figure}[ht]
+% \centering
+% \includegraphics{graphics/QuadActuatorDynamics/BodeQuadActorDynTraditional.pdf}
+% \caption{Bode magnitude plot of the normalized transfer matrix $\GenForceTransferFunctionNorm$ at different expansion points (static approach)}
+% \label{fig:BodeQuadActorDynTraditional}
+%\end{figure}
 
 Overall this discussion should justify the filter design in \eqref{eq:QuadActuatorFilterDesign} and justify the consideration of the dynamic model \eqref{eq:QuadForceVelctorModel} for the present case.
 For other quadcopters with smaller ratios $\sfrac{\PropInertia}{\kappaT}$ or less aggressively tuned multicopters like the previously discussed tricopter, however, the situation can be different.

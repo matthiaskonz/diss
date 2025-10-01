@@ -103,15 +103,12 @@ On the upper hemisphere the hair are combed quite well, whereas it gets more mes
 %  \label{fig:IllustrateMinRotMat}
 % \end{minipage}
 
-\begin{figure}[ht]
- \includegraphics{HairyBall/HairyBallUpper.pdf}
- \includegraphics{HairyBall/HairyBallLower.pdf}
-%  \\
-%  \includegraphics[]{HairyBall/HairyBallTop.pdf}
-%  \includegraphics[]{HairyBall/HairyBallBottom.pdf}
- \caption{Illustration of the rotation matrix $\RotMatPZ(\p)$}
- \label{fig:HairyBalls}
-\end{figure}
+%\begin{figure}[ht]
+% \includegraphics{HairyBall/HairyBallUpper.pdf}
+% \includegraphics{HairyBall/HairyBallLower.pdf}
+% \caption{Illustration of the rotation matrix $\RotMatPZ(\p)$}
+% \label{fig:HairyBalls}
+%\end{figure}
 
 Combination of the matrices as $\R = \RotMatZ(\head) \RotMatPZ(\p)$ is a non-minimal parameterization of the rotation matrices $\SpecialOrthogonalGroup(3)$ except the ones for which $\R \ez = -\ez$.
 This case would correspond to $\p = -\ez$ for which $\RotMatPZ$ is undefined.
@@ -251,14 +248,14 @@ The reference attitude can be computed and integrated from
  \wRx &= -\RRy^\top \RRzd.
 \end{align}
 
-\paragraph{Example Trajectory.}
-\begin{figure}
- \centering
- \includegraphics{QuadCircleTraj/QuadCircleTrajSnapshots}
-\\
- \includegraphics{QuadCircleTraj/QuadCircleTrajGraph}
- \caption{Example trajectory}
-\end{figure}
+%\paragraph{Example Trajectory.}
+%\begin{figure}
+% \centering
+% \includegraphics{QuadCircleTraj/QuadCircleTrajSnapshots}
+%\\
+% \includegraphics{QuadCircleTraj/QuadCircleTrajGraph}
+% \caption{Example trajectory}
+%\end{figure}
 
 
 
@@ -268,12 +265,12 @@ On the multicopter side the receiver (FUTABA R6303SB) outputs the channels throu
 The channels have a resolutions of $12\,\unit{Bit}$ and are sampled with $14\,\unit{ms}$.
 The analog channels are scaled to the domain $-1 \leq \uRC[i] \leq 1, i=1\ldots,8$ and the switches to $\sRC[i] \in \{0,1,2\}, i=1,\ldots,6$.
 
-\begin{figure}[ht]
-\centering
- \input{graphics/RCchannels.pdf_tex}
- \caption{Remote control channels}
- \label{fig:RCchannels}
-\end{figure}
+%\begin{figure}[ht]
+%\centering
+% \input{graphics/RCchannels.pdf_tex}
+% \caption{Remote control channels}
+% \label{fig:RCchannels}
+%\end{figure}
 
 \paragraph{Derivative filtering.}
 For the reference generation we need the derivatives of the analog RC inputs $\uRC$.
@@ -294,12 +291,12 @@ With rising order the (IIR) Bessel filter converges to a (FIR) Gaussian filter \
 \autoref{fig:RCFilter} shows the impulse response and application to a measured example RC-channel of the used Bessel filter and a corresponding Gaussian filter (windowlength 43).
 Even though the difference is visible on the impulse response, the result of the implemented filter and the Gauss filter are indistinguishable in the application result.
 
-\begin{figure}[t]
- \centering
- \includegraphics{RCFilter/RCFilter.pdf} 
- \caption{Application of the filter to the RC input}
- \label{fig:RCFilter}
-\end{figure}
+%\begin{figure}[t]
+% \centering
+% \includegraphics{RCFilter/RCFilter.pdf} 
+% \caption{Application of the filter to the RC input}
+% \label{fig:RCFilter}
+%\end{figure}
 
 The implemented filter is a trade-off between approximating the Gauss filter and being computationally cheap.
 
@@ -333,12 +330,12 @@ In this mode the pilot commands the desired acceleration and attitude of the \Mu
 \end{itemize}
 
 
-\begin{figure}[ht]
- \centering
- \input{graphics/IllustrateRCInputFrame.pdf_tex}
- \caption{Pilot reference frame}
- \label{fig:IllustrateRCInputFrame}
-\end{figure}
+%\begin{figure}[ht]
+% \centering
+% \input{graphics/IllustrateRCInputFrame.pdf_tex}
+% \caption{Pilot reference frame}
+% \label{fig:IllustrateRCInputFrame}
+%\end{figure}
 
 
 \paragraph{Transformation to reference signal.}

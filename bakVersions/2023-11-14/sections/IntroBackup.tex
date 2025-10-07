@@ -1,0 +1,162 @@
+\section{Introduction}
+
+\fixme{
+The particle configuration space $\particleConfigSpace = \{ \particleCoord \in \RealNum^{3\numParticles} \, | \, \particleGeoConstraint(\particleCoord) = \tuple{0} \}$ can be seen as an embedded differentiable manifold with $\dim\particleConfigSpace = 3\numParticles - \rank\pdiff[\particleGeoConstraint]{\particleCoord} = \dimConfigSpace$.
+We call the manifold \textit{nonlinear}, if it is \textit{not homeomorphic} to $\RealNum^{\dimConfigSpace}$, i.e. there exists no global, continuous function $\RealNum^{\dimConfigSpace} \rightarrow \particleConfigSpace$ that has a continuous inverse (a global homeomorphism).
+The common way to tackle this in differential geometry is to use an atlas, a set of overlapping \textit{local} charts.
+For the previous Example \ref{Example:ThreeParticles}, this was done four different charts in \cite{Grafarend:AtlasSO3}.
+In this work we will not pursue this path.
+}
+
+
+This work deals with the modeling and control of rigid body systems.
+Modeling here means to mathematically capture the behavior of a system.
+For rigid body systems this is a set of ordinary differential equations with time being the independent variable.
+Control here means the derivation of an algorithm, the control law, which in combination with the model equations, yields a stable system.
+In particular we are interested in tracking control, i.e. a controlled system that converges to a given (possibly accelerated) reference trajectory, in contrast to stabilization of a constant configuration.
+The rigid body is an important concept of classical dynamics: From an engineering or physics point of view, it could be regarded as a solid body whose deformation is negligible compared to its overall motion.
+A rigid body system is the collection of one or more rigid bodies that interact with each other and or the surrounding space.
+
+Rigid body systems are omnipresent in mechanical engineering and robotics.
+Thus they are standard content for undergraduate courses and there are plenty of textbooks on the subject (e.g.\ \cite{Goldstein:ClassicalMechanics} or \cite{Spong:RobotModelingAndControl}).
+The common approach therein is the Lagrange formalism which relies on a parameterization of the system in terms of a minimal set of generalized coordinates.
+A popular control approach is the so-called computed torque method which can be regarded as a simple case of feedback linearization.
+Application of these methods only requires basic calculus and linear algebra.
+At least from a theoretical point of view, these methods are well suited for many robotics applications.
+Common examples are robotic manipulators which involve $\dimConfigSpace$ one-dimensional joints.
+Their configuration space is $\RealNum^{\dimConfigSpace}$.
+One the other hand, for e.g.\ mobile robots, whose configuration space is usually not isomorphic to $\RealNum^{\dimConfigSpace}$, the use of minimal coordinates will inevitably lead to singularities in model and control law.
+The problem is brought to the point in \cite[sec.\ 1.1.1]{Schwertassek:MultibodySystems}:
+\begin{center}
+\it
+[The scientists of the Eighteenth Century] recognized that there was something about rotation [\ldots] which somehow made the analysis of rotation a problem of higher order difficulty. 
+We now know that the problem is in the mathematics, not the physics, but the problem is still with us.
+\end{center}
+% \begin{center}
+% \textit{By the middle of the Eighteenth Century, the dynamics of translation had taken much the form it now has, but distress was expressed by scientists of the day that they did not yet understand how to treat general cases of rotation. 
+% They recognized that there was something about rotation - whether its mechanical laws or just its mathematical description was a question they did not ask - which somehow made the analysis of rotation a problem of higher order difficulty. 
+% We now know that the problem is in the mathematics, not the physics, but the problem is still with us.
+% This book, in addressing the dynamics of multibody systems, considers systems within which the rotation of one or more of its parts is an essential feature.
+% If only translation were of concern the problems would be relatively trivial by modern standards, and this book would not have been written.}
+% \end{center}
+The problem in the mathematics arises from the use of minimal coordinates.
+From the point of view of differential geometry, this corresponds to a single chart on the configuration space, and it is evident that this parameterization can only be local if the configuration space is nonlinear, i.e.\ not isomorphic to the Euclidean space $\RealNum^{\dimConfigSpace}$ of same dimension.
+
+Acknowledging this problem, the more evolved literature, like e.g.\ \cite{Marsden:MechanicsAndSymmetry} or \cite{Bullo:GeometricControl}, utilizes differential geometry and Lie group theory.
+However, since this requires a much tougher mathematical background, these methods are beyond the reach of many engineers.
+Furthermore, for an actual implementation of a simulator or a control law, we do need coordinates.
+
+There are generally two possibilities for a global parameterization (e.g.\ for the rotation of a rigid body):
+\begin{enumerate}
+ \item several sets of minimal coordinates on overlapping charts (e.g.\ 4 sets of Euler-angles)
+ \item one set of redundant coordinates that embed the configuration space in the Euclidean space (e.g.\ rotation matrix or unit quaternion)
+\end{enumerate}
+Popular methods like the Lagrange formalism or computed torque require minimal coordinates.
+One major goals of this work is to review and extend these methods to also work with redundant coordinates.
+
+\fixme{particles}
+
+\fixme{Not only inertia but also gravitation, stiffness, damping}
+
+This work is organized as follows:
+The second chapter establishes redundant configuration coordinates and nonholonomic velocity coordinates from a purely mathematical point of view.
+We will derive the necessary tools, like differential or calculus of variations, for the next chapters.
+
+The second chapter reviews some principles of mechanics for systems of particles.
+It derives a formulation for their equations of motion.
+
+The forth chapter deals with modeling of rigid body systems.
+Firstly, it discusses the important example of a single, free rigid body.
+Secondly, it develops a formulation for derivation of equations of motion for general systems of interconnected rigid bodies.
+
+The fifth chapter deals with tracking control of rigid body systems.
+It proposes three recipes and applies these to several examples.
+
+The sixth chapter shows the practical application of the proposed control approach for the example of a fully actuated tricopter and an underactuated quadcopter.
+It discusses the experimental results in comparison to others from the contemporary literature.
+
+The last chapter summarizes this work, points out open problems and possible future extensions.
+
+
+\section{Motivation: A problem of the textbook approach}\label{sec:AnaMechMotivation}
+A very common recipe for the derivation of equations of motion for mechanical systems, which we call the \textit{standard Lagrange formalism}, can be found in many textbooks (e.g.\ \cite[sec.\ 4.2]{Murray:Robotic}, \cite[§5]{Landau:Mechanics}, \ldots):
+% Firstly the configuration of the system must be captured by a set of \textit{generalized coordinates} $\genCoord(t)\in\RealNum^{\dimConfigSpace}$.
+% For the system described above this means that the particle positions $\particleCoord = \particleCoord(\genCoord)$ can be written in terms of the generalized coordinates such that the geometric constraints are automatically fulfilled, i.e.\ $\particleGeoConstraint(\particleCoord(\genCoord)) = \tuple{0}\,\forall\,\genCoord\in\RealNum^{\dimConfigSpace}$.
+% 
+% Then we formulate the Lagrangian $\Lagrangian$ of the system in terms of the generalized coordinates.
+% For a particle system it is the difference of kinetic energy $\kineticEnergy$ and potential energy $\potentialEnergy$ and the kinetic energy has the form\footnote{Here and throughout this work we use the summation convention $a^i b_i \equiv \sum_{i=1}^n a^i b_i$.}
+% \begin{align}
+%  \kineticEnergy(\genCoord, \genCoordd) = \sumParticles \tfrac{1}{2} \particleMass{\PidxI} \norm{\particlePosd{\PidxI}(\genCoord, \genCoordd)}^2
+%  = \tfrac{1}{2} \underbrace{\sumParticles \particleMass{\PidxI} \sProd{\tpdiff[\particlePos{\PidxI}]{\genCoordCoeff{\LidxI}}(\genCoord)}{\tpdiff[\particlePos{\PidxI}]{\genCoordCoeff{\LidxII}}(\genCoord)}}_{\sysInertiaMatCoeff{\LidxI\LidxII}(\genCoord)} \genCoordCoeffd{\LidxI} \genCoordCoeffd{\LidxII}
+% \end{align}
+\begin{align}\label{eq:LagrangeEq}
+% \diff{t} \pdiff[\Lagrangian]{\genCoordd} - \pdiff[\Lagrangian]{\genCoord} = \tuple{Q}
+ \diff{t} \pdiff[\Lagrangian]{\genCoordCoeffd{\LidxI}} - \pdiff[\Lagrangian]{\genCoordCoeff{\LidxI}} = Q_{\LidxI}, \quad \LidxI = 1,\ldots,\dimConfigSpace.
+\end{align}
+where the Lagrangian $\Lagrangian(\genCoord, \genCoordd) = \kineticEnergy(\genCoord, \genCoordd) - \potentialEnergy(\genCoord)$ for mechanical systems is the difference between kinetic energy $\kineticEnergy$ and potential energy $\potentialEnergy$ formulated in \textit{generalized coordinates} $\genCoord(t) \in \RealNum^{\dimConfigSpace}$ and $\tuple{Q}(t) \in \RealNum^{\dimConfigSpace}$ are external, generalized forces.
+
+For the system described above we must express the particle positions $\particleCoord = \particleCoord(\genCoord)$ in terms of the generalized coordinates such that the geometric constraints are automatically fulfilled, i.e.\ $\particleGeoConstraint(\particleCoord(\genCoord)) = \tuple{0}\,\forall\,\genCoord\in\RealNum^{\dimConfigSpace}$.
+The kinetic energy in terms of the generalized coordinates is\footnote{Here and throughout this work we use the summation convention $a^i b_i \equiv \sum_{i=1}^n a^i b_i$.}
+\begin{align}
+ \kineticEnergy(\genCoord, \genCoordd) = \sumParticles \tfrac{1}{2} \particleMass{\PidxI} \norm{\particlePosd{\PidxI}(\genCoord, \genCoordd)}^2
+ = \tfrac{1}{2} \underbrace{\sumParticles \particleMass{\PidxI} \sProd{\tpdiff[\particlePos{\PidxI}]{\genCoordCoeff{\LidxI}}(\genCoord)}{\tpdiff[\particlePos{\PidxI}]{\genCoordCoeff{\LidxII}}(\genCoord)}}_{\sysInertiaMatCoeff{\LidxI\LidxII}(\genCoord)} \genCoordCoeffd{\LidxI} \genCoordCoeffd{\LidxII}
+\end{align}
+where we introduced the \textit{system inertia matrix} $\sysInertiaMat(\genCoord) \in \RealNum^{\dimConfigSpace\times\dimConfigSpace}$.
+Having this particular structure for the Lagrangian, we can evaluate \eqref{eq:LagrangeEq} to
+\begin{align}\label{eq:LagrangeEqExplicit}
+ \sysInertiaMatCoeff{\LidxI\LidxII} \genCoordCoeffdd{\LidxII} + \underbrace{\tfrac{1}{2}\big( \tpdiff[\sysInertiaMatCoeff{\LidxI\LidxII}]{\genCoordCoeff{\LidxIII}} + \tpdiff[\sysInertiaMatCoeff{\LidxI\LidxIII}]{\genCoordCoeff{\LidxII}} - \tpdiff[\sysInertiaMatCoeff{\LidxII\LidxIII}]{\genCoordCoeff{\LidxI}} \big)}_{\ConnCoeffL{\LidxI}{\LidxII}{\LidxIII}} \genCoordCoeffd{\LidxIII} \genCoordCoeffd{\LidxII} + \tpdiff[\potentialEnergy]{\genCoordCoeff{\LidxI}} = Q_{\LidxI}, \quad  \LidxI = 1,\ldots,\dimConfigSpace.
+\end{align}
+where we dropped the explicit dependencies $\sysInertiaMatCoeff{\LidxI\LidxII} = \sysInertiaMatCoeff{\LidxI\LidxII}(\genCoord)$ for the sake of readability.
+The terms $\ConnCoeffL{\LidxI}{\LidxII}{\LidxIII}$ are called the \textit{Christoffel symbols} for the inertia matrix $\sysInertiaMatCoeff{\LidxI\LidxII}$.
+
+\begin{Example}\label{Example:EulerAngles}
+A common way to parameterize the system from Example \ref{Example:ThreeParticles} with minimal coordinates $\genCoord$ uses \textit{Euler angles}:
+Set the particle positions as
+\begin{align}
+ \particlePos{1}(\genCoord) &= l_1 \Rx(\genCoord),&
+ \particlePos{2}(\genCoord) &= l_2 \Ry(\genCoord),&
+ \particlePos{3}(\genCoord) &= l_3 \Rz(\genCoord)
+\end{align}
+where $\Rx, \Ry, \Rz$ are the columns of a rotation matrix $\R$.
+In the \textit{roll-pitch-yaw} convention $\genCoord = [\rol, \pit, \yaw]^\top$ and with the short notation $\cyaw = \cos\yaw$, $\syaw = \sin\yaw$ this is
+\begin{align}
+ \R(\genCoord) = [\Rx(\genCoord), \Ry(\genCoord), \Rz(\genCoord)] =
+ \begin{bmatrix}
+  \cyaw \cpit & \cyaw \spit \srol - \syaw \crol & \cyaw \spit \crol + \syaw \srol \\
+  \syaw \cpit & \syaw \spit \srol + \cyaw \crol & \syaw \spit \crol - \cyaw \srol \\
+  -\spit & \cpit \srol & \cpit \crol
+ \end{bmatrix}.
+\end{align}
+The kinetic energy in terms of these coordinates is
+\begin{align}
+ \kineticEnergy %= \sumParticles \tfrac{1}{2} \particleMass{\PidxI} \norm{\particlePosd{\PidxI}(\genCoord, \genCoordd)}^2
+ = \tfrac{1}{2} \underbrace{\big[ \rold, \pitd, \yawd \big]}_{\genCoordd^\top}
+  \underbrace{\begin{bmatrix}
+  \Jx & 0 & -\Jx \spit \\
+  0 & \Jy\crol^2 + \Jz\srol^2 & (\Jy-\Jz)\crol\srol\cpit \\
+  -\Jx \spit & (\Jy-\Jz)\crol\srol\cpit & \Jx\spit^2 + (\Jy\srol^2 + \Jz\crol^2)\cpit^2 
+ \end{bmatrix}}_{M(\genCoord)}
+ \underbrace{\begin{bmatrix} \rold \\ \pitd \\ \yawd \end{bmatrix}}_{\genCoordd}
+\end{align}
+where
+\begin{align}
+ \Jx &= \particleMass{2}l_2^2 + \particleMass{3}l_3^2,&
+ \Jy &= \particleMass{1}l_1^2 + \particleMass{3}l_3^2,&
+ \Jz &= \particleMass{1}l_1^2 + \particleMass{2}l_2^2.
+\end{align}
+The equations of motion result by plugging the inertia matrix into \eqref{eq:LagrangeEqExplicit}.
+However, even before the evaluation we can already see a mayor problem:
+The inertia matrix $\sysInertiaMat$, with $\det\sysInertiaMat = \Jx\Jy\Jz\cpit^2$, is singular at $\cpit = 0$.
+This means that the equations of motion cannot be solved at this point.
+\end{Example}
+
+It should be stressed that there is no physical reason for the singularity in Example \ref{Example:EulerAngles}, it is rather a consequence of an unsuitable parameterization of the system.
+The problem arises from the fact the the configuration space $\particleConfigSpace$ determined by the geometric constraints \eqref{eq:ThreeParticleConstraint}, though having $\dim\particleConfigSpace = 3$, is not homeomorphic to $\RealNum^3$.
+
+\fixme{
+The particle configuration space $\particleConfigSpace = \{ \particleCoord \in \RealNum^{3\numParticles} \, | \, \particleGeoConstraint(\particleCoord) = \tuple{0} \}$ can be seen as an embedded differentiable manifold with $\dim\particleConfigSpace = 3\numParticles - \rank\pdiff[\particleGeoConstraint]{\particleCoord} = \dimConfigSpace$.
+We call the manifold \textit{nonlinear}, if it is \textit{not homeomorphic} to $\RealNum^{\dimConfigSpace}$, i.e. there exists no global, continuous function $\RealNum^{\dimConfigSpace} \rightarrow \particleConfigSpace$ that has a continuous inverse (a global homeomorphism).
+The common way to tackle this in differential geometry is to use an atlas, a set of overlapping \textit{local} charts.
+For the previous Example \ref{Example:ThreeParticles}, this was done four different charts in \cite{Grafarend:AtlasSO3}.
+In this work we will not pursue this path.
+}

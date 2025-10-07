@@ -1,0 +1,53 @@
+\chapter{Multicopter control realization}
+This chapter describes the realization and discusses the experimental results with the LSR-Multicopters.
+On the highest abstraction layer they can be regarded as a single rigid body with body fixed forces (the propellers forces and torques).
+The tracking control of these models has been extensively discussed in the previous chapter.
+
+% \clearpage
+\begin{itemize}
+ \item Hardware realization
+ \begin{itemize}
+  \item mechanical construction,
+  \item actuators/Propellers, power electronics
+  \item sensorics
+  \item communication
+  \item framework for controller implementation
+ \end{itemize}
+ \item mathematical model of the multicopters (Quadcopter, Tricopter)
+ \begin{itemize}
+  \item full model: multibody, servo dynamics, propeller model, propeller motor model
+  \item simplified model for control design
+  \item model validation
+ \end{itemize}
+ \item control of the actuators to generate the required generalized force on the rigid body
+ \begin{itemize}
+  \item propeller control
+  \item servo control
+  \item Quadcopter force vector control
+ \end{itemize}
+ \item state estimation
+ \begin{itemize}
+  \item misalignment correction
+  \item Sensor model: IMU \& Vicon
+  \item velocity and bias observer
+  \item configuration observer
+ \end{itemize}
+ \item reference generation
+ \begin{itemize}
+  \item for pilot supporting control
+  \item for position control
+ \end{itemize}
+ \item rigid body controller
+ \begin{itemize}
+  \item pilot supporting control
+  \item full configuration control
+  \item comparison to other controllers
+ \end{itemize}
+ \item control integral action
+ \item experiments
+ \begin{itemize}
+  \item Maneuver42
+  \item maneuver53 (flip)
+  \item loop (the real loop)
+ \end{itemize}
+\end{itemize}

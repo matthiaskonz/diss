@@ -1,0 +1,230 @@
+\chapter{On nonholonomic systems}
+Nonholonomic systems are characterized by having constraints expressed in terms of the \textit{velocity} $\sysCoordd$.
+We restrict to linear constraints, \ie
+\begin{align}\label{eq:nonholonomicConstraint}
+ \kinConstraintMatCoeff{\NidxI}{\GidxI}(\sysCoord) \, \sysCoordCoeffd{\GidxI} = 0, \qquad \NidxI = 1\ldots\numKinConst
+ .
+\end{align}
+since practical examples of nonlinear nonholonomic constraints seem to not exist, see \cite[p.\,499]{Hamel:TheoretischeMechanik} or \cite[ch.\,IV]{Neimark:NonholonomicSystems}.
+
+\paragraph{Nonholonomy.}
+So far \eqref{eq:nonholonomicConstraint} should rather be called a kinematic constraint.
+It is nonholonomic if it is \textit{nonintegrable}, \ie there exists no function $\psi(\sysCoord)$ such that $\ddt \psi = \pdiff[\psi]{\sysCoord} \sysCoordd = \kinConstraintMat \sysCoordd$.
+The reverse would imply
+\begin{align}
+ \kinConstraintMatCoeff{\NidxI}{\GidxI} = \pdiff[\psi^\NidxI]{\sysCoordCoeff{\GidxI}}
+\qquad \Rightarrow \qquad
+ \frac{\partial \kinConstraintMatCoeff{\NidxI}{\GidxI}}{\partial \sysCoordCoeff{\GidxII}} = \frac{\partial^2 \psi^\NidxI}{\partial\sysCoordCoeff{\GidxII} \partial \sysCoordCoeff{\GidxI}} = \frac{\partial \kinConstraintMatCoeff{\NidxI}{\GidxII}}{\partial \sysCoordCoeff{\GidxI}}
+\end{align}
+If this condition is fulfilled, we call \eqref{eq:nonholonomicConstraint} a holonomic kinematic constraint and the only difference to a geometric constraint (as treated in \eqref{eq:diffGeoConstraint}) is a missing initial condition.
+
+
+\paragraph{Some trouble.}
+It is well documented in the dedicated literature (\eg \cite{Hamel:HamiltonsNonhol}, \cite[p.\,208]{Bloch:NonholonomicMechanics}, probably first mentioned in \cite{Korteweg:UnrichtigeBehandlungsweise}) that in the case of nonholonomic constraints, the Lagrange-d'Alembert principle \eqref{eq:dAlembert} and the calculus of variations \eqref{eq:StatAction} lead to \textit{different} results.
+In the context of the Lagrange-d'Alembert principle, the \textit{virtual displacements} $\delta \sysCoord$ have to be compatible with system constraints which implies
+\begin{align}\label{eq:NonholConstVariation}
+ \kinConstraintMatCoeff{\NidxI}{\GidxI} \,\delta \sysCoordCoeff{\GidxI} = 0
+ .
+\end{align}
+This results in the same dynamical equations as derived with a Newton-Eulerian approach.
+%The virtual displacements in the case of nonholonomic constraints are extensively discussed in \cite{Hamel:virtuelleVerschiebungen}.
+
+On the other hand to get the solution to an associated variational problem the \textit{varied path} $t \mapsto \sysCoordVar(t) = \sysCoord(t) + \varParam \varFkt(t)$ has to obey the constraint, \ie
+\begin{multline}\label{eq:NonholConstVakonomic}
+%  0 = \kinConstraintMatCoeff{\NidxI}{\GidxI}(\underbrace{\sysCoord + \varParam\varFkt}_{\sysCoordVar}) \underbrace{(\sysCoordCoeffd{\GidxI} + \varParam \varFktCoeffd[\GidxI])}_{\sysCoordVarCoeffd[\GidxI]}
+%  = \underbrace{\kinConstraintMatCoeff{\NidxI}{\GidxI} \sysCoordCoeffd{\GidxI}}_{0} + \pdiff[\kinConstraintMatCoeff{\NidxI}{\GidxI}]{\sysCoordCoeff{\GidxII}} \sysCoordCoeffd{\GidxI} \underbrace{\varParam\varFktCoeff{\GidxII}}_{\delta \sysCoordCoeff{\GidxII}} + \kinConstraintMatCoeff{\NidxI}{\GidxI} \underbrace{\varParam \varFktCoeffd[\GidxI]}_{\delta \sysCoordCoeffd{\GidxI}} + \mathcal{O}(\varParam^2),
+ 0 = \kinConstraintMatCoeff{\NidxI}{\GidxI}(\sysCoordVar) \sysCoordVarCoeffd[\GidxI]
+ = \underbrace{\kinConstraintMatCoeff{\NidxI}{\GidxI} \sysCoordCoeffd{\GidxI}}_{0} + \kinConstraintMatCoeff{\NidxI}{\GidxI} \underbrace{\varParam \varFktCoeffd[\GidxI]}_{\delta \sysCoordCoeffd{\GidxI}} + \pdiff[\kinConstraintMatCoeff{\NidxI}{\GidxI}]{\sysCoordCoeff{\GidxII}} \underbrace{\varParam \varFktCoeff{\GidxII}}_{\delta \sysCoordCoeff{\GidxII}} \sysCoordCoeffd{\GidxI} + \mathcal{O}(\varParam^2),
+\\
+ = \diff{t} \left( \kinConstraintMatCoeff{\NidxI}{\GidxI} \delta \sysCoordCoeff{\GidxI} \right) + \left( \pdiff[\kinConstraintMatCoeff{\NidxI}{\GidxI}]{\sysCoordCoeff{\GidxII}} - \pdiff[\kinConstraintMatCoeff{\NidxI}{\GidxII}]{\sysCoordCoeff{\GidxI}} \right) \sysCoordCoeffd{\GidxI} \delta \sysCoordCoeff{\GidxII} + \mathcal{O}(\varParam^2)
+\end{multline}
+which is obviously a different constraint on the \textit{variation} $\delta \sysCoord$.
+This branch is called \textit{vakonomic mechanics}, see \eg \cite[sec.\,1.4]{ArnoldKozlov:Mechanics}, and leads to different equations of motion unless the constraint is holonomic, \ie the term in the brackets in \eqref{eq:NonholConstVakonomic} vanishes.
+See also \cite{Hamel:HamiltonsNonhol} for a deeper analysis.
+
+There is consensus that the ``correct'' equations for physics, \ie the ones that are backed by experiments (see \cite{Lewis:Variational}), are the ones derived with Lagrange-d'Alembert principle with the constraint \eqref{eq:NonholConstVariation}.
+Hamilton's principle can still be used when the constraints \eqref{eq:NonholConstVakonomic} that arise form the calculus of variations are replaced by the ``correct'' constraints $\kinConstraintMatCoeff{\NidxI}{\GidxI} \,\delta \sysCoordCoeff{\GidxI} = 0$ for the variation $\delta \sysCoord$, see \cite[sec.\,5.2]{Bloch:NonholonomicMechanics}
+The vakonomic approach however, is interesting in its own right and has application for optimal control, \eg \cite{Bloch:NonholonomicMechanics}.
+
+\paragraph{Equations of motion with Lagrange multipliers}
+Assume we have a given holonomic mechanical system we have chosen possibly redundant coordinates $\sysCoord$ and a kinematic relation $\sysCoordd = \kinMat \sysVel$.
+Now we like to add the nonholonomic constraint \eqref{eq:nonholonomicConstraint} that can be expressed in terms of the velocity coordinates $\sysVel$ as
+\begin{align}
+ \kinConstraintMatCoeff{\NidxI}{\GidxI} \, \sysCoordCoeffd{\GidxI} = 0
+\qquad\Leftrightarrow\qquad
+ \underbrace{\kinConstraintMatCoeff{\NidxI}{\GidxI} \kinMatCoeff{\GidxI}{\LidxI}}_{\accConstraintMatCoeff{\NidxI}{\LidxI}} \, \sysVelCoeffd{\LidxI} = 0, \qquad \NidxI = 1\ldots\numKinConst
+\end{align}
+Using the concept of the Lagrange multipliers from \eqref{eq:GaussPrincipleOfLeastConstraintP} we can write the kinetic equation as
+\begin{align}
+ \genForceInertiaCoeff{\LidxI} + \accConstraintMatCoeff{\NidxI}{\LidxI} \LagrangeMult[\NidxI] = \genForceExCoeff{\LidxI} - \partial_\LidxI \potentialEnergy, \qquad \LidxI = 1\ldots\dimConfigSpace
+ .
+\end{align}
+Expressing the inertia forces $\genForceInertia$ by the kinetic energy \eqref{eq:GenForceInertiaKineticEnergy} and introducing the Lagrangian $\Lagrangian = \kineticEnergy-\potentialEnergy$ we have
+\begin{align}\label{eq:blub12313}
+ \diff{t} \pdiff[\Lagrangian]{\sysVelCoeff{\LidxI}} + \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \sysVelCoeff{\LidxII} \pdiff[\Lagrangian]{\sysVelCoeff{\LidxIII}} - \kinMatCoeff{\GidxI}{\LidxI} \pdiff[\Lagrangian]{\sysCoordCoeff{\GidxI}} + \accConstraintMatCoeff{\NidxI}{\LidxI} \LagrangeMult[\NidxI] = \genForceExCoeff{\LidxI}, \qquad \LidxI = 1\ldots\dimConfigSpace
+ .
+\end{align}
+This form for the special case that $\sysCoord = \genCoord$ and $\sysVel = \genCoordd$, so $\BoltzSym{}{}{}$, is widely used for nonholonomic systems and can be found in \eg \cite[eq.\,7.1.6]{Lurie:AnalyticalMechanics} or \cite[eq.\,2.29]{Goldstein:ClassicalMechanics}.
+However, we could have expressed the inertia forces $\genForceInertiaCoeff{\LidxI} = \spdiff[\accEnergy]{\sysVelCoeffd{\LidxI}}$ by the acceleration energy (??) or directly $\genForceInertiaCoeff{\LidxI} = \sysInertiaMatCoeff{\LidxI\LidxII}\sysVelCoeffd{\LidxI} + \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII} \sysVelCoeff{\LidxII} \sysVelCoeff{\LidxIII}$ by the inertia matrix just as well.
+
+\paragraph{Equations of motion without Lagrange multipliers}
+Usually we do not want to calculate the Lagrange multipliers explicitly.
+Instead we like to use the kinematic constraint to reduce the order of the resulting equations of motion.
+The crucial idea\footnote{Actually Hamel and Appell derived their formulations directly from Lagrange-d'Alembert's principle without the use of Lagrange multipliers, but the main idea remains the same.} of Appell \cite{Appell:formeGenerale} and Hamel \cite{Hamel:LagrangeEuler} is to chose the velocity coordinates $\sysVel$ such that the last $\numKinConst$ coincide with the kinematic constraint\footnote{This seemed to be their motivation for the use of velocity coordinates in the first place.}, \ie $\sysVel[\dimConfigSpace - \numKinConst + \NidxI] = \kinConstraintMatCoeff{\NidxI}{\GidxI} \sysCoordCoeffd{\GidxI}, \NidxI = 1\ldots\numKinConst$.
+Using the structure from \eqref{eq:DefBasisOfVelocity} this is
+\begin{align}\label{eq:kinNonholonimc}
+ \underbrace{\begin{bmatrix} \ \kinBasisMatF{}{} \ \ \\ \kinConstraintMat \\ \geoConstraintMat \end{bmatrix}}_{\kinBasisMatSquare} \sysCoordd
+ = \begin{bmatrix} \, \sysVelF \,\,  \\ \sysVelKC \\ 0 \end{bmatrix},
+\quad \rank \kinBasisMatSquare = \numCoord.
+\qquad \Leftrightarrow \qquad
+ \sysCoordd = [ \, \underbrace{\kinMatF{}{} \ \kinMatKC{}{}}_{\kinMatA{}{}} \ \kinMatGC{}{} \,] \begin{bmatrix} \, \sysVelF \,\, \\ \sysVelKC \\ 0 \end{bmatrix}
+\end{align}
+With this choice we can express the nonholonomic constraint simply by $\sysVelKC = 0$ and we have $\accConstraintMat = [\,0 \ \idMat[\numKinConst]\,]$.
+Consequently the last $\numKinConst$ components of the force balance \eqref{eq:blub12313} define the reaction forces $\LagrangeMult[1]\ldots\LagrangeMult[\numKinConst]$ while the first $\dimConfigSpace - \numKinConst$ are independent of them.
+
+Combining these considerations and expressing the generalized inertia force $\genForceInertia$ in terms of the \textit{acceleration energy} $\accEnergy$ from (??) we find \textit{Appell's equation}
+\begin{align}\label{eq:blub12aasdsasdd313}
+ \pdiff[\accEnergy]{\sysVelCoeffd{\LidxI}} \Big|_{\sysVel[\dimConfigSpace-\numKinConst+1]\ldots\sysVel[\dimConfigSpace] = 0} + \partial_\LidxI \potentialEnergy
+ = \genForceExCoeff{\LidxI},
+\qquad \LidxI = 1\ldots\dimConfigSpace-\numKinConst.
+\end{align}
+Expressing the generalized inertia force $\genForceInertia$ in terms of the \textit{kinetic energy} $\kineticEnergy$ from (??) and introducing the Lagrangian $\Lagrangian = \kineticEnergy-\potentialEnergy$ we find \textit{Hamel's equation}
+\begin{align}\label{eq:HamelNonhol}
+ \bigg( \diff{t} \pdiff[\Lagrangian]{\sysVelCoeff{\LidxI}} + \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \sysVelCoeff{\LidxII} \pdiff[\Lagrangian]{\sysVelCoeff{\LidxIII}} - \kinMatCoeff{\GidxI}{\LidxI} \pdiff[\Lagrangian]{\sysCoordCoeff{\GidxI}} \bigg) \Big|_{\sysVel[\dimConfigSpace-\numKinConst+1]\ldots\sysVel[\dimConfigSpace]=0}
+ = \genForceExCoeff{\LidxI}, \qquad \LidxI = 1\ldots\dimConfigSpace-\numKinConst.
+\end{align}
+Note that the dummy index $\LidxIII$ still runs over $1\ldots\dimConfigSpace$ so we still need to differentiate $\Lagrangian$ \wrt the velocity coordinates $\sysVel[\dimConfigSpace-\numKinConst+1]\ldots\sysVel[\dimConfigSpace]$ that will be set to zero \textit{afterwards}.
+
+We like to investigate this a bit further:
+First introduce the \textit{constraint Lagrangian} $\LagrangianC$ :
+\begin{align}
+ \LagrangianC = \Lagrangian \big|_{\sysVel[\dimConfigSpace-\numKinConst+1]\ldots\sysVel[\dimConfigSpace]=0}.
+\end{align}
+Then recall the splitting of the velocity coordinates $\sysVelA = [\sysVelF^\top \, \sysVelKC^\top]^\top$ from \eqref{eq:kinNonholonimc} and split the commutation coefficients in the same way:
+\begin{subequations}
+\begin{align}
+ \BoltzSymA{\LidxIII}{\LidxI}{\LidxII}
+ = \bigg(\pdiff[\kinBasisMatF{\LidxIII}{\GidxI}]{\sysCoordCoeff{\GidxII}} - \pdiff[\kinBasisMatF{\LidxIII}{\GidxII}]{\sysCoordCoeff{\GidxI}} \bigg) \kinMatF{\GidxI}{\LidxI} \kinMatF{\GidxII}{\LidxII}
+ &= \BoltzSymF{\LidxIII}{\LidxI}{\LidxII},&
+ \LidxI,\LidxII,\LidxIII &=1\ldots\dimConfigSpace-\numKinConst
+\\
+ \label{eq:BoltzSymNonholonomic}
+ \BoltzSymA{\dimConfigSpace-\numKinConst+\NidxI}{\LidxI}{\LidxII}
+ = \bigg(\pdiff[\kinConstraintMatCoeff{\NidxI}{\GidxI}]{\sysCoordCoeff{\GidxII}} - \pdiff[\kinConstraintMatCoeff{\NidxI}{\GidxII}]{\sysCoordCoeff{\GidxI}} \bigg) \kinMatF{\GidxI}{\LidxI} \kinMatF{\GidxII}{\LidxII}
+ &= \BoltzSymKC{\NidxI}{\LidxI}{\LidxII},&
+ \LidxI,\LidxII &= 1\ldots\dimConfigSpace-\numKinConst, \ \ \NidxI = 1,\ldots,\numKinConst
+\end{align}
+\end{subequations}
+Then we can write \eqref{eq:HamelNonhol} as
+\begin{align}\label{eq:HamelNonholSplit}
+ \diff{t} \pdiff[\LagrangianC]{\sysVelF[\LidxI]} + \BoltzSymF{\LidxIII}{\LidxI}{\LidxII} \sysVelF[\LidxII] \pdiff[\LagrangianC]{\sysVelCoeff{\LidxIII}}
+ + \underbrace{\BoltzSymKC{\NidxI}{\LidxI}{\LidxII} \sysVelF[\LidxII] \pdiff[\Lagrangian]{\sysVelKC[\NidxI]}\Big|_{\sysVelKC=0}}_{\gyroForceNonholonomicCoeff{\LidxI}}
+ - \kinMatF{\GidxI}{\LidxI} \pdiff[\LagrangianC]{\sysCoordCoeff{\GidxI}}
+ = \genForceExCoeff{\LidxI}, \qquad \LidxI = 1\ldots\dimConfigSpace-\numKinConst.
+\end{align}
+Note that if the kinematic constraint \eqref{eq:nonholonomicConstraint} is holonomic then $\BoltzSymKC{}{}{} = 0$ and consequently $\gyroForceNonholonomic = 0$.
+
+\fixme{Discussion}
+
+\paragraph{EoM with minimal coordinates.}
+Assume that for a special choice of minimal coordinates $\genCoord = [\genCoordFTranspose, \genCoordCTranspose]^\top$ the kinematic constraint \eqref{eq:nonholonomicConstraint} can be transformed to
+\begin{align}\label{eq:LagrangeDAlembertKinematic}
+ \genCoordCd[\NidxI] = -W^{\NidxI}_{\LidxI} \genCoordFd[\LidxI], \qquad \NidxI = 1\ldots\numKinConst .
+\end{align}
+Choose the velocity coordinates $\sysVelF = \genCoordFd$ and $\sysVelKC = \genCoordCd + W \genCoordFd$ then we find that $\BoltzSymF{}{}{} = 0$ and
+\begin{align}\label{eq:LagrangeDAlembertBoltz}
+ \BoltzSymKC{\NidxI}{\LidxI}{\LidxII} &= \pdiff[W^\NidxI_\LidxI]{\genCoordF[\LidxII]} - \pdiff[W^\NidxI_\LidxII]{\genCoordF[\LidxI]} + \pdiff[W^\NidxI_\LidxII]{\genCoordC[\NidxII]} W^\NidxII_\LidxI - \pdiff[W^\NidxI_\LidxI]{\genCoordC[\NidxII]} W^\NidxII_\LidxII,
+\qquad
+ \NidxI = 1,\ldots,\numKinConst \quad \LidxI,\LidxII = 1,\ldots,\dimConfigSpace-\numKinConst
+ .
+\end{align}
+The kinetic equation \eqref{eq:HamelNonholSplit} takes the form
+\begin{align}\label{eq:LagrangeDAlembertKinetic}
+ \diff{t} \pdiff[\LagrangianC]{\genCoordFd[i]} - \pdiff[\LagrangianC]{\genCoordF[i]}
+ + \underbrace{\BoltzSymKC{\NidxI}{\LidxI}{\LidxII} \genCoordFd[j] \pdiff[\Lagrangian]{\genCoordCd[a]}|_{\genCoordCd=-S\genCoordFd}}_{\gyroForceNonholonomicCoeff{\LidxI}}
+ + W^\NidxI_\LidxI \pdiff[\LagrangianC]{\genCoordC[\NidxI]} &= \genForceExCoeff{\LidxI},
+\quad i=1,\ldots,\dimConfigSpace-\numKinConst .
+\end{align}
+The combination of \eqref{eq:LagrangeDAlembertKinematic}, \eqref{eq:LagrangeDAlembertBoltz} and \eqref{eq:LagrangeDAlembertKinetic} are called \textit{the Lagrange-d'Alembert equations of motion} in \cite[Def.\,2.1]{bloch:NonholonomicMechanicalSystemsWithSymmetry}.
+
+% \begin{figure}[ht]
+%  \centering
+%  \input{graphics/RollingEllipsoid.pdf_tex}
+%  \caption{Ellipsoid rolling on a plane}
+%  \label{fig:RollingEllipsoid}
+% \end{figure}
+
+\begin{Example}{A rolling rigid body}
+Consider a rigid body, \eg the ellipsoid from (??), rolling on a plane.
+We use the position $\r$ of a body fixed point and the orientation $\R$ as redundant configuration coordinates $\sysCoord \cong (\r, \R)$.
+The condition of rolling without slipping can be formulated as
+\begin{align}
+ \rd + \Rd p = 0
+\qquad \cong \qquad
+ \sysVelKC = \kinConstraintMat(\sysCoord) \sysCoordd = 0
+\end{align}
+where $p$ are the coordinates of the contact point \wrt the body fixed frame which depends on the current configuration $p = p(\sysCoord)$.
+
+As velocity coordinates we choose $\sysVel = \w$ and obtain the kinematic relations
+\begin{align}
+ \w = (\R^\top \Rd)^\vee
+\qquad \Rightarrow \quad
+ \rd = \R \widehat{p} \w, \ \Rd = \R \widehat{\w}
+\qquad \cong \qquad \sysCoordd = \kinMatF{}{}(\sysCoord) \sysVel 
+\end{align}
+
+
+The kinetic energy of the rigid body in terms of the chosen coordinates is
+\begin{align}
+ \kineticEnergy &= \tfrac{1}{2} m \norm{\rd}^2 + \tfrac{1}{2} \w^\top \Theta \w
+ = \underbrace{\tfrac{1}{2} \sysVelT \overbrace{(\Theta + m \widehat{p}^\top \widehat{p})}^{\tilde{\sysInertiaMat}} \sysVel}_{\tilde{\kineticEnergy}}
+ - m (R \widehat{\sysVel} p)^\top \sysVelKC
+ + \tfrac{1}{2} m \norm{\sysVelKC}^2
+\end{align}
+potential energy from gravity
+\begin{align}
+ \potentialEnergy = -m\gravityAcc^\top \r 
+\end{align}
+
+With these ingredients we can evaluate \eqref{eq:HamelNonhol} to obtain the kinetic equation.
+Using $\partial_\LidxI p \sysVelCoeff{\LidxI} = \dot{p}$ we can write them in a matrix vector form
+\begin{align}
+ \left[ \diff{t} \pdiff[\tilde{\kineticEnergy}]{\sysVelF[\LidxI]} + \BoltzSymF{\LidxIII}{\LidxI}{\LidxII} \sysVelF[\LidxII] \pdiff[\tilde{\kineticEnergy}]{\sysVelCoeff{\LidxIII}} - \kinMatF{\GidxI}{\LidxI} \pdiff[\tilde{\kineticEnergy}]{\sysCoordCoeff{\GidxI}} \right]_{\LidxI = 1\ldots3} 
+ &= \tilde{\sysInertiaMat} \sysVeld + \big(\underbrace{m (\dot{\widehat{p}}^\top \widehat{p} + \widehat{p}^\top \dot{\widehat{p}})}_{\dot{\tilde{\sysInertiaMat}}} +  \widehat{\sysVel} \tilde{\sysInertiaMat} \big) \sysVel
+\\
+ \gyroForceNonholonomic = \left[ \BoltzSymKC{\NidxI}{\LidxI}{\LidxII} \sysVelF[\LidxII] \pdiff[\kineticEnergy]{\sysVelKC[\NidxI]}\Big|_{\sysVelKC=0} \right]_{\LidxI = 1\ldots3}
+ &= m \, \dot{\widehat{p}} \, \widehat{p} \, \sysVel
+\\
+ \genForcePotential = \differential \potentialEnergy
+ &= m \widehat{p}^\top \R^\top \gravityAcc
+\end{align}
+
+
+\textbf{Rolling ellipsoid:}
+Constraint $\psi(p)$ for the ellipsoid surface (with $D = \diag (d_1^2, d_2^2, d_3^2)$) and the tangent condition yield
+\begin{align}
+ \psi(p) = p^\top D^{-1} p - 1 = 0,
+\quad
+ \nabla \psi(p) \times R^\top e_3 = 0
+\quad \Rightarrow \quad
+ p = \frac{D R^\top e_3}{\sqrt{e_3^\top R D R^\top e_3}}.
+\end{align}
+\end{Example}
+
+Newton-Euler
+\begin{align}\label{RollingRBNewton}
+ m \ddot{r} &= F^R + F^A,&
+ \Theta \dot{\omega} + \widehat{\omega}\Theta \omega &= \widehat{p} R^\top F^R + \tau^A
+\end{align}
+The condition of rolling without slipping implies
+\begin{align}
+ \dot{r} + R \widehat{\omega} p = 0
+\quad \Rightarrow \quad
+ \ddot{r} = R (\widehat{p} \dot{\omega} - \widehat{\omega}^2 p - \widehat{\omega} \dot{p})
+\end{align}
+where $p$ are the coordinates of the contact point \wrt the body fixed frame.
+We can eliminate $\ddot{r}$ and the reaction force $F^R$ from \eqref{RollingRBNewton} to obtain (cf. \cite{Borisov:RollingRB})
+\begin{align}
+ \tilde{\Theta} \dot{\omega} + \widehat{\omega} \tilde{\Theta} \omega + m \widehat{p}^\top \dot{\widehat{p}} \, \omega &= \tau^A - \widehat{p} R^\top F^A
+\end{align}
+where $\tilde{\Theta} = \Theta + m \widehat{p}^\top \widehat{p}$.

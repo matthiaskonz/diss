@@ -1,0 +1,57 @@
+\clearpage
+\section{Summary}
+The equations of motion of a system of constrained particles, parameterized by the (possibly redundant) configuration coordinates $\sysCoord(t) \in \RealNum^{\numCoord}$, $\geoConstraint(\sysCoord) = \tuple{0}$ and minimal velocity coordinates $\sysVel(t) \in \RealNum^{\dimConfigSpace}$, may be formulated as
+\begin{subequations}
+\begin{align}
+ \sysCoordCoeffd{\GidxI} &= \kinMatCoeff{\GidxI}{\LidxI}(\sysCoord) \sysVelCoeff{\LidxI},&
+ \GidxI &= 1,\ldots,\numCoord
+\\
+  \underbrace{\sysInertiaMatCoeff{\LidxI\LidxII}(\sysCoord) \sysVelCoeffd{\LidxII} + \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII}(\sysCoord) \sysVelCoeff{\LidxIII} \sysVelCoeff{\LidxII}}_{\genForceInertiaCoeff{\LidxI}}
+ + \underbrace{\sysDissMatCoeff{\LidxI\LidxII}(\sysCoord) \sysVelCoeff{\LidxII}}_{\genForceDissCoeff{\LidxI}}
+ + \underbrace{\dirDiff{\LidxI} \potentialEnergy(\sysCoord)}_{\genForcePotentialCoeff{\LidxI}}
+ &= \genForceExCoeff{\LidxI}(\sysCoord, \sysInput),&
+ \LidxI &= 1,\ldots,\dimConfigSpace.
+\end{align}
+\end{subequations}
+The kinematics matrix $\kinMat(\sysCoord) \in \RealNum^{\numCoord\times\dimConfigSpace}$ must fulfill $\pdiff[\geoConstraint]{\sysCoord} \kinMat = \mat{0}$ and $\rank\kinMat = \dimConfigSpace$.
+The directional derivative $\dirDiff{\LidxI}$ and the commutation coefficients $\mat{\BoltzSym{}{}{}}(\sysCoord) \in \RealNum^{\dimConfigSpace\times\dimConfigSpace\times\dimConfigSpace}$ for a given kinematics matrix $\kinMat$ are 
+\begin{align}
+ \dirDiff{\LidxI} &= \kinMatCoeff{\GidxI}{\LidxI} \pdiff{\sysCoordCoeff{\GidxI}},&
+ \BoltzSym{\LidxIII}{\LidxI}{\LidxII} &= \big(\dirDiff{\LidxI} \kinMatCoeff{\GidxI}{\LidxII} \!-\! \dirDiff{\LidxII} \kinMatCoeff{\GidxI}{\LidxI} \big) ({\kinMatCoeff{}{}}^+)^{\LidxIII}_{\GidxI}.
+% \LidxI, \LidxII, \LidxIII &= 1,\ldots,\dimConfigSpace.
+\end{align}
+The connection coefficients $\mat{\ConnCoeffL{}{}{}}(\sysCoord) \in \RealNum^{\dimConfigSpace\times\dimConfigSpace\times\dimConfigSpace}$ for a given inertia matrix $\sysInertiaMat(\sysCoord) \in \RealNum^{\dimConfigSpace\times\dimConfigSpace}$ are
+\begin{align}
+ \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII} &= \tfrac{1}{2}\big( \partial_\LidxIII \sysInertiaMatCoeff{\LidxI\LidxII} \!+\! \partial_\LidxII \sysInertiaMatCoeff{\LidxI\LidxIII} \!-\! \partial_\LidxI \sysInertiaMatCoeff{\LidxII\LidxIII} \!+\! \BoltzSym{\LidxV}{\LidxI}{\LidxII} \sysInertiaMatCoeff{\LidxV\LidxIII} \!+\! \BoltzSym{\LidxV}{\LidxI}{\LidxIII} \sysInertiaMatCoeff{\LidxV\LidxII} \!-\! \BoltzSym{\LidxV}{\LidxII}{\LidxIII} \sysInertiaMatCoeff{\LidxV\LidxI} \big).
+% \LidxI, \LidxII, \LidxIII &= 1,\ldots,\dimConfigSpace.
+\end{align}
+The inertia matrix for a system of particles with positions $\particlePos{\PidxI}(\sysCoord) \in \RealNum^{3}$ and masses $\particleMass{\PidxI}$ is
+\begin{align}
+ \sysInertiaMatCoeff{\LidxI\LidxII} = \sumParticles \particleMass{\PidxI} \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\dirDiff{\LidxII} \particlePos{\PidxI}}
+\end{align}
+For the corresponding inertia force $\genForceInertia$ we also have the Lagrange formulation
+\begin{align}
+ \genForceInertiaCoeff{\LidxI} &= \diff{t} \pdiff[\kineticEnergy]{\sysVelCoeff{\LidxI}} + \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \sysVelCoeff{\LidxII} \pdiff[\kineticEnergy]{\sysVelCoeff{\LidxIII}} - \dirDiff{\LidxI} \kineticEnergy,&
+ \kineticEnergy &= \tfrac{1}{2} \sumParticles \particleMass{\PidxI} \norm{\particlePosd{\PidxI}}^2 = \tfrac{1}{2} \sysInertiaMatCoeff{\LidxI\LidxII} \sysVelCoeff{\LidxII} \sysVelCoeff{\LidxI}
+\end{align}
+and the Gibbs-Appell formulation
+\begin{align}
+ \genForceInertiaCoeff{\LidxI} &= \pdiff[\accEnergy]{\sysVelCoeffd{\LidxI}},&
+ \accEnergy &= \tfrac{1}{2} \sumParticles \particleMass{\PidxI} \norm{\particlePosdd{\PidxI}}^2 = \tfrac{1}{2} \sysInertiaMatCoeff{\LidxI\LidxII} \sysVelCoeffd{\LidxII} \sysVelCoeffd{\LidxI} + \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII} \sysVelCoeff{\LidxIII} \sysVelCoeff{\LidxII} \sysVelCoeffd{\LidxI} + \accEnergy_0
+\end{align}
+
+\fixme{dissipation, potential, external forces}
+
+\fixme{special case with minimal config coord}
+
+
+% \begin{align}
+%  \sysCoordd &= \kinMat \ysVel,
+% \\
+%  \genForceInertia + \genForceDiss + \genForceStiff + \genForceGravity = \genForceExt.
+% \end{align}
+% where
+% \begin{align}
+%  \genForceInertiaCoeff{\LidxI} &= \Big( \diff{t} \pdiff{\sysVelCoeff{\LidxI}} + \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \sysVelCoeff{\LidxII} \pdiff{\sysVelCoeff{\LidxIII}} - \dirDiff{\LidxI} \Big) \underbrace{\left(\tfrac{1}{2} \sumParticles \particleMass{\PidxI} \norm{\particlePosd{\PidxI}}^2 \right)}_{\kineticEnergy}, 
+% \end{align}
+

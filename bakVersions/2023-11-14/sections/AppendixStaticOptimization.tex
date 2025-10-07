@@ -1,0 +1,633 @@
+\section{Static optimization}
+\subsection{Nonlinear programming}
+We are interested in the extrema of a function $\potentialEnergy : \configSpace \rightarrow \RealNum$ with $\configSpace = \{\sysCoord\in\RealNum^{\numCoord} \,|\, \geoConstraint(\sysCoord) = \tuple{0} \}$ and $\geoConstraint: \RealNum^{\numCoord} \rightarrow \RealNum^{\numGeoConst}$ is sufficiently smooth.
+This can be regarded as a nonlinear programming problem with equality constraints
+\begin{align}\label{eq:DefNonlinearProgram}
+ \minOp[\sysCoord\in\configSpace] \ \potentialEnergy(\sysCoord)
+\qquad\Leftrightarrow\qquad
+ \begin{array}{rl}
+  \minOp[\sysCoord\in\RealNum^\numCoord] & \potentialEnergy(\sysCoord) \\
+  \text{s.\ t.} & \geoConstraint(\sysCoord) = \tuple{0}
+ \end{array}
+\end{align}
+
+\paragraph{Solution using multipliers.}
+A solution can be found in any textbook on nonlinear optimization \eg \cite[chap.\,11]{Luenberger:LinearAndNonlinearProgramming} or \cite[Theorem 9.4 \& 9.21]{Gueler:FoundationsOfOptimization}:
+Using \textit{Lagrange multipliers} $\LagrangeMult \in \RealNum^\numGeoConst$, define the axillary function
+\begin{align}
+ \tilde{\potentialEnergy}(\sysCoord, \LagrangeMult) &= \potentialEnergy(\sysCoord) + \LagrangeMultCoeff{\CidxI} \geoConstraintCoeff{\CidxI}(\sysCoord).
+\end{align}
+A stationary point $(\sysCoordStat, \LagrangeMultStat)$ of $\tilde{\potentialEnergy}$ is defined by (necessary condition)
+\begin{subequations}\label{eq:StaticOptimNecessaryCondition}
+\begin{align}
+ 0 = \pdiff[\tilde{\potentialEnergy}]{\sysCoordCoeff{\GidxI}}(\sysCoordStat, \LagrangeMultStat) &= \pdiff[\potentialEnergy]{\sysCoordCoeff{\GidxI}}(\sysCoordStat) + \LagrangeMultCoeffStat{\CidxI} \pdiff[{\geoConstraintCoeff{\CidxI}}]{\sysCoordCoeff{\GidxI}}(\sysCoordStat),&
+ \alpha &= 1,\ldots,\nu,
+\\
+ 0 = \pdiff[\tilde{\potentialEnergy}]{\LagrangeMultCoeffStat{\CidxI}}(\sysCoordStat, \LagrangeMultStat) &= \geoConstraintCoeff{\CidxI}(\sysCoordStat),&
+ \CidxI &= 1,\ldots,p.
+\end{align}
+\end{subequations}
+It is a local minimum if for all $\tuple{z} \in \RealNum^\nu$ that satisfy the orthogonality condition
+\begin{align}\label{eq:StaticOptimOrthogonalityCondition}
+ \pdiff[{\geoConstraintCoeff{\CidxI}}]{\sysCoordCoeff{\GidxI}}(\sysCoordStat) z^\alpha = 0, \qquad \CidxI = 1,\ldots,p
+\end{align}
+the following condition holds (sufficient condition)
+\begin{align}\label{eq:StaticOptimSufficientCondition}
+ 0 < z^{\GidxI} \frac{\partial^2 \tilde{\potentialEnergy}}{\partial \sysCoordCoeff{\GidxI} \partial \sysCoordCoeff{\GidxII}}(\sysCoordStat, \LagrangeMultStat) z^{\GidxII}
+ = z^{\GidxI} \left( \frac{\partial^2 \potentialEnergy}{\partial \sysCoordCoeff{\GidxI} \partial \sysCoordCoeff{\GidxII}}(\sysCoordStat) + \LagrangeMultCoeffStat{\CidxI} \frac{\partial^2 \geoConstraintCoeff{\CidxI}}{\partial \sysCoordCoeff{\GidxI} \partial \sysCoordCoeff{\GidxII}}(\sysCoordStat) \right) z^\beta
+ .
+\end{align}
+If the sign is reversed the stationary point is a local maximum. 
+
+\paragraph{Basis for the tangent space.}
+Assume that $\dimConfigSpace = \dim\configSpace = \numCoord - \rank\pdiff[\geoConstraint]{\sysCoord}(\sysCoord)$ is constant for all $\sysCoord\in\configSpace$ and we can choose a basis $\kinMat(\sysCoord) \in \RealNum^{\numCoord\times\dimConfigSpace}$, $\pdiff[\geoConstraint]{\sysCoord}\kinMat \equiv \mat{0}$, $\rank\kinMat = \dimConfigSpace$. 
+With this we can eliminate the multipliers $\LagrangeMultStat$ from the necessary condition \eqref{eq:StaticOptimNecessaryCondition} and restate it as
+\begin{subequations}
+\begin{align}
+ 0 &= \kinMatCoeff{\alpha}{i}(\sysCoordStat) \pdiff[\potentialEnergy]{\sysCoordCoeff{\GidxI}}(\sysCoordStat) = (\partial_\LidxI \potentialEnergy) (\sysCoordStat),&
+ i &= 1,\ldots,n
+\\
+ 0 &= \geoConstraintCoeff{\CidxI}(\sysCoordStat),&
+ \CidxI &= 1,\ldots,p.
+\end{align} 
+\end{subequations}
+Furthermore, all solutions to the orthogonality condition \eqref{eq:StaticOptimOrthogonalityCondition} can be stated as $\tuple{z} = \kinMat(\sysCoordStat) \tuple{\zeta}, \tuple{\zeta} \in \RealNum^{\dimConfigSpace}$.
+Plugging this into \eqref{eq:StaticOptimSufficientCondition} the sufficient condition is $\tuple{\zeta}^\top \mat{K} \tuple{\zeta} > 0 \, \forall \tuple{\zeta} \in \RealNum^{\dimConfigSpace}$ where
+\begin{align}
+ K_{\LidxI\LidxII}(\sysCoordStat) &= \kinMatCoeff{\GidxI}{\LidxI}(\sysCoordStat) \left( \frac{\partial^2 \potentialEnergy}{\partial \sysCoordCoeff{\GidxI} \partial \sysCoordCoeff{\GidxII}}(\sysCoordStat) + \LagrangeMultCoeffStat{\CidxI} \frac{\partial^2 \geoConstraintCoeff{\CidxI}}{\partial \sysCoordCoeff{\GidxI} \partial \sysCoordCoeff{\GidxII}}(\sysCoordStat) \right) \kinMatCoeff{\GidxII}{\LidxII}(\sysCoordStat)
+\nonumber\\
+%  &= \kinMatCoeff{\GidxI}{\LidxI} \pdiff{\sysCoordCoeff{\GidxI}}\bigg( \kinMatCoeff{\GidxII}{\LidxII} \pdiff[\potentialEnergy]{\sysCoordCoeff{\GidxII}}\bigg)
+%  - \kinMatCoeff{\GidxI}{\LidxI} \pdiff[\kinMatCoeff{\GidxII}{\LidxII}]{\sysCoordCoeff{\GidxI}} \pdiff[\potentialEnergy]{\sysCoordCoeff{\GidxII}}
+%  - \LagrangeMultCoeffStat{\CidxI} \bigg( \kinMatCoeff{\GidxI}{\LidxI} \pdiff{\sysCoordCoeff{\GidxI}} \bigg(\kinMatCoeff{\GidxII}{\LidxII} \pdiff[\geoConstraintCoeff{\CidxI}]{\sysCoordCoeff{\GidxII}}\bigg)
+%  - \kinMatCoeff{\GidxI}{\LidxI} \pdiff[\kinMatCoeff{\GidxII}{\LidxII}]{\sysCoordCoeff{\GidxI}} \pdiff[\geoConstraintCoeff{\CidxI}]{\sysCoordCoeff{\GidxII}} \bigg)
+% \nonumber\\
+ &= \kinMatCoeff{\GidxI}{\LidxI}(\sysCoordStat) \pdiff{\sysCoordCoeff{\GidxI}} \bigg( \kinMatCoeff{\GidxII}{\LidxII} \pdiff[\potentialEnergy]{\sysCoordCoeff{\GidxII}}\bigg)(\sysCoordStat)
+ + \LagrangeMultCoeffStat{\CidxI} \kinMatCoeff{\GidxI}{\LidxI}(\sysCoordStat) \pdiff{\sysCoordCoeff{\GidxI}} \bigg(\underbrace{\kinMatCoeff{\GidxII}{\LidxII} \pdiff[\geoConstraintCoeff{\CidxI}]{\sysCoordCoeff{\GidxII}}}_{0}\bigg)(\sysCoordStat)
+\nonumber\\
+ &\hspace{15em}- \kinMatCoeff{\GidxI}{\LidxI}(\sysCoordStat) \pdiff[\kinMatCoeff{\GidxII}{\LidxII}]{\sysCoordCoeff{\GidxI}}(\sysCoordStat) \bigg( \underbrace{\pdiff[\potentialEnergy]{\sysCoordCoeff{\GidxII}}(\sysCoordStat) + \LagrangeMultCoeffStat{\CidxI} \pdiff[\geoConstraintCoeff{\CidxI}]{\sysCoordCoeff{\GidxII}}(\sysCoordStat)}_{0}\bigg)
+\nonumber\\
+ &= \big(\dirDiff{\LidxI}\dirDiff{\LidxII} \potentialEnergy \big)(\sysCoordStat).
+\end{align}
+So the sufficient condition for the critical point $\sysCoordStat$ to be a minimum (maximum) is equivalent to the matrix $\mat{K} = \mat{K}^\top$ to be positive (negative) definite.
+
+\subsection{Quadratic programming}\label{sec:QuadraticProgramming}
+A special case of \eqref{eq:DefNonlinearProgram} is the quadratic programming problem with linear equality constraints:
+\begin{align}
+ \begin{array}{rl}
+  \minOp[\tuple{v}\in\RealNum^\numCoord] & \tfrac{1}{2} \tuple{v}^\top \mat{M} \tuple{v} + \tuple{c}^\top \tuple{v} \\
+  \text{s.\ t.} & \mat{Z} \tuple{v} = \tuple{b}
+ \end{array}
+\end{align}
+where $\mat{M} \in \SymMatP(\numCoord)$, $\mat{Z} \in \RealNum^{c\times\numCoord}$ and $\tuple{v},\tuple{c}\in\RealNum^{\numCoord}$, $ \tuple{b} \in \RealNum^{c}$.
+The necessary condition from \eqref{eq:StaticOptimNecessaryCondition} for $\bar{\tuple{v}}$ to be a critical point is
+\begin{align}\label{eq:BlubbEq}
+ \begin{bmatrix} \mat{M} & \mat{Z}^\top \\ \mat{Z} & \mat{0} \end{bmatrix}
+ \begin{bmatrix} \bar{\tuple{v}} \\ \LagrangeMultStat \end{bmatrix}
+ = \begin{bmatrix} -\tuple{c} \\ \tuple{b} \end{bmatrix}.
+\end{align}
+The sufficient condition for $\bar{\tuple{v}}$ to be a minimum is
+\begin{align}
+ \forall\,\tuple{z}\in\RealNum^{\numCoord}, \ \mat{Z} \tuple{z} = \tuple{0} \ : \ \tuple{z}^\top \mat{M} \tuple{z} > 0.
+\end{align}
+Since $\mat{M}$ is positive definite this is always fulfilled.
+
+% If $\rank\mat{Z} = c$ then the Schur complement $\mat{S} = \mat{Z} \mat{M}^{-1} \mat{Z}^\top$ is invertible and the unique solution to \eqref{eq:BlubbEq} is
+% \begin{align}
+%  \begin{bmatrix} \tuple{z} \\ \LagrangeMult \end{bmatrix}
+%  = 
+%  \begin{bmatrix} \mat{M}^{-1} - \mat{M}^{-1} \mat{Z}^\top \mat{S}^{-1} \mat{Z} \mat{M}^{-1} & \mat{M}^{-1} \mat{Z}^\top \mat{S}^{-1} \\ \mat{S}^{-1} \mat{Z} \mat{M}^{-1} & -\mat{S}^{-1} \end{bmatrix}
+%  \begin{bmatrix} \tuple{f} \\ \tuple{c} \end{bmatrix}
+% \end{align}
+\paragraph{Explicit solution.}
+Taking a weighted sum of the two rows yields
+\begin{align}\label{eq:BlubbEqMult}
+ \underbrace{\mat{Z} \mat{M}^{-1} \mat{Z}^\top}_{\mat{S}} \bar{\LagrangeMult} = -\underbrace{\mat{Z} \mat{M}^{-1} \tuple{c} + \tuple{b}}_{\tuple{d}}
+\end{align}
+with the Schur complement $\mat{S}$ and $\rank\mat{S} = \rank\mat{Z}$.
+For the following we use the (Moore-Penrose) pseudoinverse \cite{Penrose:Pseudoinverse}.
+The identity of the projectors $\mat{S}^+\mat{S} = \mat{S}\mat{S}^+ = \mat{Z}\mat{Z}^+$ can be derived using the basic properties of the pseudoinverse and projection matrices.
+A solution of \eqref{eq:BlubbEqMult} exists if and only if $\mat{S}\mat{S}^+ \tuple{d} = \tuple{d}$.
+This is equivalent to
+\begin{align}
+ \tuple{0} = \mat{S}\mat{S}^+ \tuple{d} - \tuple{d} &= \mat{Z} \mat{Z}^+ (\mat{Z} \mat{M}^{-1} \tuple{c} + \tuple{b}) - (\mat{Z} \mat{M}^{-1} \tuple{c} + \tuple{b}) = \mat{Z} \mat{Z}^+ \tuple{b} - \tuple{b}
+\end{align}
+which is the condition for the constraint equation $\mat{Z}\tuple{v} = \tuple{b}$ to have a solution.
+The explicit solution(s) for the multipliers is
+\begin{align}
+ \LagrangeMultStat &= -\mat{S}^+ (\mat{Z} \mat{M}^{-1} \tuple{c} + \tuple{b}) + (\idMat - \mat{S}^+\mat{S}) \tuple{\mu}, \quad \tuple{\mu} \in \RealNum^c.
+\end{align}
+Plugging this into the original equation we get
+\begin{align}\label{eq:SolBlubbEq}
+ \bar{\tuple{v}} = \mat{M}^{-1}\mat{Z}^\top\mat{S}^+\tuple{b} - (\mat{M}^{-1} - \mat{M}^{-1} \mat{Z}^\top \mat{S}^+ \mat{Z} \mat{M}^{-1}) \tuple{c}. %- \underbrace{\mat{Z}^\top (\idMat - \mat{S}^+\mat{S})}_{=\,\mat{0}} \tuple{\mu}
+\end{align}
+It is crucial to note that the solution $\bar{\tuple{v}}$ is unique even though there might be several solutions for the multipliers $\LagrangeMultStat$.
+This is because the terms with $\tuple{\mu}$ cancel out, since
+\begin{align}
+ \mat{Z}^\top (\idMat - \mat{S}^+\mat{S}) = \mat{Z}^\top (\idMat - \mat{Z}\mat{Z}^+) = (\mat{Z} - \mat{Z} \mat{Z}^+\mat{Z})^\top = \mat{0}.
+\end{align}
+
+\paragraph*{Udwadia-Kalaba equation.}
+Since $\mat{M}$ is symmetric and positive definite, its eigendecomposition can be written as $\mat{M} = \mat{W} \mat{\Lambda} \mat{W}^\top$ with $\mat{W}\in\SpecialOrthogonalGroup(\numCoord)$ and $\mat{\Lambda} = \diag(\lambda_1, \ldots, \lambda_{\numCoord})$.
+Define $\mat{M}^{\sfrac{1}{2}} = \mat{W} \mat{\Lambda}^{\sfrac{1}{2}} \mat{W}^\top$ with $\mat{\Lambda}^{\sfrac{1}{2}} = \diag(\sqrt{\lambda_1}, \ldots, \sqrt{\lambda_{\numCoord}})$ and analogous for $\mat{M}^{-\sfrac{1}{2}}$.
+Let $\bar{\mat{Z}} = \mat{Z} \mat{M}^{-\sfrac{1}{2}}$ to find $\mat{S} = \bar{\mat{Z}}\bar{\mat{Z}}^\top$ and $\mat{S}^+ = (\bar{\mat{Z}}^+)^\top \bar{\mat{Z}}^+$.
+Substituting this into \eqref{eq:SolBlubbEq} yields
+\begin{align}
+ \bar{\tuple{v}} %&= \mat{M}^{-1} \mat{M}^{\sfrac{1}{2}} \bar{\mat{Z}}^\top (\bar{\mat{Z}}^+)^\top \bar{\mat{Z}}^+ \tuple{b} - (\mat{M}^{-1} - \mat{M}^{-1} \mat{M}^{\sfrac{1}{2}} \bar{\mat{Z}}^\top (\bar{\mat{Z}}^+)^\top \bar{\mat{Z}}^+ \bar{\mat{Z}} \mat{M}^{\sfrac{1}{2}} \mat{M}^{-1}) \tuple{c}. %- \underbrace{\mat{Z}^\top (\idMat - \mat{S}^+\mat{S})}_{=\,\mat{0}} \tuple{\mu}
+%\\
+ &= \mat{M}^{-\sfrac{1}{2}} \bar{\mat{Z}}^+ \tuple{b} - (\mat{M}^{-1} - \mat{M}^{-\sfrac{1}{2}} \bar{\mat{Z}}^+ \bar{\mat{Z}} \mat{M}^{-\sfrac{1}{2}}) \tuple{c}. %- \underbrace{\mat{Z}^\top (\idMat - \mat{S}^+\mat{S})}_{=\,\mat{0}} \tuple{\mu}
+\end{align}
+This form was proposed in \cite{Udwadia:GeneralForm}
+
+\paragraph{Choosing a basis.}
+By choosing a matrix $\kinMat\in\RealNum^{\numCoord\times\dimConfigSpace}$ with $\mat{Z}\mat{A} \equiv \mat{0}$, $\rank\mat{A}=\dimConfigSpace$ we can state all solutions to the constraint as 
+\begin{align}
+ \tuple{v} = \mat{Z}^+ \tuple{b} + \mat{A} \sysVel, \ \sysVel\in \RealNum^\dimConfigSpace. 
+\end{align}
+The remaining \textit{unconstrained} problem is
+\begin{align}
+%  \begin{array}{rl}
+%   \minOp[\sysVel\in\RealNum^\dimConfigSpace] & \tfrac{1}{2} (\mat{Z}^+ \tuple{b} + \mat{A} \sysVel)^\top \mat{M} (\mat{Z}^+ \tuple{b} + \mat{A} \sysVel) + \tuple{c}^\top (\mat{Z}^+ \tuple{b} + \mat{A} \sysVel) 
+%  \end{array}
+% \\
+ \begin{array}{rl}
+  \minOp[\sysVel\in\RealNum^\dimConfigSpace] & \tfrac{1}{2} \sysVel^\top \mat{A}^\top\mat{M}\mat{A} \sysVel + (\tuple{c} + \mat{M}\mat{Z}^+\tuple{b})^\top \mat{A} \sysVel
+  %+ \tfrac{1}{2} \tuple{b}^\top (\mat{Z}^+)^\top \mat{M} \mat{Z}^+ \tuple{b} + \tuple{c}^\top \mat{Z}^+ \tuple{b} 
+ \end{array}
+\end{align}
+with the solution
+\begin{align}
+ \bar{\sysVel} = -(\mat{A}^\top\mat{M}\mat{A})^{-1} \mat{A}^\top (\tuple{c} + \mat{M}\mat{Z}^+\tuple{b})
+\end{align}
+So the minimum of the original problem is
+\begin{align}
+ \bar{\tuple{v}} = \big(\idMat[\numCoord] - \mat{A} (\mat{A}^\top\mat{M}\mat{A})^{-1} \mat{A}^\top \mat{M} \big) \mat{Z}^+ \tuple{b} - \mat{A} (\mat{A}^\top\mat{M}\mat{A})^{-1} \mat{A}^\top \tuple{c}
+\end{align}
+
+\subsection{Blah}
+Consider the quadratic optimization problem with linear inequality constraints
+\begin{align}
+ \begin{array}{rl}
+  \underset{x \in \RealNum^{n}}{\text{minimize}} & \tfrac{1}{2} x^\top G x + x^\top g
+  \\[1ex]
+  \text{subject to} & A\,x \leq b
+ \end{array}
+\end{align}
+
+\paragraph*{Problem normalization.}
+Since the matrix $G$ is symmetric positive definite, it can be decomposed into $G = L^\top L$.
+We transform the coordinates and the matrices by
+\begin{align}
+ \bar{x} &= L\,x,&
+ \bar{g} &= L^{-\top} g,&
+ \bar{A} = A\,L^{-1} 
+\end{align}
+The optimization problem in the transformed coordinates is
+\begin{align}
+ \begin{array}{rl}
+  \underset{\bar{x} \in \RealNum^{n}}{\text{minimize}} & \tfrac{1}{2} \bar{x}^\top \bar{x} + \bar{x}^\top \bar{g}
+  \\[1ex]
+  \text{subject to} & \bar{A}\,\bar{x} \leq b
+ \end{array}
+\end{align}
+The decomposition is done off line.
+This normalization also leads to better numerical properties in the online implementation as analyzed in \cite{Gould:EqualityConstrainedQuadraticProgramming}.
+
+\paragraph{Subproblem solution.}
+The Active-Set method requires the solution of equality constrained subproblems, where $\bar{x} = \bar{x}_k + s$ and $\bar{A}_k$ is a subset of the rows of $\bar{A}$:
+\begin{align}
+ \begin{array}{rl}
+  \underset{s \in \RealNum^{n}}{\text{minimize}} & \tfrac{1}{2} s^\top s + s^\top (\bar{x}_k + \bar{g})
+  \\[1ex]
+  \text{subject to} & \bar{A}_k s = 0
+ \end{array}
+\end{align}
+The solution using the concept of the Lagrange-multipliers is
+\begin{align}
+ \begin{bmatrix} \idMat[n] & \bar{A}_k^\top \\ \bar{A}_k & 0 \end{bmatrix}
+ \begin{bmatrix} s \\ \mu \end{bmatrix}
+ +
+ \begin{bmatrix} \bar{x}_k + \bar{g} \\ 0 \end{bmatrix}
+ = 0
+\end{align}
+For a matrix of this form we have
+\begin{align}
+ \begin{bmatrix} \idMat & Z^\top \\ Z & 0 \end{bmatrix}^{-1} 
+ =
+ \begin{bmatrix} \idMat -  Z^\top S Z & Z^\top S \\ S Z & -S \end{bmatrix},
+\qquad 
+ S = (Z Z^\top)^{-1} = S^\top \geq 0
+\end{align}
+So the subproblem solution $(s, \mu)$ can be computed economically from
+\begin{align}
+ h = -\bar{x}_k - \bar{g},
+\qquad
+ H = \bar{A}_k \bar{A}_k^\top,
+\qquad
+ H \mu = \bar{A}_k h,
+\qquad
+ s = h - \bar{A}_k^\top \mu.
+\end{align}
+
+\subsection{Attitude potential}\label{sec:AppendixAttitudePotential}
+We are interested in the extrema of the function
+\begin{align}
+ \potentialEnergy(\R) = -\tr(\mat{P} \R), \quad \R \in \SpecialOrthogonalGroup(3)
+\end{align}
+with the constant parameter $\mat{P} \in \RealNum^{3\times3}$.
+Similar functions appear in the context of attitude control \cite{Koditschek:TotalEnergy} or in the so-called Wahba's problem \cite{Wahba:WahbaProblem}.
+
+\paragraph{Coordinate transformation.}
+Consider a singular value decomposition $\mat{P} = \mat{X} \mat{\varSigma} \mat{Y}^\top$ with $\mat{X}, \mat{Y} \in \OrthogonalGroup(3)$ and $\mat{\varSigma} = \diag(\sigma_1, \sigma_2, \sigma_3)$, $\sigma_1 \geq \sigma_2 \geq \sigma_3 \geq 0$.
+Define 
+\begin{subequations}
+\begin{align}
+ \bar{\mat{X}} &= \mat{X} \diag(1, 1, \det\mat{X}) \in \SpecialOrthogonalGroup(3),
+\\
+ \bar{\mat{Y}} &= \mat{Y} \diag(1, 1, \det\mat{Y}) \in \SpecialOrthogonalGroup(3),
+\\
+ \bar{\mat{\varSigma}} &= \diag(\sigma_1, \sigma_2, \bar{\sigma}_3), \ \bar{\sigma}_3 = \det\mat{X}\det\mat{Y} \sigma_3
+\end{align} 
+\end{subequations}
+which yields a decomposition $\mat{P} = \bar{\mat{X}} \bar{\mat{\varSigma}} \bar{\mat{Y}}^\top$ with proper rotations.
+Using the cyclic permutation property of the trace we get
+\begin{align}
+ \potentialEnergy(\R) = -\tr( \bar{\mat{X}} \bar{\mat{\varSigma}} \bar{\mat{Y}}^\top \R) = -\tr( \bar{\mat{\varSigma}} \underbrace{\bar{\mat{Y}}^\top \R \bar{\mat{X}}}_{\bar{\R}}) =: \bar{\potentialEnergy}(\bar{\R})
+\end{align}
+Since the SVD is not unique in general, the transformed function $\bar{\potentialEnergy}$ is neither.
+However, since the coordinate transformation $\R = \bar{\mat{Y}} \bar{\R} \bar{\mat{X}}^\top$ is bijective, no information is lost here.
+The SVD is also the most robust approach for the numerical solution of the problem \cite{Markley:Wahba}.
+
+\paragraph{Critical points.}
+The first and second differential of the transformed function are
+\begin{align}
+ \differential \bar{\potentialEnergy}(\bar{\R}) &= \veeTwoOp(\bar{\mat{\varSigma}} \bar{\R}),
+\\
+ \differential^2 \bar{\potentialEnergy}(\bar{\R}) &= \veeMatOp(\bar{\mat{\varSigma}} \bar{\R})^\top.
+\end{align}
+So, for a critical point $\bar{\R}_0 : \differential \bar{\potentialEnergy}(\bar{\R}_0)=\tuple{0}$ we need the matrix $\bar{\mat{\varSigma}} \bar{\R}_0$ to be symmetric.
+For the following it will be useful to substitute the entries/eigenvalues of $\veeMatOp(\bar{\mat{\varSigma}}) = \diag(\lambda_1, \lambda_2, \lambda_3) = \mat{\Lambda}$ as
+\begin{align}
+ &\left.\begin{matrix}[1.2]
+ \lambda_1 = \sigma_2 + \bar{\sigma}_3, \\
+ \lambda_2 = \bar{\sigma}_3 + \sigma_1, \\
+ \lambda_3 = \sigma_1 + \sigma_2\hphantom{,}  
+ \end{matrix}\right\}&
+&\Leftrightarrow&
+ &\left\{\begin{matrix}[1.2]
+ \sigma_1 = \tfrac{1}{2} (\lambda_2 + \lambda_3 - \lambda_1), \\
+ \sigma_2 = \tfrac{1}{2} (\lambda_3 + \lambda_1 - \lambda_2), \\
+ \bar{\sigma}_3 = \tfrac{1}{2} (\lambda_1 + \lambda_2 - \lambda_3)\hphantom{,}  
+ \end{matrix}\right.
+\end{align} 
+Note that $\sigma_1 \geq \sigma_2 \geq |\bar{\sigma}_3| \geq 0$ implies $\lambda_3 \geq \lambda_2 \geq \lambda_1 \geq 0$.
+Depending on the constellation of the eigenvalues we have the following critical points:
+\begin{subequations}
+\begin{itemize}
+\item Distinct eigenvalues: $\lambda_3 > \lambda_2 > \lambda_1 > 0$: We have the critical points
+\begin{align}
+ &\bar{\R}_{0} = \idMat[3] \ :
+\nonumber\\
+ &\quad
+ \potentialEnergy(\bar{\R}_{0}) = -\tfrac{\lambda_1}{2} - \tfrac{\lambda_2}{2} - \tfrac{\lambda_3}{2}, 
+ \quad
+ \eig(\differential^2 \bar{\potentialEnergy}(\bar{\R}_{0})) = \{ \lambda_3, \lambda_2, \lambda_1 \}
+\\
+ &\bar{\R}_{1} = \diag(1,-1,-1) \ :
+\nonumber\\
+ &\quad
+ \potentialEnergy(\bar{\R}_{1}) = \tfrac{3\lambda_1 - \lambda_2 - \lambda_3}{2}, 
+ \quad
+ \eig(\differential^2 \bar{\potentialEnergy}(\bar{\R}_{1})) = \{ \lambda_3-\lambda_1, \lambda_2-\lambda_1, -\lambda_1 \}
+\\
+ &\bar{\R}_{2} = \diag(-1,1,-1) \ :
+\nonumber\\
+ &\quad
+ \potentialEnergy(\bar{\R}_{2}) = \tfrac{3\lambda_2 - \lambda_1 - \lambda_3}{2}, 
+ \quad
+ \eig(\differential^2 \bar{\potentialEnergy}(\bar{\R}_{2})) = \{ \lambda_3-\lambda_2, \lambda_1-\lambda_2, -\lambda_2 \}
+\\
+ &\bar{\R}_{3} = \diag(-1,-1,1) \ :
+\nonumber\\
+ &\quad
+ \potentialEnergy(\bar{\R}_{3}) = \tfrac{3\lambda_3 - \lambda_1 - \lambda_2}{2}, 
+ \quad
+ \eig(\differential^2 \bar{\potentialEnergy}(\bar{\R}_{3})) = \{ \lambda_2-\lambda_3, \lambda_1-\lambda_3, -\lambda_3 \}
+\end{align}
+so $\bar{\R}_{0}$ is a minimum, $\bar{\R}_{1}$ and $\bar{\R}_{2}$ are saddle points, and $\bar{\R}_{3}$ is a maximum.
+
+\item Double eigenvalue: $\lambda_3 > \lambda_2 = \lambda_1 > 0$: We have a minimum at $\bar{\R}_{0}$, a maximum at $\bar{\R}_{3}$ and a saddle on the circular manifold 
+\begin{align}
+ \bar{\R}_{4} &= \begin{bmatrix} -c & s & 0 \\ s & c & 0 \\ 0 & 0 & -1 \end{bmatrix}, \ c^2+s^2=1 \ : 
+\nonumber\\
+ &\quad
+ \potentialEnergy(\bar{\R}_{4}) = \lambda_1 - \tfrac{\lambda_3}{2}, 
+ \quad
+ \eig(\differential^2 \bar{\potentialEnergy}(\bar{\R}_{4})) = \{ \lambda_3-\lambda_1, 0, -\lambda_1 \}
+\end{align}
+which includes the points $\bar{\R}_{1}$ and $\bar{\R}_{2}$.
+
+\item Double eigenvalue: $\lambda_3 = \lambda_2 > \lambda_1 > 0$: Analog to above we have a minimum at $\bar{\R}_{0}$, a saddle at $\bar{\R}_{4}$ and a maximum on the circular manifold 
+\begin{align}
+ \bar{\R}_{5} &= \begin{bmatrix} -1 & 0 & 0 \\ 0 & c & s \\ 0 & s & -c \end{bmatrix}, \ c^2+s^2=1 \ : 
+\nonumber\\
+ &\quad
+ \potentialEnergy(\bar{\R}_{5}) = \lambda_2 - \tfrac{\lambda_1}{2}, 
+ \quad
+ \eig(\differential^2 \bar{\potentialEnergy}(\bar{\R}_{5})) = \{ 0, \lambda_1-\lambda_2, -\lambda_2 \}
+\end{align}
+which includes the points $\bar{\R}_{2}$ and $\bar{\R}_{3}$.
+
+\item Triple eigenvalue: $\lambda_3 = \lambda_2 = \lambda_1 > 0$: Minimum at $\bar{\R}_{0}$ and a maximum on the spherical manifold 
+\begin{align}
+ &\bar{\R}_{6} = \begin{bmatrix} \quatx^2 - \quaty^2 - \quatz^2 & 2\quatx\quaty & 2\quatx\quatz \\ 2\quatx\quaty & \quaty^2-\quatx^2+\quatz^2 & 2\quaty\quatz \\ 2\quatx\quatz & 2\quaty\quatz & \quatz^2-\quatx^2-\quaty^2 \end{bmatrix}, \ \quatx^2+\quaty^2+\quatz^2=1 :
+\nonumber\\
+ &\quad
+ \potentialEnergy(\bar{\R}_{6}) = \tfrac{\lambda_1}{2},
+ \quad
+ \eig(\differential^2 \bar{\potentialEnergy}(\bar{\R}_{6})) = \{ 0, 0, -\lambda_1 \}
+\end{align}
+which includes the points $\bar{\R}_{1}$, $\bar{\R}_{2}$ and $\bar{\R}_{3}$ and the circles $\bar{\R}_4$ and $\bar{\R}_5$.
+It corresponds to a $180^\circ$ rotation about an arbitrary axis $[\quatx,\quaty,\quatz]^\top \in \Sphere^2$.
+
+\item One zero eigenvalue: $\lambda_3 > \lambda_2 > \lambda_1 = 0$: We have a minimum on the circular manifold
+\begin{align}
+ \bar{\R}_{7} &= \begin{bmatrix} 1 & 0 & 0 \\ 0 & c & -s \\ 0 & s & c \end{bmatrix}, \ c^2+s^2=1 \ : 
+\nonumber\\
+ \potentialEnergy(\bar{\R}_{7}) &= -\tfrac{\lambda_2+\lambda_3}{2}, \qquad
+ \eig(\differential^2 \bar{\potentialEnergy}(\bar{\R}_{7})) = \{ \lambda_3, \lambda_2, 0\}
+\end{align}
+which includes $\bar{\R}_{0}$ and $\bar{\R}_{1}$.
+Furthermore we have a saddle point at $\bar{\R}_{2}$ and a maximum at $\bar{\R}_{3}$.
+
+\item Double eigenvalue and zero eigenvalue: $\lambda_3 = \lambda_2 > \lambda_1 = 0$: We have a minimum on $\bar{\R}_{7}$ and a maximum on $\bar{\R}_{5}$.
+
+\item Two zero eigenvalues: $\lambda_3 > \lambda_2 = \lambda_1 = 0$: We have a minimum on the spherical manifold
+\begin{align}
+ \bar{\R}_{8} &= \begin{bmatrix} \quatw^2 + \quatx^2 - \quaty^2 & 2\quatx\quaty & 2\quatw\quaty \\ 2\quatx\quaty & \quatw^2-\quatx^2+\quaty^2 & -2\quatw\quatx \\ -2\quatw\quatx & 2\quatw\quatx & \quatw^2-\quatx^2-\quaty^2 \end{bmatrix}, \ \quatw^2+\quatx^2+\quaty^2=1 :
+\nonumber\\
+ \potentialEnergy(\bar{\R}_{8}) &= -\tfrac{\lambda_3}{2}, \qquad
+ \eig(\differential^2 \bar{\potentialEnergy}(\bar{\R}_{8})) = \{ \lambda_3, 0, 0\}
+\end{align}
+which includes $\bar{\R}_{0}$, $\bar{\R}_{1}$ and $\bar{\R}_{2}$ and corresponds to an arbitrary rotation about an axis $[\quatx, \quaty, 0]^\top$.
+Furthermore we have a maximum at $\bar{\R}_{3}$.
+
+\item All zero Eigenvalues: $\lambda_3 = \lambda_2 = \lambda_1 = 0$: for this we have $\bar{\mat{\varSigma}} = \mat{P} = \mat{0}$ and the function is $\potentialEnergy = 0$.
+
+\end{itemize}
+\end{subequations}
+We may conclude that the function $\bar{\potentialEnergy}$ has a minimum at $\bar{\R}_0 = \idMat[3]$ and a maximum at $\bar{\R}_3 = \diag(-1,-1,1)$, though they may not be strict.
+The minimum is strict if and only if $\lambda_1 > 0$. 
+The maximum is strict if and only if $\lambda_3>\lambda_2$.
+
+It should also be noted that the results of this paragraph would be much more ``symmetric'' if we would not have required the descending order of the singular values $\sigma_i$.
+This did however reduce the number of cases to distinguish.
+
+\paragraph{Original coordinates.}
+The original function $\potentialEnergy$ has a minimum at $\R_0 = \bar{\mat{Y}} \bar{\mat{X}}^\top$.
+% We may decompose
+% \begin{align}
+%  \mat{P}
+%  = \bar{\mat{X}} \bar{\mat{\varSigma}} \bar{\mat{Y}}^\top 
+%  = \bar{\mat{X}} \wedMatOp(\mat{\Lambda}) \underbrace{\bar{\mat{X}}^\top \bar{\mat{X}}}_{\idMat[3]} \bar{\mat{Y}}^\top
+%  = \wedMatOp( \underbrace{\bar{\mat{X}} \mat{\Lambda} \bar{\mat{X}}^\top }_{\mat{K}}) \R_0^\top
+% \end{align}
+% with $\mat{K} \in \SymMatSP(3)$.
+The minimum $\R_0$ is strict, if, and only if, $\lambda_i > 0, i=1,2,3$ or equivalently if $\mat{K}$ is positive definite:
+\begin{align}
+ \mat{K} = \differential^2 \potentialEnergy (\R_0) = \veeMatOp(\mat{P}\R_0) = \bar{\mat{X}} \mat{\Lambda} \bar{\mat{X}}^\top.
+\end{align}
+Substracting the minimal value $\potentialEnergy(\R_0)$ from the function we obtain
+\begin{subequations}
+\begin{align}
+ \hat{\potentialEnergy}(\R) &= \potentialEnergy(\R) - \potentialEnergy(\R_0)
+\nonumber\\
+ &= -\tr(\bar{\mat{X}} \wedMatOp(\mat{\Lambda}) \bar{\mat{Y}}^\top \R) + \tfrac{1}{2}\tr(\mat{\Lambda})
+\nonumber\\
+ &= -\tr(\bar{\mat{X}} \wedMatOp(\mat{\Lambda}) \bar{\mat{X}}^\top \R_0^\top \R) + \tr(\wedMatOp(\mat{K}))
+\nonumber\\
+\label{eq:NavFunctionSO3}
+ &= \tr\big(\wedMatOp(\mat{K})(\idMat[3] - \R_0^\top \R)\big)
+\\
+ &= \tfrac{1}{2} \tr\big(\wedMatOp(\mat{K})(\R - \R_0)^\top (\R - \R_0)\big)
+\nonumber\\
+ &= \tfrac{1}{2}\norm[\wedMatOp(\mat{K})]{\R-\R_0}^2.
+\end{align}
+\end{subequations}
+We have the properties
+\begin{subequations}
+\begin{align}
+ \mat{K} &\geq 0& 
+ &\Leftrightarrow&
+ \hat{\potentialEnergy}(\R) &\geq 0
+\\
+ \mat{K} &> 0& 
+ &\Leftrightarrow&
+ \hat{\potentialEnergy}(\R) &\geq 0 \ \wedge \ \hat{\potentialEnergy}(\R) = 0 \, \Leftrightarrow \, \R = \R_0.
+\end{align}
+\end{subequations}
+The form \eqref{eq:NavFunctionSO3} is called the \textit{navigation function} for $\SpecialOrthogonalGroup(3)$ in \cite{Koditschek:TotalEnergy}.
+From its properties $\hat{\potentialEnergy}$ is an $\SpecialOrthogonalGroup(3)$ analogon to $\tfrac{1}{2}(\tuple{x}-\tuple{x}_0)^\top\mat{K}(\tuple{x}-\tuple{x}_0), \tuple{x},\tuple{x}_0\in\RealNum^3$.
+
+
+% \subsection{Wahba's problem}
+% For given tuples $\tuple{a}_i, \tuple{b}_i \in \RealNum^3$ and weights $k_i\in\RealNum^+$, $i=1,\ldots,N$ we are interested in the rotation matrix $\R\in\SpecialOrthogonalGroup(3)$ such that
+% \begin{align}
+%  \mathcal{W} = \sum_{i=1}^N k_i \norm{\tuple{a}_i - \R \tuple{b}_i}^2 
+% \end{align}
+% is minimal.
+% This problem and a solution using the polar decomposition was proposed in \cite{Wahba:WahbaProblem}.
+% Some rearrangement leads to
+% \begin{align}
+%  \mathcal{W} &= \sum_{i=1}^N k_i (\tuple{a}_i - \R \tuple{b}_i)^\top (\tuple{a}_i - \R \tuple{b}_i) 
+% \nonumber\\
+%  &= \sum_{i=1}^N k_i \big( \norm{\tuple{a}_i}^2 + \norm{\tuple{b}_i}^2 - 2 \tuple{a}_i^\top \R \tuple{b}_i \big) 
+% \nonumber\\
+%  &= \underbrace{\sum_{i=1}^N k_i \big( \norm{\tuple{a}_i}^2 + \norm{\tuple{b}_i}^2 \big)}_{\const} - 2 \tr\Big( \underbrace{\sum_{i=1}^N k_i \tuple{b}_i \tuple{a}_i^\top}_{\mat{P}} \R \Big).
+% \end{align}
+% Utilizing the result from the previous section, a solution is given by $\R_0 = \bar{\mat{Y}} \bar{\mat{X}}^\top$ with the special singular value decomposition $\mat{P} = \bar{\mat{X}} \bar{\mat{\varSigma}} \bar{\mat{Y}}^\top$.
+% It is unique, if, and only if, the matrix $\mat{K} = \veeMatOp(\mat{P}\R_0)$ is positive definite.
+% So
+% \begin{align}
+%  \mat{K} = \veeMatOp\Big( \sum_{i=1}^N k_i \tuple{b}_i \tuple{a}_i^\top \R_0 \Big)
+%  = \sum_{i=1}^N k_i \wedOp(\R_0^\top \tuple{a}_i)^\top \wedOp(\tuple{b}_i)
+% \end{align}
+% 
+% 
+% \subsection{Wahba's problem for $\SpecialEuclideanGroup(3)$}
+% For given tuples $\tuple{a}_i, \tuple{b}_i \in \RealNum^3$ and weights $k_i\in\RealNum^+$, $i=1,\ldots,N$ we are interested in the tuple $\r\in\RealNum^3$ and rotation matrix $\R\in\SpecialOrthogonalGroup(3)$ such that
+% \begin{align}
+%  \mathcal{W} = \sum_{i=1}^N k_i \norm{\tuple{a}_i -(\r + \R \tuple{b}_i)}^2 
+% \end{align}
+% is minimal.
+% 
+% Rearrange
+% \begin{align}
+%  \mathcal{W} &= \sum_{i=1}^N k_i (\tuple{a}_i - \r - \R \tuple{b}_i)^\top (\tuple{a}_i - \r - \R \tuple{b}_i) 
+% \nonumber\\
+%  &= \sum_{i=1}^N k_i \big( \norm{\tuple{a}_i}^2 + \norm{\tuple{b}_i}^2 + \norm{\r}^2 - 2\tuple{a}_i^\top \r - 2 \tuple{a}_i^\top \R \tuple{b}_i + 2 \r^\top \R \tuple{b}_i \big) 
+% \nonumber\\
+%  &= \bar{k} \big( \norm{\r}^2 + 2 \r^\top (\R \bar{\tuple{b}} - \bar{\tuple{a}}) \big) - 2 \tr(\mat{P} \R) + \const
+% \end{align}
+% where
+% \begin{align}
+%  \mat{P} = \sum_{i=1}^N k_i \tuple{a}_i \tuple{b}_i^\top
+% \end{align}
+% substitute $\r = \r_s - \R \bar{\tuple{b}}$ we find:
+% \begin{align}
+%  \mathcal{W} &= \bar{k} \big( \norm{\r_s - \R \bar{\tuple{b}}}^2 + 2(\r_s - \R \bar{\tuple{b}})^\top (\R \bar{\tuple{b}} - \bar{\tuple{a}}) \big) - 2 \tr(\mat{P} \R) + \const
+% \nonumber\\
+%  &= \bar{k} \big( \norm{\r_s}^2 - \norm{\bar{\tuple{b}}}^2 - 2\r_s \bar{\tuple{a}} - 2\bar{\tuple{a}}^\top \R \bar{\tuple{b}} \big) - 2 \tr(\mat{P} \R) + \const
+% \nonumber\\
+%  &= \bar{k} \big( \norm{\r_s - \bar{\tuple{a}}}^2 - \norm{\bar{\tuple{b}}}^2 - \norm{\bar{\tuple{a}}}^2 \big) - 2 \tr\big( (\mat{P} - \bar{k} \bar{\tuple{a}} \bar{\tuple{b}}^\top) \R\big) + \const
+% \end{align}
+% 
+% 
+% substitute $\r = \r_s + \R \tuple{h}$, $\r_s, \tuple{h}\in\RealNum^3$:
+% \begin{align}
+%  \mathcal{W} &= \bar{k} \big( \norm{\r_s + \R \tuple{h}}^2 + 2(\r_s + \R \tuple{h})^\top (\R \bar{\tuple{b}} - \bar{\tuple{a}}) \big) - 2 \tr(\mat{P} \R) + \const
+% \nonumber\\
+%  &= \bar{k} \big( \norm{\r_s}^2 + 2\r_s^\top \R \tuple{h} + \norm{\tuple{h}}^2 + 2 \r_s^\top \R \bar{\tuple{b}} - 2\r_s \bar{\tuple{a}} + 2\tuple{h}^\top \bar{\tuple{b}} - 2\tuple{h}^\top \R^\top \bar{\tuple{a}} \big) - 2 \tr(\mat{P} \R) + \const
+% \end{align}
+
+
+\begin{Example}\label{ex:PotentialSO3}
+Consider the function
+\begin{align}\label{eq:PotentialSO3}
+ \potentialEnergy(\R) &= \tr \big( \bodyMOSp{}{} (\idMat[3] - \R) \big)
+ .
+\end{align}
+proposed in \cite{Koditschek:TotalEnergy}, where $\bodyMOSp{}{} = \bodyMOSp{}{}^\top \in \RealNum^{3\times 3}$ and $\R \in \SpecialOrthogonalGroup(3)$.
+It can be regarded as a distance function on the configuration space $\configSpace = \SpecialOrthogonalGroup(3)$ with six tunable parameters which makes it quite useful for control purposes, see \eg \cite{Bullo:TrackingAutomatica} or \cite{Lee:QuadrotorGeoControl}.
+This function will appear several times in later chapters, so it will be discussed in detail here.
+
+As in the previous example, we regard the coefficients of the rotation matrix $\R$ as redundant configuration coordinates.
+Using the basis from \eqref{eq:KinMatSO3} we compute the differential and the Hessian at a critical point $\R_0$ as
+\begin{subequations}
+\begin{align}
+ \label{eq:gradPotentialSO3}
+ \differential \potentialEnergy(\R_0) &= \veeTwoOp(\bodyMOSp{}{} \R_0) \mustbe \tuple{0},
+\\
+ \label{eq:HessianPotentialSO3}
+ \differential^2 \potentialEnergy(\R_0) &= \tr (\bodyMOSp{}{} \R_0) \idMat[3] - \bodyMOSp{}{} \R_0.
+\end{align} 
+\end{subequations}
+with the $\veeTwoOp$ operator defined as
+\begin{align}
+ \veeTwoOp : \RealNum^{3\times3} \rightarrow \RealNum^3, \begin{bmatrix} \ast & A_{12} & A_{13} \\ A_{21} & \ast & A_{23} \\ A_{31} & A_{32} & \ast \end{bmatrix} \mapsto \begin{bmatrix} A_{32}-A_{23} \\ A_{13}-A_{31} \\ A_{21}-A_{12} \end{bmatrix}.
+\end{align}
+So the condition for a critical point at $\R_0$ is that the product $\bodyMOSp{}{} \R_0$ is skew-symmetric.
+Obviously the function $\potentialEnergy$ has a critical point at
+\begin{align*}
+ \R_{0,1} &= \idMat[3] \ :&
+ \potentialEnergy(\R_{0,1}) &= 0,&
+ \differential^2 \potentialEnergy(\R_{0,1}) &= \tr(\bodyMOSp{}{}) \idMat[3] - \bodyMOSp{}{} =: \bodyMOS{}{}.
+\end{align*}
+It is a minimum if the matrix $\bodyMOS{}{}$ is positive definite. 
+
+There are more critical points:
+For their investigation it will be useful to consider the eigenvalue decomposition $\bodyMOSp{}{} = \mat{X} \mat{\mat{\Lambda}}' \mat{X}^\top$ with $\mat{\mat{\Lambda}}' = \diag(\lambda_1', \lambda_2', \lambda_3')$, $\mat{X} \in \SpecialOrthogonalGroup(3)$.
+Note that the matrix $\bodyMOS{}{}$ has the same eigenvectors, \ie $\bodyMOS{}{} = \mat{X} \mat{\Lambda} \mat{X}^\top$ with $\mat{\Lambda} = \diag(\lambda_1, \lambda_2, \lambda_3)$ and the eigenvalues are related by
+\begin{subequations}
+\begin{align}\label{eq:EigenvaluesKappa}
+ &\hspace{.6em}\mat{\Lambda} = \tr(\mat{\Lambda}') \idMat[3] - \mat{\Lambda}'&
+&\Leftrightarrow&
+ &\hspace{1.1em}\mat{\Lambda}' = \tfrac{1}{2}\tr(\mat{\Lambda}) \idMat[3] - \mat{\Lambda}
+\\
+ &\left.\begin{matrix}[1.2]
+ \lambda_1 = \lambda_2' + \lambda_3', \\
+ \lambda_2 = \lambda_3' + \lambda_1', \\
+ \lambda_3 = \lambda_1' + \lambda_2'\hphantom{,}  
+ \end{matrix}\right\}&
+&\Leftrightarrow&
+ &\left\{\begin{matrix}[1.2]
+ \lambda_1' = \tfrac{1}{2} (\lambda_2 + \lambda_3 - \lambda_1), \\
+ \lambda_2' = \tfrac{1}{2} (\lambda_3 + \lambda_1 - \lambda_2), \\
+ \lambda_3' = \tfrac{1}{2} (\lambda_1 + \lambda_2 - \lambda_3)\hphantom{,}  
+ \end{matrix}\right.
+\end{align} 
+\end{subequations}
+Using the transformed orientation $\tilde{\R}_0 = \mat{X}^\top \R_0 \mat{X}$ we have
+\begin{subequations}
+\begin{align}
+ \differential \potentialEnergy (\R_0) &= \mat{X} \veeTwoOp(\mat{\mat{\Lambda}}' \tilde{\R}_0) \mustbe \tuple{0},
+\\
+ \differential^2 \potentialEnergy (\R_0) &= \mat{X} \big( \tr (\mat{\mat{\Lambda}}' \tilde{\R}_0) \idMat[3] - \mat{\mat{\Lambda}}' \tilde{\R}_0 \big) \mat{X}^\top.
+\end{align}
+\end{subequations}
+For critical points in addition to $\R_{0,1}$ we need to distinguish the following cases:
+\begin{itemize}
+\item \textit{distinct eigenvalues} $\lambda_i \neq \lambda_j \, \Leftrightarrow \, \lambda_i' \neq \lambda_j', \, i\neq j$: 
+\begin{align*}
+ \tilde{\R}_{0,2} &= \diag(1,-1,-1)\, :&
+ \potentialEnergy(\R_{0,2}) &= 2 \lambda_1,&
+ \text{eig}\big( \differential^2\potentialEnergy(\R_{0,2}) \big) &= \{ -\lambda_1, \lambda_3 \!-\! \lambda_1, \lambda_2 \!-\! \lambda_1 \}
+\\
+ \tilde{\R}_{0,3} &= \diag(-1,1,-1)\, :&
+ \potentialEnergy(\R_{0,3}) &= 2 \lambda_2,&
+ \text{eig}\big( \differential^2\potentialEnergy(\R_{0,3}) \big) &= \{ \lambda_3\!-\!\lambda_2, -\lambda_2, \lambda_1 \!-\! \lambda_2 \}
+\\
+ \tilde{\R}_{0,4} &= \diag(-1,-1,1)\, :&
+ \potentialEnergy(\R_{0,4}) &= 2 \lambda_3,&
+ \text{eig}\big( \differential^2\potentialEnergy(\R_{0,4}) \big) &= \{ \lambda_2\!-\!\lambda_3, \lambda_1 \!-\! \lambda_3, -\lambda_3 \}
+\end{align*}
+%So the Hessian $\nabla^2 \potentialEnergy = X D X^\top$ for each of theses stationary points has at least one negative eigenvalue which makes these points either maxima or saddle points.
+%If $\mat{\Lambda} := \diag(\lambda_1, \lambda_2, \lambda_3) > 0$ then $\R = \idMat[3]$ is the only minimum as the Hessian at the remaining critical points (which can be regarded as "$180^\circ$ away" from the identity) has at least one negative eigenvalue.
+
+\item \textit{double eigenvalue} $\lambda_1 = \lambda_2 \neq \lambda_3$: the function $\potentialEnergy$ is stationary at the point $\R_{0,4}$ and on the circular submanifold
+\begin{multline*}
+ \tilde{\R}_{0,5} = \begin{bmatrix} -c & s & 0 \\ s & c & 0 \\ 0 & 0 & -1 \end{bmatrix}, \ c^2 + s^2 = 1:
+\\
+ \potentialEnergy(\R_{0,5}) = 2 \lambda_1,
+\qquad
+ \text{eig}\big( \nabla^2\potentialEnergy(\R_{0,5}) \big) = \{ -\lambda_1, \lambda_3-\lambda_1, 0 \}
+\end{multline*}
+which includes the points $\R_{0,2}$ and $\R_{0,3}$.
+For the cases $\lambda_1 = \lambda_3 \neq \lambda_2$ and $\lambda_2 = \lambda_3 \neq \lambda_1$ we have analogous results.
+
+\item \textit{triple eigenvalue} $\lambda_1 = \lambda_2 = \lambda_3 \Rightarrow \mat{\Lambda}' = \bodyMOSp{}{} = \tfrac{1}{2} \lambda_1 \idMat[3], \, \mat{X} = \idMat[3]$:
+The function $\potentialEnergy$ is stationary on the spherical submanifold
+\begin{multline*}
+ \R_{0,6} =
+ \begin{bmatrix}
+  1 - 2(a_2^2 + a_3^2) & 2 a_2 a_1 & 2 a_1 a_3 \\
+  2 a_1 a_2 & 1 - 2(a_1^2 + a_3^2) & 2 a_2 a_3 \\
+  2 a_1 a_3 & 2 a_2 a_3 & 1 - 2(a_1^2 + a_2^2) \\
+ \end{bmatrix}, \ a_1^2 + a_2^2 + a_3^2 = 1 \, :
+\\
+ \potentialEnergy(\R_{0,6}) = 2 \lambda_1, 
+\qquad
+ \text{eig}\big( \nabla^2\potentialEnergy(\R_{0,6}) \big) = \{ -\lambda_1, 0, 0 \}
+\end{multline*}
+which includes $\tilde{\R}_{0,2}$, $\tilde{\R}_{0,3}$ and $\tilde{\R}_{0,4}$
+The matrix $\R_{0,6}$ is a $180^\circ$ rotation about the unit axis $\tuple{a} = [a_1, a_2, a_3]^\top$. 
+\end{itemize}
+If one or more eigenvalues are zero we have even more critical points
+\begin{itemize}
+\item \textit{one zero eigenvalue} $\lambda_3 = 0$: the function $\potentialEnergy$ is stationary on the circular submanifold
+\begin{multline*}
+ \tilde{\R}_{0,7} = \begin{bmatrix} c & -s & 0 \\ s & c & 0 \\ 0 & 0 & 1 \end{bmatrix}, \ c^2 + s^2 = 1:
+\\
+ \potentialEnergy(\R_{0,7}) = 0,
+\qquad
+ \text{eig}\big( \nabla^2\potentialEnergy(\R_{0,5}) \big) = \{ \lambda_1, \lambda_2, 0 \}
+\end{multline*}
+which includes the points $\R_{0,1} = \idMat[3]$ and $\R_{0,4}$.
+
+\item \textit{two zero eigenvalues} $\lambda_2 = \lambda_3 = 0$: the function $\potentialEnergy$ is stationary on the spherical submanifold
+\begin{multline*}
+ \tilde{\R}_{0,8} = \begin{bmatrix} \quatw^2-\quaty^2-\quatz^2 & -2\quatw\quatz & 2\quatw\quaty \\ 2\quatw\quatz & \quatw^2+\quaty^2-\quatz^2 & 2\quaty\quatz \\ -2\quatw\quaty & 2\quaty\quatz & \quatw^2-\quaty^2+\quatz^2 \end{bmatrix}, \ \quatw^2+\quaty^2+\quatz^2 = 1:
+\\
+ \potentialEnergy(\R_{0,8}) = 0,
+\qquad
+ \text{eig}\big( \nabla^2\potentialEnergy(\R_{0,8}) \big) = \{ \lambda_1, 0, 0 \}
+\end{multline*}
+which includes the points $\R_{0,1} = \idMat[3]$ and $\R_{0,3}$, $\R_{0,4}$.
+
+\item \textit{three zero eigenvalues} $\lambda_3 = \lambda_2 = \lambda_3 = 0 \ \Rightarrow \ \bodyMOS{}{} = \bodyMOSp{}{} = \mat{0}$: the function $\potentialEnergy$ degenerates to a constant $\potentialEnergy(\R) = 0 \, \forall \, \R \in \SpecialOrthogonalGroup(3)$.
+\end{itemize}
+Comparing the eigenvalues $\text{eig}(\nabla^2\potentialEnergy)$ of the Hessians at the critical points, it is clear that the function $\potentialEnergy$ always has exactly one minimum and exactly one maximum, i.e.\ all other critical points are saddles, independently of the signs of $\lambda_1$, $\lambda_2$ and $\lambda_3$.
+If one or more $\lambda_i = 0$ or $\lambda_i=\lambda_j$ then the minimum or maximum is taken not on a single point but on a one or two-dimensional submanifold.
+
+The most useful case for the following is $\lambda_1, \lambda_2, \lambda_3 > 0$, i.e.\ $\bodyMOS{}{}$ is positive definite and $\R = \idMat[3]$ is the global minimum of $\potentialEnergy$.
+It is also worth noting that for $\bodyMOS{}{}{} = \idMat[3]$ the function $\potentialEnergy$ is related to the angle $\theta$ of the rotation matrix $\R$ by $\potentialEnergy = \tfrac{1}{2} \tr(\idMat[3] - \R) = 1 - \cos\theta$.
+\end{Example}

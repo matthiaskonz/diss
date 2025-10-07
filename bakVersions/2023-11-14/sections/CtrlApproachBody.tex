@@ -1,0 +1,145 @@
+\section{Approach 2: Body based approach}\label{sec:CtrlApproachBody}
+The previous approach for the design of a closed loop has a vivid interpretation for the control energies and parameters.
+However, the total energy $\totalEnergy$ does not, in general, serve as a Lyapunov function.
+In this section we attempt to modify the energies to account for this.
+
+\subsection{Free rigid body}\label{sec:CtrlApproachBodySingleBody}
+Using the configuration error $\bodyHomoCoordE{}{} = \bodyHomoCoordR{}{}^{-1} \bodyHomoCoord{}{}$ and its velocity $\bodyVelE{}{} = \bodyHomoCoordE{}{}^{-1} \bodyHomoCoordEd{}{} = \bodyVel{}{} - \Ad{\bodyHomoCoordE{}{}}^{-1} \bodyVelR{}{}$ we modify the energies from \autoref{sec:CtrlApproachParticles} to
+\begin{subequations}\label{eq:RBCtrlEnergiesBody}
+\begin{align}
+ \potentialEnergyC 
+ &= \tfrac{1}{2} \norm[\bodyStiffMatCp{}{}]{ (\bodyHomoCoordE{}{} - \idMat[4] )^\top}^2,&
+ \bodyStiffMatCp{}{} &\in \SymMatP(4),
+\\
+ \dissFktC 
+ &= \tfrac{1}{2} \norm[\bodyDissMatCp{}{}]{\bodyHomoCoordEd{}{}^\top}^2
+  = \tfrac{1}{2} \norm[\bodyDissMatCp{}{}]{\wedOp(\bodyVelE{}{})^\top}^2
+  = \tfrac{1}{2} \bodyVelE{}{}^\top \bodyDissMatC{}{} \bodyVelE{}{},&
+ \bodyDissMatCp{}{} &\in \SymMatP(4),
+\\
+ \accEnergyC 
+ &= \tfrac{1}{2} \norm[\bodyInertiaMatCp{}{}]{\bodyHomoCoordEdd{}{}^\top}^2
+  = \tfrac{1}{2} \norm[\bodyInertiaMatCp{}{}]{(\wedOp(\bodyVelEd{}{}) + \wedOp(\bodyVelE{}{})^2)^\top}^2,&
+%  = \tfrac{1}{2} \bodyVelEd{}{}^\top \wedMatOp(\bodyInertiaMatCp{}{}) \bodyVelEd{}{} + \bodyVelEd{}{}^\top \wedMatOp(\wedOp(\bodyVelE{}{}) \bodyInertiaMatCp{}{}) \bodyVelE{}{} + \tfrac{1}{2} \bodyVelE{}{}^\top \wedMatOp(\wedOp(\bodyVelE{}{}) \bodyInertiaMatCp{}{} \wedOp(\bodyVelE{}{})^\top) \bodyVelE{}{}
+ \bodyInertiaMatCp{}{} &\in \SymMatP(4),
+\\
+ \kineticEnergyC
+ &= \tfrac{1}{2} \norm[\bodyInertiaMatCp{}{}]{\bodyHomoCoordEd{}{}^\top}^2
+  = \tfrac{1}{2} \norm[\bodyInertiaMatCp{}{}]{\wedOp(\bodyVelE{}{})^\top}^2
+  = \tfrac{1}{2} \bodyVelE{}{}^\top \bodyInertiaMatC{}{} \bodyVelE{}{}
+\end{align}
+\end{subequations}
+with usual substitution $\bodyInertiaMatC{}{} = \veeMatOp(\bodyInertiaMatCp{}{})$.
+The closed loop forces are again defined as the derivatives of their corresponding energies.
+Using $\spdiff[\bodyVelE{}{}]{\bodyVel{}{}} = \idMat[6]$ we have
+\begin{subequations}\label{eq:RBCtrlBody}
+\begin{align}
+ \genForceStiffC
+ &= \differential \potentialEnergyC
+ = \veeTwoOp \big( (\idMat[4] - \bodyHomoCoordE{}{}^{-1}) \bodyStiffMatCp{}{} \big)
+\\
+ \genForceDissC
+ &= \pdiff[\dissFktC]{\sysVel}
+ = \veeTwoOp \big( \wedOp(\bodyVelE{}{}) \bodyDissMatCp{}{} \big)
+ = \bodyDissMatC{}{} \bodyVelE{}{}
+\\
+ \genForceInertiaC
+ &= \pdiff[\accEnergyC]{\sysVeld}
+ = \veeTwoOp \big( \big(\wedOp(\bodyVelEd{}{}) + \wedOp(\bodyVelE{}{})^2 \big) \bodyInertiaMatCp{}{} \big) 
+ = \bodyInertiaMatC{}{} \bodyVelEd{}{} - \ad{\bodyVelE{}{}}^\top \bodyInertiaMatC{}{} \bodyVelE{}{}
+\end{align}
+\end{subequations}
+% more explicitly
+% \begin{subequations}
+% \begin{align}
+%  \genForceStiffC
+%  &= \begin{bmatrix} \kc \RE^\top (\rE + (\RE-\idMat[3])\hc) \\ \kc \wedOp(\hc) \RE^\top \rE + 2 \veeOp\big( \veeMatOp(\kapc) (\RE-\idMat[3]) \big) \end{bmatrix}
+% \\
+%  \genForceDissC 
+%  &= \underbrace{\begin{bmatrix} \dc \,\idMat[3] & \!\!\dc \wedOp(\lc)^\top \\ \dc \wedOp(\lc) & \sigc \end{bmatrix}}_{\wedMatOp(\bodyDissMatCp{}{})} \underbrace{\begin{bmatrix} \vE \\ \wE \end{bmatrix}}_{\sysVelE}
+% \\
+%  \genForceInertiaC
+%  &= \underbrace{\begin{bmatrix} \mc \idMat[3] & \!\!\mc \wedOp(\sc)^\top \\ \mc \wedOp(\sc) & \Jc \end{bmatrix}}_{\wedMatOp(\bodyInertiaMatCp{}{})} \underbrace{\begin{bmatrix} \vEd \\ \wEd \end{bmatrix}}_{\sysVelEd}
+%  +  \underbrace{\begin{bmatrix} \mc \wedOp(\wE) & -\mc \wedOp(\wE) \wedOp(\sc) \\ \mc \wedOp(\sc) \wedOp(\wE) & \wedOp(\veeMatOp(\Jc)\wE) \end{bmatrix}}_{\ConnMatC(\sysVelE)} \begin{bmatrix} \vE \\ \wE \end{bmatrix}
+% \end{align} 
+% \end{subequations}
+A crucial result of this approach is that the resulting closed loop equations can be written as \textit{autonomous} equations for the configuration $\bodyHomoCoordE{}{}$ and velocity error $\sysVelE{}{}$ as
+\begin{align}\label{eq:ClosedLoopRBApproach2}
+ \bodyHomoCoordEd{}{} = \bodyHomoCoord{}{} \wedOp(\bodyVelE{}{}),
+\qquad
+ \bodyInertiaMatC{}{} \bodyVelEd{}{} - \ad{\bodyVelE{}{}}^\top \bodyInertiaMatC{}{} \bodyVelE{}{} + \bodyDissMatC{}{} \bodyVelE{}{} + \veeTwoOp \big( (\idMat[4] - \bodyHomoCoordE{}{}^{-1}) \bodyStiffMatCp{}{} \big) = \tuple{0}.
+\end{align}
+A quite similar (though restricted to $\bodyCOM{}{}=\bodyCOD{}{}=\bodyCOS{}{}=\tuple{0}$) closed loop for the free rigid body is proposed in \cite{Koditschek:TotalEnergy}, though motivated from a Lie group point of view.
+
+\paragraph{Total energy.}
+The change of the total energy $\totalEnergyC = \kineticEnergyC + \potentialEnergyC$ along the solutions of the closed loop \eqref{eq:ClosedLoopRBApproach2} is 
+\begin{align}\label{eq:CtrlTotalEnergyRBAppraoch2}
+ \totalEnergyCd 
+% &= \bodyVelE{}{}^\top \bodyInertiaMatC{}{} \bodyVelEd{}{} + \tr\big( (\bodyHomoCoordE{}{} - \idMat[4]) \bodyStiffMatCp{}{} \bodyHomoCoordEd{}{}^\top \big)
+ &= \bodyVelE{}{}^\top \big( \bodyInertiaMatC{}{} \bodyVelEd{}{} + \veeTwoOp\big( (\idMat[4] - \bodyHomoCoordE{}{}^{-1}) \bodyStiffMatCp{}{} \big) \big)
+ = \underbrace{\bodyVelE{}{}^\top \ad{\bodyVelE{}{}}^\top}_{=\,0} \bodyInertiaMatC{}{} \bodyVelE{}{} - \bodyVelE{}{}^\top \bodyDissMatC{}{} \bodyVelE{}{}
+ = -2\dissFktC.
+\end{align}
+Note that $\bodyStiffMatCp{}{}, \bodyDissMatCp{}{}, \bodyInertiaMatCp{}{} \in \SymMatP(4)$ imply the positive definiteness of the total energy $\totalEnergyC$ and the dissipation function $\dissFktC$.
+Using this with the techniques from \cite{Koditschek:TotalEnergy}, one can show that ``almost'' all solutions of \eqref{eq:ClosedLoopRBApproach2} converge to $\bodyHomoCoordE{}{} = \idMat[4]$ and $\bodyVelE{}{} = \tuple{0}$.
+The remaining solutions are the constant ($\bodyVelE{}{} = \tuple{0}$) configurations $\bodyHomoCoordE{}{} \neq \idMat[4]$ which are critical points of the potential $\potentialEnergyC$, see \autoref{sec:RBStiffness}.
+Roughly speaking, the configuration in which the body is $180^\circ$ rotated to its reference.
+
+
+\subsection{Rigid body systems}\label{sec:CtrlApproachBodyRBS}
+For a rigid body system, let the body configurations $\bodyHomoCoord{\BidxI}{\BidxII} = \bodyHomoCoord{\BidxI}{\BidxII}(\sysCoord)$ and the body velocities $\bodyVel{\BidxI}{\BidxII} = \bodyJac{\BidxI}{\BidxII}(\sysCoord) \sysVel$ be parameterized by the configuration $\sysCoord$ and velocity coordinates $\sysVel$.
+So the body configuration errors $\bodyHomoCoordE{\BidxI}{\BidxII}$ and body velocity errors $\bodyVelE{\BidxI}{\BidxII}$ may be expressed as
+\begin{subequations}
+\begin{align}
+ \bodyHomoCoordE{\BidxI}{\BidxII}(\sysCoord, \sysCoordR) &= \bodyHomoCoord{\BidxI}{\BidxII}^{-1}(\sysCoordR) \bodyHomoCoord{\BidxI}{\BidxII}(\sysCoord),
+\\
+ \bodyVelE{\BidxI}{\BidxII}(\sysCoord, \sysVel, \sysCoordR, \sysVelR) &= \bodyJac{\BidxI}{\BidxII}(\sysCoord) \sysVel - \Ad{\bodyHomoCoordE{\BidxI}{\BidxII}(\sysCoord, \sysCoordR)}^{-1} \bodyJacR{\BidxI}{\BidxII}(\sysCoordR) \sysVelR.
+% \\
+%  \bodyVelEd{\BidxI}{\BidxII} &= \bodyJac{\BidxI}{\BidxII} \sysVeld
+%  - \Ad{\bodyHomoCoordE{\BidxI}{\BidxII}}^{-1} \bodyJacR{\BidxI}{\BidxII} \sysVelRd 
+%  + \bodyJacd{\BidxI}{\BidxII} \sysVel
+%  - \Ad{\bodyHomoCoordE{\BidxI}{\BidxII}}^{-1} \bodyJacRd{\BidxI}{\BidxII} \sysVelR
+%  + \ad{\bodyJac{\BidxI}{\BidxII} \sysVel - \Ad{\bodyHomoCoordE{\BidxI}{\BidxII}}^{-1} \bodyJacR{\BidxI}{\BidxII} \sysVelR} \Ad{\bodyHomoCoordE{\BidxI}{\BidxII}}^{-1} \bodyJacR{\BidxI}{\BidxII} \sysVelR
+\end{align}
+\end{subequations}
+As done in \autoref{sec:CtrlApproachParticlesRBS}, the system energies are simply the sum over the energies associated with the absolute and relative body configurations:
+\begin{subequations}
+\begin{align}
+ \potentialEnergyC &= \sum\nolimits_{\BidxI,\BidxII} \tfrac{1}{2} \norm[\bodyStiffMatCp{\BidxI}{\BidxII}]{ (\bodyHomoCoordE{\BidxI}{\BidxII} - \idMat[4] )^\top}^2,
+\\
+ \dissFktC &= \sum\nolimits_{\BidxI,\BidxII} \tfrac{1}{2} \norm[\bodyDissMatCp{\BidxI}{\BidxII}]{\wedOp(\bodyVelE{\BidxI}{\BidxII})^\top}^2,
+\\
+ \accEnergyC &= \sum\nolimits_{\BidxI,\BidxII} \tfrac{1}{2} \norm[\bodyInertiaMatCp{\BidxI}{\BidxII}]{(\wedOp(\bodyVelEd{\BidxI}{\BidxII}) + \wedOp(\bodyVelE{\BidxI}{\BidxII})^2)^\top}^2,
+\\
+ \kineticEnergyC &= \sum\nolimits_{\BidxI,\BidxII} \tfrac{1}{2} \norm[\bodyInertiaMatCp{\BidxI}{\BidxII}]{\wedOp(\bodyVelE{\BidxI}{\BidxII})^\top}^2.
+\end{align}
+\end{subequations}
+%The resulting force vectors (using $\spdiff[\bodyVelE{\BidxI}{\BidxII}]{\sysVel} = \bodyJac{\BidxI}{\BidxII}$) are
+
+\begin{RedBox}
+Overall, the desired controlled system for the body based approach takes the form
+\begin{subequations}\label{eq:CtrlApproachBody}
+\begin{align}
+ \genForceInertiaC + \genForceDissC + \genForceStiffC = \tuple{0}
+\end{align}
+where
+\begin{align}
+ \genForceStiffC
+ &= \differential \potentialEnergyC
+ = \sum\nolimits_{\BidxI,\BidxII} \bodyJac{\BidxI}{\BidxII}^\top \veeTwoOp \big( (\idMat[4] - \bodyHomoCoordE{\BidxI}{\BidxII}^{-1}) \bodyStiffMatCp{\BidxI}{\BidxII} \big),
+\\
+ \genForceDissC
+ &= \pdiff[\dissFktC]{\sysVel}
+% = \sum\nolimits_{\BidxI,\BidxII} \bodyJac{\BidxI}{\BidxII}^\top \veeTwoOp \big( \wedOp(\bodyVelE{\BidxI}{\BidxII}) \bodyDissMatCp{\BidxI}{\BidxII} \big)
+ = \sum\nolimits_{\BidxI,\BidxII} \bodyJac{\BidxI}{\BidxII}^\top \bodyDissMatC{\BidxI}{\BidxII} \bodyVelE{\BidxI}{\BidxII}
+\\
+ \genForceInertiaC
+ &= \pdiff[\accEnergyC]{\sysVeld}
+% = \sum\nolimits_{\BidxI,\BidxII} \bodyJac{\BidxI}{\BidxII}^\top \veeTwoOp \big( \big(\wedOp(\bodyVelEd{\BidxI}{\BidxII}) + \wedOp(\bodyVelE{\BidxI}{\BidxII})^2 \big) \bodyInertiaMatCp{\BidxI}{\BidxII} \big)
+ = \sum\nolimits_{\BidxI,\BidxII} \bodyJac{\BidxI}{\BidxII}^\top \big( \bodyInertiaMatC{\BidxI}{\BidxII} \bodyVelEd{\BidxI}{\BidxII} - \ad{\bodyVelE{\BidxI}{\BidxII}}^\top \bodyInertiaMatC{\BidxI}{\BidxII} \bodyVelE{\BidxI}{\BidxII} \big)
+\end{align}
+\end{subequations} 
+\end{RedBox}
+
+The change of the total energy $\totalEnergyC = \kineticEnergyC + \potentialEnergyC$ along the solutions of \eqref{eq:CtrlApproachBody} does \textit{not} take a similar form to \eqref{eq:CtrlTotalEnergyRBAppraoch2}.
+Consequently there is no simple conclusion about stability.

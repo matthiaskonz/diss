@@ -1,0 +1,41 @@
+\section{Constant reference and Linearization}\label{sec:CtrlLinearization}
+\paragraph{Constant reference.}
+For a constant reference configuration $\sysCoordR = \const \, \Rightarrow \, \sysVelR, \sysVelRd = \tuple{0}$, the three control templates lead identical system
+\begin{subequations}\label{eq:ClosedLoopStab}
+\begin{align}
+ \sysCoordd = \kinMat(\sysCoord) \sysVel,
+\qquad
+ \sysInertiaMatC(\sysCoord) \sysVeld + \gyroForceC(\sysCoord, \sysVel) + \sysDissMatC(\sysCoord)\sysVel + \differential \potentialEnergyC(\sysCoord, \sysCoordR) = \tuple{0}
+\end{align}
+where
+\begin{align}
+ \sysInertiaMatC(\sysCoord) &= \sumBodiesAB \big(\bodyJac{\BidxI}{\BidxII}(\sysCoord)\big)^\top \bodyInertiaMatC{\BidxI}{\BidxII} \bodyJac{\BidxI}{\BidxII}(\sysCoord),
+\\
+ \gyroForceC(\sysCoord, \sysVel) &= \sumBodiesAB \big(\bodyJac{\BidxI}{\BidxII}(\sysCoord)\big)^\top \big(\bodyInertiaMat{\BidxI}{\BidxII} \bodyJacd{\BidxI}{\BidxII}(\sysCoord, \sysVel) - \ad{\bodyJac{\BidxI}{\BidxII}(\sysCoord)\sysVel}^\top \bodyInertiaMat{\BidxI}{\BidxII}\bodyJac{\BidxI}{\BidxII}(\sysCoord) \big) \sysVel
+\\
+ \sysDissMatC(\sysCoord) &= \sumBodiesAB \big(\bodyJac{\BidxI}{\BidxII}(\sysCoord)\big)^\top \bodyDissMatC{\BidxI}{\BidxII} \bodyJac{\BidxI}{\BidxII}(\sysCoord),
+\\
+ \differential \potentialEnergyC(\sysCoord, \sysCoordR) &= \sumBodiesAB \big(\bodyJac{\BidxI}{\BidxII}(\sysCoord)\big)^\top \veeTwoOp \big( (\idMat[4] - \bodyHomoCoordE{\BidxI}{\BidxII}^{-1}(\sysCoord,\sysCoordR)) \bodyStiffMatCp{\BidxI}{\BidxII} \big)
+\end{align} 
+\end{subequations}
+The total energy $\totalEnergyC = \tfrac{1}{2} \sysVel^\top \sysInertiaMatC \sysVel + \potentialEnergyC$ is a Lyapunov function for this system if the system inertia matrix $\sysInertiaMatC$ and the potential energy $\potentialEnergyC$ are positive definite, and the system dissipation matrix $\sysDissMatC$ is positive semi-definite. 
+
+\paragraph{Linearization.}
+Assuming that the configuration of the system is close to its reference, i.e.\ $\sysCoord \approx \sysCoordR$.
+The first order approximation (see \autoref{sec:LinAboutTraj}) of \eqref{eq:ClosedLoopStab} with $\LinErrorCoord = \kinMat^+(\sysCoordR) (\sysCoord - \sysCoordR)$ is
+\begin{subequations}\label{eq:ClosedLoopLin}
+\begin{align}
+ \sysInertiaMatC_{\!0} \LinErrorCoorddd + \sysDissMatC_{\!0} \LinErrorCoordd + \sysStiffMatC_{\!0} \LinErrorCoord = \tuple{0}
+\end{align}
+where
+\begin{alignat}{3}
+ \sysInertiaMatC_{\!0} &= \sysInertiaMatC(\sysCoordR)& 
+ &= \sumBodiesAB \big(\bodyJac{\BidxI}{\BidxII}(\sysCoordR)\big)^\top \bodyInertiaMatC{\BidxI}{\BidxII} \, \bodyJac{\BidxI}{\BidxII}(\sysCoordR),
+\\
+ \sysDissMatC_{\!0} &= \sysDissMatC(\sysCoordR)&
+ &= \sumBodiesAB \big(\bodyJac{\BidxI}{\BidxII}(\sysCoordR)\big)^\top \bodyDissMatC{\BidxI}{\BidxII} \, \bodyJac{\BidxI}{\BidxII}(\sysCoordR),
+\\
+ \sysStiffMatC_{\!0} &= \differential^2 \potentialEnergyC(\sysCoordR, \sysCoordR)&
+ &= \sumBodiesAB \big(\bodyJac{\BidxI}{\BidxII}(\sysCoordR)\big)^\top \bodyStiffMatC{\BidxI}{\BidxII} \, \bodyJac{\BidxI}{\BidxII}(\sysCoordR)
+\end{alignat} 
+\end{subequations}

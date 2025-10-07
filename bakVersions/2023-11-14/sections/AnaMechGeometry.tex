@@ -1,0 +1,583 @@
+\section{Geometry and kinematics}\label{sec:AnaMechGeometry}
+The particle configuration space $\particleConfigSpace = \{ \particleCoord \in \RealNum^{3\numParticles} \, | \, \particleGeoConstraint(\particleCoord) = \tuple{0} \}$ can be seen as an embedded differentiable manifold with $\dim\particleConfigSpace = 3\numParticles - \rank\pdiff[\particleGeoConstraint]{\particleCoord} = \dimConfigSpace$.
+We call the manifold \textit{nonlinear}, if it is \textit{not homeomorphic} to $\RealNum^{\dimConfigSpace}$, i.e. there exists no global, continuous function $\RealNum^{\dimConfigSpace} \rightarrow \particleConfigSpace$ that has a continuous inverse (a global homeomorphism).
+The common way to tackle this in differential geometry is to use an atlas, a set of overlapping \textit{local} charts.
+For the previous Example \ref{Example:ThreeParticles}, this was done four different charts in \cite{Grafarend:AtlasSO3}.
+In this work we will not pursue this path.
+
+\subsection{Redundant configuration coordinates}
+Another way for a global parameterization of nonlinear configuration manifolds is motivated from the \textit{Whitney embedding theorem} (see e.g.\ \cite[Theo.\,6.14]{Lee:SmoothManifolds}), that states: \textit{Every smooth manifold of dimension $\dimConfigSpace$ can be smoothly embedded in the Euclidean space $\RealNum^{2\dimConfigSpace}$.}
+Note that $2\dimConfigSpace$ is a worst case bound, i.e.\ for a particular example a lower dimension for the embedding space might work and a higher dimension is permitted anyway.
+In the notation of this work, we use $\numCoord > 0$ generalized coordinates $\sysCoord(t) = [\sysCoordCoeff{1}(t),\ldots,\sysCoordCoeff{\numCoord}(t)]^\top \in \RealNum^\numCoord$ that might be constrained by $\numGeoConst \geq 0$ smooth functions of the form $\geoConstraint(\sysCoord) = [\geoConstraintCoeff{1}(\sysCoord), \ldots, \geoConstraintCoeff{\numGeoConst}(\sysCoord)]^\top = \tuple{0}$.
+For $\numGeoConst > 0$ these coordinates are not independent and are commonly called \textit{redundant}.
+The set of mutually admissible coordinates is
+\begin{align}
+ \configSpace = \{ \sysCoord \in \RealNum^{\numCoord} \, | \, \geoConstraint(\sysCoord) = \tuple{0} \}
+\end{align}
+with $\dim \configSpace = \numCoord - \rank \pdiff[\geoConstraint]{\sysCoord} = \dimConfigSpace$.
+By the Whitney embedding theorem, for a suitable number of coordinates $\numCoord$ and suitable constraints $\geoConstraint(\sysCoord) = \tuple{0}$, this manifolds is homeomorphic to the particle configuration space $\configSpace \cong \particleConfigSpace$.
+This means there is a global, invertible function $\particleCoord(\sysCoord)$ from the coordinates to the particle positions.
+
+\subsection{Minimal velocity coordinates}
+For the following it is crucial to note that a geometric constraint is equivalent to its derivative supplemented with a suitable initial condition
+\begin{subequations}
+\begin{align}
+ \label{eq:GeoConstraint}
+ &&
+ \geoConstraintCoeff{\CidxI}(\sysCoord) &= 0
+\\
+ \label{eq:DiffGeoConstraint}
+ &\Leftrightarrow&
+ \pdiff[\geoConstraintCoeff{\CidxI}]{\sysCoordCoeff{\GidxI}}(\sysCoord) \sysCoordCoeffd{\GidxI} &= 0,&
+ \geoConstraintCoeff{\CidxI}(\sysCoord_0) &= 0
+\\
+ &\Leftrightarrow&
+ \pdiff[\geoConstraintCoeff{\CidxI}]{\sysCoordCoeff{\GidxI}}(\sysCoord) \sysCoordCoeffdd{\GidxI} + \frac{\partial^2 \geoConstraintCoeff{\CidxI}}{\partial \sysCoordCoeff{\GidxI} \partial \sysCoordCoeff{\GidxII}}(\sysCoord) \sysCoordCoeffd{\GidxII} \sysCoordCoeffd{\GidxI} &= 0,&
+ \geoConstraintCoeff{\CidxI}(\sysCoord_0) &= 0, \ \pdiff[\geoConstraintCoeff{\CidxI}]{\sysCoordCoeff{\GidxI}}(\sysCoord_0) \sysCoordCoeffd{\GidxI}_0 = 0
+\\
+ &&
+ &\ldots \nonumber
+\end{align}
+\end{subequations}
+where $\sysCoord_0 = \sysCoord(t_0)$.
+Even though \eqref{eq:GeoConstraint} might be nonlinear, its derivative \eqref{eq:DiffGeoConstraint} is always \textit{linear} in the velocities $\sysCoordd$.
+So here it is reasonable to choose \textit{minimal velocity coordinates}:
+Let $\kinMat(\sysCoord) \in \RealNum^{\numCoord\times\dimConfigSpace}$ be a matrix with the properties $\pdiff[\geoConstraint]{\sysCoord} \kinMat = \mat{0}$ and $\rank \kinMat = \dimConfigSpace$.
+The first property of $\kinMat(\sysCoord)$ is that these columns of $\kinMat(\sysCoord)$ are orthogonal to the rows of $\pdiff[\geoConstraint]{\sysCoord}(\sysCoord)$.
+The second property implies that the columns of $\kinMat(\sysCoord)$ are linearly independent.
+So the columns of $\kinMat(\sysCoord)$ can be interpreted as a \textit{basis vectors} for the tangent space $\Tangent[\sysCoord] \configSpace$.
+We can capture all allowed velocities $\sysCoordd(t)$ by the minimal velocity coordinates $\sysVel(t) \in \RealNum^{\dimConfigSpace}$ through
+\begin{align}\label{eq:MyKinematics}
+ \sysCoordd = \kinMat(\sysCoord) \sysVel
+\end{align}
+This kinematic relation \eqref{eq:MyKinematics} ensures that the time derivative \eqref{eq:DiffGeoConstraint} of the geometric constraint is fulfilled, and consequently the geometric constraint only has to be imposed on the initial condition $\geoConstraint(\sysCoord(t_0)) = \tuple{0}$.
+
+\fixme{Existence for A? guaranteed for Lie groups: the Lie algebra at the identity can be translated around the manifold by the group operation}
+
+\fixme{Construction of $\kinMat$ by matrix inversion}
+
+\begin{Example}
+Consider a single particle constrained to a circle of radius $\rho$ as illustrated in \autoref{fig:ParticleOnCircle}.
+
+\begin{minipage}{\textwidth}
+ \centering
+ \input{graphics/ParticleOnCircle.pdf_tex}
+ \captionof{figure}{Particle on a circle}
+ \label{fig:ParticleOnCircle}
+\end{minipage}
+
+We use the its Cartesian position $[\sysCoordCoeff{1}, \sysCoordCoeff{2}]^\top \in \RealNum^2$ constrained by $\geoConstraintCoeff{} = (\sysCoordCoeff{1})^2 + (\sysCoordCoeff{2})^2 - \rho^2 = 0$ as configuration coordinates.
+A reasonable choice for the kinematics matrix $\kinMat$ is motivated from
+\begin{align}
+ \underbrace{\big[ 2\sysCoordCoeff{1} \ 2\sysCoordCoeff{2} \big]}_{\pdiff[\geoConstraintCoeff{}]{\sysCoord}}
+ \underbrace{\begin{bmatrix} -\sysCoordCoeff{2} \\ \sysCoordCoeff{1} \end{bmatrix}}_{\kinMat}
+ = 0
+\end{align}
+
+
+\end{Example}
+
+\begin{Example}\label{Example:KinMatSO3}
+Consider again the system from Example \ref{Example:ThreeParticles}.
+Instead of parameterizing the rotation matrix $\R$ by minimal coordinates we now take its 9 coefficients $\sysCoord = [\Rxx, \Ryx, \Rzx, \Rxy, \Ryy, \Rzy, \Rxz, \Ryz, \Rzz]^\top \in \RealNum^{9}$ as configuration coordinates.
+The constraints $\R^\top \R = \idMat[3]$ and $\det\R = 1$ read
+\begin{align}\label{eq:constraintSO3}
+ \geoConstraint(\sysCoord) = 
+  \begin{bmatrix}
+  (\Rxx)^2 + (\Ryx)^2 + (\Rzx)^2 - 1 \\
+  (\Rxy)^2 + (\Ryy)^2 + (\Rzy)^2 - 1 \\
+  (\Rxz)^2 + (\Ryz)^2 + (\Rzz)^2 - 1 \\
+  \Rxy \Rxz + \Ryy \Ryz + \Rzy \Rzz \\
+  \Rxx \Rxz + \Ryx \Ryz + \Rzx \Rzz \\
+  \Rxx \Rxy + \Ryx \Ryy + \Rzx \Rzy \\
+  \Rxx \Ryy \Rzz + \Rxy \Ryz \Rzx + \Rxz \Ryx \Rzy - \Rxx \Ryz \Rzy - \Rxy \Ryx \Rzz - \Rxz \Ryy \Rzx - 1
+ \end{bmatrix}
+ = \tuple{0}.
+\end{align}
+The 9 conditions $\R^\top \R = \idMat[3]$ yields due to symmetry only 6 constraints and already imply $\det\R = \pm 1$.
+Since the determinant is a smooth function, the corresponding manifold must consist of two disjoint components, one with $\det\R = +1$ (proper rotations) and one with $\det\R=-1$ (rotations with reflection).
+So the additional constraint $\det\R = +1$ does not change the dimension of the configuration space.
+Formally this means $\rank\pdiff[\geoConstraint]{\sysCoord} = 6$ and consequently $\dim\configSpace = 9-6 = 3$.
+A kinematics matrix with $\pdiff[\geoConstraint]{\sysCoord} \kinMat = \mat{0}$ and $\rank\kinMat = 3$ is given by
+\begin{align}\label{eq:KinMatSO3}
+ \mat{A}(\sysCoord) =
+ \begin{bmatrix}
+  0 & -\Rxz & \Rxy \\
+  0 & -\Ryz & \Ryy \\
+  0 & -\Rzz & \Rzy \\
+  \Rxz & 0 & -\Rxx \\
+  \Ryz & 0 & -\Ryx \\
+  \Rzz & 0 & -\Rzx \\
+  -\Rxy & \Rxx & 0 \\
+  -\Ryy & \Ryx & 0 \\
+  -\Rzy & \Rzx & 0
+ \end{bmatrix}.
+\end{align}
+The resulting kinematic equation $\sysCoordd = \kinMat(\sysCoord) \sysVel$ can be reordered to the matrix equation $\Rd = \R \wedOp(\sysVel)$ by introducing the \textit{wedge operator} defined as
+\begin{align}
+ \wedOp \begin{bmatrix} \sysVelCoeff{1} \\ \sysVelCoeff{2} \\ \sysVelCoeff{3} \end{bmatrix} = \begin{bmatrix} 0 & -\sysVelCoeff{3} & \sysVelCoeff{2} \\ \sysVelCoeff{3} & 0 & -\sysVelCoeff{1} \\ -\sysVelCoeff{2} & \sysVelCoeff{1} & 0 \end{bmatrix}.
+\end{align}
+\end{Example}
+
+\paragraph{Some identities involving the pseudo-inverse.}
+For any matrix $\mat{S}\in\RealNum^{m\times n}$ there exists a unique \textit{(Moore-Penrose) pseudoinverse} $\mat{S}^+ \in \RealNum^{n\times m}$ determined by the following conditions \cite[Theo.\ 1]{Penrose:Pseudoinverse}:
+\begin{subequations}\label{eq:PenroseConditions}
+\begin{align}
+ \mat{S} \mat{S}^+ \mat{S} &= \mat{S},
+\\
+ \mat{S}^+ \mat{S} \mat{S}^+ &= \mat{S}^+,
+\\
+ (\mat{S} \mat{S}^+)^\top &= \mat{S} \mat{S}^+,
+\\
+ (\mat{S}^+ \mat{S})^\top &= \mat{S}^+ \mat{S}.
+\end{align}
+\end{subequations}
+If the matrix $\mat{S}$ has linearly independent columns, its pseudoinverse is $\mat{S}^+ = (\mat{S}^\top \mat{S})^{-1} \mat{S}^\top$.
+Similarly, if $\mat{S}$ has linearly independent rows, its pseudoinverse is $\mat{S}^+ = \mat{S}^\top (\mat{S} \mat{S}^\top)^{-1}$.
+
+Define $\kinBasisMat(\sysCoord) \in \RealNum^{\dimConfigSpace\times\numCoord}$ as $\kinBasisMat = \kinMat^+ = (\kinMat^\top \kinMat)^{-1} \kinMat^\top$, i.e. the pseudoinverse of the kinematics matrix $\kinMat$.
+Note that this implies $\kinBasisMat \kinMat = \idMat[\dimConfigSpace]$, but $\kinMat \kinBasisMat \neq \idMat[\numCoord]$.
+We also introduce the matrices $\geoConstraintMat = \pdiff[\geoConstraint]{\sysCoord}$ and $\InvGeoConstraintMat = \geoConstraintMat^+$.
+With $\geoConstraintMat\kinMat = \mat{0}$ and the Penrose conditions \eqref{eq:PenroseConditions}, we can show\footnote{$\InvGeoConstraintMat^\top \kinMat = (\InvGeoConstraintMat \geoConstraintMat \InvGeoConstraintMat)^\top \kinMat = \InvGeoConstraintMat^\top (\InvGeoConstraintMat \geoConstraintMat)^\top \kinMat = \InvGeoConstraintMat^\top \InvGeoConstraintMat \geoConstraintMat \kinMat = \mat{0}$} that $\InvGeoConstraintMat^\top \kinMat = \mat{0}$ and $\kinBasisMat^\top \geoConstraintMat = \mat{0}$.
+Furthermore, since $\rank\InvGeoConstraintMat = \rank\geoConstraintMat = \numCoord - \dimConfigSpace$ the columns of $\InvGeoConstraintMat(\sysCoord)$ span the complementary space $(\Tangent[\sysCoord]\configSpace)^\bot$ though they might not be a basis since the columns might not be linearly independent.
+
+The matrix $\mat{P} = \kinMat \kinBasisMat$ is an \textit{orthogonal projector}, i.e.\ $\mat{P}^2 = \mat{P}$ and $\mat{P}^\top = \mat{P}$ which result directly from the Penrose conditions \eqref{eq:PenroseConditions}.
+It is in fact the unique orthogonal projector from $\RealNum^\nu$ to the tangent space $\Tangent[\sysCoord]\configSpace$.
+The unique orthogonal projector to the complementary space $(\Tangent[\sysCoord]\configSpace)^\bot$ is $\mat{P}^\bot = \idMat[\numCoord] - \mat{P}$.
+On the other hand, since $\InvGeoConstraintMat$ spans the complementary space the complementary projector can also be expressed as $\mat{P}^\bot = \InvGeoConstraintMat \geoConstraintMat$.
+This leads to the identity
+\begin{align}\label{eq:ProjectionIdentity}
+ \underbrace{\kinMat \kinBasisMat}_{\mat{P}} \, + \, \underbrace{\InvGeoConstraintMat \geoConstraintMat}_{\mat{P}^\bot} = \idMat[\numCoord].
+\end{align}
+
+
+\subsection{Directional derivative and Hessian}
+Consider a function $\potentialEnergy : \RealNum^{\numCoord} \rightarrow \RealNum$ and a curve $\sysCoord : \RealNum \rightarrow \configSpace$.
+Since $\configSpace \subset \RealNum^{\numCoord}$, their composition $\potentialEnergy \circ \sysCoord = f : \RealNum \rightarrow \RealNum$ is a scalar function and has the the Taylor expansion
+\begin{multline}
+ \underbrace{\potentialEnergy(\sysCoord(t))}_{f(t)}
+ = \underbrace{\potentialEnergy(\sysCoord(0))}_{f(0)}
+  \, + \, t \underbrace{\pdiff[\potentialEnergy]{\sysCoordCoeff{\GidxI}}(\sysCoord(0)) \sysCoordCoeffd{\GidxI}(0)}_{\dot{f}(0)}
+ \\
+  + \tfrac{1}{2} t^2 \underbrace{\Big( \frac{\partial^2 \potentialEnergy}{\partial\sysCoordCoeff{\GidxII} \partial\sysCoordCoeff{\GidxI}}(\sysCoord(0)) \sysCoordCoeffd{\GidxI}(0) \sysCoordCoeffd{\GidxII}(0) + \pdiff[\potentialEnergy]{\sysCoordCoeff{\GidxI}}(\sysCoord(0)) \sysCoordCoeffdd{\GidxI}(0)\Big)}_{\ddot{f}(0)}
+  + \, \mathcal{O}(t^3).
+\end{multline}
+Now let the curve be parameterized by $\sysCoordd(t) = \kinMat(\sysCoord(t))\sysVel(t)$ and we use the shorthand notations $\sysCoordB = \sysCoord(0)$, $\sysVelB = \sysVel(0)$ and $\kinMatB = \kinMat(\sysCoord(0))$ to write
+\begin{multline}
+ \potentialEnergy(\sysCoord(t))
+ = \potentialEnergy(\sysCoordB)
+  + t \pdiff[\potentialEnergy]{\sysCoordCoeff{\GidxI}}(\sysCoordB) \kinMatCoeffB{\GidxI}{\LidxI} \sysVelCoeffB{\LidxI}
+\\
+  + \tfrac{1}{2} t^2 \Big( \frac{\partial^2 \potentialEnergy}{\partial\sysCoordCoeff{\GidxII} \partial\sysCoordCoeff{\GidxI}}(\sysCoordB) \kinMatCoeffB{\GidxI}{\LidxI} \kinMatCoeffB{\GidxII}{\LidxII} \sysVelCoeffB{\LidxI} \sysVelCoeffB{\LidxII} + \pdiff[\potentialEnergy]{\sysCoordCoeff{\GidxI}}(\sysCoordB) \Big( \pdiff[\kinMatCoeff{\GidxI}{\LidxI}]{\sysCoordCoeff{\GidxII}}(\sysCoordB) \kinMatCoeffB{\GidxII}{\LidxII} \sysVelCoeffB{\LidxI}\sysVelCoeffB{\LidxII} + \kinMatCoeffB{\GidxI}{\LidxI} \sysVelCoeffBd{\LidxI}\Big) \Big)
+  + \mathcal{O}(t^3)
+\end{multline}
+Introducing the notation
+\begin{align}\label{eq:DefBasisDiff}
+ \dirDiff{\LidxI} = \kinMatCoeff{\GidxI}{\LidxI} \pdiff{\sysCoordCoeff{\GidxI}}, \ \LidxI = 1,\ldots,\dimConfigSpace
+\end{align}
+for the derivative in the direction of the $\LidxI$-th basis vector, we can state the Taylor expansion as
+\begin{align}
+ \potentialEnergy(\sysCoord(t)) = \potentialEnergy(\sysCoordB)
+  + t \, \dirDiff{\LidxI} \potentialEnergy(\sysCoordB) \sysVelCoeffB{\LidxI}
+  + \tfrac{1}{2} t^2 \big( \dirDiff{\LidxI} \dirDiff{\LidxII} \potentialEnergy(\sysCoordB) \sysVelCoeffB{\LidxI} \sysVelCoeffB{\LidxII} + \dirDiff{\LidxI} \potentialEnergy(\sysCoordB) \sysVelCoeffBd{\LidxI} \big)
+  + \mathcal{O}(t^3).
+\label{eq:TaylorExpansionOne}
+\end{align}
+There are two more things we can derive from this equation:
+\begin{itemize}
+ \item 
+If $\dirDiff{\LidxI} \potentialEnergy(\sysCoordB) = 0, \LidxI=1,\ldots,\dimConfigSpace$ then $\sysCoordB$ is called a \textit{critical point} of $\potentialEnergy$.
+At a critical point the expansion \eqref{eq:TaylorExpansionOne} reduces to
+\begin{align}
+ \potentialEnergy(\sysCoord(t))
+ &= \potentialEnergy(\sysCoordB)
+  + \tfrac{1}{2} t^2 \underbrace{(\dirDiff{\LidxI} \dirDiff{\LidxII} \potentialEnergy)(\sysCoordB)}_{\bar{H}_{\LidxI\LidxII}} \sysVelCoeffB{\LidxI} \sysVelCoeffB{\LidxII}
+  + \mathcal{O}(t^3).
+\label{eq:TaylorExpansionTwo}
+\end{align}
+This relation holds for any sufficiently smooth curve $t\mapsto\sysCoord(t)$ through $\sysCoordB$ and consequently for any velocity vector $\sysVelB$ at the critical point.
+So if the matrix $\bar{\mat{H}}$ is positive (negative) definite, then $\sysCoordB$ is a local minimum (maximum) of $\potentialEnergy$.
+
+\item
+Assume the curve $t\mapsto\sysCoord(t)$ is a \textit{geodesic}, i.e.\ $\sysVelCoeffd{\LidxI} = -\ConnCoeff{\LidxI}{\LidxII}{\LidxIII} \sysVelCoeff{\LidxII} \sysVelCoeff{\LidxIII}$ with the connection coefficients $\ConnCoeff{\LidxI}{\LidxII}{\LidxIII}$ that will be discussed later.
+Plugging this into \eqref{eq:TaylorExpansionOne} we find a coordinate form of the \textit{Hessian tensor} $\differential^2 \potentialEnergy$ of the potential:
+\begin{align}
+ \potentialEnergy(\sysCoord(t))
+ &= \potentialEnergy(\sysCoordB)
+  + t (\dirDiff{\LidxI} \potentialEnergy)(\sysCoordB) \sysVelCoeffB{\LidxI}
+  + \tfrac{1}{2} t^2 \underbrace{\big( \dirDiff{\LidxI} \dirDiff{\LidxII} \potentialEnergy - \ConnCoeff{\LidxIII}{\LidxI}{\LidxII} \dirDiff{\LidxIII} \potentialEnergy \big)}_{(\differential^2\potentialEnergy)_{\LidxI\LidxII}}(\sysCoordB)  \sysVelCoeffB{\LidxI} \sysVelCoeffB{\LidxII}
+  + \mathcal{O}(t^3).
+\end{align}
+%The Hessian is a symmetric tensor, which follows from the definition of the connection coefficients \fixme{(??)}.
+At a critical point $\sysCoordB$, the Hessian of the potential is independent of the connection coefficients $\ConnCoeff{\LidxI}{\LidxII}{\LidxIII}$ and consequently of the underlying metric.
+There it coincides with the matrix $\bar{\mat{H}}$ defined in \eqref{eq:TaylorExpansionTwo}.
+\end{itemize}
+
+\begin{Example}\label{ex:PotentialSO3}
+Consider the function
+\begin{align}\label{eq:PotentialSO3}
+ \potentialEnergy(\R) &= \tr \big( \bodyMOSp{}{} (\idMat[3] - \R) \big)
+ .
+\end{align}
+proposed in \cite{Koditschek:TotalEnergy}, where $\bodyMOSp{}{} = \bodyMOSp{}{}^\top \in \RealNum^{3\times 3}$ and $\R \in \SpecialOrthogonalGroup(3)$.
+It can be regarded as a distance function on the configuration space $\configSpace = \SpecialOrthogonalGroup(3)$ with six tunable parameters which makes it quite useful for control purposes, see \eg \cite{Bullo:TrackingAutomatica} or \cite{Lee:QuadrotorGeoControl}.
+This function will appear several times in later chapters, so it will be discussed in detail here.
+
+As in the previous example, we regard the coefficients of the rotation matrix $\R$ as redundant configuration coordinates.
+Using the basis from \eqref{eq:KinMatSO3} we compute the differential and the Hessian at a critical point $\R_0$ as
+\begin{subequations}
+\begin{align}
+ \label{eq:gradPotentialSO3}
+ \differential \potentialEnergy(\R_0) &= \veeTwoOp(\bodyMOSp{}{} \R_0) \mustbe \tuple{0},
+\\
+ \label{eq:HessianPotentialSO3}
+ \differential^2 \potentialEnergy(\R_0) &= \tr (\bodyMOSp{}{} \R_0) \idMat[3] - \bodyMOSp{}{} \R_0.
+\end{align} 
+\end{subequations}
+with the $\veeTwoOp$ operator defined as
+\begin{align}
+ \veeTwoOp : \RealNum^{3\times3} \rightarrow \RealNum^3, \begin{bmatrix} \ast & A_{12} & A_{13} \\ A_{21} & \ast & A_{23} \\ A_{31} & A_{32} & \ast \end{bmatrix} \mapsto \begin{bmatrix} A_{32}-A_{23} \\ A_{13}-A_{31} \\ A_{21}-A_{12} \end{bmatrix}.
+\end{align}
+So the condition for a critical point at $\R_0$ is that the product $\bodyMOSp{}{} \R_0$ is skew-symmetric.
+Obviously the function $\potentialEnergy$ has a critical point at
+\begin{align*}
+ \R_{0,1} &= \idMat[3] \ :&
+ \potentialEnergy(\R_{0,1}) &= 0,&
+ \differential^2 \potentialEnergy(\R_{0,1}) &= \tr(\bodyMOSp{}{}) \idMat[3] - \bodyMOSp{}{} =: \bodyMOS{}{}.
+\end{align*}
+It is a minimum if the matrix $\bodyMOS{}{}$ is positive definite. 
+
+There are more critical points:
+For their investigation it will be useful to consider the eigenvalue decomposition $\bodyMOSp{}{} = \mat{X} \mat{\mat{\Lambda}}' \mat{X}^\top$ with $\mat{\mat{\Lambda}}' = \diag(\lambda_1', \lambda_2', \lambda_3')$, $\mat{X} \in \SpecialOrthogonalGroup(3)$.
+Note that the matrix $\bodyMOS{}{}$ has the same eigenvectors, \ie $\bodyMOS{}{} = \mat{X} \mat{\Lambda} \mat{X}^\top$ with $\mat{\Lambda} = \diag(\lambda_1, \lambda_2, \lambda_3)$ and the eigenvalues are related by
+\begin{subequations}
+\begin{align}\label{eq:EigenvaluesKappa}
+ &\hspace{.6em}\mat{\Lambda} = \tr(\mat{\Lambda}') \idMat[3] - \mat{\Lambda}'&
+&\Leftrightarrow&
+ &\hspace{1.1em}\mat{\Lambda}' = \tfrac{1}{2}\tr(\mat{\Lambda}) \idMat[3] - \mat{\Lambda}
+\\
+ &\left.\begin{matrix}[1.2]
+ \lambda_1 = \lambda_2' + \lambda_3', \\
+ \lambda_2 = \lambda_3' + \lambda_1', \\
+ \lambda_3 = \lambda_1' + \lambda_2'\hphantom{,}  
+ \end{matrix}\right\}&
+&\Leftrightarrow&
+ &\left\{\begin{matrix}[1.2]
+ \lambda_1' = \tfrac{1}{2} (\lambda_2 + \lambda_3 - \lambda_1), \\
+ \lambda_2' = \tfrac{1}{2} (\lambda_3 + \lambda_1 - \lambda_2), \\
+ \lambda_3' = \tfrac{1}{2} (\lambda_1 + \lambda_2 - \lambda_3)\hphantom{,}  
+ \end{matrix}\right.
+\end{align} 
+\end{subequations}
+Using the transformed orientation $\tilde{\R}_0 = \mat{X}^\top \R_0 \mat{X}$ we have
+\begin{subequations}
+\begin{align}
+ \differential \potentialEnergy (\R_0) &= \mat{X} \veeTwoOp(\mat{\mat{\Lambda}}' \tilde{\R}_0) \mustbe \tuple{0},
+\\
+ \differential^2 \potentialEnergy (\R_0) &= \mat{X} \big( \tr (\mat{\mat{\Lambda}}' \tilde{\R}_0) \idMat[3] - \mat{\mat{\Lambda}}' \tilde{\R}_0 \big) \mat{X}^\top.
+\end{align}
+\end{subequations}
+For critical points in addition to $\R_{0,1}$ we need to distinguish the following cases:
+\begin{itemize}
+\item \textit{distinct eigenvalues} $\lambda_i \neq \lambda_j \, \Leftrightarrow \, \lambda_i' \neq \lambda_j', \, i\neq j$: 
+\begin{align*}
+ \tilde{\R}_{0,2} &= \diag(1,-1,-1)\, :&
+ \potentialEnergy(\R_{0,2}) &= 2 \lambda_1,&
+ \text{eig}\big( \differential^2\potentialEnergy(\R_{0,2}) \big) &= \{ -\lambda_1, \lambda_3 \!-\! \lambda_1, \lambda_2 \!-\! \lambda_1 \}
+\\
+ \tilde{\R}_{0,3} &= \diag(-1,1,-1)\, :&
+ \potentialEnergy(\R_{0,3}) &= 2 \lambda_2,&
+ \text{eig}\big( \differential^2\potentialEnergy(\R_{0,3}) \big) &= \{ \lambda_3\!-\!\lambda_2, -\lambda_2, \lambda_1 \!-\! \lambda_2 \}
+\\
+ \tilde{\R}_{0,4} &= \diag(-1,-1,1)\, :&
+ \potentialEnergy(\R_{0,4}) &= 2 \lambda_3,&
+ \text{eig}\big( \differential^2\potentialEnergy(\R_{0,4}) \big) &= \{ \lambda_2\!-\!\lambda_3, \lambda_1 \!-\! \lambda_3, -\lambda_3 \}
+\end{align*}
+%So the Hessian $\nabla^2 \potentialEnergy = X D X^\top$ for each of theses stationary points has at least one negative eigenvalue which makes these points either maxima or saddle points.
+%If $\mat{\Lambda} := \diag(\lambda_1, \lambda_2, \lambda_3) > 0$ then $\R = \idMat[3]$ is the only minimum as the Hessian at the remaining critical points (which can be regarded as "$180^\circ$ away" from the identity) has at least one negative eigenvalue.
+
+\item \textit{double eigenvalue} $\lambda_1 = \lambda_2 \neq \lambda_3$: the function $\potentialEnergy$ is stationary at the point $\R_{0,4}$ and on the circular submanifold
+\begin{multline*}
+ \tilde{\R}_{0,5} = \begin{bmatrix} -c & s & 0 \\ s & c & 0 \\ 0 & 0 & -1 \end{bmatrix}, \ c^2 + s^2 = 1:
+\\
+ \potentialEnergy(\R_{0,5}) = 2 \lambda_1,
+\qquad
+ \text{eig}\big( \nabla^2\potentialEnergy(\R_{0,5}) \big) = \{ -\lambda_1, \lambda_3-\lambda_1, 0 \}
+\end{multline*}
+which includes the points $\R_{0,2}$ and $\R_{0,3}$.
+For the cases $\lambda_1 = \lambda_3 \neq \lambda_2$ and $\lambda_2 = \lambda_3 \neq \lambda_1$ we have analogous results.
+
+\item \textit{triple eigenvalue} $\lambda_1 = \lambda_2 = \lambda_3 \Rightarrow \mat{\Lambda}' = \bodyMOSp{}{} = \tfrac{1}{2} \lambda_1 \idMat[3], \, \mat{X} = \idMat[3]$:
+The function $\potentialEnergy$ is stationary on the spherical submanifold
+\begin{multline*}
+ \R_{0,6} =
+ \begin{bmatrix}
+  1 - 2(a_2^2 + a_3^2) & 2 a_2 a_1 & 2 a_1 a_3 \\
+  2 a_1 a_2 & 1 - 2(a_1^2 + a_3^2) & 2 a_2 a_3 \\
+  2 a_1 a_3 & 2 a_2 a_3 & 1 - 2(a_1^2 + a_2^2) \\
+ \end{bmatrix}, \ a_1^2 + a_2^2 + a_3^2 = 1 \, :
+\\
+ \potentialEnergy(\R_{0,6}) = 2 \lambda_1, 
+\qquad
+ \text{eig}\big( \nabla^2\potentialEnergy(\R_{0,6}) \big) = \{ -\lambda_1, 0, 0 \}
+\end{multline*}
+which includes $\tilde{\R}_{0,2}$, $\tilde{\R}_{0,3}$ and $\tilde{\R}_{0,4}$
+The matrix $\R_{0,6}$ is a $180^\circ$ rotation about the unit axis $\tuple{a} = [a_1, a_2, a_3]^\top$. 
+\end{itemize}
+If one or more eigenvalues are zero we have even more critical points
+\begin{itemize}
+\item \textit{one zero eigenvalue} $\lambda_3 = 0$: the function $\potentialEnergy$ is stationary on the circular submanifold
+\begin{multline*}
+ \tilde{\R}_{0,7} = \begin{bmatrix} c & -s & 0 \\ s & c & 0 \\ 0 & 0 & 1 \end{bmatrix}, \ c^2 + s^2 = 1:
+\\
+ \potentialEnergy(\R_{0,7}) = 0,
+\qquad
+ \text{eig}\big( \nabla^2\potentialEnergy(\R_{0,5}) \big) = \{ \lambda_1, \lambda_2, 0 \}
+\end{multline*}
+which includes the points $\R_{0,1} = \idMat[3]$ and $\R_{0,4}$.
+
+\item \textit{two zero eigenvalues} $\lambda_2 = \lambda_3 = 0$: the function $\potentialEnergy$ is stationary on the spherical submanifold
+\begin{multline*}
+ \tilde{\R}_{0,8} = \begin{bmatrix} \quatw^2-\quaty^2-\quatz^2 & -2\quatw\quatz & 2\quatw\quaty \\ 2\quatw\quatz & \quatw^2+\quaty^2-\quatz^2 & 2\quaty\quatz \\ -2\quatw\quaty & 2\quaty\quatz & \quatw^2-\quaty^2+\quatz^2 \end{bmatrix}, \ \quatw^2+\quaty^2+\quatz^2 = 1:
+\\
+ \potentialEnergy(\R_{0,8}) = 0,
+\qquad
+ \text{eig}\big( \nabla^2\potentialEnergy(\R_{0,8}) \big) = \{ \lambda_1, 0, 0 \}
+\end{multline*}
+which includes the points $\R_{0,1} = \idMat[3]$ and $\R_{0,3}$, $\R_{0,4}$.
+
+\item \textit{three zero eigenvalues} $\lambda_3 = \lambda_2 = \lambda_3 = 0 \ \Rightarrow \ \bodyMOS{}{} = \bodyMOSp{}{} = \mat{0}$: the function $\potentialEnergy$ degenerates to a constant $\potentialEnergy(\R) = 0 \, \forall \, \R \in \SpecialOrthogonalGroup(3)$.
+\end{itemize}
+Comparing the eigenvalues $\text{eig}(\nabla^2\potentialEnergy)$ of the Hessians at the critical points, it is clear that the function $\potentialEnergy$ always has exactly one minimum and exactly one maximum, i.e.\ all other critical points are saddles, independently of the signs of $\lambda_1$, $\lambda_2$ and $\lambda_3$.
+If one or more $\lambda_i = 0$ or $\lambda_i=\lambda_j$ then the minimum or maximum is taken not on a single point but on a one or two-dimensional submanifold.
+
+The most useful case for the following is $\lambda_1, \lambda_2, \lambda_3 > 0$, i.e.\ $\bodyMOS{}{}$ is positive definite and $\R = \idMat[3]$ is the global minimum of $\potentialEnergy$.
+It is also worth noting that for $\bodyMOS{}{}{} = \idMat[3]$ the function $\potentialEnergy$ is related to the angle $\theta$ of the rotation matrix $\R$ by $\potentialEnergy = \tfrac{1}{2} \tr(\idMat[3] - \R) = 1 - \cos\theta$.
+\end{Example}
+
+\subsection{Commutation coefficients}\label{sec:CommutationCoeff}
+For a function $\potentialEnergy : \RealNum^{\numCoord} \rightarrow \RealNum$ we are used to the fact that partial derivatives commute, \ie $\sfrac{\partial^2 \potentialEnergy}{\partial \sysCoordCoeff{\GidxI} \partial \sysCoordCoeff{\GidxII}} = \sfrac{\partial^2 \potentialEnergy}{\partial \sysCoordCoeff{\GidxII} \partial \sysCoordCoeff{\GidxI}}$.
+Unfortunately this is (in general) not the case for a directional derivatives like $\dirDiff{\LidxI}$ defined in \eqref{eq:DefBasisDiff}.
+Consequently we investigate the following commutation relation
+\begin{align}\label{eq:DerivationCommCoeff1}
+ \dirDiff{\LidxI} \dirDiff{\LidxII} \potentialEnergy - \dirDiff{\LidxII} \dirDiff{\LidxI} \potentialEnergy 
+ &= \kinMatCoeff{\GidxI}{\LidxI} \pdiff{\sysCoordCoeff{\GidxI}} \bigg( \kinMatCoeff{\GidxII}{\LidxII} \pdiff[\potentialEnergy]{\sysCoordCoeff{\GidxII}}\bigg) - \kinMatCoeff{\GidxII}{\LidxII} \pdiff{\sysCoordCoeff{\GidxII}} \bigg(\kinMatCoeff{\GidxI}{\LidxI} \pdiff[\potentialEnergy ]{\sysCoordCoeff{\GidxI}} \bigg)
+\nonumber\\
+ &= \kinMatCoeff{\GidxI}{\LidxI} \pdiff[\kinMatCoeff{\GidxII}{\LidxII}]{\sysCoordCoeff{\GidxI}} \pdiff[\potentialEnergy]{\sysCoordCoeff{\GidxII}} - \kinMatCoeff{\GidxII}{\LidxII} \pdiff[\kinMatCoeff{\GidxI}{\LidxI}]{\sysCoordCoeff{\GidxII}} \pdiff[\potentialEnergy ]{\sysCoordCoeff{\GidxI}}
+ + \kinMatCoeff{\GidxI}{\LidxI} \kinMatCoeff{\GidxII}{\LidxII} \underbrace{\bigg( \frac{\partial^2 \potentialEnergy}{\partial\sysCoordCoeff{\GidxI} \partial\sysCoordCoeff{\GidxII}} - \frac{\partial^2 \potentialEnergy}{\partial\sysCoordCoeff{\GidxII} \partial\sysCoordCoeff{\GidxI}}\bigg)}_{=\,0}
+\nonumber\\[-2ex]
+ &= \bigg(\kinMatCoeff{\GidxII}{\LidxI} \pdiff[\kinMatCoeff{\GidxI}{\LidxII}]{\sysCoordCoeff{\GidxII}} - \kinMatCoeff{\GidxII}{\LidxII} \pdiff[\kinMatCoeff{\GidxI}{\LidxI}]{\sysCoordCoeff{\GidxII}}\bigg) \pdiff[\potentialEnergy]{\sysCoordCoeff{\GidxI}}
+ .
+\end{align}
+Now using the identity \eqref{eq:ProjectionIdentity} with $\geoConstraintMatCoeff{\CidxI}{\GidxI} = \pdiff[\geoConstraintCoeff{\CidxI}]{\sysCoordCoeff{\GidxI}}$ and $\geoConstraintMatCoeff{\CidxI}{\GidxI} \kinMatCoeff{\GidxI}{\LidxI} = 0 \, \Rightarrow \, \geoConstraintMatCoeff{\CidxI}{\GidxI} \pdiff[\kinMatCoeff{\GidxI}{\LidxI}]{\sysCoordCoeff{\GidxII}} = -\pdiff[\geoConstraintMatCoeff{\CidxI}{\GidxI}]{\sysCoordCoeff{\GidxII}} \kinMatCoeff{\GidxI}{\LidxI}$ to shape this expressions a bit further
+\begin{align}\label{eq:DerivationCommCoeff2}
+ \dirDiff{\LidxI} \dirDiff{\LidxII} \potentialEnergy - \dirDiff{\LidxII} \dirDiff{\LidxI} \potentialEnergy 
+ &= \bigg(\kinMatCoeff{\GidxII}{\LidxI} \pdiff[\kinMatCoeff{\GidxI}{\LidxII}]{\sysCoordCoeff{\GidxII}} - \kinMatCoeff{\GidxII}{\LidxII} \pdiff[\kinMatCoeff{\GidxI}{\LidxI}]{\sysCoordCoeff{\GidxII}}\bigg) \overbrace{(\kinMatCoeff{\GidxIII}{\LidxIII} \kinBasisMatCoeff{\LidxIII}{\GidxI} + \InvGeoConstraintMatCoeff{\GidxIII}{\CidxI}\geoConstraintMatCoeff{\CidxI}{\GidxI})}^{\delta^{\GidxIII}_{\GidxI}}  \pdiff[\potentialEnergy]{\sysCoordCoeff{\GidxIII}}
+\nonumber\\
+ &= \bigg(\kinMatCoeff{\GidxII}{\LidxI} \pdiff[\kinMatCoeff{\GidxI}{\LidxII}]{\sysCoordCoeff{\GidxII}} - \kinMatCoeff{\GidxII}{\LidxII} \pdiff[\kinMatCoeff{\GidxI}{\LidxI}]{\sysCoordCoeff{\GidxII}}\bigg) \kinBasisMatCoeff{\LidxIII}{\GidxI} \kinMatCoeff{\GidxIII}{\LidxIII} \pdiff[\potentialEnergy]{\sysCoordCoeff{\GidxIII}}
+ - \bigg(\kinMatCoeff{\GidxII}{\LidxI} \kinMatCoeff{\GidxI}{\LidxII} \pdiff[\geoConstraintMatCoeff{\CidxI}{\GidxI}]{\sysCoordCoeff{\GidxII}} - \kinMatCoeff{\GidxII}{\LidxII} \kinMatCoeff{\GidxI}{\LidxI} \pdiff[\geoConstraintMatCoeff{\CidxI}{\GidxI}]{\sysCoordCoeff{\GidxII}} \bigg) \InvGeoConstraintMatCoeff{\GidxIII}{\CidxI} \pdiff[\potentialEnergy]{\sysCoordCoeff{\GidxIII}}
+\nonumber\\
+ &= \underbrace{\bigg(\kinMatCoeff{\GidxII}{\LidxI} \pdiff[\kinMatCoeff{\GidxI}{\LidxII}]{\sysCoordCoeff{\GidxII}} - \kinMatCoeff{\GidxII}{\LidxII} \pdiff[\kinMatCoeff{\GidxI}{\LidxI}]{\sysCoordCoeff{\GidxII}}\bigg) \kinBasisMatCoeff{\LidxIII}{\GidxI}}_{\BoltzSym{\LidxIII}{\LidxI}{\LidxII}} \underbrace{\kinMatCoeff{\GidxIII}{\LidxIII} \pdiff[\potentialEnergy]{\sysCoordCoeff{\GidxIII}}}_{\dirDiff{\LidxIII} \potentialEnergy}
+ - \kinMatCoeff{\GidxII}{\LidxII} \kinMatCoeff{\GidxI}{\LidxI} \underbrace{\bigg(\frac{\partial^2\geoConstraintCoeff{\CidxI}}{\partial\sysCoordCoeff{\GidxI}\partial\sysCoordCoeff{\GidxII}} - \frac{\partial^2\geoConstraintCoeff{\CidxI}}{\partial\sysCoordCoeff{\GidxII}\partial\sysCoordCoeff{\GidxI}} \bigg)}_{=\,0} \InvGeoConstraintMatCoeff{\GidxIII}{\CidxI} \pdiff[\potentialEnergy]{\sysCoordCoeff{\GidxIII}}
+ .
+\end{align}
+Since this relation holds for any function $\potentialEnergy$ we can state it in operator form and introduce the \textit{commutation coefficients} $\BoltzSym{\LidxIII}{\LidxI}{\LidxII}$ as
+\begin{align}\label{eq:DefCommutationCoeff}
+ \dirDiff{\LidxI} \dirDiff{\LidxII} - \dirDiff{\LidxII} \dirDiff{\LidxI} = \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \dirDiff{\LidxIII},
+\qquad
+ \BoltzSym{\LidxIII}{\LidxI}{\LidxII} = \big(\dirDiff{\LidxI} \kinMatCoeff{\GidxI}{\LidxII} - \dirDiff{\LidxII} \kinMatCoeff{\GidxI}{\LidxI} \big) ({\kinMatCoeff{}{}}^+)^{\LidxIII}_{\GidxI}.
+\end{align}
+\fixme{
+It is interesting to note that the commutation coefficients are \textit{invariant} to the choice of configuration coordinates $\sysCoord$, even though the coordinates appear explicitly in the definition:
+For a change of configuration coordinates $\sysCoord = f(\sysCoordW)$ the commutation symbols transform like $\BoltzSymW{\LidxIII}{\LidxI}{\LidxII}(\sysCoordW) = \BoltzSym{\LidxIII}{\LidxI}{\LidxII}(f(\sysCoordW))$.
+This might be obvious from a geometric point of view, but the explicit calculation of the coordinate transformation is shown in see \autoref{sec:TrafoRules}.
+It will even turn out that for most of our examples the coefficients will be constants.
+}
+
+\fixme{
+The right hand side of \eqref{eq:DefCommutationCoeff} appears in the context of Lagrange's equation in \cite{Boltzmann:NonholCoord} and \cite{Hamel:LagrangeEuler} for the case of minimal configuration coordinates and consequently with square matrices $\kinBasisMat$ and $\kinMat$.
+In the contemporary literature on this context these quantities $\BoltzSym{\LidxIII}{\LidxI}{\LidxII}$ are sometimes called the \textit{Boltzmann three-index symbols} \cite[sec.\,1.8]{Lurie:AnalyticalMechanics} or \textit{Hamel coefficients} \cite[p.\,75]{Bremer:ElasticMultibodyDynamics}.
+The left hand side of \eqref{eq:DefCommutationCoeff} appears in the context of tensor algebra in \cite[Box 8.4]{Misner:Gravitation} where $\BoltzSym{\LidxIII}{\LidxI}{\LidxII}$ are called the \textit{commutation coefficients}.
+From the way $\BoltzSym{\LidxIII}{\LidxI}{\LidxII}$ is defined here \eqref{eq:DefCommutationCoeff}, this naming seems most fitting.
+}
+
+\fixme{
+The commutation coefficients $\BoltzSym{\LidxI}{\LidxII}{\LidxIII}$ vanish if the corresponding velocity coordinates $\sysVelCoeff{\LidxI}$ are \textit{integrable}, \ie
+\begin{align}
+ \exists \ \pi^\LidxI \, : \, \dot{\pi}^\LidxI &= \sysVelCoeff{\LidxI} = \kinBasisMatCoeff{\LidxI}{\GidxI} \sysCoordCoeffd{\GidxI}&
+ &\Rightarrow&
+  \kinBasisMatCoeff{\LidxI}{\GidxI} &= \pdiff[\pi^i]{\sysCoordCoeff{\GidxII}}
+\nonumber\\
+&&
+&\Rightarrow&
+ \pdiff[\kinBasisMatCoeff{\LidxI}{\GidxI}]{\sysCoordCoeff{\GidxI}}
+ &= \frac{\partial^2 \pi^i}{\partial \sysCoordCoeff{\GidxII} \partial \sysCoordCoeff{\GidxI}}
+ = \pdiff[\kinBasisMatCoeff{\LidxI}{\beta}]{\sysCoordCoeff{\GidxI}},&
+&\Rightarrow&
+ \BoltzSym{\LidxI}{\LidxII}{\LidxIII} &= 0
+\end{align}
+which is not the case in general.
+Nevertheless the quantities $\pi$ are commonly introduced as \textit{nonholonomic coordinates} in \cite{Boltzmann:NonholCoord} (also called \textit{quasi coordinates} in \cite[sec.\,1.5]{Lurie:AnalyticalMechanics}).
+Then we could write $\partial_\LidxI (\partial_\LidxII f) - \partial_\LidxII (\partial_\LidxI f) = \sfrac{\partial^2 f}{\partial \pi^\LidxI \partial \pi^\LidxII} - \sfrac{\partial^2 f}{\partial \pi^\LidxII \partial \pi^\LidxI} \neq 0$ what might lead to the conception that partial derivatives do not commute.
+The commutativity clearly holds, the issue is rather that the coordinates $\pi$ do not exist.
+To avoid confusion of this kind we do not pick up this notation here.
+%See also \cite{Hamel:virtuelleVerschiebungen} for an extensive discussion on this topic.
+}
+
+\begin{Example}\label{ex:BoltzmannSymSattelite}
+The commutation coefficients $\BoltzSym{\LidxIII}{\LidxI}{\LidxII}$ associated with the kinematics matrix $\kinMat$ from \eqref{eq:KinMatSO3} are
+\begin{align}\label{eq:BoltzmannSymSattelite}
+ \BoltzSym{\LidxIII}{\LidxI}{\LidxII} =
+ \left\{
+ \begin{array}{rl}
+  +1, & (\LidxI,\LidxII,\LidxIII) \ \text{even permutation of} \ (1,2,3) \\
+  -1, & (\LidxI,\LidxII,\LidxIII) \ \text{odd permutation of} \ (1,2,3) \\
+  0, & \text{else}
+ \end{array}
+ \right.
+ .
+\end{align}
+This coincides with the three dimensional Levi-Civita symbol.
+It is related to the 3 dimensional \textit{cross product} by $\tuple{a}, \tuple{b} \in \RealNum^3 \, : \, [\BoltzSym{\LidxIII}{\LidxI}{\LidxII} a^{\LidxI} b^{\LidxII}]_{k=1..3} = \tuple{a} \times \tuple{b}$.
+\end{Example}
+
+
+\subsection{Linearization about a trajectory}\label{sec:LinAboutTraj}
+Let $\sysCoordB : [t_1, t_2] \rightarrow \configSpace$ be a smooth curve with the velocity coordinates $\sysVelB : [t_1, t_2] \rightarrow \RealNum^{\dimConfigSpace} : t \mapsto \kinMat^+(\sysCoordB(t)) \sysCoordBd(t)$.
+For a small deviation $\sysCoord \approx \sysCoordB$ with $\sysCoord \in \configSpace$ we may approximate the geometric constraint as
+\begin{align}
+ \geoConstraint(\sysCoord) \approx \underbrace{\geoConstraint(\sysCoordB)}_{=\,\tuple{0}} + \pdiff[\geoConstraint]{\sysCoord}(\sysCoordB) (\sysCoord - \sysCoordB) = \tuple{0}.
+\end{align}
+Since this constraint is affine w.r.t.\ $\sysCoord$ it is reasonable to use a the basis $\LinErrorCoord(t) \in \RealNum^{\dimConfigSpace}$ for the deviated configuration coordinates:
+\begin{align}
+ \sysCoord = \sysCoordB + \kinMat(\sysCoordB) \LinErrorCoord,
+\qquad
+ \LinErrorCoord = \kinMat^+(\sysCoordB) (\sysCoord - \sysCoordB),
+\end{align}
+For the velocity coordinates $\sysVel$ of the deviated curve $\sysCoord$ we use again the first order approximation and $\kinBasisMat = \kinMat^+$:
+\begin{align}
+ \sysVelCoeff{\LidxI} &= \kinBasisMatCoeff{\LidxI}{\GidxI}(\sysCoord) \sysCoordCoeffd{\GidxI}
+\nonumber\\
+ &\approx \kinBasisMatCoeff{\LidxI}{\GidxI}(\sysCoordB + \kinMat(\sysCoordB) \LinErrorCoord) \tdiff{t} \big( \sysCoordCoeffB{\GidxI} + \kinMatCoeff{\GidxI}{\LidxII}(\sysCoordB) \, \LinErrorCoordCoeff{\LidxII} \big)
+% \big( \sysCoordCoeffBd{\GidxI} + \tpdiff[\kinMatCoeff{\GidxI}{\LidxII}]{\sysCoordCoeff{\GidxII}}(\sysCoordB) \, \sysCoordCoeffRd{\GidxII} \LinErrorCoordCoeff{\LidxII} + \kinMatCoeff{\GidxI}{\LidxII}(\sysCoordB) \, \LinErrorCoordCoeffd{\LidxII} \big)
+\nonumber\\
+ &\approx \kinBasisMatCoeff{\LidxI}{\GidxI}(\sysCoordB) \big( \sysCoordCoeffRd{\GidxI} + \tpdiff[\kinMatCoeff{\GidxI}{\LidxII}]{\sysCoordCoeff{\GidxII}}(\sysCoordB) \, \sysCoordCoeffRd{\GidxII} \LinErrorCoordCoeff{\LidxII} + \kinMatCoeff{\GidxI}{\LidxII}(\sysCoordB) \, \LinErrorCoordCoeffd{\LidxII} \big)
+  + \tpdiff[\kinBasisMatCoeff{\LidxI}{\GidxI}]{\sysCoordCoeff{\GidxII}}(\sysCoordB)  \kinMatCoeff{\GidxII}{\LidxII}(\sysCoordB) \, \LinErrorCoordCoeff{\LidxII} \sysCoordCoeffRd{\GidxI}
+\nonumber\\
+%  &= \underbrace{\kinBasisMatCoeff{\LidxI}{\GidxI}(\sysCoordB) \sysCoordCoeffRd{\GidxI}}_{\sysVelCoeffB{\LidxI}}
+%   + \underbrace{\kinBasisMatCoeff{\LidxI}{\GidxI}(\sysCoordB) \kinMatCoeff{\GidxI}{\LidxII}(\sysCoordB)}_{\delta^\LidxI_\LidxII} \LinErrorCoordCoeffd{\LidxII}
+%   + \underbrace{\big( \tpdiff[\kinBasisMatCoeff{\LidxI}{\GidxI}]{\sysCoordCoeff{\GidxII}}(\sysCoordB) - \tpdiff[\kinBasisMatCoeff{\LidxI}{\GidxII}]{\sysCoordCoeff{\GidxI}}(\sysCoordB) \big) \kinMatCoeff{\GidxII}{\LidxII}(\sysCoordB)  \kinMatCoeff{\GidxI}{\LidxIII}(\sysCoordB)}_{\BoltzSym{\LidxI}{\LidxIII}{\LidxII}(\sysCoordB)} \sysVelCoeffB{\LidxIII} \LinErrorCoordCoeff{\LidxII}
+% \nonumber\\
+ &= \sysVelCoeffB{\LidxI} + \LinErrorCoordCoeffd{\LidxI} + \BoltzSym{\LidxI}{\LidxIII}{\LidxII}(\sysCoordB) \sysVelCoeffB{\LidxIII} \LinErrorCoordCoeff{\LidxII}
+\end{align}
+Using these results we may formulate an approximation of a general smooth function $f$ along the trajectory $t \mapsto \sysCoordB(t)$ as 
+\begin{align}
+ f(\sysCoord, \sysVel, \sysVeld) 
+  &\approx f(\sysCoordB, \sysVelB, \sysVelBd) 
+  + \pdiff[f]{\sysCoordCoeff{\GidxI}}(\sysCoordB, \sysVelB, \sysVelBd) (\sysCoordCoeff{\GidxI} - \sysCoordCoeffB{\GidxI})
+  + \pdiff[f]{\sysVelCoeff{\LidxI}}(\sysCoordB, \sysVelB, \sysVelBd) (\sysVelCoeff{\LidxI} - \sysVelCoeffB{\LidxI})
+\nonumber\\
+  &\qquad + \pdiff[f]{\sysVelCoeffd{\LidxI}}(\sysCoordB, \sysVelB, \sysVelBd) (\sysVelCoeffd{\LidxI} - \sysVelCoeffBd{\LidxI})
+\nonumber\\
+  &\approx f(\sysCoordB, \sysVelB, \sysVelBd) 
+  + (\dirDiff{\LidxI}f) (\sysCoordB, \sysVelB, \sysVelBd) \LinErrorCoordCoeff{\LidxI}
+  + \pdiff[f]{\sysVelCoeff{\LidxI}}(\sysCoordB, \sysVelB, \sysVelBd) (\LinErrorCoordCoeffd{\LidxI} + \BoltzSym{\LidxI}{\LidxIII}{\LidxII}(\sysCoordB) \sysVelCoeffB{\LidxIII} \LinErrorCoordCoeff{\LidxII})
+\nonumber\\
+  &\qquad 
+  + \pdiff[f]{\sysVelCoeffd{\LidxI}}(\sysCoordB, \sysVelB, \sysVelBd) (\LinErrorCoordCoeffdd{\LidxI} + \BoltzSym{\LidxI}{\LidxIII}{\LidxII}(\sysCoordB) \sysVelCoeffB{\LidxIII} \LinErrorCoordCoeffd{\LidxII}  + \BoltzSym{\LidxI}{\LidxIII}{\LidxII}(\sysCoordB) \sysVelCoeffBd{\LidxIII} \LinErrorCoordCoeff{\LidxII}  + \dirDiff{\LidxIV}\BoltzSym{\LidxI}{\LidxIII}{\LidxII}(\sysCoordB) \sysVelCoeffB{\LidxIV} \sysVelCoeffB{\LidxIII} \LinErrorCoordCoeff{\LidxII})
+\nonumber\\
+ &= \bar{f} + \bar{F}^0_\LidxI \LinErrorCoordCoeff{\LidxI} + \bar{F}^1_\LidxI \LinErrorCoordCoeffd{\LidxI} + \bar{F}^2_\LidxI \LinErrorCoordCoeffdd{\LidxI}
+\end{align}
+where
+\begin{align*}
+ \bar{f} &= f(\sysCoordB, \sysVelB, \sysVelBd),
+\\
+ \bar{F}^0_\LidxI &= (\dirDiff{\LidxI}f) (\sysCoordB, \sysVelB, \sysVelBd) + \pdiff[f]{\sysVelCoeff{\LidxII}}(\sysCoordB, \sysVelB, \sysVelBd) \BoltzSym{\LidxII}{\LidxIII}{\LidxI}(\sysCoordB) \sysVelCoeffB{\LidxIII} + \pdiff[f]{\sysVelCoeffd{\LidxII}}(\sysCoordB, \sysVelB, \sysVelBd) \big( \BoltzSym{\LidxII}{\LidxIII}{\LidxI}(\sysCoordB) \sysVelCoeffBd{\LidxIII} + \dirDiff{\LidxIV}\BoltzSym{\LidxII}{\LidxIII}{\LidxI}(\sysCoordB) \sysVelCoeffB{\LidxIV} \sysVelCoeffB{\LidxIII} \big),
+\\
+ \bar{F}^1_\LidxI &= \pdiff[f]{\sysVelCoeff{\LidxI}}(\sysCoordB, \sysVelB, \sysVelBd) + \pdiff[f]{\sysVelCoeffd{\LidxII}}(\sysCoordB, \sysVelB, \sysVelBd) \BoltzSym{\LidxII}{\LidxIII}{\LidxI}(\sysCoordB) \sysVelCoeffB{\LidxIII},
+\\
+ \bar{F}^2_\LidxI &= \pdiff[f]{\sysVelCoeffd{\LidxI}}(\sysCoordB, \sysVelB, \sysVelBd).
+\end{align*}
+Evidently, the expressions simplify significantly is the velocity coordinates are holonomic, i.e. $\BoltzSym{}{}{} = 0$, or if the approximation is about a static point $\sysCoordB = \const \Rightarrow \sysVel = \tuple{0}$.
+
+\subsection{Calculus of variations}
+The calculus of variations is concerned with the extremals of functionals, i.e. functions of functions. %\cite[sec.\,12]{Arnold:MathematicalMethodsOfClassicalMechanics}.
+For the particular context of classical mechanics we are interested in the curves $t \mapsto \sysCoord(t)$ for which the functional
+\begin{align}\label{eq:Functional}
+ \mathcal{J}[\sysCoord] = \int_{t_1}^{t_2} \Lagrangian(\sysCoord(t), \sysVel(t), t) \, \d t
+% \tag{$\bigstar$}
+\end{align}
+for given boundary conditions $\sysCoord(t_1)$ and $\sysCoord(t_2)$ is \textit{stationary}.
+The \textit{Lagrangian} $\Lagrangian$ is here a function of the configuration coordinates $\sysCoord$, its derivatives $\sysCoordd = \kinMat \sysVel$ parameterized in the velocity coordinates $\sysVel$ and may depend explicitly on the time $t$ as well.
+
+For the standard case, $\sysCoord = \genCoord$ and $\sysVel = \genCoordd$, a derivation of may be found in e.g. \cite[ch.\,II]{Lanczos:Variational}, \cite[sec.\,12]{Arnold:MathematicalMethodsOfClassicalMechanics} or \cite[chap.\,4, §3]{CourantHilbert1}.
+For the present case we modify the well known derivation slightly:
+Suppose that $\sysCoord : [t_1, t_2] \mapsto \configSpace$ is the solution to the variational problem.
+With the function $\varFkt(t) \in \RealNum^{\numCoord}$ and the parameter $\varParam\in\RealNum$ we define a perturbation to it by
+\begin{align}
+ \sysCoordB = \sysCoord + \varParam\varFkt.
+\end{align}
+We need $\sysCoordB(t) \in \configSpace$ and consequently $\geoConstraint(\sysCoordB)=\tuple{0}$.
+Assuming $\varParam$ to be sufficiently small, we may use the first order approximation analog to \autoref{sec:LinAboutTraj}:
+With the \textit{variation coordinates} $\varCoord : [t_1,t_2] \rightarrow \RealNum^{\dimConfigSpace}$ we parameterize $\varFkt = \kinMat(\sysCoord)\varCoord$.
+Using the inverse kinematic relation $\sysVel = \kinBasisMat(\sysCoord)\sysCoordd$ we can write the functional for the varied path as
+\begin{align}
+ \mathcal{J}[\sysCoordB] = \int_{t_1}^{t_2} \Lagrangian\big(\sysCoord + \varParam\kinMat(\sysCoord)\varCoord, \kinBasisMat(\sysCoord + \varParam\kinMat(\sysCoord)\varCoord) \tdiff{t}(\sysCoord + \varParam\kinMat(\sysCoord)\varCoord), t\big) \, \d t =: \mathcal{P}(\varParam)
+\end{align}
+Now if $\sysCoord(t)$ is indeed the solution to the variational problem, then $\mathcal{P}(\varParam)$ must have a minimum at $\mathcal{P}(0)$ and consequently $\spdiff[\mathcal{P}]{\varParam}(0) = 0$.
+Evaluation of this ``ordinary'' differentiation yields
+\begin{align}
+ 0 = \pdiff[\mathcal{P}]{\varParam} \Big|_{\varParam=0} &= \int_{t_1}^{t_2} \bigg( \pdiff[\Lagrangian]{\sysCoordCoeff{\GidxI}} \kinMatCoeff{\GidxI}{\LidxI} \varCoordCoeff{\LidxI} + \pdiff[\Lagrangian]{\sysVelCoeff{\LidxI}} \bigg( \pdiff[\kinBasisMatCoeff{\LidxI}{\GidxI}]{\sysCoordCoeff{\GidxII}} \kinMatCoeff{\GidxII}{\LidxII} \varCoordCoeff{\LidxII} \sysCoordCoeffd{\GidxI} + \kinBasisMatCoeff{\LidxI}{\GidxI} \pdiff[\kinMatCoeff{\GidxI}{\LidxII}]{\sysCoordCoeff{\GidxII}} \varCoordCoeff{\LidxII} \sysCoordCoeffd{\GidxII} + \varCoordCoeffd{\LidxI}\bigg) \bigg) \, \d t
+\nonumber\\
+ &= \int_{t_1}^{t_2} \bigg( \dirDiff{\LidxI}\Lagrangian \, \varCoordCoeff{\LidxI} + \pdiff[\Lagrangian]{\sysVelCoeff{\LidxI}} \big( \BoltzSym{\LidxI}{\LidxIII}{\LidxII} \varCoordCoeff{\LidxII} \sysVelCoeff{\LidxIII} + \varCoordCoeffd{\LidxI} \big) \bigg) \, \d t
+\end{align}
+where we have found again the commutation coefficients $\BoltzSym{\LidxI}{\LidxIII}{\LidxII}$ previously derived in \eqref{eq:DefCommutationCoeff}.
+% By the definition of the variation above, it is clear that it commutes with differentiation and integration, frequently quoted as $\delta \d = \d \delta$.
+% Furthermore we get the relation
+% \begin{align}
+%  &&
+%  \delta \sysCoordCoeffd{\GidxI} &= \tdiff{t} \delta \sysCoordCoeff{\GidxI}&
+% \nonumber\\
+%  &\Leftrightarrow&
+%  \delta \kinMatCoeff{\GidxI}{\LidxI} \sysVelCoeff{\LidxI} + \kinMatCoeff{\GidxI}{\LidxI} \delta\sysVelCoeff{\LidxI} &= \kinMatCoeffd{\GidxI}{\LidxI} \varCoordCoeff{\LidxI} + \kinMatCoeff{\GidxI}{\LidxI} \varCoordCoeffd{\LidxI}
+% % \nonumber\\
+% %  &\Leftrightarrow&
+% %  \dirDiff{\LidxII} \kinMatCoeff{\GidxI}{\LidxI} \varCoordCoeff{\LidxII} \sysVelCoeff{\LidxI} + \kinMatCoeff{\GidxI}{\LidxI} \delta\sysVelCoeff{\LidxI} &= \dirDiff{\LidxII} \kinMatCoeff{\GidxI}{\LidxI} \sysVelCoeff{\LidxII} \varCoordCoeff{\LidxI} + \kinMatCoeff{\GidxI}{\LidxI} \varCoordCoeffd{\LidxI}&
+% % \GidxI &= 1,\ldots,\numCoord
+% \nonumber\\
+%  &\Leftrightarrow&
+%  \kinMatCoeff{\GidxI}{\LidxI} \big( \delta\sysVelCoeff{\LidxI} - \varCoordCoeffd{\LidxI} \big) &= \big( \dirDiff{\LidxI} \kinMatCoeff{\GidxI}{\LidxII} - \dirDiff{\LidxII} \kinMatCoeff{\GidxI}{\LidxI} \big) \varCoordCoeff{\LidxII} \sysVelCoeff{\LidxI},&
+%  \GidxI &= 1,\ldots,\numCoord
+% \nonumber\\
+%  &\Leftrightarrow&
+%  \delta\sysVelCoeff{\LidxIII} - \varCoordCoeffd{\LidxIII} &= \underbrace{({\kinMatCoeff{}{}}^+)^{\LidxIII}_{\GidxI} \big( \dirDiff{\LidxI} \kinMatCoeff{\GidxI}{\LidxII} - \dirDiff{\LidxII} \kinMatCoeff{\GidxI}{\LidxI} \big)}_{\BoltzSym{\LidxIII}{\LidxI}{\LidxII}} \varCoordCoeff{\LidxII} \sysVelCoeff{\LidxI},&
+%  \LidxI &= 1,\ldots,\dimConfigSpace
+% \end{align}
+% where we found again the \textit{commutation coefficients} $\BoltzSym{\LidxIII}{\LidxI}{\LidxII}$, previously derived in \eqref{eq:DefCommutationCoeff}.
+Integrating by parts with the boundary conditions $\varCoord(t_1) = \varCoord(t_2) = \tuple{0}$ gives
+\begin{align}
+ \int_{t_0}^{t_1} \varCoordCoeff{\LidxI} \left( \kinMatCoeff{\GidxI}{\LidxI} \pdiff[\Lagrangian]{\sysCoordCoeff{\GidxI}} - \diff{t} \pdiff[\Lagrangian]{\sysVelCoeff{\LidxI}} - \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \sysVelCoeff{\LidxII} \pdiff[\Lagrangian]{\sysVelCoeff{\LidxIII}} \right) \, \d t = 0.
+\end{align}
+Since the variation coordinates $\varCoordCoeff{\LidxI}, i=1,\ldots,\dimConfigSpace$ are independent by definition, the \textit{fundamental lemma of the calculus of variations} (see e.g. \cite[p.\,57]{Arnold:MathematicalMethodsOfClassicalMechanics} or \cite[p.\,166]{CourantHilbert1}) states that, for the integral to vanish, the terms in the brackets have to vanish, i.e.\
+\begin{align}\label{eq:MyEulerLagrange}
+ \diff{t} \pdiff[\Lagrangian]{\sysVelCoeff{\LidxI}} + \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \sysVelCoeff{\LidxII} \pdiff[\Lagrangian]{\sysVelCoeff{\LidxIII}} - \kinMatCoeff{\GidxI}{\LidxI} \pdiff[\Lagrangian]{\sysCoordCoeff{\GidxI}} &= 0,
+\qquad 
+ \LidxI = 1,\ldots,\dimConfigSpace.
+\end{align}
+This, combined with the kinematic relation $\sysCoordCoeffd{\GidxI} = \kinMatCoeff{\GidxI}{\LidxI} \sysVelCoeff{\LidxI}, \GidxI=1\ldots\numCoord$, is the necessary condition for the functional \eqref{eq:Functional} to be stationary.
+
+For the special case $\sysCoord(t)=\genCoord(t)\in\RealNum^\dimConfigSpace$ and $\sysVel(t)=\genCoordd(t)$ we have $\kinMat=\idMat[\dimConfigSpace]$ and $\BoltzSym{}{}{}=0$.
+Then \eqref{eq:MyEulerLagrange} coincides with the \textit{Euler-Lagrange equation}.
+
+\begin{Example}
+Consider the configuration coordinates $\sysCoord = [\Rx^\top, \Ry^\top, \Rz^\top]^\top$ and the velocity coordinates $\sysVel = \w$ related by $\Rd = \R \wedOp(\w)$.
+For the Lagrangian 
+\begin{align}
+\Lagrangian = \tfrac{1}{2} \w^\top \bodyMOI{}{} \w + \tr(\bodyMOSp{}{}(\idMat[3]-\R)) 
+\end{align}
+and taking into account the results from Example \ref{ex:PotentialSO3} and \ref{ex:BoltzmannSymSattelite} we obtain
+\begin{align}
+ \Big[ \diff{t} \pdiff[\Lagrangian]{\sysVelCoeff{\LidxI}} + \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \sysVelCoeff{\LidxII} \pdiff[\Lagrangian]{\sysVelCoeff{\LidxIII}} - \kinMatCoeff{\GidxI}{\LidxI} \pdiff[\Lagrangian]{\sysCoordCoeff{\GidxI}} \Big]_{\LidxI=1,2,3}
+ = \bodyMOI{}{} \wdot + \w \times \bodyMOI{}{} \w + \veeTwoOp(\bodyMOSp{}{} \R).
+\end{align}
+\end{Example}

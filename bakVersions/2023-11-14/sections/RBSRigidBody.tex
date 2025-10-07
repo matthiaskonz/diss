@@ -1,0 +1,467 @@
+\section{A single free rigid body}\label{sec:RB}
+Established textbooks on physics (e.g.\ \cite[§31]{Landau:Mechanics} or \cite[§44]{Boltzmann:PrincipeDerMechanik}) define a \textit{rigid body} as a a system of $\numParticles$ particles such that the distances $d_{\PidxI\PidxII} = \norm{\particlePos{\PidxI} - \particlePos{\PidxII}}$ between their positions $\particlePos{\PidxI}$ are constant.
+For a system with $\numParticles > 3$ particles that do not lie in a plane, this would still allow a mirroring of the body about an arbitrary plane.
+Since this does change the shape of the body, additional constraints are necessary:
+For all particles we require $\sProd{(\particlePos{\PidxII}-\particlePos{\PidxI}) \times (\particlePos{\PidxIII}-\particlePos{\PidxI})}{\particlePos{\PidxIV}-\particlePos{\PidxI}} = c_{\PidxI\PidxII\PidxIII\PidxIV} = \const$.
+The magnitude $|c_{\PidxI\PidxII\PidxIII\PidxIV}|$ is already fixed by the corresponding particle distances $d_{\PidxI\PidxII}$, but the sign of $c_{\PidxI\PidxII\PidxIII\PidxIV}$ is positive (negative) if the vectors $\particlePos{\PidxII}-\particlePos{\PidxI}$, $\particlePos{\PidxIII}-\particlePos{\PidxI}$ and $\particlePos{\PidxIV}-\particlePos{\PidxI}$ form a right (left) handed basis of $\RealNum^3$ and $c_{\PidxI\PidxII\PidxIII\PidxIV} = 0$ if the four particles lie on a plane.
+For the following we require that for at least one quadruple of particles $c_{\PidxI\PidxII\PidxIII\PidxIV} \neq 0$, i.e.\ not all particles lie in a common plane. 
+
+Based on the discussion above the configuration space for a rigid body as a system of constrained particles can be written as
+\begin{align}
+% \particleConfigSpace = \{ [\particlePos{1}^\top, \ldots \particlePos{\numParticles}^\top]^\top \in \RealNum^{3\numParticles} \, | \, \norm{\particlePos{\PidxI} - \particlePos{\PidxII}} = d_{\PidxI\PidxII}, \sProd{(\particlePos{\PidxII}-\particlePos{\PidxI}) \times (\particlePos{\PidxIII}-\particlePos{\PidxI})}{\particlePos{\PidxIV}-\particlePos{\PidxI}} = c_{\PidxI\PidxII\PidxIII\PidxIV} \}
+ \particleConfigSpace = \left\{ \begin{bmatrix}\particlePos{1} \\ \vdots \\ \particlePos{\numParticles}\end{bmatrix} \in \RealNum^{3\numParticles} \ \Bigg| \ \begin{matrix} \norm{\particlePos{\PidxI} - \particlePos{\PidxII}} = d_{\PidxI\PidxII}, \\ \sProd{(\particlePos{\PidxII}-\particlePos{\PidxI}) \times (\particlePos{\PidxIII}-\particlePos{\PidxI})}{\particlePos{\PidxIV}-\particlePos{\PidxI}} = c_{\PidxI\PidxII\PidxIII\PidxIV}, \\ \PidxI,\PidxII,\PidxIII,\PidxIV = 1,\ldots,\numParticles \end{matrix} \right\}
+\end{align}
+Evidently, for large $\numParticles$ the number of constraints surpasses the count $3\numParticles$ of particle coordinates, so the geometric constraints cannot be independent.
+
+\subsection{Blah}
+\begin{figure}[ht]
+ \centering
+ \input{graphics/RBCoordinates.pdf_tex}
+ \caption{RigidBodyIllustration}
+ \label{fig:RigidBodyIllustration}
+\end{figure}
+For a given set of particle positions $(\particlePos{1},\ldots,\particlePos{\numParticles}) \in \particleConfigSpace$ and the body configuration $(\r,\R)\in\RealNum^3 \times \SpecialOrthogonalGroup(3)$ we can compute the quantities
+\begin{align}
+ \particleBodyPos{\PidxI} = \R^\top (\particlePos{\PidxI}-\r), \qquad \PidxI=1,\ldots,\numParticles.
+\end{align}
+
+
+
+There is a mapping $h\,:\,\configSpace = \RealNum^3\times \SpecialOrthogonalGroup(3) \rightarrow \particleConfigSpace$ defined as
+\begin{align}
+ \begin{bmatrix}\particlePos{1} \\ \vdots \\ \particlePos{\numParticles}\end{bmatrix}
+ &=
+ \underbrace{\begin{bmatrix} \r + \R \particleBodyPos{1} \\ \vdots \\ \r + \R \particleBodyPos{\numParticles} \end{bmatrix}}_{h}
+\end{align}
+For the inverse function we use the result from \autoref{sec:RBStiffness}:
+\begin{align}
+ \mathcal{H} = \sumParticles \norm{\r + \R \particleBodyPos{\PidxI} - \particlePos{\PidxI}}^2 \geq 0
+\end{align}
+has a minimum at
+\begin{align}
+ (\r, \R)  = (\tuple{p} - \bar{\mat{Y}} \bar{\mat{X}}^\top \bodyCOS{}{}, \bar{\mat{Y}} \bar{\mat{X}}^\top)
+\end{align}
+where
+\begin{align}
+ \bodyStiffness{}{} &= \sumParticles \particleStiffness{\PidxI},&
+ \bodyCOS{}{} &= \bodyStiffness{}{}^{-1} \sumParticles \particleStiffness{\PidxI} \particleBodyPos{\PidxI},&
+ \tuple{p} &= \bodyStiffness{}{}^{-1} \sumParticles \particleStiffness{\PidxI} \springHubPos{\PidxI},&
+ \mat{P} &= \sumParticles \particleStiffness{\PidxI} \particleBodyPos{\PidxI} \springHubPos{\PidxI}^\top.
+\end{align}
+
+
+
+\subsection{Coordinates}
+\paragraph{Configuration coordinates.}
+Position $\r(t) \in \RealNum^3$ and orientation $\R \in \SpecialOrthogonalGroup(3)$.
+
+The key argument here is
+\begin{align}
+ \particlePos{\PidxI} = \r + \R \particleBodyPos{\PidxI}, \quad \PidxI=1,\ldots,\numParticles
+\end{align}
+where $\r(t) \in \RealNum^3$, $\R(t) \in\SpecialOrthogonalGroup(3)$ and the \textit{constant} particle position $\particleBodyPos{\PidxI} \in \RealNum^3$ w.r.t.\ the body fixed frame.
+
+\begin{align}
+ \sysCoord = [\r^\top, \Rx^\top, \Ry^\top, \Rz^\top]^\top \ \in \
+ \configSpace \cong \RealNum^3 \times \SpecialOrthogonalGroup(3) \cong \particleConfigSpace.
+\end{align}
+
+\begin{align}
+ d_{\PidxI\PidxII} = \norm{\particlePos{\PidxI} - \particlePos{\PidxII}} = \norm{\R(\particleBodyPos{\PidxI} - \particleBodyPos{\PidxII})}
+\\
+ c_{\PidxI\PidxII\PidxIII\PidxIV} = \sProd{(\R(\particleBodyPos{\PidxII} - \particleBodyPos{\PidxI})) \times (\R(\particleBodyPos{\PidxIII} - \particleBodyPos{\PidxI}))}{\R(\particleBodyPos{\PidxIV} - \particleBodyPos{\PidxI})},
+\end{align}
+
+
+
+
+\paragraph{Velocity coordinates.}
+\begin{align}\label{eq:KinematicsRigidBody}
+ \underbrace{\begin{bmatrix} \rd \\ \Rxd \\ \Ryd \\ \Rzd  \end{bmatrix}}_{\sysCoordd}
+ = 
+ \underbrace{\begin{bmatrix}
+  \Rx & \Ry & \Rz & 0 & 0 & 0 \\
+  0 & 0 & 0 & 0 & -\Rz & \Ry \\
+  0 & 0 & 0 & \Rz & 0 & -\Rx \\
+  0 & 0 & 0 & -\Ry & \Rx & 0
+ \end{bmatrix}}_{\kinMat}
+ \underbrace{\begin{bmatrix} \vx \\ \vy \\ \vz \\ \wx \\ \wy \\ \wz \end{bmatrix}}_{\sysVel}
+ .
+\end{align}
+This can be written in the probably more familiar form
+\begin{align}
+ \rd = \R \v, \qquad \Rd = \R \wedOp(\w).
+\end{align}
+With this we can express the particle velocities $\particlePosd{\PidxI}$ and accelerations $\particlePosdd{\PidxI}$ in terms of the configuration $(\r, \R)$ and velocity coordinates $(\v, \w)$ as
+\begin{subequations}
+\begin{align}
+ \label{eq:RBParticlePos}
+ \particlePos{\PidxI} &= \r + \R \particleBodyPos{\PidxI},
+\\
+ \label{eq:RBParticleVel}
+ \particlePosd{\PidxI} &= \R \big( \v - \wedOp(\particleBodyPos{\PidxI}) \w \big),
+\\
+ \label{eq:RBParticleAcc}
+ \particlePosdd{\PidxI} &= \R \big( \vd - \wedOp(\particleBodyPos{\PidxI})\wdot + \wedOp(\w)(\v - \wedOp(\particleBodyPos{\PidxI})\w) \big), \quad \PidxI=1,\ldots,\numParticles
+\end{align}
+\end{subequations}
+and
+\begin{align}
+ \differential \particlePos{\PidxI} = \pdiff[\particlePosd{\PidxI}]{\sysVel} = \pdiff[\particlePosdd{\PidxI}]{\sysVeld} = \big[ \R, \, -\R\wedOp(\particleBodyPos{\PidxI})\big] 
+\end{align}
+
+
+\paragraph{Commutation coefficients.}
+For the next steps we will also need the commutation coefficients $\BoltzSym{}{}{}$ for the chosen coordinates.
+To indicate the special case for the rigid body we use the sans font $\bodyBoltzSym{}{}{}$ here.
+Plugging the kinematic matrix $\kinMat$ from \eqref{eq:KinematicsRigidBody} into the definition \eqref{eq:DefCommutationCoeff} yields
+\begin{align}\label{eq:RBCommutationCoeff}
+ \bodyBoltzSym{1}{2}{6} = \bodyBoltzSym{1}{5}{3} = 
+ \bodyBoltzSym{2}{3}{4} = \bodyBoltzSym{2}{6}{1} =
+ \bodyBoltzSym{3}{1}{5} = \bodyBoltzSym{3}{4}{2} =
+ \bodyBoltzSym{4}{5}{6} =
+ \bodyBoltzSym{5}{6}{4} = 
+ \bodyBoltzSym{6}{4}{5} &= 1 \ ,
+% \nonumber\\
+%  \bodyBoltzSym{1}{6}{2} = \bodyBoltzSym{1}{3}{5} = 
+%  \bodyBoltzSym{2}{4}{3} = \bodyBoltzSym{2}{1}{6} =
+%  \bodyBoltzSym{3}{5}{1} = \bodyBoltzSym{3}{2}{4} =
+%  \bodyBoltzSym{4}{6}{5} =
+%  \bodyBoltzSym{5}{4}{6} = 
+%  \bodyBoltzSym{6}{5}{4} &= -1 \ 
+\end{align}
+and the remaining coefficients vanish.
+It will be useful to define the matrix
+\begin{align}
+ \big[ \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \sysVelCoeff{\LidxII} \big]^{\LidxIII=1\ldots6}_{\LidxI=1\ldots6} =
+ \begin{bmatrix} \wedOp(\bodyAngVel{}{}) & 0 \\ \wedOp(\bodyLinVel{}{}) & \wedOp(\bodyAngVel{}{}) \end{bmatrix}
+ = -\ad{\sysVel}^\top
+\end{align}
+whose naming will be discussed later.
+
+\subsection{Inertia}
+\paragraph{Kinetic energy.}
+Expressing the particle velocities $\particlePosd{\PidxI}$ in terms of the chosen coordinates \eqref{eq:RBParticleVel} the kinetic energy $\kineticEnergy$ of a free rigid body is 
+\begin{align}\label{eq:RigidBodyKineticEnergy}
+ \kineticEnergy &= \tfrac{1}{2} \sumParticles \particleMass{\PidxI} \norm{\overbrace{\R \big( \v - \wedOp(\particleBodyPos{\PidxI}) \w \big)}^{\particlePosd{\PidxI}}}^2
+\nonumber\\[1ex]
+ &= \tfrac{1}{2} \underbrace{\sumParticles \particleMass{\PidxI}}_{\bodyMass{}{}} \norm{\v}^2
+  - \v^\top \underbrace{\sumParticles \particleMass{\PidxI} \wedOp(\particleBodyPos{\PidxI})}_{\bodyMass{}{} \wedOp(\bodyCOM{}{})} \w
+  + \tfrac{1}{2} \w^\top \underbrace{\sumParticles \particleMass{\PidxI} \wedOp(\particleBodyPos{\PidxI})^\top \wedOp(\particleBodyPos{\PidxI})}_{\bodyMOI{}{}} \w
+\nonumber\\
+ &= \tfrac{1}{2} \underbrace{\big[ \v^\top \ \w^\top \big]}_{\bodyVel{}{}^\top}
+ \underbrace{\begin{bmatrix} \bodyMass{}{}\idMat[3] & \bodyMass{}{} \wedOp(\bodyCOM{}{})^\top \\ \bodyMass{}{} \wedOp(\bodyCOM{}{}) & \bodyMOI{}{} \end{bmatrix}}_{\bodyInertiaMat{}{}}
+ \underbrace{\begin{bmatrix} \v \\ \w \end{bmatrix}}_{\bodyVel{}{}}.
+\end{align}
+Here we have substituted some well established inertia parameters: the total mass $\bodyMass{}{}$, the center of mass $\bodyCOM{}{} = \bodyMass{}{}^{-1} \sumParticles \particleMass{\PidxI} \particleBodyPos{\PidxI}$ and the moment of inertia $\bodyMOI{}{} = \bodyMOI{}{}^\top$.
+Assuming that the particle masses are positive $\particleMass{\PidxI} > 0, \PidxI=1,\ldots,\numParticles$ implies that the total mass is positive $\bodyMass{}{} > 0$.
+Furthermore, if the rigid body has at least three particles that do not lie on a line, the inertia matrix is positive definite $\bodyMOI{}{} > 0$.
+It is important to notice that the inertia matrix $\bodyInertiaMat{}{}$ for the chosen coordinates is \textit{constant}\footnote{
+One reason for the choice of $\v$ as velocity coordinates it the fact that the inertia matrix $\bodyInertiaMat{}{}$ is \textit{constant}.
+If we choose instead $\rd$ as velocity coordinates we have
+\begin{align*}
+ \kineticEnergy = \tfrac{1}{2} [\rd^\top, \w^\top] \begin{bmatrix} \bodyMass{}{} \idMat[3] & \bodyMass{}{} \R \wedOp(\bodyCOM{}{})^\top \\ \bodyMass{}{} \wedOp(\bodyCOM{}{}) \R^\top & \bodyMOI{}{} \end{bmatrix} \begin{bmatrix} \rd \\ \w \end{bmatrix}.
+\end{align*}
+Obviously the body inertia matrix depends on the orientation $\R$ of the body and is not constant unless the reference position $\r$ coincides with the \textit{center of mass}, i.e.\ $\bodyCOM{}{}{} = 0$.
+Actually many textbooks, \eg \cite[p.\,167]{Murray:Robotic} or \cite[p.\,153]{Shabana:MultibodySystems}, restrict to this case for their expressions of the kinetic energy.
+In the next section on rigid body systems we will see that it can be quite useful to use \textit{geometrically} meaningful body fixed frames rather than restricting to the center of mass.
+}.
+
+\paragraph{Connection coefficients.}
+As the inertia matrix $\bodyInertiaMat{}{}$ in \eqref{eq:RigidBodyKineticEnergy} is constant, the corresponding connection coefficients $\bodyConnCoeffL{}{}{\LidxI}{\LidxII}{\LidxIII}$ only consist of the terms with the commutation coefficients $\bodyBoltzSym{}{}{}$:
+\begin{align}\label{eq:RBConnCoeff}
+ \bodyConnCoeffL{}{}{\LidxI}{\LidxII}{\LidxIII} &= \tfrac{1}{2}\big(\bodyBoltzSym{\LidxV}{\LidxI}{\LidxII} \bodyInertiaMatCoeff{}{}{\LidxV\LidxIII} + \bodyBoltzSym{\LidxV}{\LidxI}{\LidxIII} \bodyInertiaMatCoeff{}{}{\LidxV\LidxII} - \bodyBoltzSym{\LidxV}{\LidxII}{\LidxIII} \bodyInertiaMatCoeff{}{}{\LidxV\LidxI} \big)
+ = -\bodyConnCoeffL{}{}{\LidxII}{\LidxI}{\LidxIII}.
+\end{align}
+Taking into account this skew symmetry and the commutation coefficients $\bodyBoltzSym{}{}{}$ given in \eqref{eq:RBCommutationCoeff}, the non-zero connection coefficients are
+\begin{subequations}\label{eq:RBConnCoeffRes}
+\begin{align}
+ \bodyConnCoeffL{}{}{3}{2}{4} = \bodyConnCoeffL{}{}{1}{3}{5} = \bodyConnCoeffL{}{}{2}{1}{6} \ &= \ \bodyMass{}{},
+\\
+ \bodyConnCoeffL{}{}{2}{5}{4} = \bodyConnCoeffL{}{}{3}{6}{4} = \bodyConnCoeffL{}{}{5}{1}{5} = \bodyConnCoeffL{}{}{6}{1}{6} \ &= \ \bodyMass{}{} \bodyCOMCoeff{}{}{\idxX},
+\\
+ \bodyConnCoeffL{}{}{4}{2}{4} = \bodyConnCoeffL{}{}{1}{4}{5} = \bodyConnCoeffL{}{}{3}{6}{5} = \bodyConnCoeffL{}{}{6}{2}{6} \ &= \ \bodyMass{}{} \bodyCOMCoeff{}{}{\idxY},
+\\
+ \bodyConnCoeffL{}{}{4}{3}{4} = \bodyConnCoeffL{}{}{5}{3}{5} = \bodyConnCoeffL{}{}{1}{4}{6} = \bodyConnCoeffL{}{}{2}{5}{6} \ &= \ \bodyMass{}{} \bodyCOMCoeff{}{}{\idxZ},
+\\
+ \bodyConnCoeffL{}{}{6}{5}{4} \ &= \ \bodyMOICoeffp{}{}{\idxX\idxX} = \tfrac{1}{2}\big( \bodyMOICoeff{}{}{\idxY\idxY} + \bodyMOICoeff{}{}{\idxZ\idxZ} - \bodyMOICoeff{}{}{\idxX\idxX} \big),
+\\
+ \bodyConnCoeffL{}{}{4}{6}{5} \ &= \ \bodyMOICoeffp{}{}{\idxY\idxY} = \tfrac{1}{2}\big( \bodyMOICoeff{}{}{\idxX\idxX} + \bodyMOICoeff{}{}{\idxZ\idxZ} - \bodyMOICoeff{}{}{\idxY\idxY} \big),
+\\
+ \bodyConnCoeffL{}{}{5}{4}{6} \ &= \ \bodyMOICoeffp{}{}{\idxZ\idxZ} = \tfrac{1}{2}\big( \bodyMOICoeff{}{}{\idxX\idxX} + \bodyMOICoeff{}{}{\idxY\idxY} - \bodyMOICoeff{}{}{\idxZ\idxZ} \big),
+\\
+ \bodyConnCoeffL{}{}{4}{6}{4} = \bodyConnCoeffL{}{}{6}{5}{5} \ &= \ \bodyMOICoeffp{}{}{\idxX\idxY} = -\bodyMOICoeff{}{}{\idxX\idxY},
+\\
+ \bodyConnCoeffL{}{}{5}{4}{4} = \bodyConnCoeffL{}{}{6}{5}{6} \ &= \ \bodyMOICoeffp{}{}{\idxX\idxZ} = -\bodyMOICoeff{}{}{\idxX\idxZ},
+\\
+ \bodyConnCoeffL{}{}{5}{4}{5} = \bodyConnCoeffL{}{}{4}{6}{6} \ &= \ \bodyMOICoeffp{}{}{\idxY\idxZ} = -\bodyMOICoeff{}{}{\idxY\idxZ}.
+\end{align}
+\end{subequations}
+The parameters $\bodyMOIp{}{} = \tfrac{1}{2} \tr(\bodyMOI{}{})\idMat[3] - \bodyMOI{}{}$ will appear several times in the following.
+
+% In addition to the symmetry of the connection coefficients for the rigid body we have
+% \begin{align}
+%  \gyroForceCoeff{\LidxI}
+%  = \bodyConnCoeffL{}{}{\LidxI}{\LidxII}{\LidxIII} \sysVelCoeff{\LidxII} \sysVelCoeff{\LidxIII}
+%  = \tfrac{1}{2}\big(\bodyBoltzSym{\LidxV}{\LidxI}{\LidxII} \bodyInertiaMatCoeff{}{}{\LidxV\LidxIII} + \bodyBoltzSym{\LidxV}{\LidxI}{\LidxIII} \bodyInertiaMatCoeff{}{}{\LidxV\LidxII} - \bodyBoltzSym{\LidxV}{\LidxII}{\LidxIII} \bodyInertiaMatCoeff{}{}{\LidxV\LidxI} \big) \sysVelCoeff{\LidxII} \sysVelCoeff{\LidxIII}
+%  = \bodyBoltzSym{\LidxV}{\LidxI}{\LidxII} \bodyInertiaMatCoeff{}{}{\LidxV\LidxIII} \sysVelCoeff{\LidxII} \sysVelCoeff{\LidxIII}
+% \end{align}
+
+\paragraph{Acceleration energy.}
+Expressing the particle accelerations $\particlePosdd{\PidxI}$ in terms of the coordinates \eqref{eq:RBParticleAcc} we find the acceleration energy $\accEnergy$ for the free rigid body as\footnote{using the Jacobi identity $\tuple{a},\tuple{b},\tuple{c} \in \RealNum^3$: $\wedOp(\tuple{a}) \wedOp(\tuple{b}) \tuple{c} + \wedOp(\tuple{b}) \wedOp(\tuple{c}) \tuple{a} + \wedOp(\tuple{c}) \wedOp(\tuple{a}) \tuple{b} = \tuple{0}$}
+\begin{align}\label{eq:RigidBodyAccEnergy}
+ \accEnergy &= \tfrac{1}{2} \sumParticles \particleMass{\PidxI} \norm{\overbrace{\R \big( \vd - \wedOp(\particleBodyPos{\PidxI})\wdot + \wedOp(\w)(\v - \wedOp(\particleBodyPos{\PidxI})\w) \big)}^{\particlePosdd{\PidxI}}}^2
+\nonumber\\[1ex]
+ &= \tfrac{1}{2} \underbrace{\sumParticles \particleMass{\PidxI}}_{\bodyMass{}{}} \norm{\vd}^2
+  - \vd^\top \underbrace{\sumParticles \particleMass{\PidxI} \wedOp(\particleBodyPos{\PidxI})}_{\bodyMass{}{} \wedOp(\bodyCOM{}{})} \wdot
+  + \tfrac{1}{2} \wdot^\top \underbrace{\sumParticles \particleMass{\PidxI} \wedOp(\particleBodyPos{\PidxI})^\top \wedOp(\particleBodyPos{\PidxI})}_{\bodyMOI{}{}} \wdot
+\nonumber\\
+ &\qquad+ \vd^\top \wedOp(\w) \Big( \underbrace{\sumParticles \particleMass{\PidxI}}_{\bodyMass{}{}}\v - \underbrace{\sumParticles \particleMass{\PidxI} \wedOp(\particleBodyPos{\PidxI})}_{\bodyMass{}{} \wedOp(\bodyCOM{}{})} \w \Big)
+\nonumber\\
+ &\qquad+ \wdot^\top \Big( \underbrace{\sumParticles \particleMass{\PidxI} \wedOp(\particleBodyPos{\PidxI})}_{\bodyMass{}{} \wedOp(\bodyCOM{}{})} \wedOp(\w) \v +  \wedOp(\w) \underbrace{\sumParticles \particleMass{\PidxI} \wedOp(\particleBodyPos{\PidxI})^\top \wedOp(\particleBodyPos{\PidxI})}_{\bodyMOI{}{}} \w \Big)
+\nonumber\\
+ &\qquad+ \tfrac{1}{2} \underbrace{\sumParticles \particleMass{\PidxI}}_{\bodyMass{}{}} \norm{\wedOp(\w)\v}^2
+ + \v^\top \wedOp(\w)^2 \underbrace{\sumParticles \particleMass{\PidxI} \wedOp(\particleBodyPos{\PidxI})}_{\bodyMass{}{} \wedOp(\bodyCOM{}{})} \w
+\nonumber\\
+ &\qquad+ \tfrac{1}{2} \tr \Big( \underbrace{\sumParticles \particleMass{\PidxI} \particleBodyPos{\PidxI} \particleBodyPos{\PidxI}^\top}_{\bodyMOIp{}{}} \wedOp(\w)^4 \Big)
+\end{align}
+As for the kinetic energy $\kineticEnergy$, the acceleration energy $\accEnergy$ for a free rigid body can be formulated using the inertia parameters $(\bodyMass{}{}, \bodyCOM{}{}, \bodyMOI{}{})$ as
+\begin{multline}
+ \accEnergy = \tfrac{1}{2} \underbrace{\big[ \vd^\top \ \wdot^\top \big]}_{\bodyVeld{}{}^\top}
+ \underbrace{\begin{bmatrix} \bodyMass{}{}\idMat[3] & \bodyMass{}{} \wedOp(\bodyCOM{}{})^\top \\ \bodyMass{}{} \wedOp(\bodyCOM{}{}) & \bodyMOI{}{} \end{bmatrix}}_{\bodyInertiaMat{}{}}
+ \underbrace{\begin{bmatrix} \vd \\ \wdot \end{bmatrix}}_{\bodyVeld{}{}}
+\\
+ + \underbrace{\big[ \vd^\top \ \wdot^\top \big]}_{\bodyVeld{}{}^\top} 
+% \underbrace{\begin{bmatrix} \wedOp(\w) \bodyMass{}{}(\v - \wedOp(\bodyCOM{}{})\w) \\ \bodyMass{}{} \wedOp(\bodyCOM{}{}) \wedOp(\w) \v + \wedOp(\w)\bodyMOI{}{} \w \end{bmatrix}}_{\gyroForce}
+ \underbrace{\begin{bmatrix} \wedOp(\w) & \mat{0} \\ \wedOp(\v) & \wedOp(\w) \end{bmatrix}}_{-\ad{\bodyVel{}{}}^\top} 
+ \underbrace{\begin{bmatrix} \bodyMass{}{}\idMat[3] & \bodyMass{}{} \wedOp(\bodyCOM{}{})^\top \\ \bodyMass{}{} \wedOp(\bodyCOM{}{}) & \bodyMOI{}{} \end{bmatrix}}_{\bodyInertiaMat{}{}} 
+ \underbrace{\begin{bmatrix} \v \\ \w \end{bmatrix}}_{\bodyVel{}{}}
+\\
+ + \underbrace{\tfrac{1}{2} \bodyMass{}{} \norm{\wedOp(\w)\v}^2 + \v^\top \wedOp(\w)^2 \bodyMass{}{} \wedOp(\bodyCOM{}{}) \w + \tfrac{1}{2} \tr \big( \bodyMOIp{}{} \wedOp(\w)^4 \big)}_{\accEnergy_0}
+ .
+\end{multline}
+Note that $\accEnergy_0$ is independent of the generalized acceleration $\bodyVeld{}{}$ and consequently does not contribute to the generalized inertia force $\bodyGenForceInertia{}{} = \spdiff[\accEnergy]{\bodyVeld{}{}}$.
+
+\paragraph{Inertia force.}
+Finally, the inertia force of the free rigid body $\bodyGenForceInertia{}{}$, derived from any of the of the previous equivalent formulations, reads
+\begin{align}
+ \bodyGenForceInertia{}{} = \bodyInertiaMat{}{} \bodyVeld{}{} - \ad{\bodyVel{}{}}^\top \bodyInertiaMat{}{} \bodyVel{}{}.
+\end{align}
+
+% \begin{align}
+%  \bodyGenForceInertia{}{}
+%  &= \underbrace{\begin{bmatrix} \bodyMass{}{}\idMat[3] & \bodyMass{}{} \wedOp(\bodyCOM{}{})^\top \\ \bodyMass{}{} \wedOp(\bodyCOM{}{}) & \bodyMOI{}{} \end{bmatrix}}_{\bodyInertiaMat{}{}} \underbrace{\begin{bmatrix} \vd \\ \wdot \end{bmatrix}}_{\bodyVeld{}{}}
+%  + \underbrace{\begin{bmatrix} \wedOp(\w) \bodyMass{}{}(\v - \wedOp(\bodyCOM{}{})\w) \\ \bodyMass{}{} \wedOp(\bodyCOM{}{}) \wedOp(\w) \v + \wedOp(\w)\bodyMOI{}{} \w \end{bmatrix}}_{\gyroForce}
+% %  + \underbrace{\begin{bmatrix} \wedOp(\w) & \mat{0} \\ \wedOp(\v) & \wedOp(\w) \end{bmatrix}}_{-\ad{\bodyVel{}{}}^\top} 
+% %  \underbrace{\begin{bmatrix} \bodyMass{}{}\idMat[3] & \bodyMass{}{} \wedOp(\bodyCOM{}{})^\top \\ \bodyMass{}{} \wedOp(\bodyCOM{}{}) & \bodyMOI{}{} \end{bmatrix}}_{\bodyInertiaMat{}{}} 
+% %  \underbrace{\begin{bmatrix} \v \\ \w \end{bmatrix}}_{\bodyVel{}{}}
+% \end{align}
+
+\subsection{Gravitation}
+The potential energy $\potentialGravity$ of a rigid body due to a gravitational acceleration $\gravityAcc$ according to \eqref{eq:ParticlePotentialGravity} is
+\begin{align}\label{eq:RBPotentialEnergyGravity}
+ \potentialGravity 
+% &= \sumParticles \sProd{\particlePos{\PidxI}}{\particleMass{\PidxI} \gravityAcc} 
+ = \sumParticles \sProd{\r + \R \particleBodyPos{\PidxI}}{\particleMass{\PidxI} \gravityAcc}
+ = \sProd{\underbrace{\sumParticles \particleMass{\PidxI}}_{\bodyMass{}{}} \r + \R \underbrace{\sumParticles \particleMass{\PidxI} \particleBodyPos{\PidxI}}_{\bodyMass{}{}\bodyCOM{}{}}}{\gravityAcc},
+\end{align}
+and the resulting generalized force is
+\begin{align}
+ \bodyGenForceGravity{}{} = \differential \potentialGravity = \begin{bmatrix} \R^\top \bodyMass{}{} \gravityAcc \\ \wedOp(\bodyCOM{}{}) \R^\top \bodyMass{}{} \gravityAcc \end{bmatrix}.
+\end{align}
+
+
+\subsection{Stiffness}\label{sec:RBStiffness}
+\begin{figure}[ht]
+ \centering
+ \input{graphics/RBStiffness.pdf_tex}
+ \caption{Rigid body stiffness}
+ \label{fig:RBStiffness}
+\end{figure}
+Assume that every particle of the rigid body is connected to a position $\springHubPos{\PidxI} \in \RealNum^3$ by a linear spring with stiffness $\particleStiffness{\PidxI} \in\RealNum^{(+)}$, see \autoref{fig:RBStiffness}.
+The resulting potential energy in terms of the rigid body coordinates $\sysCoord \cong (\r, \R)$ is
+\begin{align}\label{eq:RBStiffnessPotential}
+ \potentialStiff(\sysCoord) &= \tfrac{1}{2} \sumParticles \particleStiffness{\PidxI} \norm{\r + \R \particleBodyPos{\PidxI} - \springHubPos{\PidxI}}^2.
+\end{align}
+
+\paragraph{Some identities.}
+In the following we use some basic identities
+\begin{subequations}
+\begin{align}
+ \tuple{a}, \tuple{b} \in \RealNum^{n}  \ : \ &\tuple{a}^\top \tuple{b} = \tr(\tuple{a}\tuple{b}^\top)
+\\
+ \tuple{a}, \tuple{b} \in \RealNum^{3}  \ : \ &\wedOp(\tuple{a}) \tuple{b} = 2\veeOp(\tuple{b} \tuple{a}^\top)
+\\
+ &\wedOp(\tuple{a}) \wedOp(\tuple{b}) = \tuple{b} \tuple{a}^\top - (\tuple{b}^\top \tuple{a}) \idMat[3]
+\\
+ \mat{A}\in\RealNum^{3\times3}, \tuple{b}\in\RealNum^3 \ : \ &\tr(\mat{A} \wedOp(\tuple{b})) = -2 \tuple{b}^\top \veeOp(\mat{A})
+\\
+ &2\veeOp(\wedOp(\tuple{b}) \mat{A}) = (\tr(\mat{A})\idMat[3] - \mat{A}) \tuple{b}
+\end{align} 
+\end{subequations}
+Each may be checked by direct computation.
+
+\paragraph{Stiffness parameters.}
+Rearrange \eqref{eq:RBStiffnessPotential} to
+\begin{align}\label{eq:RBStiffnessPotential2}
+ \potentialStiff(\sysCoord) &= \tfrac{1}{2} \sumParticles \particleStiffness{\PidxI} \norm{\r + \R \particleBodyPos{\PidxI} - \springHubPos{\PidxI}}^2
+\nonumber\\
+ &= \tfrac{1}{2} \sumParticles \particleStiffness{\PidxI} \big( \norm{\r}^2 + \underbrace{\norm{\R \particleBodyPos{\PidxI}}^2}_{\const} + \underbrace{\norm{\springHubPos{\PidxI}}^2}_{\const} + 2\sProd{\r}{\R \particleBodyPos{\PidxI}} - 2\sProd{\r}{\springHubPos{\PidxI}} - 2\sProd{\R \particleBodyPos{\PidxI}}{\springHubPos{\PidxI}}\big)
+\nonumber\\
+ &= \sumParticles \particleStiffness{\PidxI} \big( \tfrac{1}{2} \norm{\r}^2 + \sProd{\r}{\R \particleBodyPos{\PidxI}} - \sProd{\r}{\springHubPos{\PidxI}} - \tr(\R \particleBodyPos{\PidxI} \springHubPos{\PidxI}^\top )\big)
+  + \underbrace{\tfrac{1}{2} \sumParticles \particleStiffness{\PidxI} \big( \norm{\particleBodyPos{\PidxI}}^2 + \norm{\springHubPos{\PidxI}}^2)}_{\potentialStiff_c\,=\,\const}
+\nonumber\\
+ &= \tfrac{1}{2} \bodyStiffness{}{}\norm{\r}^2 + \bodyStiffness{}{} \sProd{\r}{\R \bodyCOS{}{}} - \bodyStiffness{}{} \sProd{\r}{\tuple{p}} - \tr(\mat{P} \R) + \potentialStiff_c
+\end{align}
+with substitution of the constant parameters
+\begin{align}
+ \bodyStiffness{}{} &= \sumParticles \particleStiffness{\PidxI},&
+ \bodyCOS{}{} &= \bodyStiffness{}{}^{-1} \sumParticles \particleStiffness{\PidxI} \particleBodyPos{\PidxI},&
+ \tuple{p} &= \bodyStiffness{}{}^{-1} \sumParticles \particleStiffness{\PidxI} \springHubPos{\PidxI},&
+ \mat{P} &= \sumParticles \particleStiffness{\PidxI} \particleBodyPos{\PidxI} \springHubPos{\PidxI}^\top.
+\end{align}
+Since there is no assumption on the particle and spring constellation, any constellation may be captured by the $1+3+3+9+1=17$ parameters within $(\bodyStiffness{}{}, \bodyCOS{}{}, \tuple{p}, \mat{P}, \potentialStiff_c)$.
+
+\paragraph{Critical points.}
+The time derivatives of the potential may be written as
+\begin{align}\label{eq:RBStiffnessPotentialDifferential}
+ \tdiff{t} \potentialStiff &= \bodyStiffness{}{} \sProd{\r}{\R\v} + \bodyStiffness{}{} \sProd{\R\v}{\R \bodyCOS{}{}} + \bodyStiffness{}{} \sProd{\r}{\R\wedOp(\w) \bodyCOS{}{}} - \bodyStiffness{}{} \sProd{\R\v}{\tuple{p}} - \tr(\mat{P} \R \wedOp(\w))
+\nonumber\\
+ &= \sysVel^\top \underbrace{\begin{bmatrix} \bodyStiffness{}{} (\R^\top (\r - \tuple{p}) + \bodyCOS{}{}) \\ \bodyStiffness{}{} \wedOp(\bodyCOS{}{}) \R^\top \r + 2\veeOp(\mat{P} \R) \end{bmatrix}}_{\differential \potentialStiff}
+\\
+ \tfrac{\d^2}{\d t^2} \potentialStiff 
+ &= \sysVeld^\top \differential \potentialStiff + \sysVel^\top \underbrace{\begin{bmatrix} \bodyStiffness{}{} \idMat[3] & \bodyStiffness{}{}\wedOp\big(\R^\top (\r - \tuple{p})\big)^\top \\ \bodyStiffness{}{}\wedOp(\bodyCOS{}{}) & \bodyStiffness{}{} \wedOp(\bodyCOS{}{}) \wedOp(\R^\top \r) + \tr(\mat{P} \R)\idMat[3] - (\mat{P} \R)^\top \end{bmatrix}}_{\differential^2 \potentialStiff} \sysVel
+\end{align}
+We are interested in configurations $\sysCoordR\cong (\rR, \RR)$ at which the potential is stationary $\differential \potentialStiff(\sysCoordR) = \tuple{0}$.
+From the upper part of \eqref{eq:RBStiffnessPotentialDifferential} we get the condition
+\begin{align}
+ \rR = \tuple{p} - \RR \bodyCOS{}{}.
+\end{align}
+Plugging this into the lower part of \eqref{eq:RBStiffnessPotentialDifferential} we obtain
+\begin{align}
+ \bodyStiffness{}{} \wedOp(\bodyCOS{}{}) \RR^\top (\tuple{p} - \RR \bodyCOS{}{}) + 2\veeOp(\mat{P} \RR)
+% = \bodyStiffness{}{} \wedOp(\bodyCOS{}{}) \RR^\top \tuple{p} + 2\veeOp(\mat{P} \RR)
+ = 2\veeOp(\underbrace{(\mat{P} - \bodyStiffness{}{}\bodyCOS{}{}\tuple{p}^\top)}_{\mat{P}_{\!s}} \RR ) = \tuple{0}.
+\end{align}
+So we need $\RR \in \SpecialOrthogonalGroup(3)$ such that $\mat{P}_{\!s} \RR$ is symmetric.
+Let $\mat{P}_s = \mat{X} \mat{\varSigma} \mat{Y}^\top$ with $\mat{X},\mat{Y} \in \OrthogonalGroup(3)$ and $\mat{\varSigma} = \diag(\sigma_1, \sigma_2, \sigma_3)$, $\sigma_1 \geq \sigma_2 \geq \sigma_3 \geq 0$ be a singular value decomposition and define
+\begin{subequations}
+\begin{align}
+ \bar{\mat{X}} &= \mat{X} \diag(1, 1, \det\mat{X}) \in \SpecialOrthogonalGroup(3),
+\\
+ \bar{\mat{Y}} &= \mat{Y} \diag(1, 1, \det\mat{Y}) \in \SpecialOrthogonalGroup(3),
+\\
+ \bar{\mat{\varSigma}} &= \diag(\sigma_1, \sigma_2, \det\mat{X}\det\mat{Y} \sigma_3).
+\end{align} 
+\end{subequations}
+%where $\sigma_3$ is the smallest singular value.
+With this we may write $\mat{P}_{\!s} \RR = \bar{\mat{X}} \bar{\mat{\varSigma}} \bar{\mat{X}}^\top \bar{\mat{X}} \bar{\mat{Y}}^\top \RR$ which is clearly symmetric for $\RR = \bar{\mat{Y}} \bar{\mat{X}}^\top$.
+The Hessian at this critical point is
+\begin{align}
+ \differential^2 \potentialStiff(\sysCoordR) 
+ &= \begin{bmatrix} \bodyStiffness{}{} \idMat[3] & \bodyStiffness{}{}\wedOp(\bodyCOS{}{})^\top \\ \bodyStiffness{}{}\wedOp(\bodyCOS{}{}) & \tr(\mat{P}_{\!s} \RR)\idMat[3] - \mat{P}_{\!s} \RR + \bodyStiffness{}{} \wedOp(\bodyCOS{}{}) \wedOp(\bodyCOS{}{})^\top \end{bmatrix}
+\nonumber\\
+ &= \begin{bmatrix} \idMat[3] & \mat{0} \\ \wedOp(\bodyCOS{}{}) & \idMat[3] \end{bmatrix}
+ \begin{bmatrix} 
+  \bodyStiffness{}{} \idMat[3] & \mat{0} \\
+  \mat{0} & \bodyMOSs{}{}
+ \end{bmatrix}
+ \begin{bmatrix} \idMat[3] & \wedOp(\bodyCOS{}{})^\top \\ \mat{0} & \idMat[3] \end{bmatrix}
+\end{align}
+with $\bodyMOSs{}{} = \tr(\mat{P}_{\!s} \RR)\idMat[3] - \mat{P}_{\!s} \RR = \bar{\mat{X}} ( \tr(\bar{\mat{\varSigma}})\idMat[3] - \bar{\mat{\varSigma}} ) \bar{\mat{X}}^\top \in \SymMatSP(3)$.
+The positive semi-definiteness of $\tr(\bar{\mat{\varSigma}})\idMat[3] - \bar{\mat{\varSigma}}$ is a consequence of $\sigma_3$ being the smallest singular value.
+
+The rotational part of $\potentialStiff$ is analyzed thoroughly in \autoref{sec:AppendixAttitudePotential} which also discusses saddle points and maxima.
+From the conclusions there we may deduct: $\sysCoordR \cong (\rR, \RR) = (\tuple{p} - \bar{\mat{Y}} \bar{\mat{X}}^\top \bodyCOS{}{}, \bar{\mat{Y}} \bar{\mat{X}}^\top)$ is a minimum of $\potentialStiff$.
+It is the strict, global minimum, if and only if, $\bodyMOSs{}{}$ is positive definite.
+
+
+\paragraph{Stiffness parameters cont'd.}
+We may express the parameters $\tuple{p}$ and $\mat{P}$ in terms of the minimum configuration $(\rR, \RR)$ and the moment of stiffness matrix $\bodyMOSs{}{}$ as
+\begin{align}
+ \tuple{p} &= \rR + \RR \bodyCOS{}{}
+\\
+ \mat{P} &= \mat{P}_{\!s} + \bodyStiffness{}{}\bodyCOS{}{}\tuple{p}^\top
+ = (\tfrac{1}{2}\tr(\bodyMOSs{}{})\idMat[3]-\bodyMOSs{}{})\RR^\top + \bodyStiffness{}{}\bodyCOS{}{}(\rR + \RR \bodyCOS{}{})^\top
+\end{align}
+Plugging this into \eqref{eq:RBStiffnessPotential2} yields
+\begin{align}\label{eq:RBStiffnessPotential3}
+ \potentialStiff(\sysCoord) &= \tfrac{1}{2} \bodyStiffness{}{}\norm{\r}^2 + \bodyStiffness{}{} \sProd{\r}{\R \bodyCOS{}{}} - \bodyStiffness{}{} \sProd{\r}{\rR + \RR \bodyCOS{}{}}
+\nonumber\\
+ &\qquad -\tr\big( ((\tfrac{1}{2}\tr(\bodyMOSs{}{})\idMat[3]-\bodyMOSs{}{})\RR^\top + \bodyStiffness{}{}\bodyCOS{}{}(\rR + \RR \bodyCOS{}{})^\top) \R \big) + \potentialStiff_c
+\nonumber\\
+ &= \tfrac{1}{2} \bodyStiffness{}{}\norm{\r}^2
+ - \bodyStiffness{}{} \sProd{\r}{\rR}
+ + \bodyStiffness{}{} \sProd{\r}{\R \bodyCOS{}{}}
+ - \bodyStiffness{}{} \sProd{\r}{\RR \bodyCOS{}{}}
+ -\bodyStiffness{}{} \sProd{\rR}{\R\bodyCOS{}{}} 
+\nonumber\\
+ &\qquad -\tr\big( \underbrace{(\tfrac{1}{2}\tr(\bodyMOSs{}{})\idMat[3]-\bodyMOSs{}{} + \bodyStiffness{}{}\bodyCOS{}{}\bodyCOS{}{}^\top)}_{\bodyMOSp{}{}} \RR^\top \R \big) + \potentialStiff_c
+\nonumber\\
+ &= \tfrac{1}{2} \bodyStiffness{}{}\norm{\r-\rR}^2
+ + \bodyStiffness{}{} \sProd{\r-\rR}{(\R-\RR) \bodyCOS{}{}}
+ +\tr\big(\bodyMOSp{}{} (\idMat[3]-\RR^\top \R) \big) 
+\nonumber\\
+ &\qquad
+ + \underbrace{\potentialStiff_c
+ - \tfrac{1}{2} \bodyStiffness{}{}\norm{\rR}^2
+ - \bodyStiffness{}{} \sProd{\rR}{\RR\bodyCOS{}{}} 
+ - \tr(\bodyMOSp{}{}) 
+ }_{\potentialStiff_0\,=\,\const}
+\end{align}
+The potential $\potentialStiff_0$ at the minimum is
+\begin{align}
+ \potentialStiff_0 = \potentialStiff(\sysCoordR) &= \tfrac{1}{2} \sumParticles \particleStiffness{\PidxI} \norm{\rR + \RR \particleBodyPos{\PidxI} - \springHubPos{\PidxI}}^2 \geq 0.
+\end{align}
+
+The differential may be written as
+\begin{align}\label{eq:RBStiffnessForce}
+ \differential\potentialStiff(\sysCoord) = \begin{bmatrix} \bodyStiffness{}{} \R^\top (\r\!-\!\rR) + (\idMat[3]\!-\!\R^\top\RR) \bodyStiffness{}{}\bodyCOS{}{} \\ \bodyStiffness{}{}\wedOp(\bodyCOS{}{}) \R^\top (\r\!-\!\rR) + \veeTwoOp\big(\bodyMOSp{}{} \RR^\top\R\big) \end{bmatrix}
+\end{align}
+and the Hessian at the minimum is
+\begin{align} 
+ \differential^2\potentialStiff(\sysCoordR) &= \begin{bmatrix} \bodyStiffness{}{}\idMat[3] & \bodyStiffness{}{} \wedOp(\bodyCOS{}{})^\top \\ \bodyStiffness{}{}\wedOp(\bodyCOS{}{}) & \bodyMOS{}{} \end{bmatrix} \geq 0
+\end{align}
+where $\bodyMOS{}{} = \tr(\bodyMOSp{}{})\idMat[3]-\bodyMOSp{}{} = \bodyMOSs{}{} + \bodyStiffness{}{} \wedOp(\bodyCOS{}{}) \wedOp(\bodyCOS{}{})^\top \in \SymMatSP(3)$.
+
+\paragraph{Conclusion.}
+The conclusion of this subsection is that any constellation of linear springs attached to a rigid body may be captured by the potential $\potentialStiff$ from \eqref{eq:RBStiffnessPotential3} and the resulting force $\genForceStiff = \differential\potentialStiff$ from \eqref{eq:RBStiffnessForce}.
+It is parameterized by 6 parameters within $(\rR,\RR) \in \RealNum^3 \times \SpecialOrthogonalGroup(3)$ which describe the minimum, the $1+3+6=10$ parameters within the total stiffness $\bodyStiffness{}{}\in\RealNum^+_0$, the center of stiffness $\bodyCOS{}{} \in \RealNum^3$ and the moment of stiffness $\bodyMOS{}{} \in \SymMatSP(3)$ and the offset $\potentialStiff_0$: $\potentialStiff(\sysCoord) \geq \potentialStiff_0 \geq 0$.
+The naming is due to the obvious analogy to the inertia parameters from the previous section.
+The minimum is strict and global if, and only if, $\bodyStiffness{}{} > 0$ and $\bodyMOSs{}{} > 0$.
+
+
+
+\subsection{Dissipation}\label{sec:DampingSE3}
+Since the dissipation function $\dissFkt$ has the structure we already saw for the kinetic energy \eqref{eq:RigidBodyKineticEnergy} we can immediately conclude
+\begin{align}
+ \dissFkt &= \tfrac{1}{2} \sumParticles \particleDamping{\PidxI} \norm{\particlePosd{\PidxI}}^2
+\nonumber\\
+%  &= \tfrac{1}{2} \sumParticles \particleDamping{\PidxI} \norm{\v - \wedOp(\particleBodyPos{\PidxI})\w}^2
+% \nonumber\\
+ &= \tfrac{1}{2} \underbrace{\sumParticles \particleDamping{\PidxI}}_{\bodyDamping{}{}} \norm{\v}^2
+  - \v^\top \underbrace{\sumParticles \particleDamping{\PidxI} \wedOp(\particleBodyPos{\PidxI})}_{\bodyDamping{}{} \wedOp(\bodyCOD{}{})} \w
+  + \tfrac{1}{2} \w^\top \underbrace{\sumParticles \particleDamping{\PidxI} \wedOp(\particleBodyPos{\PidxI})^\top \wedOp(\particleBodyPos{\PidxI})}_{\bodyMOD{}{}} \w
+\nonumber\\
+ &= \tfrac{1}{2} \underbrace{\big[ \v^\top \ \w^\top \big]}_{\bodyVel{}{}^\top}
+ \underbrace{\begin{bmatrix} \bodyDamping{}{}\idMat[3] & \bodyDamping{}{} \wedOp(\bodyCOD{}{})^\top \\ \bodyDamping{}{} \wedOp(\bodyCOD{}{}) & \bodyMOD{}{} \end{bmatrix}}_{\bodyDissMat{}{}}
+ \underbrace{\begin{bmatrix} \v \\ \w \end{bmatrix}}_{\bodyVel{}{}}
+\label{eq:RBDissFkt}
+\end{align}
+The resulting generalized force is 
+\begin{align}
+ \bodyGenForceDiss{}{} = \pdiff[\dissFkt]{\bodyVel{}{}} = \bodyDissMat{}{} \bodyVel{}{}
+\end{align}
+
+
+
+
+\subsection{External forces.}
+\fixme{
+Let external forces $\particleForceEx{\PidxI} = \particleForceEx{\PidxI}(\sysCoord, \sysVel, \sysInput)$
+\begin{align}
+ \genForceEx(\sysCoord, \sysVel, \sysInput) = \Big[\sumParticles \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}(\sysCoord)}{\particleForceEx{\PidxI}(\sysCoord, \sysVel, \sysInput)} \Big]_{\LidxI=1,\ldots,6}
+ = \sumParticles \begin{bmatrix} \R \\ \wedOp(\particleBodyPos{\PidxI}) \R \end{bmatrix} \particleForceEx{\PidxI}(\sysCoord, \sysVel, \sysInput)
+\end{align}
+}
+

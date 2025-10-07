@@ -1,0 +1,424 @@
+\section{A more abstract view on the rigid body}\label{sec:RBSMath}
+Real, quadratic matrix sets
+\begin{subequations}
+\begin{align*}
+ &\text{symmetric}&
+ \SymMat(m) &= \{ \mat{A} \in \RealNum^{m\times m} \, | \, \mat{A} = \mat{A}^\top \}
+\\
+ &\text{symmetric, pos.\ def.}&
+ \SymMatP(m) &= \{ \mat{A} \in \SymMat(m) \, | \, \tuple{x}^\top\! \mat{A} \tuple{x} > 0 \, \forall \, \tuple{x} \in \RealNum^{m} \backslash \{\tuple{0}\} \}
+\\
+ &\text{symmetric, pos.\ semi-def.}&
+ \SymMatSP(m) &= \{ \mat{A} \in \SymMat(m) \, | \, \tuple{x}^\top\! \mat{A} \tuple{x} \geq 0 \, \forall \, \tuple{x} \in \RealNum^{m} \backslash \{\tuple{0}\} \}
+% \\
+%  &\text{orthogonal}&
+%  \mathsf{O}(n) &= \{ \mat{A} \in \RealNum^{n\times n} \, | \, \mat{A}^{-1} = \mat{A}^\top \}
+% \\
+%  &\text{special orthogonal}&
+%  \SpecialOrthogonalGroup(n) &= \{ \mat{A} \in \mathsf{O}(n) \, | \, \det\mat{A} = +1 \}
+\end{align*} 
+\end{subequations}
+
+\subsection{The special Euclidean group}
+Matrix Lie groups
+\begin{subequations}
+\begin{align}
+ &\text{special orthogonal}&
+ \SpecialOrthogonalGroup(m) &= \{ \R \in \RealNum^{m\times m} \, | \, \R^\top \R = \idMat[m], \, \det\R = +1 \}
+\\
+ &\text{special Euclidean}&
+ \SpecialEuclideanGroup(m) &= \left\{ \begin{bmatrix} \R & \r \\ \mat{0} & 1 \end{bmatrix} \, \bigg| \, \r \in \RealNum^m, \R \in \SpecialOrthogonalGroup(m) \right\}
+\end{align}
+\end{subequations}
+The group operation is the matrix multiplication, the identity element is the identity matrix $\idMat[m]$ resp.\ $\idMat[m+1]$ and the inverse element is the inverse matrix.
+The associated Lie algebras are the vector spaces
+\begin{subequations}\label{eq:DefLieAlgebras}
+\begin{align}
+ \SpecialOrthogonalAlgebra(m) &= \{ \mat{\Omega} \in \RealNum^{m\times m} \, | \, \mat{\Omega}^\top = -\mat{\Omega} \}
+\\
+ \SpecialEuclideanAlgebra(m) &= \left\{ \begin{bmatrix} \mat{\Omega} & \v \\ \mat{0} & 0 \end{bmatrix} \, \bigg| \, \v \in \RealNum^m, \mat{\Omega} \in \SpecialOrthogonalAlgebra(m) \right\}
+\end{align}
+\end{subequations}
+with the bracket operation $[\mat{X}, \mat{Y}] = \mat{X}\mat{Y} - \mat{Y}\mat{X}$ for $\mat{X},\mat{Y} \in \SpecialOrthogonalAlgebra(m)$ resp.\ $\SpecialEuclideanAlgebra(m)$, i.e.\ the commutator of the matrix multiplication.
+
+
+\paragraph{Minimal coordinates.}
+For the following we restrict to the $m=3$ case.
+Introducing the \textit{wedge} operator, we can parameterize the $n=3$ resp. $n=6$ dimensional Lie algebras \eqref{eq:DefLieAlgebras} by a minimal set of coordinates
+\begin{subequations}\label{eq:DefWedgeOp}
+\begin{align}
+ \wedOp : \, \RealNum^3 \rightarrow \SpecialOrthogonalAlgebra(3) \, : \, \begin{bmatrix} \omega_1 \\ \omega_2 \\ \omega_3 \end{bmatrix} &\mapsto \begin{bmatrix} 0 & -\omega_3 & \omega_2 \\ \omega_3 & 0 & -\omega_1 \\ -\omega_2 & \omega_1 & 0 \end{bmatrix},&
+ \SpecialOrthogonalAlgebra(3) &= \{ \wedOp\w \, | \, \w \in \RealNum^3 \},
+\\
+ \wedOp: \, \RealNum^6 \rightarrow \SpecialEuclideanAlgebra(3) \, : \ \ \begin{bmatrix} \v \\ \w \end{bmatrix} &\mapsto \begin{bmatrix} \wedOp\w & \v \\ \mat{0} & 0 \end{bmatrix},&
+ \SpecialEuclideanAlgebra(3) &= \{ \wedOp\bodyVel{}{} \, | \, \bodyVel{}{} \in \RealNum^6 \}.
+\end{align}
+\end{subequations}
+% With this we can parameterize \eqref{eq:DefLieAlgebras} for $n=3$ by minimal coordinates
+% \begin{subequations}
+% \begin{align}
+%  \SpecialOrthogonalAlgebra(3) &= \{ \wedOp\w \, | \, \w \in \RealNum^3 \}
+% \\
+%  \SpecialEuclideanAlgebra(3) &= \{ \wedOp\bodyVel{}{} \, | \, \bodyVel{}{} \in \RealNum^6 \}
+% \end{align}
+% \end{subequations}
+The inverse operator is denoted by $\veeOp(\cdot)$.
+
+Take the derivative of the geometric constraint for $\R(t) \in \SpecialOrthogonalGroup(3)$ yields
+\begin{align}
+ \R^\top \R = \idMat[3]
+\quad \Rightarrow \quad
+ \underbrace{\R^\top \dot{\R}}_{\mat{\Omega}} + \underbrace{\dot{\R}\vphantom{\R}^\top \R}_{\mat{\Omega}^\top} = \mat{0}
+\quad \Leftrightarrow \quad
+ \mat{\Omega} = -\mat{\Omega}^\top = \wedOp(\w)
+\end{align}
+With this we can give a kinematic relation that ensures that a group element remains in the group and that parameterizes its change by minimal velocity coordinates
+\begin{subequations}
+\begin{align}
+ \dot{\R} &= \R \wedOp(\w), \qquad \R(t) \in \SpecialOrthogonalGroup(3), \ \w(t) \in \RealNum^3,
+\\
+ \dot{\G} &= \G \wedOp(\bodyVel{}{}), \qquad \ \G(t) \in \SpecialEuclideanGroup(3), \ \bodyVel{}{}(t) \in \RealNum^6.
+\end{align}
+\end{subequations}
+
+\paragraph{Adjoint representations.}
+It can be useful to represent the elements of a Lie Group $\mathbb{G}$ by their linear transformation of the associated Lie algebra.
+For $\mat{A} \in \mathbb{G}$ and $\mat{X}, \mat{Y} \in \mathfrak{g}$ define the \textit{adjoint representation} as \cite[Def.\ 3.32]{Hall:LieGroups}:
+\begin{align}
+%  \mat{A} \in \mathsf{G}, \ \mat{X},\mat{Y} \in \mathfrak{g}\, :
+% \qquad
+ \Ad{\mat{A}} \mat{X} = \mat{A} \mat{X} \mat{A}^{-1},
+\quad
+ \ad{\mat{X}} \mat{Y} = \mat{X}\mat{Y} - \mat{Y}\mat{X}.
+\end{align}
+Since we introduced minimal coordinates in \eqref{eq:DefWedgeOp} we can adjust these representations to act on the minimal coordinates of the Lie algebra:
+For $\mat{A} \in \mathbb{G}$ and $\tuple{\xi}, \tuple{\eta} \in \RealNum^n$, where $n = \dim\mathbb{G} = \dim\mathfrak{g}$, define
+\begin{align}
+ \Ad{\mat{A}} \tuple{\xi} = \veeOp \big( \mat{A} \wedOp\tuple{\xi}\, \mat{A}^{-1} \big),
+\qquad
+ \ad{\tuple{\xi}}\tuple{\eta} = \veeOp\big( \wedOp\tuple{\xi} \wedOp\tuple{\eta} - \wedOp\tuple{\xi} \wedOp\tuple{\eta} \big).
+\end{align}
+The adjoint representations for the particular Lie groups with $\R \in \SpecialOrthogonalGroup(3)$, $\w \in \RealNum^3$ and $\G = \left[\begin{smallmatrix} \R & \r \\ \mat{0} & 1 \end{smallmatrix}\right] \in \SpecialEuclideanGroup(3)$, $\bodyVel{}{} = \left[\begin{smallmatrix} \v \\ \w \end{smallmatrix}\right] \in \RealNum^6$ are
+\begin{subequations}
+\begin{align}
+% &\R \in \SpecialOrthogonalGroup(3), \,\w \in \RealNum^3 \ :&
+ \Ad{\R} &= \R,&
+ \ad{\w} &= \wedOp \w
+\\
+% &\G = \begin{bmatrix} \R & \r \\ \mat{0} & 1 \end{bmatrix} \in \SpecialEuclideanGroup(3), \,\bodyVel{}{} = \begin{bmatrix} \v \\ \w \end{bmatrix} \in \RealNum^6 \ :&
+ \Ad{\G} &= \begin{bmatrix} \R & \!\!\wedOp(\r)\,\R \\ \mat{0} & \R \end{bmatrix},&
+ \ad{\bodyVel{}{}} &= \begin{bmatrix} \wedOp\w & \wedOp\v \\ \mat{0} & \wedOp\w \end{bmatrix}
+\end{align}
+\end{subequations}
+Furthermore we have the identities
+\begin{align}
+ \Ad{\G^{-1}} &= \Ad{\G}^{-1},&
+ \tdiff{t}\big( \Ad{\G} \big) &= \Ad{\G} \ad{\bodyVel{}{}}
+\end{align}
+
+
+\paragraph{Further operators.}
+Define the $\veeMatOp$ operator through
+\begin{align}\label{eq:DefWedMatOp}
+ \tr\big( \wedOp\tuple{\xi}\, \mat{A} (\wedOp\tuple{\eta})^\top \big) = \tuple{\eta}^\top (\veeMatOp\mat{A}) \tuple{\xi}.
+\end{align}
+The particular important cases for this work are
+\begin{subequations}
+\begin{align}
+ \veeMatOp &: \RealNum^{3\times 3} \rightarrow \RealNum^{3\times 3} \, : \, \mat{A} \mapsto \tr(\mat{A}) \idMat[3] - \mat{A},
+\\
+ \veeMatOp &: \RealNum^{4\times 4} \rightarrow \RealNum^{6\times 6} \, : \, \begin{bmatrix} \mat{A} & \tuple{b} \\ \tuple{c}^\top & d \end{bmatrix} \mapsto \begin{bmatrix} d \idMat[3] & (\wedOp \tuple{b})^\top \\ \wedOp\tuple{c} & \veeMatOp\mat{A} \end{bmatrix},
+\end{align} 
+\end{subequations}
+The inverse operator is denoted by $\wedMatOp$.
+The $\veeMatOp$ operator maps the coefficients of the map \eqref{eq:DefWedMatOp} with the arguments $\wedOp\tuple{\xi}, \wedOp\tuple{\eta} \in \mathfrak{g}$ to the coefficients of the corresponding map with the minimal coordinates $\tuple{\xi}, \tuple{\eta} \in \RealNum^{\dim\mathfrak{g}}$.
+The naming is due to this similarity to the previously \eqref{eq:DefWedgeOp} defined $\veeOp$ operator.
+% The main application of this is
+% \begin{align}
+%  \sProd[\bodyStiffMatp{}{}]{(\wedOp\tuple{\xi})^\top}{(\wedOp\tuple{\eta})^\top} = \sProd[\veeMatOp\bodyStiffMatp{}{}]{\tuple{\xi}}{\tuple{\eta}}
+% \end{align}
+
+Define the $\veeTwoOp$ operator through
+\begin{align}\label{eq:DefVeeTwoOp}
+ \tr\big( \mat{A} (\wedOp\tuple{\xi})^\top \big) = \tuple{\xi}^\top \veeTwoOp(\mat{A}).
+\end{align}
+The particular important cases for this work are
+\begin{subequations}
+\begin{align}
+ \veeTwoOp &: \RealNum^{3\times 3} \rightarrow \RealNum^3 \, : \, \begin{bmatrix} \ast & A_{12} & A_{13} \\ A_{21} & \ast & A_{23} \\ A_{31} & A_{32} & \ast \end{bmatrix} \mapsto \begin{bmatrix} A_{32} - A_{23} \\ A_{13} - A_{31} \\ A_{21} - A_{12} \end{bmatrix},
+\\
+ \veeTwoOp &: \RealNum^{4\times 4} \rightarrow \RealNum^6 \, : \, \begin{bmatrix} \mat{A} & \tuple{b} \\ \ast & \ast \end{bmatrix} \mapsto \begin{bmatrix} \tuple{b} \\ \veeTwoOp\mat{A} \end{bmatrix}.
+\end{align}
+\end{subequations}
+Note that for $\mat{\Omega} \in \SpecialOrthogonalAlgebra(3) \subset \RealNum^{3\times3}$ we have $\veeTwoOp(\mat{\Omega}) = 2 \veeOp(\mat{\Omega})$, thus giving the motivation for the name.
+
+Combining the definitions \eqref{eq:DefWedMatOp} and \eqref{eq:DefVeeTwoOp} also yields
+\begin{align}
+ \veeTwoOp\big(\wedOp\tuple{\xi} \, \mat{A} \big) = \veeMatOp \mat{A} \, \tuple{\xi}
+\end{align}
+
+\fixme{further identities}
+\begin{subequations}
+\begin{align}
+ \Ad{\G}^\top \veeMatOp\mat{A} \, \Ad{\G} &= \veeMatOp\big( \G^{-1} \mat{A} (\G^{-1})^\top \big),
+\\
+ \Ad{\G}^\top \veeTwoOp\mat{A} &= \veeTwoOp\big(\G^\top \mat{A} (\G^{-1})^\top \big)
+\\
+ \veeTwoOp(\G \wedOp(\tuple{\xi}) \mat{A}) &= \veeMatOp(\G\mat{A}) \Ad{\G} \tuple{\xi}
+\end{align} 
+\end{subequations}
+
+
+
+\subsection{Inner product}\label{sec:RBSMathInnerProduct}
+% \paragraph{Trace.}
+% The \textit{trace} of a quadratic matrix $\mat{A} \in \RealNum^{n\times n}$ is the sum of its diagonal entries
+% \begin{align}
+%  \tr \mat{A} = \sum_{i=1}^{n} A_{ii}
+% \end{align}
+% Some properties
+% \begin{subequations}
+% \begin{align}
+%  \tr(\mat{A}+\mat{B}) &= \tr\mat{A} + \tr\mat{B}
+% \\
+%  \tr(\lambda \mat{A}) &= \lambda \tr\mat{A}
+% \\
+%  \tr \mat{A}^\top &= \tr \mat{A}
+% \\
+%  \tr(\mat{A}\mat{B}) &= \tr(\mat{B}\mat{A})
+% \\
+%  \tr(\mat{P}^{-1} \mat{A} \mat{P}) &= \tr\mat{A}
+% \\
+%  \mat{K} = \mat{K}^\top, \ \mat{S} = -\mat{S}^\top \ &\Rightarrow \ \tr(\mat{K}\mat{S}) = 0
+% \end{align}
+% \end{subequations}
+
+%\paragraph{Inner product.}
+For matrices $\mat{A}, \mat{B} \in \RealNum^{n\times m}$ and a symmetric, positive definite matrix $ \mat{K} \in \SymMatP(n)$, define an \textit{inner product} as
+\begin{align}\label{eq:DefMatrixInnerProduct}
+ \sProd[\mat{K}]{\mat{A}}{\mat{B}} = \tr(\mat{A}^\top \mat{K} \mat{B}).
+\end{align}
+with the following properties $\mat{A}, \mat{B}, \mat{C} \in \RealNum^{n\times m}$, $\lambda \in \RealNum$:
+\begin{subequations}
+\begin{align}
+ &\text{Symmetry}&
+ \sProd[\mat{K}]{\mat{B}}{\mat{A}} %&= \tr(B K A^\top) = \tr(A K^\top B^\top) = \tr(A K B^\top)
+ &= \sProd[\mat{K}]{\mat{A}}{\mat{B}}
+\\
+ &\text{Linearity}&
+ \sProd[\mat{K}]{\lambda \mat{A}}{\mat{B}} &= \lambda \sProd[\mat{K}]{\mat{A}}{\mat{B}} = \sProd[\mat{K}]{\mat{A}}{\lambda \mat{B}},
+\\
+ &&
+ \sProd[\mat{K}]{\mat{A}+\mat{C}}{\mat{B}} &= \sProd[\mat{K}]{\mat{A}}{\mat{B}} + \sProd[\mat{K}]{\mat{C}}{\mat{B}}
+\\
+ &\text{Pos. definit.}&
+ \sProd[\mat{K}]{\mat{A}}{\mat{A}} &\geq 0, \quad \sProd[\mat{K}]{\mat{A}}{\mat{A}} = 0 \ \Leftrightarrow \ \mat{A} = \mat{0}.
+\end{align}
+\end{subequations}
+
+Let $\tuple{a}_i$ and $\tuple{b}_i$ be the columns of $\mat{A}$ and $\mat{B}$, then
+\begin{align}
+ \sProd[\mat{K}]{\mat{A}}{\mat{B}} &= \tr \left( \begin{bmatrix} \tuple{a}_1^\top \\ \vdots \\ \tuple{a}_n^\top \end{bmatrix} \mat{K}  \big[ \tuple{b}_1 \cdots \tuple{b}_n \big] \right) 
+ = \tr \begin{bmatrix} \tuple{a}_1^\top \mat{K} \tuple{b}_1 & \cdots & \tuple{a}_1^\top \mat{K} \tuple{b}_n \\ \vdots & \ddots & \vdots \\ \tuple{a}_n^\top \mat{K} \tuple{b}_1 & \cdots & \tuple{a}_n^\top \mat{K} \tuple{b}_n \end{bmatrix} 
+ = \sum_{i=1}^n \tuple{a}_i^\top \mat{K} \tuple{b}_i.
+\end{align}
+With this the preceding properties should be clear.
+Setting $\mat{K} = \idMat[n]$ in the definition \eqref{eq:DefMatrixInnerProduct} is called the \textit{Frobenius inner product} in \cite[sec.\ 5.2]{Horn:MatrixAnalysis} or \textit{Hilbert-Schmidt inner product} in \cite[sec.\ A.6]{Hall:LieGroups}.
+Furthermore, for $\mat{A}, \mat{B} \in \RealNum^{n\times 1}$ it coincides with the common \textit{dot product}.
+
+The induced norm and metric are
+\begin{align}
+ \norm[\mat{K}]{\mat{A}} = \sqrt{\sProd[\mat{K}]{\mat{A}}{\mat{A}}},
+\qquad
+ d_{\mat{K}}(\mat{A}, \mat{B}) = \norm[\mat{K}]{\mat{A}-\mat{B}}.
+\end{align}
+
+\paragraph{Translation of particular arguments.}
+For $\protoX_1, \protoX_2 \in \RealNum^{n\times n}$ and $\R \in \SpecialOrthogonalGroup(n)$ we have the properties
+\begin{subequations}
+\begin{align}
+ \sProd[\mat{K}]{(\R \protoX_1)^\top}{(\R \protoX_2)^\top}
+ &= \sProd[\mat{K}]{\protoX_1^\top}{\protoX_2^\top},
+\\
+ \sProd[\mat{K}]{(\protoX_1 \R)^\top}{(\protoX_2 \R)^\top} 
+ &= \sProd[\R \mat{K} \R^\top]{\protoX_1^\top}{\protoX_2^\top}
+\end{align} 
+\end{subequations}
+For $\protoXi_1 = \left[\begin{smallmatrix} \protoX_1 & \protox_1 \\ \mat{0} & 0 \end{smallmatrix}\right]$, $\protoXi_2 = \left[\begin{smallmatrix} \protoX_2 & \protox_2 \\ \mat{0} & 0 \end{smallmatrix}\right]$ with $\protox_1, \protox_2 \in \RealNum^{n}$, $\protoX_1, \protoX_2 \in \RealNum^{n\times n}$ and $\G \in \SpecialEuclideanGroup(n)$ we have
+% \begin{align}
+%  \sProd[\mat{K}]{\protoXi_1^\top}{\protoXi_2^\top} &= \tr(\protoXi_1 \mat{K} \protoXi_2^\top)
+% % \nonumber\\
+% %  &= \tr\bigg(\begin{bmatrix} \protoX_1 & \protox_1 \\ \mat{0} & 0 \end{bmatrix} \begin{bmatrix} \bodyMOSp{}{} & \bodyStiffness{}{} \bodyCOS{}{} \\ \bodyStiffness{}{} \bodyCOS{}{}^\top & \bodyStiffness{}{} \end{bmatrix} \begin{bmatrix} \protoX_2^\top & \mat{0} \\ \protox_2^\top & 0 \end{bmatrix}\bigg)
+% % \nonumber\\
+% %  &= \tr\bigg(\begin{bmatrix} \protoX_1 \bodyMOSp{}{} + \protox_1 \bodyStiffness{}{} \bodyCOS{}{}^\top & \protoX_1 \bodyStiffness{}{} \bodyCOS{}{} + \bodyStiffness{}{} \protox_1 \\ \mat{0} & 0 \end{bmatrix} \begin{bmatrix} \protoX_2^\top & \mat{0} \\ \protox_2^\top & 0 \end{bmatrix}\bigg)
+% % \nonumber\\
+% %  &= \tr \big( \protoX_1 \bodyMOSp{}{} \protoX_2^\top + \protox_1 \bodyStiffness{}{} \bodyCOS{}{}^\top \protoX_2^\top + \protoX_1 \bodyStiffness{}{} \bodyCOS{}{} \protox_2^\top + \bodyStiffness{}{} \protox_1 \protox_2^\top \big)
+% % \nonumber\\
+% %  &= \tr \big( \protoX_1 \bodyMOSp{}{} \protoX_2^\top \big) + \bodyStiffness{}{} \tr\big( \protox_1 (\protoX_2 \bodyCOS{}{})^\top\big) + \bodyStiffness{}{} \tr\big((\protoX_1 \bodyCOS{}{}) \protox_2^\top\big) + \bodyStiffness{}{} \tr\big(\protox_1 \protox_2^\top \big)
+% % \nonumber\\
+%  = \tr \big( \protoX_1 \bodyMOSp{}{} \protoX_2^\top \big) + \big(\protox_1^\top \protoX_2 + \protox_2^\top \protoX_1 \big) \bodyStiffness{}{} \bodyCOS{}{} + \bodyStiffness{}{} \protox_1^\top \protox_2
+% \end{align}
+\begin{subequations}\label{eq:InnerProductSE3Translation}
+\begin{align}
+ \label{eq:InnerProductSE3LeftTranslation}
+ \sProd[\mat{K}]{(\G \protoXi_1)^\top}{(\G \protoXi_2)^\top}
+ &= \sProd[\mat{K}]{\protoXi_1^\top}{\protoXi_2^\top},
+\\
+ \label{eq:InnerProductSE3RightTranslation}
+ \sProd[\mat{K}]{(\protoXi_1 \G)^\top}{(\protoXi_2 \G)^\top} 
+% &= \tr(\protoXi_1 \G \mat{K} \G^\top \protoXi_2^\top)
+ &= \sProd[\G \mat{K} \G^\top]{\protoXi_1^\top}{\protoXi_2^\top}
+\end{align} 
+\end{subequations}
+Note that this case includes in particular $\protoXi_1, \protoXi_2 \in \SpecialEuclideanAlgebra(n)$.
+
+\paragraph{Derivative.} This might be useful for the following
+\begin{align}
+ \mathcal{W} &= \tfrac{1}{2} \norm[\mat{K}]{(\wedOp(\sysVel) + \protoX)^\top}^2 = \tfrac{1}{2}\sysVel^\top \mat{K} \sysVel + \sysVel^\top \veeTwoOp(\protoX\mat{K}) + \tfrac{1}{2} \tr(\protoX \mat{K} \protoX^\top)
+\\
+ \pdiff[\mathcal{W}]{\sysVel} &= \veeMatOp(\mat{K}) \sysVel + \veeTwoOp(\protoX\mat{K}) = \veeTwoOp((\wedOp(\sysVel) + \protoX)\mat{K})
+\\
+ \frac{\partial^2\mathcal{W}}{\partial\sysVel \partial\sysVel} &= \veeMatOp(\mat{K})
+\end{align}
+
+
+
+\subsection{Rigid body energies}\label{sec:RBMathEnergies}
+For the variables $\protox \in \RealNum^3$, $\protoX\in \RealNum^{3\times3}$ and the parameters $\particleStiffness{\PidxI} \in \RealNum$, $\particleBodyPos{\PidxI} \in \RealNum^3$, $\PidxI=1\ldots\numParticles$, consider the following calculation\footnote{using the identity $\tuple{a}, \tuple{b} \in \RealNum^n$: $\tuple{a}^\top \tuple{b} = \tr(\tuple{a} \tuple{b}^\top)$}
+\begin{align}\label{eq:RigidBodyEnergyPrototype}
+ \sumParticles \particleStiffness{\PidxI} \norm{\protox + \protoX \particleBodyPos{\PidxI}}^2
+ &= \sumParticles \particleStiffness{\PidxI} \bigg( \begin{bmatrix} \protoX & \protox \\ \mat{0} & 0 \end{bmatrix}\!\begin{bmatrix} \particleBodyPos{\PidxI} \\ 1 \end{bmatrix} \bigg)^\top \bigg( \begin{bmatrix} \protoX & \protox \\ \mat{0} & 0 \end{bmatrix}\!\begin{bmatrix} \particleBodyPos{\PidxI} \\ 1 \end{bmatrix} \bigg)
+\nonumber\\
+ &= \sumParticles \particleStiffness{\PidxI} \tr \bigg( \bigg( \begin{bmatrix} \protoX & \protox \\ \mat{0} & 0 \end{bmatrix}\!\begin{bmatrix} \particleBodyPos{\PidxI} \\ 1 \end{bmatrix} \bigg) \bigg( \begin{bmatrix} \protoX & \protox \\ \mat{0} & 0 \end{bmatrix}\!\begin{bmatrix} \particleBodyPos{\PidxI} \\ 1 \end{bmatrix} \bigg)^\top \bigg)
+\nonumber\\
+ &= \tr \bigg( \underbrace{\begin{bmatrix} \protoX & \protox \\ \mat{0} & 0 \end{bmatrix}}_{\protoXi} \underbrace{\sumParticles \particleStiffness{\PidxI} \begin{bmatrix} \particleBodyPos{\PidxI} \particleBodyPos{\PidxI}^\top & \particleBodyPos{\PidxI}^\top \\ \particleBodyPos{\PidxI} & 1 \end{bmatrix}}_{\bodyStiffMatp{}{}} \underbrace{\begin{bmatrix} \protoX^\top & \mat{0} \\ \protox^\top & 0 \end{bmatrix}}_{\protoXi^\top} \bigg)
+ = \norm[\bodyStiffMatp{}{}]{\protoXi^\top}^2.
+\end{align}
+% The structure of the argument $\protoXi$ is chosen to fit to the arguments that will be used in the following.
+% Its parameter is a symmetric positive definite matrix $\bodyStiffMatp{}{} = \bodyStiffMatp{}{}^\top \in \RealNum^{4\times4} > 0$.
+% Note the properties for left and right translation with $\bodyHomoCoord{}{} \in \SpecialEuclideanGroup(3)$:
+% \begin{align}\label{eq:TranslationRulesEnergyPrototype}
+%  \norm[\bodyStiffMatp{}{}]{(\bodyHomoCoord{}{} \protoXi)^\top}^2 &= \norm[\bodyStiffMatp{}{}]{\protoXi^\top}^2,&
+%  \norm[\bodyStiffMatp{}{}]{(\protoXi\bodyHomoCoord{}{})^\top}^2 &= \norm[\bodyHomoCoord{}{} \bodyStiffMatp{}{} \bodyHomoCoord{}{}^\top]{\protoXi^\top}^2
+% \end{align}
+Recalling the definitions of the kinetic energy $\kineticEnergy$ of a free rigid body \eqref{eq:RigidBodyKineticEnergy}, acceleration energy $\accEnergy$ in \eqref{eq:RigidBodyAccEnergy}, dissipation function $\dissFkt$ in \eqref{eq:RBDissFkt} and the potential energy $\potentialEnergy$ due to linear springs \eqref{eq:RBPotentialStiff}, we find that they all have the structure of \eqref{eq:RigidBodyEnergyPrototype}, i.e.\
+\begin{subequations}
+\begin{align}
+ \kineticEnergy
+ &= \tfrac{1}{2} \sumParticles \particleMass{\PidxI} \norm{\underbrace{\rd + \bodyRotd{}{}{}{} \particleBodyPos{\PidxI}}_{\particlePosd{\PidxI}}}^2
+ = \tfrac{1}{2} \norm[\bodyInertiaMatp{}{}]{\bodyHomoCoordd{}{}^\top}^2
+% = \tfrac{1}{2} \norm[\bodyDissMatp{}{}]{\wedOp(\bodyVel{}{})^\top}^2
+\\
+ \label{eq:RBAccEnergyMath}
+ \accEnergy 
+ &= \tfrac{1}{2} \sumParticles \particleMass{\PidxI} \norm{\underbrace{\bodyPosdd{}{}{} + \bodyRotdd{}{}{}{} \particleBodyPos{\PidxI}}_{\particlePosdd{\PidxI}}}^2
+ = \tfrac{1}{2} \norm[\bodyInertiaMatp{}{}]{\bodyHomoCoorddd{}{}^\top}^2
+% = \tfrac{1}{2} \norm[\bodyInertiaMatp{}{}]{(\wedOp(\bodyVeld{}{}) + \wedOp(\bodyVel{}{})^2)^\top}^2
+\\
+ \dissFkt
+ &= \tfrac{1}{2} \sumParticles \particleDamping{\PidxI} \norm{\underbrace{\rd + \bodyRotd{}{}{}{} \particleBodyPos{\PidxI}}_{\particlePosd{\PidxI}}}^2
+ = \tfrac{1}{2} \norm[\bodyDissMatp{}{}]{\bodyHomoCoordd{}{}^\top}^2
+% = \tfrac{1}{2} \norm[\bodyDissMatp{}{}]{\wedOp(\bodyVel{}{})^\top}^2
+\\
+ \potentialEnergy 
+ &= \tfrac{1}{2} \sumParticles \particleStiffness{\PidxI} \norm{\underbrace{\r\!-\!\bodyPosR{}{}{}{} + (\R \!-\! \bodyRotR{}{}) \particleBodyPos{\PidxI}\big)}_{\particlePos{\PidxI} - \particlePosR{\PidxI}}}^2
+ = \tfrac{1}{2} \norm[\bodyStiffMatp{}{}]{(\bodyHomoCoord{}{} - \bodyHomoCoordR{}{})^\top}^2
+\end{align}
+\end{subequations}
+where
+\begin{subequations}
+\begin{align}
+ \bodyInertiaMatp{}{} = \sumParticles \particleMass{\PidxI} \begin{bmatrix} \particleBodyPos{\PidxI} \particleBodyPos{\PidxI}^\top & \particleBodyPos{\PidxI}^\top \\ \particleBodyPos{\PidxI} & 1 \end{bmatrix} 
+ &= \begin{bmatrix} \bodyMOIp{}{}{} & \bodyMass{}{}\bodyCOM{}{}{} \\ \bodyMass{}{}\bodyCOM{}{}{}^\top & \bodyMass{}{} \end{bmatrix}
+\\
+ \bodyDissMatp{}{} = \sumParticles \particleDamping{\PidxI} \begin{bmatrix} \particleBodyPos{\PidxI} \particleBodyPos{\PidxI}^\top & \particleBodyPos{\PidxI}^\top \\ \particleBodyPos{\PidxI} & 1 \end{bmatrix} 
+ &= \begin{bmatrix} \bodyMODp{}{}{} & \bodyDamping{}{}\bodyCOD{}{}{} \\ \bodyDamping{}{}\bodyCOD{}{}{}^\top & \bodyDamping{}{} \end{bmatrix}
+\\
+ \bodyStiffMatp{}{} = \sumParticles \particleStiffness{\PidxI} \begin{bmatrix} \particleBodyPos{\PidxI} \particleBodyPos{\PidxI}^\top & \particleBodyPos{\PidxI}^\top \\ \particleBodyPos{\PidxI} & 1 \end{bmatrix} 
+ &= \begin{bmatrix} \bodyMOSp{}{}{} & \bodyStiffness{}{}\bodyCOS{}{}{} \\ \bodyStiffness{}{}\bodyCOS{}{}{}^\top & \bodyStiffness{}{} \end{bmatrix}
+\end{align}
+\end{subequations}
+The corresponding forces 
+\begin{subequations}
+\begin{align}
+ \genForceStiff = \differential \potentialStiff
+% = \pdiff[\potentialStiffd]{\bodyVel{}{}} 
+% = \pdiff{\bodyVel{}{}} \tr \big( (\bodyHomoCoord{}{}\wedOp(\bodyVel{}{}) \!-\! \bodyHomoCoordR{}{}\wedOp(\bodyVelR{}{})) \bodyStiffMatp{}{} (\bodyHomoCoord{}{} \!-\! \bodyHomoCoordR{}{})^\top \big)
+% = \pdiff{\bodyVel{}{}} \tr \big( \wedOp(\bodyVel{}{}) \bodyStiffMatp{}{} (\idMat[4] \!-\! \bodyHomoCoord{}{}^{-1} \bodyHomoCoordR{}{})^\top \big)
+ &= \veeTwoOp \big( (\idMat[4] \!-\! \bodyHomoCoord{}{}^{-1} \bodyHomoCoordR{}{}) \bodyStiffMatp{}{} \big)
+\\
+ \genForceDiss = \pdiff[\dissFkt]{\bodyVel{}{}}
+ &= \veeTwoOp \big( \wedOp(\bodyVel{}{}) \bodyDissMatp{}{} \big)
+% = \underbrace{\veeMatOp(\bodyDissMatp{}{})}_{\bodyDissMat{}{}} \bodyVel{}{}
+\\
+ \genForceInertia = \pdiff[\accEnergy]{\bodyVeld{}{}}
+ &= \veeTwoOp \big( (\wedOp(\bodyVeld{}{}) + \wedOp(\bodyVel{}{})^2) \bodyInertiaMatp{}{} \big)
+% = \underbrace{\veeMatOp(\bodyInertiaMatp{}{})}_{\bodyInertiaMat{}{}} \bodyVeld{}{} + \underbrace{\veeMatOp( \wedOp(\bodyVel{}{}) \bodyInertiaMatp{}{}) \bodyVel{}{}}_{\gyroForce}
+\end{align} 
+\end{subequations}
+note that $\gyroForce = \veeMatOp(\wedOp(\bodyVel{}{}) \bodyInertiaMatp{}{}) \bodyVel{}{} = -\ad{\bodyVel{}{}}^\top \veeMatOp(\bodyInertiaMatp{}{}) \bodyVel{}{}$.
+
+
+
+\paragraph{Gravitation.}
+Though the potential energy $\potentialGravity$ due to gravitation has a different form than the energies above, it can be written in the form
+\begin{align}\label{eq:RBPotentialEnergyGravity2}
+ \potentialGravity = \sProd[\bodyInertiaMatp{}{}]{\G^\top}{\wedOp(\gravityAccWrench)^\top},
+\qquad 
+ \gravityAccWrench^\top = [\gravityAcc^\top, \tuple{0}_{1\times3} ].
+\end{align}
+Its differential is
+\begin{align}
+ \bodyGenForceGravity{}{} = \differential\potentialGravity = \bodyInertiaMat{}{} \Ad{\G}^{-1} \gravityAccWrench.
+\end{align}
+\fixme{Its crucial that this only holds with this specific argument $\gravityAccWrench$, i.e.\ the fact that there is no ``angular gravitational acceleration''.}
+
+% \paragraph{Change of body frame.}
+% Assume $\bodyInertiaMatp{}{\BidxI}$ is the inertia matrix associated with the body frame $\bodyHomoCoord{}{\BidxI}$.
+% The inertia matrix $\bodyInertiaMatp{}{\BidxII}$ associated with the body frame $\bodyHomoCoord{}{\BidxII}{}{}$ can be computed using the translation rule from \eqref{eq:TranslationRulesEnergyPrototype} and $\bodyHomoCoord{\BidxII}{\BidxI} = \bodyHomoCoord{}{\BidxII}{}{}^{-1}\bodyHomoCoord{}{\BidxI} = \const$
+% \begin{align}
+%  \kineticEnergy = \energyFktRB{\bodyInertiaMatp{}{\BidxI}}{\bodyHomoCoordd{}{\BidxI}{}{}}
+%  = \energyFktRB{\bodyInertiaMatp{}{\BidxI}}{\bodyHomoCoordd{}{\BidxII}{}{} \bodyHomoCoord{\BidxII}{\BidxI}}
+%  = \energyFktRB{\underbrace{\bodyHomoCoord{\BidxII}{\BidxI} \bodyInertiaMatp{}{\BidxI} \bodyHomoCoord{\BidxII}{\BidxI}^\top}_{\bodyInertiaMatp{}{\BidxII}}}{\bodyHomoCoordd{}{\BidxII}{}{}}
+% \end{align}
+% So
+% \begin{align}
+%  \underbrace{\begin{bmatrix} \bodyMOIp{}{\BidxII}{} & \bodyMass{}{\BidxII}\bodyCOM{}{\BidxII}{} \\ \bodyMass{}{\BidxII}\bodyCOM{}{\BidxII}{}^\top & \bodyMass{}{\BidxII} \end{bmatrix}}_{\bodyInertiaMatp{}{\BidxII}}
+%  &= 
+%  \underbrace{\begin{bmatrix} \bodyRot{\BidxII}{\BidxI}{}{} & \bodyPos{\BidxII}{\BidxI}{}{} \\ 0 & 1 \end{bmatrix}}_{\bodyHomoCoord{\BidxII}{\BidxI}}
+%  \underbrace{\begin{bmatrix} \bodyMOIp{}{\BidxI}{} & \bodyMass{}{\BidxI}\bodyCOM{}{\BidxI}{} \\ \bodyMass{}{\BidxI}\bodyCOM{}{\BidxI}{}^\top & \bodyMass{}{\BidxI} \end{bmatrix}}_{\bodyInertiaMatp{}{\BidxI}}
+%  \underbrace{\begin{bmatrix} \bodyRot{\BidxII}{\BidxI}{}{}^\top & 0 \\ \bodyPos{\BidxII}{\BidxI}{}{}^\top & 1 \end{bmatrix}}_{\bodyHomoCoord{\BidxII}{\BidxI}^\top}
+% % \nonumber\\
+% %  &= 
+% %  \begin{bmatrix} \bodyRot{\BidxII}{\BidxI}{}{} \bodyMOIp{}{\BidxI}{} + \bodyMass{}{\BidxI} \bodyPos{\BidxII}{\BidxI}{}{} \bodyCOM{}{\BidxI}{}^\top & \bodyMass{}{\BidxI} (\bodyRot{\BidxII}{\BidxI}{}{} \bodyCOM{}{\BidxI}{} + \bodyPos{\BidxII}{\BidxI}{}{}) \\ \bodyMass{}{\BidxI}\bodyCOM{}{\BidxI}{}^\top & \bodyMass{}{\BidxI} \end{bmatrix}
+% %  \underbrace{\begin{bmatrix} \bodyRot{\BidxII}{\BidxI}{}{}^\top & 0 \\ \bodyPos{\BidxII}{\BidxI}{}{}^\top & 1 \end{bmatrix}}_{\bodyHomoCoord{\BidxII}{\BidxI}^\top}
+% % \nonumber\\
+% %  &= 
+% %  \begin{bmatrix} \bodyRot{\BidxII}{\BidxI}{}{} \bodyMOIp{}{\BidxI}{} \bodyRot{\BidxII}{\BidxI}{}{}^\top + \bodyMass{}{\BidxI} (\bodyPos{\BidxII}{\BidxI}{}{} (\bodyRot{\BidxII}{\BidxI}{}{} \bodyCOM{}{\BidxI}{})^\top + \bodyRot{\BidxII}{\BidxI}{}{} \bodyCOM{}{\BidxI}{}\bodyPos{\BidxII}{\BidxI}{}{}^\top + \bodyPos{\BidxII}{\BidxI}{}{}\bodyPos{\BidxII}{\BidxI}{}{}^\top) & \bodyMass{}{\BidxI} (\bodyRot{\BidxII}{\BidxI}{}{} \bodyCOM{}{\BidxI}{} + \bodyPos{\BidxII}{\BidxI}{}{}) \\ \bodyMass{}{\BidxI} (\bodyRot{\BidxII}{\BidxI}{}{}\bodyCOM{}{\BidxI}{} + \bodyPos{\BidxII}{\BidxI}{}{})^\top & \bodyMass{}{\BidxI} \end{bmatrix}
+% \nonumber\\
+%  &= 
+%  \begin{bmatrix} \bodyRot{\BidxII}{\BidxI}{}{} (\bodyMOIp{}{\BidxI}{} \!-\! \bodyMass{}{\BidxI}\bodyCOM{}{\BidxI}{} \bodyCOM{}{\BidxI}{}^\top) \bodyRot{\BidxII}{\BidxI}{}{}^\top + \bodyMass{}{\BidxI} (\bodyRot{\BidxII}{\BidxI}{}{} \bodyCOM{}{\BidxI}{} + \bodyPos{\BidxII}{\BidxI}{}{}) (\bodyRot{\BidxII}{\BidxI}{}{} \bodyCOM{}{\BidxI}{} + \bodyPos{\BidxII}{\BidxI}{}{})^\top & \bodyMass{}{\BidxI} (\bodyRot{\BidxII}{\BidxI}{}{} \bodyCOM{}{\BidxI}{} \!+\! \bodyPos{\BidxII}{\BidxI}{}{}) \\ \bodyMass{}{\BidxI} (\bodyRot{\BidxII}{\BidxI}{}{}\bodyCOM{}{\BidxI}{} \!+\! \bodyPos{\BidxII}{\BidxI}{}{})^\top & \bodyMass{}{\BidxI} \end{bmatrix}
+% \end{align}
+
+\paragraph{Change of body frame.}
+Assume $\bodyInertiaMatp{}{\BidxI}$ is the inertia matrix associated with the body frame $\bodyHomoCoord{}{\BidxI}$.
+The inertia matrix $\bodyInertiaMatp{}{\BidxII}$ associated with the body frame $\bodyHomoCoord{}{\BidxII}{}{} = \bodyHomoCoord{}{\BidxI} \bodyHomoCoord{\BidxI}{\BidxII}{}{}$, with $\bodyHomoCoord{\BidxI}{\BidxII}{}{} = \const$ can be computed using the translation rule from ??:
+\begin{align}
+ \kineticEnergy = \energyFktRB{\bodyInertiaMatp{}{\BidxI}}{\bodyHomoCoordd{}{\BidxI}{}{}}
+ = \energyFktRB{\bodyInertiaMatp{}{\BidxI}}{\bodyHomoCoordd{}{\BidxII}{}{} \bodyHomoCoord{\BidxI}{\BidxII}{}{}^{-1}}
+ = \energyFktRB{\underbrace{\bodyHomoCoord{\BidxI}{\BidxII}{}{}^{-1} \bodyInertiaMatp{}{\BidxI} (\bodyHomoCoord{\BidxI}{\BidxII}{}{}^{-1})^\top}_{\bodyInertiaMatp{}{\BidxII}}}{\bodyHomoCoordd{}{\BidxII}{}{}}
+\end{align}
+So
+\begin{align}
+ \underbrace{\begin{bmatrix} \bodyMOIp{}{\BidxII}{} & \bodyMass{}{\BidxII}\bodyCOM{}{\BidxII}{} \\ \bodyMass{}{\BidxII}\bodyCOM{}{\BidxII}{}^\top & \bodyMass{}{\BidxII} \end{bmatrix}}_{\bodyInertiaMatp{}{\BidxII}}
+ &= 
+ \underbrace{\begin{bmatrix} \bodyRot{\BidxI}{\BidxII}^\top & -\bodyRot{\BidxI}{\BidxII}^\top \bodyPos{\BidxI}{\BidxII}{}{} \\ 0 & 1 \end{bmatrix}}_{\bodyHomoCoord{\BidxI}{\BidxII}{}{}^{-1}}
+ \underbrace{\begin{bmatrix} \bodyMOIp{}{\BidxI}{} & \bodyMass{}{\BidxI}\bodyCOM{}{\BidxI}{} \\ \bodyMass{}{\BidxI}\bodyCOM{}{\BidxI}{}^\top & \bodyMass{}{\BidxI} \end{bmatrix}}_{\bodyInertiaMatp{}{\BidxI}}
+ \underbrace{\begin{bmatrix} \bodyRot{\BidxI}{\BidxII} & 0 \\ -\bodyPos{\BidxI}{\BidxII}{}{}^\top \bodyRot{\BidxI}{\BidxII} & 1 \end{bmatrix}}_{\bodyHomoCoord{\BidxI}{\BidxII}{}{}^{-\top}}
+\nonumber\\
+ &= 
+ \begin{bmatrix} \bodyRot{\BidxI}{\BidxII}^\top (\bodyMOIp{}{\BidxI}{} + \bodyMass{}{\BidxI}(\bodyCOM{}{\BidxI}{}\!-\!\bodyPos{\BidxI}{\BidxII}{}{})(\bodyCOM{}{\BidxI}{}\!-\!\bodyPos{\BidxI}{\BidxII}{}{})^\top - \bodyMass{}{\BidxI}\bodyCOM{}{\BidxI}{} \bodyCOM{}{\BidxI}{}^\top) \bodyRot{\BidxI}{\BidxII} & \bodyRot{\BidxI}{\BidxII}^\top \bodyMass{}{\BidxI} (\bodyCOM{}{\BidxI}{}\!-\!\bodyPos{\BidxI}{\BidxII}{}{}) \\ \bodyMass{}{\BidxI} (\bodyCOM{}{\BidxI}{}\!-\!\bodyPos{\BidxI}{\BidxII}{}{})^\top \bodyRot{\BidxI}{\BidxII} & \bodyMass{}{\BidxI} \end{bmatrix}
+\end{align}
+
+
+

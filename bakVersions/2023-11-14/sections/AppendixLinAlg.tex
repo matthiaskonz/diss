@@ -1,0 +1,365 @@
+\section{Linear Algebra}
+% \paragraph{Normal matrix}
+% A square matrix $\mat{A} \in \RealNum^{n\times n}$ is called \textit{normal} if $\mat{A}^\top \mat{A} = \mat{A} \mat{A}^\top$.
+% A normal matrix is diagonalizable by a orthonormal matrix. 
+
+\subsection{Matrix sets}
+Define the following sets of real matrices that are frequently used in the work: 
+\begin{subequations}
+\begin{align}
+ &\text{(symmetric)}&
+ \SymMat(n) &= \{ \mat{A} \in \RealNum^{n\times n} \, | \, \mat{A} = \mat{A}^\top \},
+\\
+ &\text{(symmetric, pos.\ def.)}&
+ \SymMatP(n) &= \{ \mat{A} \in \SymMat(n) \, | \, \tuple{x}^\top\! \mat{A} \tuple{x} > 0 \, \forall \, \tuple{x} \in \RealNum^{n} \backslash \{\tuple{0}\} \},
+\\
+ &\text{(sym., pos.\ semi-def.)}&
+ \SymMatSP(n) &= \{ \mat{A} \in \SymMat(n) \, | \, \tuple{x}^\top\! \mat{A} \tuple{x} \geq 0 \, \forall \, \tuple{x} \in \RealNum^{n} \backslash \{\tuple{0}\} \},
+\\[2ex]
+ &\text{(unit sphere)}&
+ \mathbb{S}^n &= \{ \tuple{a} \in \RealNum^{n} \, | \, \tuple{a}^\top\tuple{a} = 1 \},
+\\
+ &\text{(orthogonal)}&
+ \mathbb{O}(n) &= \{ \mat{A} \in \RealNum^{n\times n} \, | \, \mat{A}^{-1} = \mat{A}^\top \},
+\\
+ &\text{(special orthogonal)}&
+ \SpecialOrthogonalGroup(n) &= \{ \mat{R} \in \mathbb{O}(n) \, | \, \det\mat{R} = +1 \},
+\\
+ &\text{(special Euclidean)}&
+ \SpecialEuclideanGroup(n) &= \left\{ \begin{bmatrix} \R & \r \\ \mat{0} & 1 \end{bmatrix} \, \bigg| \, \r \in \RealNum^n, \R \in \SpecialOrthogonalGroup(n) \right\},
+\\[2ex]
+ &\text{(skew symmetric)}&
+ \SpecialOrthogonalAlgebra(n) &= \{ \mat{\Omega} \in \RealNum^{n\times n} \, | \, \mat{\Omega}^\top = -\mat{\Omega} \},
+\\
+ &\text{}&
+ \SpecialEuclideanAlgebra(n) &= \left\{ \begin{bmatrix} \mat{\Omega} & \tuple{v} \\ \mat{0} & 0 \end{bmatrix} \, | \, \mat{\Omega} \in \SpecialOrthogonalAlgebra(n), \tuple{v} \in \RealNum^{n} \right\}.
+\end{align} 
+\end{subequations}
+
+\subsection{Trace}
+The \textit{trace} of a quadratic matrix $\mat{A} \in \RealNum^{n\times n}$ is the sum of its diagonal entries
+\begin{align}
+ \tr \mat{A} = \sum_{i=1}^{n} A_{ii}
+\end{align}
+Some properties of the trace are
+\begin{subequations}
+\begin{align}
+ \mat{A}, \mat{B} \in \RealNum^{n\times n}, \lambda\in\RealNum \,&:&
+ \tr(\mat{A}+\mat{B}) &= \tr\mat{A} + \tr\mat{B},
+\\
+ &&
+ \tr(\lambda \mat{A}) &= \lambda \tr\mat{A},
+\\
+ &&
+ \tr \mat{A}^\top &= \tr \mat{A},
+\\ 
+ \mat{A} \in \RealNum^{n\times m}, \mat{B}\in\RealNum^{m\times n}\,&:&
+ \tr(\mat{A}\mat{B}) &= \tr(\mat{B}\mat{A}),
+\\ 
+ \mat{A}, \mat{P} \in \RealNum^{n\times n}, \det\mat{P} \neq 0\,&:&
+ \tr(\mat{P}^{-1} \mat{A} \mat{P}) &= \tr\mat{A}.
+\\
+ \mat{K}\in\SymMat(n), \mat{\Omega}\in\SpecialOrthogonalAlgebra(n)\,&:&
+ \tr(\mat{K}\mat{\Omega}) &= 0.
+\end{align}
+\end{subequations}
+For matrices $\mat{A},\mat{B}\in \RealNum^{n\times n}, n\geq2$ we may define the bijective mapping
+\begin{align}
+ \mat{B} = \tr(\mat{A})\idMat[n] - \mat{A}
+\qquad \Leftrightarrow \qquad
+ \mat{A} = \tfrac{1}{n-1}\tr(\mat{B}) \idMat[n] - \mat{B}.
+\end{align}
+which is due to $\tr\mat{B} = (n-1)\tr\mat{A}$.
+
+
+\subsection{Vee \& wedge operatos}
+Define
+\begin{subequations}%\label{eq:DefWedgeOp}
+\begin{align}
+ \wedOp : \, \RealNum^3 \rightarrow \SpecialOrthogonalAlgebra(3) \, : \, \begin{bmatrix} \omega_1 \\ \omega_2 \\ \omega_3 \end{bmatrix} &\mapsto \begin{bmatrix} 0 & -\omega_3 & \omega_2 \\ \omega_3 & 0 & -\omega_1 \\ -\omega_2 & \omega_1 & 0 \end{bmatrix},&
+\\
+ \wedOp: \, \RealNum^6 \rightarrow \SpecialEuclideanAlgebra(3) \, : \ \ \begin{bmatrix} \v \\ \w \end{bmatrix} &\mapsto \begin{bmatrix} \wedOp\w & \v \\ \mat{0} & 0 \end{bmatrix},&
+\end{align}
+\end{subequations}
+
+\begin{subequations}
+\begin{align}
+ \veeMatOp &: \RealNum^{3\times 3} \rightarrow \RealNum^{3\times 3} \, : \, \mat{A} \mapsto \tr(\mat{A}) \idMat[3] - \mat{A},
+\\
+ \veeMatOp &: \RealNum^{4\times 4} \rightarrow \RealNum^{6\times 6} \, : \, \begin{bmatrix} \mat{A} & \tuple{b} \\ \tuple{c}^\top & d \end{bmatrix} \mapsto \begin{bmatrix} d \idMat[3] & (\wedOp \tuple{b})^\top \\ \wedOp\tuple{c} & \veeMatOp\mat{A} \end{bmatrix},
+\end{align} 
+\end{subequations}
+\begin{align}
+ \mat{A}, \mat{P} \in \RealNum^{n\times n}, \det\mat{P} \neq 0\,:
+\qquad
+ \veeMatOp(\mat{P}^{-1} \mat{A} \mat{P}) = \mat{P}^{-1} \veeMatOp(\mat{A}) \mat{P}
+\end{align}
+
+
+\subsection{Inner product}\label{sec:MathInnerProduct}
+\paragraph{Inner product.}
+For matrices $\mat{A}, \mat{B} \in \RealNum^{n\times m}$ and a symmetric, positive definite matrix $ \mat{K} \in \SymMatP(n)$, define an \textit{inner product} as
+\begin{align}\label{eq:DefMatrixInnerProduct}
+ \sProd[\mat{K}]{\mat{A}}{\mat{B}} = \tr(\mat{A}^\top \mat{K} \mat{B}).
+\end{align}
+For $\mat{A}, \mat{B}, \mat{C} \in \RealNum^{n\times m}$ and $\lambda \in \RealNum$ we have the basic properties
+\begin{subequations}
+\begin{align}
+ &\text{(linearity)}&
+ \sProd[\mat{K}]{\lambda \mat{A}}{\mat{B}} &= \lambda \sProd[\mat{K}]{\mat{A}}{\mat{B}} = \sProd[\mat{K}]{\mat{A}}{\lambda \mat{B}},
+\\
+ &&
+ \sProd[\mat{K}]{\mat{A}+\mat{C}}{\mat{B}} &= \sProd[\mat{K}]{\mat{A}}{\mat{B}} + \sProd[\mat{K}]{\mat{C}}{\mat{B}}
+\\
+ &\text{(symmetry)}&
+ \sProd[\mat{K}]{\mat{B}}{\mat{A}} %&= \tr(B K A^\top) = \tr(A K^\top B^\top) = \tr(A K B^\top)
+ &= \sProd[\mat{K}]{\mat{A}}{\mat{B}}
+\\
+ &\text{(positive definiteness)}&
+ \sProd[\mat{K}]{\mat{A}}{\mat{A}} &\geq 0, \quad \sProd[\mat{K}]{\mat{A}}{\mat{A}} = 0 \ \Leftrightarrow \ \mat{A} = \mat{0}.
+\end{align}
+\end{subequations}
+% Let $\tuple{a}_i$ and $\tuple{b}_i$ be the columns of $\mat{A}$ and $\mat{B}$, then
+% \begin{align}
+%  \sProd[\mat{K}]{\mat{A}}{\mat{B}} &= \tr \left( \begin{bmatrix} \tuple{a}_1^\top \\ \vdots \\ \tuple{a}_n^\top \end{bmatrix} \mat{K}  \big[ \tuple{b}_1 \cdots \tuple{b}_n \big] \right) 
+%  = \tr \begin{bmatrix} \tuple{a}_1^\top \mat{K} \tuple{b}_1 & \cdots & \tuple{a}_1^\top \mat{K} \tuple{b}_n \\ \vdots & \ddots & \vdots \\ \tuple{a}_n^\top \mat{K} \tuple{b}_1 & \cdots & \tuple{a}_n^\top \mat{K} \tuple{b}_n \end{bmatrix} 
+%  = \sum_{i=1}^n \tuple{a}_i^\top \mat{K} \tuple{b}_i.
+% \end{align}
+% With this the preceding properties should be clear.
+Setting $\mat{K} = \idMat[n]$ in the definition \eqref{eq:DefMatrixInnerProduct} is called the \textit{Frobenius inner product} in \cite[sec.\ 5.2]{Horn:MatrixAnalysis} or \textit{Hilbert-Schmidt inner product} in \cite[sec.\ A.6]{Hall:LieGroups}.
+Furthermore, for $\mat{A}, \mat{B} \in \RealNum^{n\times 1}$ it coincides with the common \textit{dot product}.
+
+\paragraph{Norm.}
+The induced norm is
+\begin{align}
+ \norm[\mat{K}]{\mat{A}} = \sqrt{\sProd[\mat{K}]{\mat{A}}{\mat{A}}}.
+\end{align}
+For $\mat{A}, \mat{B} \in \RealNum^{n\times m}$ and $\lambda \in \RealNum$ we have the basic properties
+\begin{subequations}
+\begin{align}
+ &\text{(triangle inequality)}&
+ \norm[\mat{K}]{\mat{A}+\mat{B}} &\leq \norm[\mat{K}]{\mat{A}} + \norm[\mat{K}]{\mat{B}}
+\\
+ &\text{(absolute homogeneity)}&
+ \norm[\mat{K}]{\lambda \mat{A}} &= |\lambda| \, \norm[\mat{K}]{\mat{A}},
+\\
+ &\text{(positive definiteness)}&
+ \norm[\mat{K}]{\mat{A}} &\geq 0, \quad \norm[\mat{K}]{\mat{A}} = 0 \ \Leftrightarrow \ \mat{A} = \mat{0}.
+\end{align}
+\end{subequations}
+
+\paragraph{Metric.}
+The induced metric is
+\begin{align}
+ d_{\mat{K}}(\mat{A}, \mat{B}) = \norm[\mat{K}]{\mat{A}-\mat{B}}.
+\end{align}
+For $\mat{A}, \mat{B}, \mat{C} \in \RealNum^{n\times m}$ and $\lambda \in \RealNum$ we have the basic properties
+\begin{subequations}
+\begin{align}
+ &\text{(triangle inequality)}&
+ \metric[\mat{K}]{\mat{A}}{\mat{B}} &\leq \metric[\mat{K}]{\mat{A}}{\mat{C}} + \metric[\mat{K}]{\mat{B}}{\mat{C}}
+\\
+ &\text{(symmetry)}&
+ \metric[\mat{K}]{\mat{A}}{\mat{B}} &= \metric[\mat{K}]{\mat{B}}{\mat{A}},
+\\
+ &\text{(positive definiteness)}&
+ \metric[\mat{K}]{\mat{A}}{\mat{B}} &\geq 0, \quad \metric[\mat{K}]{\mat{A}}{\mat{B}} = 0 \ \Leftrightarrow \ \mat{A} = \mat{B}.
+\end{align}
+\end{subequations}
+
+\fixme{
+\paragraph{Translation of particular arguments.}
+For $\protoX_1, \protoX_2 \in \RealNum^{n\times n}$ and $\R \in \SpecialOrthogonalGroup(n)$ we have the properties
+\begin{subequations}
+\begin{align}
+ \sProd[\mat{K}]{(\R \protoX_1)^\top}{(\R \protoX_2)^\top}
+ &= \sProd[\mat{K}]{\protoX_1^\top}{\protoX_2^\top},
+\\
+ \sProd[\mat{K}]{(\protoX_1 \R)^\top}{(\protoX_2 \R)^\top} 
+ &= \sProd[\R \mat{K} \R^\top]{\protoX_1^\top}{\protoX_2^\top}
+\end{align} 
+\end{subequations}
+For $\protoXi_1 = \left[\begin{smallmatrix} \protoX_1 & \protox_1 \\ \mat{0} & 0 \end{smallmatrix}\right]$, $\protoXi_2 = \left[\begin{smallmatrix} \protoX_2 & \protox_2 \\ \mat{0} & 0 \end{smallmatrix}\right]$ with $\protox_1, \protox_2 \in \RealNum^{n}$, $\protoX_1, \protoX_2 \in \RealNum^{n\times n}$ and $\G \in \SpecialEuclideanGroup(n)$ we have
+% \begin{align}
+%  \sProd[\mat{K}]{\protoXi_1^\top}{\protoXi_2^\top} &= \tr(\protoXi_1 \mat{K} \protoXi_2^\top)
+% % \nonumber\\
+% %  &= \tr\bigg(\begin{bmatrix} \protoX_1 & \protox_1 \\ \mat{0} & 0 \end{bmatrix} \begin{bmatrix} \bodyMOSp{}{} & \bodyStiffness{}{} \bodyCOS{}{} \\ \bodyStiffness{}{} \bodyCOS{}{}^\top & \bodyStiffness{}{} \end{bmatrix} \begin{bmatrix} \protoX_2^\top & \mat{0} \\ \protox_2^\top & 0 \end{bmatrix}\bigg)
+% % \nonumber\\
+% %  &= \tr\bigg(\begin{bmatrix} \protoX_1 \bodyMOSp{}{} + \protox_1 \bodyStiffness{}{} \bodyCOS{}{}^\top & \protoX_1 \bodyStiffness{}{} \bodyCOS{}{} + \bodyStiffness{}{} \protox_1 \\ \mat{0} & 0 \end{bmatrix} \begin{bmatrix} \protoX_2^\top & \mat{0} \\ \protox_2^\top & 0 \end{bmatrix}\bigg)
+% % \nonumber\\
+% %  &= \tr \big( \protoX_1 \bodyMOSp{}{} \protoX_2^\top + \protox_1 \bodyStiffness{}{} \bodyCOS{}{}^\top \protoX_2^\top + \protoX_1 \bodyStiffness{}{} \bodyCOS{}{} \protox_2^\top + \bodyStiffness{}{} \protox_1 \protox_2^\top \big)
+% % \nonumber\\
+% %  &= \tr \big( \protoX_1 \bodyMOSp{}{} \protoX_2^\top \big) + \bodyStiffness{}{} \tr\big( \protox_1 (\protoX_2 \bodyCOS{}{})^\top\big) + \bodyStiffness{}{} \tr\big((\protoX_1 \bodyCOS{}{}) \protox_2^\top\big) + \bodyStiffness{}{} \tr\big(\protox_1 \protox_2^\top \big)
+% % \nonumber\\
+%  = \tr \big( \protoX_1 \bodyMOSp{}{} \protoX_2^\top \big) + \big(\protox_1^\top \protoX_2 + \protox_2^\top \protoX_1 \big) \bodyStiffness{}{} \bodyCOS{}{} + \bodyStiffness{}{} \protox_1^\top \protox_2
+% \end{align}
+\begin{subequations}\label{eq:InnerProductSE3Translation}
+\begin{align}
+ \label{eq:InnerProductSE3LeftTranslation}
+ \sProd[\mat{K}]{(\G \protoXi_1)^\top}{(\G \protoXi_2)^\top}
+ &= \sProd[\mat{K}]{\protoXi_1^\top}{\protoXi_2^\top},
+\\
+ \label{eq:InnerProductSE3RightTranslation}
+ \sProd[\mat{K}]{(\protoXi_1 \G)^\top}{(\protoXi_2 \G)^\top} 
+% &= \tr(\protoXi_1 \G \mat{K} \G^\top \protoXi_2^\top)
+ &= \sProd[\G \mat{K} \G^\top]{\protoXi_1^\top}{\protoXi_2^\top}
+\end{align} 
+\end{subequations}
+Note that this case includes in particular $\protoXi_1, \protoXi_2 \in \SpecialEuclideanAlgebra(n)$.
+}
+
+\fixme{
+\paragraph{Derivative.} This might be useful for the following
+\begin{align}
+ \mathcal{W} &= \tfrac{1}{2} \norm[\mat{K}]{(\wedOp(\sysVel) + \protoX)^\top}^2 = \tfrac{1}{2}\sysVel^\top \mat{K} \sysVel + \sysVel^\top \veeTwoOp(\protoX\mat{K}) + \tfrac{1}{2} \tr(\protoX \mat{K} \protoX^\top)
+\\
+ \pdiff[\mathcal{W}]{\sysVel} &= \veeMatOp(\mat{K}) \sysVel + \veeTwoOp(\protoX\mat{K}) = \veeTwoOp((\wedOp(\sysVel) + \protoX)\mat{K})
+\\
+ \frac{\partial^2\mathcal{W}}{\partial\sysVel \partial\sysVel} &= \veeMatOp(\mat{K})
+\end{align}
+}
+
+
+\subsection{Matrix decompositions}
+\paragraph{Singular value decomposition (SVD).}
+Any matrix $\mat{A} \in \RealNum^{n\times m}$ can be decomposed into $\mat{A} = \mat{X} \mat{\varSigma} \mat{Y}^\top$, where $\mat{X} \in \OrthogonalGroup(n)$, $\mat{Y} \in \OrthogonalGroup(m)$ and $\mat{\varSigma} \in \RealNum^{n\times m}$ with $\varSigma_{ii} \geq 0, i=1,\ldots,\min(n,m), \varSigma_{ij} = 0, i\neq j$.
+\begin{itemize}
+ \item The columns of $\mat{X}$ are eigenvectors of $\mat{A} \mat{A}^\top = \mat{X} (\mat{\varSigma} \mat{\varSigma}^\top) \mat{X}^\top$.
+ \item The columns of $\mat{Y}$ are eigenvectors of $\mat{A}^\top \mat{A} = \mat{Y} (\mat{\varSigma}^\top \mat{\varSigma}) \mat{Y}^\top$.
+\end{itemize}
+%The SVD is, in general, not unique.
+It is common practice to place the singular values in descending order, i.e.\ $\varSigma_{ii} \geq \varSigma_{jj}, i > j$, thus making $\mat{\varSigma}$ unique.
+The matrices $\mat{X}$ and $\mat{Y}$ are unique up to orthogonal transformations of the subspaces of each singular value and the kernel and co-kernel of $\mat{A}$.
+
+\paragraph{Polar decomposition.}
+Any square matrix $\mat{A} \in \RealNum^{n\times n}$ can be decomposed into $\mat{A} = \mat{U} \mat{K}$, where $\mat{U} \in \OrthogonalGroup(n)$, $\mat{K} \in \SymMatSP(n)$.
+The matrix $\mat{K}$ is uniquely defined while $\mat{U}$ is only unique if $\mat{A}$ is invertible.
+The same holds for the decomposition $\mat{A} = \mat{L} \mat{V}$, where $\mat{V} \in \OrthogonalGroup(n)$, $\mat{L} \in \SymMatSP(n)$.
+The relation to the singular value decomposition $\mat{A} = \mat{X} \mat{\varSigma} \mat{Y}^\top$ is
+\begin{align}
+ \mat{U} = \mat{X} \mat{Y}^\top, \quad \mat{K} = \mat{Y} \mat{\varSigma} \mat{Y}^\top
+\qquad \text{and} \qquad
+ \mat{L} = \mat{X} \mat{\varSigma} \mat{X}^\top, \quad \mat{V} = \mat{X} \mat{Y}^\top.
+\end{align}
+
+\paragraph{Special polar decomposition.}
+Consider the SVD $\mat{A} = \mat{X} \mat{\varSigma} \mat{Y}^\top$ and define 
+\begin{subequations}
+\begin{align}
+ \bar{\mat{X}} &= \mat{X} \diag(1, \ldots, 1, \det\mat{X}) \in \SpecialOrthogonalGroup(n),
+\\
+ \bar{\mat{Y}} &= \mat{Y} \diag(1, \ldots, 1, \det\mat{Y}) \in \SpecialOrthogonalGroup(n),
+\\
+ \bar{\mat{\varSigma}} &= \diag(\sigma_1, \ldots, \sigma_{n-1}, \det\mat{X}\det\mat{Y} \sigma_n).
+\end{align} 
+\end{subequations}
+where $\sigma_n$ is the smallest singular value.
+The matrix $\bar{\mat{\varSigma}}$ is indifferent in general, but since we may have only flipped the smallest singular value, the matrix $\hat{\mat{\varSigma}} = \veeMatOp(\bar{\mat{\varSigma}})$ is positive semidefinite.
+With this we may write
+\begin{subequations}
+\begin{align}
+ \mat{A} 
+ &= \bar{\mat{X}} \underbrace{\bar{\mat{Y}}^\top \bar{\mat{Y}}}_{\idMat[n]} \wedMatOp(\hat{\mat{\varSigma}}) \bar{\mat{Y}}^\top
+ = \underbrace{\bar{\mat{X}} \bar{\mat{Y}}^\top}_{\mat{U}\,\in\,\SpecialOrthogonalGroup(n)} \wedMatOp\big(\underbrace{\bar{\mat{X}} \hat{\mat{\varSigma}} \bar{\mat{X}}^\top}_{\mat{K}\,\in\,\SymMatSP(n)}\big)
+\\
+ &= \bar{\mat{X}} \wedMatOp(\hat{\mat{\varSigma}}) \underbrace{\bar{\mat{X}}^\top \bar{\mat{X}}}_{\idMat[n]} \bar{\mat{Y}}^\top
+ = \wedMatOp\big(\underbrace{\bar{\mat{X}} \hat{\mat{\varSigma}} \bar{\mat{X}}^\top}_{\mat{L}\,\in\,\SymMatSP(n)}\big) \underbrace{\bar{\mat{X}} \bar{\mat{Y}}^\top}_{\mat{V}\,\in\,\SpecialOrthogonalGroup(n)}
+\end{align}
+\end{subequations}
+Since this only involves proper rotations this is potentially useful in physics where we cant have reflections.
+This decomposition is not established in the literature.
+
+\subsection{Moore-Penrose pseudoinverse}\label{sec:Pseudoinverse}
+For any matrix $\mat{A}\in\RealNum^{m\times n}$ there exists a unique \textit{Moore-Penrose inverse}, or \textit{pseudoinverse}, $\mat{A}^+ \in \RealNum^{n\times m}$ determined by the following conditions \cite[Theo.\ 1]{Penrose:Pseudoinverse}:
+\begin{subequations}\label{eq:AppendixPenroseConditions}
+\begin{align}
+ \mat{A} \mat{A}^+ \mat{A} &= \mat{A},
+\\
+ \mat{A}^+ \mat{A} \mat{A}^+ &= \mat{A}^+,
+\\
+ (\mat{A} \mat{A}^+)^\top &= \mat{A} \mat{A}^+,
+\\
+ (\mat{A}^+ \mat{A})^\top &= \mat{A}^+ \mat{A}.
+\end{align}
+\end{subequations}
+%If the matrix $\mat{A}$ has linearly independent columns, its pseudoinverse is $\mat{A}^+ = (\mat{A}^\top \mat{A})^{-1} \mat{A}^\top$.
+%Similarly, if $\mat{A}$ has linearly independent rows, its pseudoinverse is $\mat{A}^+ = \mat{A}^\top (\mat{A} \mat{A}^\top)^{-1}$.
+Some useful identities with the pseudoinverse are
+\begin{subequations}
+\begin{align}
+ (\mat{A}^\top)^+ &= (\mat{A}^+)^\top,
+\\
+ \rank\mat{A} &= \rank\mat{A}^+,
+\\
+ \mat{A}^+ &= \mat{A}^\top (\mat{A}\mat{A}^\top)^+ = (\mat{A}^\top \mat{A})^+ \mat{A}^\top,
+\label{eq:pinvSymmetricCase}
+\\
+ \rank\mat{A} = m \quad \Rightarrow \quad \mat{A}^+ &= \mat{A}^\top (\mat{A} \mat{A}^\top)^{-1},
+\\
+ \rank\mat{A} = n \quad \Rightarrow \quad \mat{A}^+ &= (\mat{A}^\top \mat{A})^{-1} \mat{A}^\top,
+\\
+ \rank\mat{A} = m = n \quad \Rightarrow \quad \mat{A}^+ &= \mat{A}^{-1},
+\\
+ (\mat{A}\mat{B})^+ &= (\mat{A}^+ \mat{A} \mat{B})^+(\mat{A} \mat{B} \mat{B}^+)^+.
+\end{align}
+\end{subequations}
+With a singular value decomposition $\mat{A} = \mat{X} \mat{\varSigma} \mat{Y}^\top$, the pseudoinverse can be stated as $\mat{A}^+ = \mat{Y} \mat{\varSigma}^+ \mat{X}^\top$ where $\mat{\varSigma}^+$ is the transpose of $\mat{\varSigma}$ with its nonzero diagonal entries inverted.
+
+\paragraph{Linear equations.}
+For the linear system
+\begin{align}
+ \mat{A} \tuple{x} = \tuple{b}
+\end{align}
+with $\mat{A}\in\RealNum^{m\times n}$ and $\mat{b}\in\RealNum^{m}$ to have any solutions for $\tuple{x}\in\RealNum^{n}$ we need $\mat{A}\mat{A}^+ \tuple{b} = \tuple{b}$.
+Then the solutions have the form
+\begin{align}
+ \tuple{x} = \mat{A}^+\tuple{b} + (\idMat[n]-\mat{A}^+\mat{A})\tuple{\xi}, \ \tuple{\xi}\in\RealNum^{n}.
+\end{align}
+The solution is unique if $\rank\mat{A}=n$ which implies $\mat{A}^+\mat{A}=\idMat[n]$.
+The solution with minimal Euclidean norm is $\tuple{x} = \mat{A}^+\tuple{b}$.
+Furthermore, $\tuple{z} = \mat{A}^+\tuple{b}$ minimizes the Euclidean norm $\norm{\mat{A} \tuple{z} - \tuple{b}}$, even if no solutions exist.
+
+% \begin{align}
+%  \minOp[\tuple{\xi}\in\RealNum^{n}] J = \norm[\mat{N}]{\mat{A}^+\tuple{b} + (\idMat[n]-\mat{A}^+\mat{A})\tuple{\xi}}^2
+% \nonumber\\
+%  \Rightarrow \qquad \tuple{0} = \pdiff[J]{\tuple{\xi}} = 2(\idMat[n]-\mat{A}^+\mat{A}) \mat{N}(\mat{A}^+\tuple{b} + (\idMat[n]-\mat{A}^+\mat{A})\tuple{\xi})
+% \nonumber\\
+%  \Leftrightarrow \qquad (\idMat[n]-\mat{A}^+\mat{A}) \mat{N} (\idMat[n]-\mat{A}^+\mat{A}) \tuple{\xi} = (\idMat[n]-\mat{A}^+\mat{A}) \mat{N} \mat{A}^+ \tuple{b}
+% \end{align}
+
+
+
+\subsection{Orthogonal projectors}\label{sec:OrthogonalProjectors}
+A \textit{projector} is a square matrix $\mat{P} \in \RealNum^{n\times n}$ that is idempotent $\mat{P}^2 = \mat{P}$.
+For each projector there is a \textit{complementary projector} $\mat{P}^\bot = \idMat[n] - \mat{P}$ and we have $\rank\mat{P} + \rank\mat{P}^\bot = n$.
+The image of $\mat{P}$ is the kernel of $\mat{P}^\bot$ and vice versa. 
+
+For a given inner product $\sProd[\mat{M}]{\cdot}{\cdot}$, a projector is called \textit{orthogonal} iff $\sProd[\mat{M}]{\mat{P} \tuple{\xi}}{\mat{P}^\bot\tuple{\eta}} = 0 \,\forall\, \tuple{\xi},\tuple{\eta}\in \RealNum^{n}$ or equivalently $\mat{M} \mat{P} = \mat{P}^\top\!\mat{M}$.
+If $\mat{P}$ is orthogonal so is $\mat{P}^\bot$.
+
+For a given matrix $\mat{A} \in \RealNum^{n\times m}$, the unique orthogonal projector $\mat{P}_{\!\mat{A}}$ into the image of $\mat{A}$ can be constructed as follows:
+Let $\mat{P}_{\!\mat{A}}\tuple{x} = \tuple{y} = \mat{A}\tuple{\xi}$, $\tuple{\xi}\in\RealNum^{m}$:
+\begin{align}
+ \minOp[\tuple{\xi}\in\RealNum^{m}] J = \norm[\mat{M}]{\mat{A}\tuple{\xi}-\tuple{x}}^2
+\qquad \Rightarrow \qquad 
+ \pdiff[J]{\tuple{\xi}} = \tuple{0}
+\qquad \Leftrightarrow \qquad 
+ \mat{A}^\top \mat{M} \mat{A}\, \tuple{\xi} = \mat{A}^\top\mat{M} \tuple{x}
+\end{align}
+Though there might be several solutions for $\tuple{\xi}$ if $\rank\mat{A} < n$, the solution for $\tuple{y} = \mat{A} (\mat{A}^\top \mat{M} \mat{A})^+ \mat{A}^\top\mat{M} \tuple{x}$ is unique.
+Consequently we have
+\begin{align}
+ \mat{P}_{\!\mat{A}} = \mat{A} (\mat{A}^\top \mat{M} \mat{A})^+ \mat{A}^\top\mat{M}.
+\end{align}
+
+Consider the matrices $\mat{A} \in \RealNum^{n\times a}$ and $\mat{B} \in \RealNum^{n\times b}$ with $\mat{A}^\top \mat{M} \mat{B} = \mat{0}$ and $\rank\mat{A} + \rank\mat{B} = n$.
+This implies that the direct sum of their images is $\RealNum^n$.
+Furthermore, their associated orthogonal projectors $\mat{P}_{\!\mat{A}}$ and $\mat{P}_{\!\mat{B}}$ are complementary, i.e.\ $\mat{P}_{\!\mat{A}}^\bot = \mat{P}_{\!\mat{B}}$.
+This implies the identity
+\begin{align}\label{eq:OrthogonalProjectorsFromBasis}
+ \underbrace{\mat{A} (\mat{A}^\top \sysInertiaMat \mat{A})^{+} \mat{A}^\top \sysInertiaMat}_{\mat{P}_{\mat{A}}} + \underbrace{\mat{B} (\mat{B}^\top \sysInertiaMat \mat{B})^{+} \mat{B}^\top \sysInertiaMat}_{\mat{P}_{\mat{B}}} = \idMat[n].
+\end{align}
+For the special case $\sysInertiaMat=\idMat[n]$ and using \eqref{eq:pinvSymmetricCase}, this is
+\begin{align}
+ \mat{A} \mat{A}^+ + \mat{B} \mat{B}^+ = \idMat[n].
+\end{align}

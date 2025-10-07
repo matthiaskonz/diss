@@ -1,0 +1,156 @@
+\section{Alternative from for the body Jacobian}
+
+\paragraph{Rigid body coordinates.}
+For the configuration of the frame with index $\BidxII$ w.r.t.\ the frame with index $\BidxI$ with we use the configuration coordinates 
+\begin{align}
+ \bodyCoord{\BidxI}{\BidxII} = \big[
+  \bodyPosx{\BidxI}{\BidxII}, \bodyPosy{\BidxI}{\BidxII}, \bodyPosz{\BidxI}{\BidxII}, 
+  \bodyRotxx{\BidxI}{\BidxII}, \bodyRotyx{\BidxI}{\BidxII}, \bodyRotzx{\BidxI}{\BidxII},
+  \bodyRotxy{\BidxI}{\BidxII}, \bodyRotyy{\BidxI}{\BidxII}, \bodyRotzy{\BidxI}{\BidxII},
+  \bodyRotxz{\BidxI}{\BidxII}, \bodyRotyz{\BidxI}{\BidxII}, \bodyRotzz{\BidxI}{\BidxII},
+ \big].
+\end{align}
+constrained by 
+\begin{align}
+ \underbrace{\begin{bmatrix}
+  (\bodyRotxx{\BidxI}{\BidxII})^2 + (\bodyRotyx{\BidxI}{\BidxII})^2 + (\bodyRotzx{\BidxI}{\BidxII})^2 - 1 \\
+  (\bodyRotxy{\BidxI}{\BidxII})^2 + (\bodyRotyy{\BidxI}{\BidxII})^2 + (\bodyRotzy{\BidxI}{\BidxII})^2 - 1 \\
+  (\bodyRotxz{\BidxI}{\BidxII})^2 + (\bodyRotyz{\BidxI}{\BidxII})^2 + (\bodyRotzz{\BidxI}{\BidxII})^2 - 1 \\
+  \bodyRotxy{\BidxI}{\BidxII} \bodyRotxz{\BidxI}{\BidxII} + \bodyRotyy{\BidxI}{\BidxII} \bodyRotyz{\BidxI}{\BidxII} + \bodyRotzy{\BidxI}{\BidxII} \bodyRotzz{\BidxI}{\BidxII} \\
+  \bodyRotxx{\BidxI}{\BidxII} \bodyRotxz{\BidxI}{\BidxII} + \bodyRotyx{\BidxI}{\BidxII} \bodyRotyz{\BidxI}{\BidxII} + \bodyRotzx{\BidxI}{\BidxII} \bodyRotzz{\BidxI}{\BidxII} \\
+  \bodyRotxx{\BidxI}{\BidxII} \bodyRotxy{\BidxI}{\BidxII} + \bodyRotyx{\BidxI}{\BidxII} \bodyRotyy{\BidxI}{\BidxII} + \bodyRotzx{\BidxI}{\BidxII} \bodyRotzy{\BidxI}{\BidxII} \\
+  \bodyRotxx{\BidxI}{\BidxII} \bodyRotyy{\BidxI}{\BidxII} \bodyRotzz{\BidxI}{\BidxII} \!+\! \bodyRotxy{\BidxI}{\BidxII} \bodyRotyz{\BidxI}{\BidxII} \bodyRotzx{\BidxI}{\BidxII} \!+\! \bodyRotxz{\BidxI}{\BidxII} \bodyRotyx{\BidxI}{\BidxII} \bodyRotzy{\BidxI}{\BidxII} \!-\! \bodyRotxx{\BidxI}{\BidxII} \bodyRotyz{\BidxI}{\BidxII} \bodyRotzy{\BidxI}{\BidxII} \!-\! \bodyRotxy{\BidxI}{\BidxII} \bodyRotyx{\BidxI}{\BidxII} \bodyRotzz{\BidxI}{\BidxII} \!-\! \bodyRotxz{\BidxI}{\BidxII} \bodyRotyy{\BidxI}{\BidxII} \bodyRotzx{\BidxI}{\BidxII} \!-\! 1
+ \end{bmatrix}}_{\bodyGeoConstraint{}{}(\bodyCoord{\BidxI}{\BidxII})}
+ = \tuple{0}.
+\end{align}
+We use the velocity coordinates $\bodyVel{\BidxI}{\BidxII}$ with the kinematic relation
+\begin{align}
+ \diff{t} 
+ \underbrace{\begin{bmatrix}
+  \bodyPosx{\BidxI}{\BidxII} \\ \bodyPosy{\BidxI}{\BidxII} \\ \bodyPosz{\BidxI}{\BidxII} \\ 
+  \bodyRotxx{\BidxI}{\BidxII} \\ \bodyRotyx{\BidxI}{\BidxII} \\ \bodyRotzx{\BidxI}{\BidxII} \\
+  \bodyRotxy{\BidxI}{\BidxII} \\ \bodyRotyy{\BidxI}{\BidxII} \\ \bodyRotzy{\BidxI}{\BidxII} \\
+  \bodyRotxz{\BidxI}{\BidxII} \\ \bodyRotyz{\BidxI}{\BidxII} \\ \bodyRotzz{\BidxI}{\BidxII}
+ \end{bmatrix}}_{\bodyCoord{\BidxI}{\BidxII}}
+ =
+ \underbrace{\begin{bmatrix}
+  \bodyRotxx{\BidxI}{\BidxII} & \bodyRotxy{\BidxI}{\BidxII} & \bodyRotxz{\BidxI}{\BidxII} & 0 & 0 & 0 \\
+  \bodyRotyx{\BidxI}{\BidxII} & \bodyRotyy{\BidxI}{\BidxII} & \bodyRotyz{\BidxI}{\BidxII} & 0 & 0 & 0 \\
+  \bodyRotzx{\BidxI}{\BidxII} & \bodyRotzy{\BidxI}{\BidxII} & \bodyRotzz{\BidxI}{\BidxII} & 0 & 0 & 0 \\
+  0 & 0 & 0 & 0 & -\bodyRotxz{\BidxI}{\BidxII} & \bodyRotxy{\BidxI}{\BidxII} \\
+  0 & 0 & 0 & 0 & -\bodyRotyz{\BidxI}{\BidxII} & \bodyRotyy{\BidxI}{\BidxII} \\
+  0 & 0 & 0 & 0 & -\bodyRotzz{\BidxI}{\BidxII} & \bodyRotzy{\BidxI}{\BidxII} \\
+  0 & 0 & 0 & \bodyRotxz{\BidxI}{\BidxII} & 0 & -\bodyRotxx{\BidxI}{\BidxII} \\
+  0 & 0 & 0 & \bodyRotyz{\BidxI}{\BidxII} & 0 & -\bodyRotyx{\BidxI}{\BidxII} \\
+  0 & 0 & 0 & \bodyRotzz{\BidxI}{\BidxII} & 0 & -\bodyRotzx{\BidxI}{\BidxII} \\
+  0 & 0 & 0 & -\bodyRotxy{\BidxI}{\BidxII} & \bodyRotxx{\BidxI}{\BidxII} & 0 \\
+  0 & 0 & 0 & -\bodyRotyy{\BidxI}{\BidxII} & \bodyRotyx{\BidxI}{\BidxII} & 0 \\
+  0 & 0 & 0 & -\bodyRotzy{\BidxI}{\BidxII} & \bodyRotzx{\BidxI}{\BidxII} & 0
+ \end{bmatrix}}_{\bodyKinMat{}{}(\bodyCoord{\BidxI}{\BidxII})}
+ \underbrace{\begin{bmatrix} \bodyLinVelx{\BidxI}{\BidxII} \\ \bodyLinVely{\BidxI}{\BidxII} \\ \bodyLinVelz{\BidxI}{\BidxII} \\ \bodyAngVelx{\BidxI}{\BidxII} \\ \bodyAngVely{\BidxI}{\BidxII} \\ \bodyAngVelz{\BidxI}{\BidxII} \end{bmatrix}}_{\bodyVel{\BidxI}{\BidxII}}.
+\end{align}
+The inverse relation is $\bodyVel{\BidxI}{\BidxII} = \bodyKinBasisMat{}{}(\bodyCoord{\BidxI}{\BidxII}) \bodyCoordd{\BidxI}{\BidxII}$ with
+\begin{multline}
+ \bodyKinBasisMat{}{}(\bodyCoord{\BidxI}{\BidxII}) = \bodyKinMat{}{}\!^+(\bodyCoord{\BidxI}{\BidxII}) =
+\\
+ \left[\begin{array}{cccccccccccc}
+  \bodyRotxx{\BidxI}{\BidxII} & \bodyRotyx{\BidxI}{\BidxII} & \bodyRotzx{\BidxI}{\BidxII} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+  \bodyRotxy{\BidxI}{\BidxII} & \bodyRotyy{\BidxI}{\BidxII} & \bodyRotzy{\BidxI}{\BidxII} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+  \bodyRotxz{\BidxI}{\BidxII} & \bodyRotyz{\BidxI}{\BidxII} & \bodyRotzz{\BidxI}{\BidxII} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+  0 & 0 & 0 & 0 & 0 & 0 & \tfrac{1}{2}\bodyRotxz{\BidxI}{\BidxII} & \tfrac{1}{2}\bodyRotyz{\BidxI}{\BidxII} & \tfrac{1}{2}\bodyRotzz{\BidxI}{\BidxII} & \!\!\!-\tfrac{1}{2}\bodyRotxy{\BidxI}{\BidxII} & \!\!\!-\tfrac{1}{2}\bodyRotyy{\BidxI}{\BidxII} & \!\!\!-\tfrac{1}{2}\bodyRotzy{\BidxI}{\BidxII} \\
+  0 & 0 & 0 & \!\!\!-\tfrac{1}{2}\bodyRotxz{\BidxI}{\BidxII} & \!\!\!-\tfrac{1}{2}\bodyRotyz{\BidxI}{\BidxII} & \!\!\!-\tfrac{1}{2}\bodyRotzz{\BidxI}{\BidxII} & 0 & 0 & 0 & \tfrac{1}{2}\bodyRotxx{\BidxI}{\BidxII} & \tfrac{1}{2}\bodyRotyx{\BidxI}{\BidxII} & \tfrac{1}{2}\bodyRotzx{\BidxI}{\BidxII} \\
+  0 & 0 & 0 & \tfrac{1}{2}\bodyRotxy{\BidxI}{\BidxII} & \tfrac{1}{2}\bodyRotyy{\BidxI}{\BidxII} & \tfrac{1}{2}\bodyRotzy{\BidxI}{\BidxII} & \!\!\!-\tfrac{1}{2}\bodyRotxx{\BidxI}{\BidxII} & \!\!\!-\tfrac{1}{2}\bodyRotyx{\BidxI}{\BidxII} & \!\!\!-\tfrac{1}{2}\bodyRotzx{\BidxI}{\BidxII} & 0 & 0 & 0
+ \end{array}\right]
+\end{multline}
+For the kinematics matrix $\bodyKinMat{}{}$ we have the corresponding commutation coefficients
+\begin{align}\label{eq:DefBodyCommutationCoeff}
+ \bodyBoltzSym{\LBidxIII}{\LBidxI}{\LBidxII} 
+ = \bigg(\bodyKinMatCoeff{}{}{\GBidxII}{\LBidxI} \pdiff[\bodyKinMatCoeff{}{}{\GBidxI}{\LBidxII}]{\bodyCoordCoeff{}{}{\GBidxII}} - \bodyKinMatCoeff{}{}{\GBidxII}{\LBidxII} \pdiff[\bodyKinMatCoeff{}{}{\GBidxI}{\LBidxI}]{\bodyCoordCoeff{}{}{\GBidxII}}\bigg) \bodyKinBasisMatCoeff{}{}{\LBidxIII}{\GBidxI}
+ = \bigg(\pdiff[\bodyKinBasisMatCoeff{}{}{\LBidxIII}{\GBidxI}]{\bodyCoordCoeff{}{}{\GBidxII}} - \pdiff[\bodyKinBasisMatCoeff{}{}{\LBidxIII}{\GBidxII}]{\bodyCoordCoeff{}{}{\GBidxI}} \bigg) \bodyKinMatCoeff{}{}{\GBidxII}{\LBidxII} \bodyKinMatCoeff{}{}{\GBidxI}{\LBidxI},
+\qquad \LBidxI, \LBidxII, \LBidxIII = 1,\ldots,6.
+\end{align}
+In \eqref{eq:RBCommutationCoeff} we have already seen that these turn out to be constant.
+
+
+\paragraph{Body Jacobian.}
+Assume we have appropriate configuration $\sysCoord$ and velocity coordinates $\sysVel$ related by $\sysCoordd = \kinMat(\sysCoord) \sysVel$ and the body configuration coordinates $\bodyCoord{\BidxI}{\BidxII} = \bodyCoord{\BidxI}{\BidxII}(\sysCoord)$ are parameterized by the system configuration coordinates $\sysCoord$.
+For the body velocities we have 
+\begin{align}
+ \bodyVel{\BidxI}{\BidxII} = \bodyKinMat{}{}\!^+(\bodyCoord{\BidxI}{\BidxII}(\sysCoord)) \pdiff[\bodyCoord{\BidxI}{\BidxII}]{\sysCoord}(\sysCoord) \kinMat(\sysCoord) \sysVel
+\end{align}
+Introducing the shorthand notation $\bodyKinMat{}{}\!^+(\bodyCoord{\BidxI}{\BidxII}(\sysCoord)) = \bodyKinBasisMat{\BidxI}{\BidxII}(\sysCoord)$ and omitting the dependencies, we can express the body Jacobian as 
+\begin{align}\label{eq:AppendixDefBodyJac}
+ \bodyJac{\BidxI}{\BidxII}
+ = \pdiff[\bodyVel{\BidxI}{\BidxII}]{\sysVel}
+ = \bodyKinBasisMat{\BidxI}{\BidxII} \pdiff[\bodyCoord{\BidxI}{\BidxII}]{\sysCoord} \kinMat
+\end{align}
+In index notation this is
+\begin{align}
+ \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxI}{\LidxI} = \bodyKinBasisMatCoeff{\BidxI}{\BidxII}{\LBidxI}{\GBidxI} \, \dirDiff{\LidxI} \bodyCoordCoeff{\BidxI}{\BidxII}{\GBidxI},
+%\qquad \LidxI = 1,\ldots,\dimConfigSpace, \ \LBidxI = 1,\ldots,6.
+\end{align}
+For the following commutation relation will be useful for the next paragraph
+\begin{align}\label{eq:CommutationRelationBodyJac}
+ \dirDiff{\LidxII} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxI}{\LidxI} - \dirDiff{\LidxI} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxI}{\LidxII}
+ & \hspace{1.3ex} = \hspace{1.3ex} \dirDiff{\LidxII} \bodyKinBasisMatCoeff{\BidxI}{\BidxII}{\LBidxI}{\GBidxI} \, \dirDiff{\LidxI} \bodyCoordCoeff{\BidxI}{\BidxII}{\GBidxI} + \bodyKinBasisMatCoeff{\BidxI}{\BidxII}{\LBidxI}{\GBidxI} \, \dirDiff{\LidxII} \dirDiff{\LidxI} \bodyCoordCoeff{\BidxI}{\BidxII}{\GBidxI}
+ - \dirDiff{\LidxI} \bodyKinBasisMatCoeff{\BidxI}{\BidxII}{\LBidxI}{\GBidxI} \, \dirDiff{\LidxII} \bodyCoordCoeff{\BidxI}{\BidxII}{\GBidxI} - \bodyKinBasisMatCoeff{\BidxI}{\BidxII}{\LBidxI}{\GBidxI} \, \dirDiff{\LidxI} \dirDiff{\LidxII} \bodyCoordCoeff{\BidxI}{\BidxII}{\GBidxI}
+% \nonumber\\
+%  &= \dirDiff{\LidxII} \bodyKinBasisMatCoeff{\BidxI}{\BidxII}{\LBidxI}{\GBidxII} \bodyKinMatCoeff{\BidxI}{\BidxII}{\GBidxII}{\LBidxII} \bodyKinBasisMatCoeff{\BidxI}{\BidxII}{\LBidxII}{\GBidxI}  \, \dirDiff{\LidxI} \bodyCoordCoeff{\BidxI}{\BidxII}{\GBidxI}
+%  - \dirDiff{\LidxI} \bodyKinBasisMatCoeff{\BidxI}{\BidxII}{\LBidxI}{\GBidxII} \bodyKinMatCoeff{\BidxI}{\BidxII}{\GBidxII}{\LBidxII} \bodyKinBasisMatCoeff{\BidxI}{\BidxII}{\LBidxII}{\GBidxI}  \, \dirDiff{\LidxII} \bodyCoordCoeff{\BidxI}{\BidxII}{\GBidxI}
+%  - \bodyKinBasisMatCoeff{\BidxI}{\BidxII}{\LBidxI}{\GBidxI} \, \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \dirDiff{\LidxIII} \bodyCoordCoeff{\BidxI}{\BidxII}{\GBidxI}
+\nonumber\\
+ &\overset{\eqref{eq:DefCommutationCoeff}}{=} \pdiff[\bodyKinBasisMatCoeff{\BidxI}{\BidxII}{\LBidxI}{\GBidxI}]{\bodyCoordCoeff{\BidxI}{\BidxII}{\GBidxII}} \dirDiff{\LidxII} \bodyCoordCoeff{\BidxI}{\BidxII}{\GBidxII} \, \dirDiff{\LidxI} \bodyCoordCoeff{\BidxI}{\BidxII}{\GBidxI}
+  - \pdiff[\bodyKinBasisMatCoeff{\BidxI}{\BidxII}{\LBidxI}{\GBidxI}]{\bodyCoordCoeff{\BidxI}{\BidxII}{\GBidxII}} \dirDiff{\LidxI} \bodyCoordCoeff{\BidxI}{\BidxII}{\GBidxII} \, \dirDiff{\LidxII} \bodyCoordCoeff{\BidxI}{\BidxII}{\GBidxI}
+  - \bodyKinBasisMatCoeff{\BidxI}{\BidxII}{\LBidxI}{\GBidxI} \, \BoltzSym{\LidxV}{\LidxI}{\LidxII} \dirDiff{\LidxV} \bodyCoordCoeff{\BidxI}{\BidxII}{\GBidxI}
+\nonumber\\
+ &\hspace{1.3ex} = \hspace{1.3ex} \bigg( \pdiff[\bodyKinBasisMatCoeff{\BidxI}{\BidxII}{\LBidxI}{\GBidxII}]{\bodyCoordCoeff{\BidxI}{\BidxII}{\GBidxI}} - \pdiff[\bodyKinBasisMatCoeff{\BidxI}{\BidxII}{\LBidxI}{\GBidxI}]{\bodyCoordCoeff{\BidxI}{\BidxII}{\GBidxII}} \bigg) \dirDiff{\LidxI} \bodyCoordCoeff{\BidxI}{\BidxII}{\GBidxII} \, \dirDiff{\LidxII} \bodyCoordCoeff{\BidxI}{\BidxII}{\GBidxI}
+  - \BoltzSym{\LidxV}{\LidxI}{\LidxII} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxI}{\LidxV}
+\nonumber\\
+ &\overset{\eqref{eq:DefBodyCommutationCoeff}}{=} \bodyBoltzSym{\LBidxI}{\LBidxII}{\LBidxIII} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxII}{\LidxI} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxIII}{\LidxII}
+  - \BoltzSym{\LidxV}{\LidxI}{\LidxII} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxI}{\LidxV}.
+\end{align}
+The last step uses the argument from \eqref{eq:DerivationCommCoeff2} twice.
+
+\paragraph{Connection coefficients.}
+For the metric coefficients
+\begin{align}\label{eq:BlahBlubb123213}
+ \sysInertiaMatCoeff{\LidxI\LidxII} = \sumBodiesAB \bodyInertiaMatCoeff{\BidxI}{\BidxII}{\LBidxI\LBidxII} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxI}{\LidxI} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxII}{\LidxII}, \qquad \bodyInertiaMatCoeff{\BidxI}{\BidxII}{\LBidxI\LBidxII} = \bodyInertiaMatCoeff{\BidxI}{\BidxII}{\LBidxII\LBidxI} = \const
+\end{align}
+we can express the connection coefficients as
+\begin{align}\label{eq:AppendixSysConnCoeffL}
+ \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII} 
+ &\hspace{1.3ex} = \hspace{1.3ex} \tfrac{1}{2}\big( \dirDiff{\LidxIII} \sysInertiaMatCoeff{\LidxI\LidxII} + \dirDiff{\LidxII} \sysInertiaMatCoeff{\LidxI\LidxIII} - \dirDiff{\LidxI} \sysInertiaMatCoeff{\LidxII\LidxIII} + \BoltzSym{\LidxV}{\LidxI}{\LidxII} \sysInertiaMatCoeff{\LidxV\LidxIII} + \BoltzSym{\LidxV}{\LidxI}{\LidxIII} \sysInertiaMatCoeff{\LidxV\LidxII} - \BoltzSym{\LidxV}{\LidxII}{\LidxIII} \sysInertiaMatCoeff{\LidxV\LidxI} \big)
+\nonumber\\
+ &\overset{\eqref{eq:BlahBlubb123213}}{=} \tfrac{1}{2} \sumBodiesAB \bodyInertiaMatCoeff{\BidxI}{\BidxII}{\LBidxI\LBidxII} \big( 
+    \dirDiff{\LidxIII} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxI}{\LidxI} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxII}{\LidxII} + \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxI}{\LidxI} \dirDiff{\LidxIII} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxII}{\LidxII}
+  + \BoltzSym{\LidxV}{\LidxI}{\LidxII} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxI}{\LidxV} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxII}{\LidxIII}
+\nonumber\\
+ &\hspace{15.5ex}+ \dirDiff{\LidxII} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxI}{\LidxI} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxII}{\LidxIII} + \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxI}{\LidxI} \dirDiff{\LidxII} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxII}{\LidxIII}
+  + \BoltzSym{\LidxV}{\LidxI}{\LidxIII} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxI}{\LidxV} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxII}{\LidxII}
+\nonumber\\
+ &\hspace{15.5ex}- \dirDiff{\LidxI} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxI}{\LidxII} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxII}{\LidxIII} - \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxI}{\LidxII} \dirDiff{\LidxI} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxII}{\LidxIII}
+  - \BoltzSym{\LidxV}{\LidxII}{\LidxIII} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxI}{\LidxV} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxII}{\LidxI} 
+ \big)
+\nonumber\\
+ &\hspace{.5ex}\overset{\eqref{eq:CommutationRelationBodyJac}}{=} \tfrac{1}{2} \sumBodiesAB \bodyInertiaMatCoeff{\BidxI}{\BidxII}{\LBidxI\LBidxII} \big( 
+    \dirDiff{\LidxIII} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxI}{\LidxI} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxII}{\LidxII} + \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxI}{\LidxI} \dirDiff{\LidxIII} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxII}{\LidxII}
+  + \big( \bodyBoltzSym{\LBidxI}{\LBidxIV}{\LBidxIII} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxIV}{\LidxI} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxIII}{\LidxII} - \dirDiff{\LidxII} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxI}{\LidxI} + \dirDiff{\LidxI} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxI}{\LidxII} \big) \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxII}{\LidxIII}
+\nonumber\\
+ &\hspace{13.5ex}+ \dirDiff{\LidxII} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxI}{\LidxI} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxII}{\LidxIII} + \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxI}{\LidxI} \dirDiff{\LidxII} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxII}{\LidxIII}
+  + \big( \bodyBoltzSym{\LBidxI}{\LBidxIV}{\LBidxIII} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxIV}{\LidxI} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxIII}{\LidxIII} - \dirDiff{\LidxIII} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxI}{\LidxI} + \dirDiff{\LidxI} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxI}{\LidxIII} \big) \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxII}{\LidxII}
+\nonumber\\
+ &\hspace{13.5ex}- \dirDiff{\LidxI} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxI}{\LidxII} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxII}{\LidxIII} - \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxI}{\LidxII} \dirDiff{\LidxI} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxII}{\LidxIII}
+  - \big( \bodyBoltzSym{\LBidxI}{\LBidxIV}{\LBidxIII} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxIV}{\LidxII} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxIII}{\LidxIII} - \dirDiff{\LidxIII} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxI}{\LidxII} + \dirDiff{\LidxII} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxI}{\LidxIII} \big) \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxII}{\LidxI} 
+ \big)
+\nonumber\\
+ &\hspace{1.3ex} = \hspace{1.3ex} \tfrac{1}{2} \sumBodiesAB \bodyInertiaMatCoeff{\BidxI}{\BidxII}{\LBidxI\LBidxII} \big( 
+    2 \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxI}{\LidxI} \dirDiff{\LidxIII} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxII}{\LidxII}
+  + \bodyBoltzSym{\LBidxI}{\LBidxIV}{\LBidxIII} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxIV}{\LidxI} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxIII}{\LidxII} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxII}{\LidxIII}
+  + \bodyBoltzSym{\LBidxI}{\LBidxIV}{\LBidxIII} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxIV}{\LidxI} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxIII}{\LidxIII} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxII}{\LidxII}
+  - \bodyBoltzSym{\LBidxI}{\LBidxIV}{\LBidxIII} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxIV}{\LidxII} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxIII}{\LidxIII} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxII}{\LidxI}
+ \big)
+\nonumber\\
+ &\hspace{1.3ex} = \hspace{1.3ex} \sumBodiesAB \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxI}{\LidxI} \big( 
+    \bodyInertiaMatCoeff{\BidxI}{\BidxII}{\LBidxI\LBidxII} \dirDiff{\LidxIII} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxII}{\LidxII}
+  + \underbrace{\tfrac{1}{2} \big( \bodyBoltzSym{\LBidxIV}{\LBidxI}{\LBidxII} \bodyInertiaMatCoeff{\BidxI}{\BidxII}{\LBidxIV\LBidxIII} + \bodyBoltzSym{\LBidxIV}{\LBidxI}{\LBidxIII} \bodyInertiaMatCoeff{\BidxI}{\BidxII}{\LBidxIV\LBidxII} - \bodyBoltzSym{\LBidxIV}{\LBidxII}{\LBidxIII} \bodyInertiaMatCoeff{\BidxI}{\BidxII}{\LBidxIV\LBidxI} \big)}_{\bodyConnCoeffL{\BidxI}{\BidxII}{\LBidxI}{\LBidxII}{\LBidxIII}} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxII}{\LidxII} \bodyJacCoeff{\BidxI}{\BidxII}{\LBidxIII}{\LidxIII} \big)
+\end{align}

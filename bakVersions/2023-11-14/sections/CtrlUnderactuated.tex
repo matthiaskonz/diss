@@ -1,0 +1,172 @@
+\section{Underactuated systems}\label{sec:CtrlUnderactuated}
+The first three sections of this chapter motivated different desired closed loop dynamics which share the structure
+\begin{align}\label{eq:CtrlClosedLoopUnderactuated}
+ \sysCoordd = \kinMat(\sysCoord) \sysVel, 
+\quad
+ \sysInertiaMatC(\sysCoord) \sysVeld + \sysForceC(\sysCoord, \sysVel, \sysCoordR, \sysVelR, \sysVelRd) = \tuple{0}.
+\end{align}
+The system model has still the form of \eqref{eq:CtrlSysMdl}:
+\begin{align}\label{eq:CtrlSysMdlUnderactuated}
+ \sysCoordd = \kinMat(\sysCoord) \sysVel, 
+\quad
+ \sysInertiaMat(\sysCoord) \sysVeld + \sysForce(\sysCoord, \sysVel) = \sysInputMat(\sysCoord) \sysInput.
+\end{align}
+For a fully actuated system, i.e.\ $\rank\sysInputMat = \dimConfigSpace$, the combination of \eqref{eq:CtrlClosedLoopUnderactuated} and \eqref{eq:CtrlSysMdlUnderactuated} can be solved for the system input $\sysInput$ yielding the actual control law.
+For an underactuated system, i.e.\ $\rank\sysInputMat = \numInputs < \dimConfigSpace$, this is not possible.
+
+%In this section we discuss an approach for the tracking control of underactuated mechanical systems.
+
+%but with the input matrix $\sysInputMat(\sysCoord) \in \RealNum^{\dimConfigSpace\times\numInputs}$, $\rank \sysInputMat = \numInputs < \dimConfigSpace$, i.e.\ there are less control inputs $\sysInput(t)\in\RealNum^{\numInputs}$ than the degree of freedom $\dimConfigSpace$.
+
+\subsection{Control law through static optimization}\label{sec:CtrlUnderactuatedOptim}
+If the desired closed loop dynamics \eqref{eq:CtrlClosedLoopUnderactuated} cannot be achieved exactly, the next best thing is to get ``as close as possible'' while still obeying the model dynamics \eqref{eq:CtrlSysMdlUnderactuated}
+This is done by computing the control input $\sysInput$ by means of the static optimization problem
+\begin{align}\label{eq:MinProbUnderactuated}
+ \begin{array}{rl}
+  \text{minimize} & \GaussianConstraintC \, = \, \tfrac{1}{2} \norm[\sysInertiaMatC]{\sysVeld + \sysInertiaMatC^{-1} \sysForceC}^2
+  \\[1ex]
+  \text{subject to} & \sysInertiaMat \sysVeld + \sysForce = \sysInputMat \sysInput, \ \sysInput \in \RealNum^\numInputs 
+ \end{array}
+ .
+\end{align}
+Mathematically we do not have to use the metric coefficients $\sysInertiaMatC$ here for the optimization, any other symmetric positive definite matrix would serve the purpose as well.
+However, from the physics point of view, the terms in the norm correspond to an acceleration, so the inertia of the desired closed loop is the reasonable choice.
+Furthermore, from the control point of view, the additional parameters arising with a different matrix would not turn out to be really useful.
+
+Elimination of the acceleration $\sysVeld = \sysInertiaMat^{-1}(\sysInputMat \sysInput - \sysForce)$ from \eqref{eq:MinProbUnderactuated} leads to
+\begin{align}\label{eq:GaussianUnderactuated}
+ \GaussianConstraintC &= \tfrac{1}{2} \norm[\sysInertiaMatC]{\sysInertiaMat^{-1}\sysInputMat \sysInput - \underbrace{(\sysInertiaMat^{-1}\sysForce - \sysInertiaMatC^{-1}\sysForceC)}_{\tilde{\tuple{a}}}}^2
+\nonumber\\
+ &= \tfrac{1}{2} \sysInput^\top \underbrace{\sysInputMat^\top \sysInertiaMat^{-1} \sysInertiaMatC \sysInertiaMat^{-1} \sysInputMat}_{\mat{H}} \sysInput - \sysInput^\top \sysInputMat^\top \sysInertiaMat^{-1} \sysInertiaMatC \tilde{\tuple{a}} + \tfrac{1}{2} \tilde{\tuple{a}}^\top \sysInertiaMatC \tilde{\tuple{a}}
+\nonumber\\
+ &= \tfrac{1}{2} \big( \sysInput - \underbrace{\mat{H}^{-1} \sysInputMat^\top \sysInertiaMat^{-1} \sysInertiaMatC \tilde{\tuple{a}}}_{\sysInput_0} \big)^\top \mat{H} \big(\sysInput - \underbrace{\mat{H}^{-1} \sysInputMat^\top \sysInertiaMat^{-1} \sysInertiaMatC \tilde{\tuple{a}}}_{\sysInput_0} \big)
+\nonumber\\
+ &\hspace{10em}+ \tfrac{1}{2} \tilde{\tuple{a}}^\top \sysInertiaMatC \underbrace{\big( \idMat[\dimConfigSpace] - \sysInertiaMat^{-1} \sysInputMat \mat{H}^{-1} \sysInputMat^\top \sysInertiaMat^{-1} \sysInertiaMatC \big)}_{\mat{P}^\bot} \tilde{\tuple{a}}
+\nonumber\\
+ &= \tfrac{1}{2} \norm[\mat{H}]{\sysInput - \sysInput_0}^2 + \underbrace{\tfrac{1}{2} \norm[\sysInertiaMatC]{\mat{P}^\bot \tilde{\tuple{a}}}^2}_{\GaussianConstraintC_0}.
+\end{align}
+For the formulation of $\GaussianConstraintC_0$ it is crucial to note that $\mat{P}^\bot$ is a projection matrix, which will be exploited in the next subsection.
+
+The control law, i.e.\ the solution of the minimization problem, is obviously $\sysInput = \sysInput_0$.
+The resulting closed loop kinetics are
+\begin{align}\label{eq:UnderactuatedControlledKinetics}
+ \sysInertiaMat \sysVeld + \sysForce &= \sysInputMat \overbrace{\mat{H}^{-1} \sysInputMat^\top \sysInertiaMat^{-1} \sysInertiaMatC (\sysInertiaMat^{-1}\sysForce - \sysInertiaMatC^{-1}\sysForceC)}^{\sysInput_0}
+\nonumber\\
+\Leftrightarrow \qquad \qquad 
+ \sysVeld &= \sysInertiaMat^{-1} \sysInputMat \mat{H}^{-1} \sysInputMat^\top \sysInertiaMat^{-1} \sysInertiaMatC (\sysInertiaMat^{-1}\sysForce - \sysInertiaMatC^{-1}\sysForceC) - \sysInertiaMat^{-1} \sysForce
+% \sysVeld &= \underbrace{\sysInputMatAst \mat{H}^{-1} \sysInputMatAst^\top \sysInertiaMatC}_{\idMat[\dimConfigSpace] - \mat{P}^\bot} (\sysInertiaMat^{-1}\sysForce - \sysInertiaMatC^{-1}\sysForceC) - \sysInertiaMat^{-1} \sysForce
+\nonumber\\
+\qquad \Leftrightarrow \qquad
+ \sysInertiaMatC \sysVeld + \sysForceC &= \underbrace{\sysInertiaMatC \mat{P}^\bot \big( \sysInertiaMatC^{-1} \sysForceC - \sysInertiaMat^{-1} \sysForce \big)}_{\tilde{\sysForce}}.
+\end{align}
+This result means that there is an additional vector\footnote{The coefficients $\tilde{\tuple{b}}$ do indeed transform like a tensor, even though $\sysForce$ and $\sysForceC$ do not.} $\tilde{\tuple{b}}(\sysCoord, \sysVel, \sysCoordR, \sysVelR, \sysVelRd) \in \RealNum^{\dimConfigSpace}$ in the closed loop which allows for the closed loop \eqref{eq:UnderactuatedControlledKinetics} to be realizable with the available controls.
+
+For the special case of a fully actuated system, i.e.\ $\sysInputMat$ is invertible, the control law simplifies to $\sysInput_0 = \sysInputMat^{-1} (\sysForce - \sysInertiaMat \sysInertiaMatC^{-1}\sysForceC)$. %which is the result we get from solving the combination of the desired closed loop \eqref{eq:CtrlClosedLoopUnderactuated} and the model \eqref{eq:CtrlSysMdlUnderactuated}.
+Furthermore we have $\mat{P}^\bot = \mat{0}$ and consequently $\tilde{\tuple{b}} = \tuple{0}$ and $\GaussianConstraintC_0 = 0$.
+
+In general, the value $\GaussianConstraintC_0$ is a measure of how much the resulting closed loop differs from the original desired system \eqref{eq:CtrlClosedLoopUnderactuated}.
+One main goal when parameterizing the controller is to make $\GaussianConstraintC_0$ as small as possible.
+Unfortunately the form of $\GaussianConstraintC_0$ in \eqref{eq:UnderactuatedControlledKinetics} is not handy, mainly due to $\rank \mat{P}^\bot = \dimConfigSpace - \numInputs$.
+In the following we like to find a more handy formulation.
+
+\subsection{Matching condition}\label{sec:MatchingCondition}
+The matrices $\mat{P} = \sysInertiaMat^{-1} \sysInputMat \mat{H}^{-1} \sysInputMat^\top \sysInertiaMat^{-1} \sysInertiaMatC$ and its complementary $\mat{P} = \idMat[\dimConfigSpace] - \mat{P}^\bot$ from \eqref{eq:GaussianUnderactuated} are projection matrices, i.e. $\mat{P}^2 = \mat{P}$ and $(\mat{P}^\bot)^2 = \mat{P}^\bot$.
+Furthermore they are orthogonal w.r.t.\ the inner product $\sProd[\sysInertiaMatC]{\cdot}{\cdot}$, i.e.\ $\sProd[\sysInertiaMatC]{\mat{P} \tuple{\xi}}{\mat{P}^\bot\tuple{\eta}} = 0 \, \forall\, \tuple{\xi},\tuple{\eta}\in \RealNum^{\dimConfigSpace}$.
+The image of the projector $\mat{P}$ is the subspace of $\RealNum^{\dimConfigSpace}$ that is spanned by the columns of $\sysInertiaMat^{-1} \sysInputMat$.
+Consequently we have $\rank\mat{P} = \numInputs$ and $\rank\mat{P}^\bot = \dimConfigSpace-\numInputs$.
+So $\tilde{\tuple{b}}$ lies in a $(\dimConfigSpace-\numInputs)$-dimensional subspace.
+The goal of this subsection is to construct a basis for this subspace.
+
+Let $\sysInputMatLComp \in \RealNum^{\dimConfigSpace-\numInputs}$ be any orthogonal complement to $\sysInputMat$, i.e.\ $\rank \sysInputMatLComp = \dimConfigSpace-\numInputs$ and $\sysInputMat^\top \sysInputMatLComp = \mat{0}$.
+The columns of $\sysInertiaMatC^{-1} \sysInertiaMat \sysInputMatLComp$ are orthogonal to the columns of $\sysInertiaMat^{-1} \sysInputMat$ under the metric $\sProd[\sysInertiaMatC]{\cdot}{\cdot}$ and span the image of $\mat{P}^\bot$.
+Using some basic properties of orthogonal projectors (see \autoref{sec:OrthogonalProjectors}) we can formulate
+\begin{align}
+ \mat{P}^\bot = \sysInertiaMatC^{-1} \sysInertiaMat \sysInputMatLComp \underbrace{\big( (\sysInputMatLComp)^\top \sysInertiaMat \sysInertiaMatC^{-1} \sysInertiaMat \sysInputMatLComp \big)^{-1}}_{=\,\mat{S}\,\in\,\SymMatP(\dimConfigSpace-\numInputs)} (\sysInputMatLComp)^\top \sysInertiaMat,
+% \quad
+%  \mat{S} = (\sysInputMatLComp)^\top \sysInertiaMat \sysInertiaMatC^{-1} \sysInertiaMat \sysInputMatLComp \in \SymMatP(\dimConfigSpace-\numInputs).
+\end{align}
+Plugging this into the expressions from the previous subsection, we find 
+\begin{align}\label{eq:DefMatchingForce}
+ \tilde{\tuple{b}} = \sysInertiaMat \sysInputMatLComp \mat{S} \underbrace{(\sysInputMatLComp)^\top (\sysInertiaMat \sysInertiaMatC^{-1} \sysForceC - \sysForce)}_{=\,\tuple{\lambda}\,\in\,\RealNum^{\dimConfigSpace-\numInputs}}.
+\qquad
+ \GaussianConstraintC_0 = \tfrac{1}{2} \norm[\mat{S}]{\tuple{\lambda}}^2.
+\end{align}
+It is much simpler to analyse $\tuple{\lambda}$ which has only the dimension of the underactuation $\dimConfigSpace-\numInputs$ instead of $\tilde{\tuple{b}}$ which has the full dimension $\dimConfigSpace$ of the configuration space.
+% The value of $\GaussianConstraintC_0$ is a measure of how much the actual closed loop \eqref{eq:UnderactuatedControlledKinetics} differs from the original desired closed loop \eqref{eq:CtrlClosedLoopUnderactuated}.
+% With the use of a basis, the columns of $\sysInputMatLComp$, we are able to formulate this measure in terms of minimal coefficients $\tuple{\lambda}$.
+% This will turn out very useful for the actual design.
+Though it should be stressed that the values of $\GaussianConstraintC_0$ and $\tilde{\tuple{b}}$ are, as derived above, independent of the choice of $\sysInputMatLComp$.
+The naming $\tuple{\lambda}$ is because we could have derived the same expressions by applying an acceleration constraint $\sysInputMatLComp(\sysInertiaMat \sysVeld + \sysForce)=\tuple{0}$ to the desired closed loop and using the method of \textit{Lagrangian multipliers}.
+
+The best case is, of course, if we achieve 
+\begin{align}\label{eq:MatchingCondition}
+ \tuple{\lambda} = (\sysInputMatLComp)^\top (\sysInertiaMat \sysInertiaMatC^{-1} \sysForceC - \sysForce) = \tuple{0}
+\qquad \Rightarrow \qquad
+ \tilde{\tuple{b}} = \tuple{0}, \ \GaussianConstraintC_0 = 0
+\end{align}
+i.e.\ the desired closed loop is realized exactly.
+An approach based on this is discussed in \cite{bloch2000controlled}.
+A condition similar to \eqref{eq:MatchingCondition} is therein called the \textit{the matching condition} and is required to be fulfilled exactly.
+However, the examples for which this approach is demonstrated restricts to stabilization tasks $\sysVelR = \tuple{0}$ for small academic systems.
+
+An advantage of the presented approach is that the control law $\sysInput = \sysInput_0$ is defined independently of whether the matching condition is fulfilled or not.
+Instead the quantity $\tuple{\lambda}$, which we will call the \textit{matching force} in the following, ensures that the control law is realizable.
+
+\subsection{Approximations}
+The matching force \eqref{eq:MatchingCondition} may become very cumbersome for complex systems and might even be impossible to vanish with the given parameters.
+It might be instructive to analyse it for particular situations.
+
+\paragraph{Zero error.}
+Assume that the controller tracks the reference perfectly, i.e.\ $\sysCoord = \sysCoordR$ and $\sysVel=\sysVelR$.
+One may check that for this case the three approaches all yield $\sysForceC = \sysInertiaMatC\sysVelRd$.
+The resulting matching force $\tuple{\lambda}^{\text{ZeroError}}$ for this special case is
+\begin{align}\label{eq:MatchingForceZeroError}
+ \tuple{\lambda}^{\text{ZeroError}} = (\sysInputMatLComp(\sysCoordR))^\top (\sysInertiaMat(\sysCoordR) \sysVelRd - \sysForce(\sysCoordR, \sysVelR))
+\end{align}
+Evidently, this is independent of the closed loop parameters, and should rather be regarded as a constraint on the \textit{reference trajectory} $t\mapsto \sysCoordR(t)$.
+The condition $\tuple{\lambda}^{\text{ZeroError}}=\tuple{0}$ is essentially the model equation after elimination of the control inputs.
+
+A very useful approach here is to formulate the reference trajectory in terms of a \textit{flat output} \cite{Fliess:Flatness} of the model.
+The first step for a systematic construction of a flat output is commonly the elimination of the control inputs (see e.g.\ \cite{Schlacher:ConstructionOfFlatOutputs}) i.e.\ $\tuple{\lambda}^{\text{ZeroError}}=\tuple{0}$.
+
+\paragraph{Small error.}
+Assume that we a small error $\LinErrorCoord = \kinMat^+(\sysCoordR)(\sysCoord-\sysCoordR)$ to a constant reference $\sysVelR=\tuple{0}$ as already considered in \autoref{sec:CtrlLinearization}.
+Then the model and the closed loop template may be approximated by
+\begin{subequations}
+\begin{align}
+ \sysInertiaMatLin \LinErrorCoorddd + \sysDissMatLin \LinErrorCoordd + \sysStiffMatLin \LinErrorCoord &= \sysInputMat(\sysCoordR) \Delta \tuple{u},
+\\
+ \sysInertiaMatCLin \LinErrorCoorddd + \sysDissMatCLin \LinErrorCoordd + \sysStiffMatCLin \LinErrorCoord &= \tuple{0}
+\end{align}
+\end{subequations}
+and the matching force $\tuple{\lambda}^{\text{SmallError}}$ for this special case is
+\begin{align}\label{eq:MatchingForceLin}
+ \tuple{\lambda}^{\text{SmallError}} &= (\sysInputMatLComp(\sysCoordR))^\top \big( \sysInertiaMatLin \sysInertiaMatCLin^{-1} (\sysDissMatCLin \LinErrorCoordd + \sysStiffMatCLin \LinErrorCoord) - (\sysDissMatLin \LinErrorCoordd + \sysStiffMatLin \LinErrorCoord) \big)
+\nonumber\\
+ &= \underbrace{(\sysInputMatLComp(\sysCoordR))^\top \big( \sysInertiaMatLin \sysInertiaMatCLin^{-1} \sysDissMatCLin - \sysDissMatLin\big)}_{\mat{\Lambda}_{\sysDissMat}} \LinErrorCoordd
+  + \underbrace{(\sysInputMatLComp(\sysCoordR))^\top \big( \sysInertiaMatLin \sysInertiaMatCLin^{-1} \sysStiffMatCLin - \sysStiffMatLin\big)}_{\mat{\Lambda}_{\sysStiffMat}} \LinErrorCoord
+\end{align}
+As $\LinErrorCoord$ and $\LinErrorCoordd$ can be arbitrary, the matrices $\mat{\Lambda}_{\sysStiffMat}$ and $\mat{\Lambda}_{\sysDissMat}$ have to vanish, for $\tuple{\lambda}^{\text{SmallError}}$ to vanish.
+For the following examples it will turn out that we can always find suitable parameters within $\sysInertiaMatCLin$, $\sysDissMatCLin$ and $\sysStiffMatCLin$ such that $\mat{\Lambda}_{\sysStiffMat} = \mat{\Lambda}_{\sysDissMat} = \mat{0}$.
+Thus ensuring that at least the first order approximation of the actual matching force $\tuple{\lambda}$ vanishes.
+
+\subsection{Systems with input constraints}
+In most control systems the control inputs $\sysInput$ can not take arbitrary values, but are constrained like e.g. $-\sysInputCoeff{a}^{\idxMax} \leq \sysInputCoeff{a} \leq \sysInputCoeff{a}^{\idxMax}, a=1,\ldots,\numInputs$ due to practical limitations.
+In general we assume that the constraints can be written as $\sysInputConstMat \sysInput \leq \sysInputConstVec$ where the inequality is understood componentwise and the resulting set $\mathbb{U} = \{ \sysInput \in \RealNum^\numInputs \, | \, \sysInputConstMat \sysInput \leq \sysInputConstVec \}$ is assumed to be convex.
+
+Here we can use just the same arguments as in \autoref{sec:CtrlUnderactuatedOptim} to motivate a control law defined by the solution of the optimization problem
+\begin{align}\label{eq:MinProbInputConstraints}
+ \begin{array}{rl}
+  \text{minimize} & \GaussianConstraintC \, = \, \tfrac{1}{2} \norm[\mat{H}]{\sysInput - \sysInput_0}^2 + \GaussianConstraintC_0
+  \\[1ex]
+  \text{subject to} &\sysInputConstMat \sysInput \leq \sysInputConstVec, \ \sysInput \in \RealNum^\numInputs 
+ \end{array}
+\end{align}
+with $\mat{H}$ and $\sysInput_0$ defined in \eqref{eq:GaussianUnderactuated}.
+Given that $\mat{H} \in \SymMatP(\numInputs)$ is positive definite and $\mathbb{U}$ is convex, this problem has a unique solution, though it usually has to be computed numerically.
+For the following simulation results the \textsc{Matlab} function \texttt{quadprog} was used and a C++ implementation of the Active-Set algorithm from \cite[Algorithm 16.3]{Nocedal:NumericalOptimization} was used for the real-time implementation on the Multicopters.
+
+\fixme{
+It should be stressed that this approach does not blah stability
+}
+

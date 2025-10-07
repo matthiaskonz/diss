@@ -1,0 +1,81 @@
+%% Creator: Inkscape inkscape 0.48.4, www.inkscape.org
+%% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
+%% Accompanies image file 'MulticopterRealizationOverview.pdf' (pdf, eps, ps)
+%%
+%% To include the image in your LaTeX document, write
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics{<filename>.pdf}
+%% To scale the image, write
+%%   \def\svgwidth{<desired width>}
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics[width=<desired width>]{<filename>.pdf}
+%%
+%% Images with a different path to the parent latex file can
+%% be accessed with the `import' package (which may need to be
+%% installed) using
+%%   \usepackage{import}
+%% in the preamble, and then including the image with
+%%   \import{<path to file>}{<filename>.pdf_tex}
+%% Alternatively, one can specify
+%%   \graphicspath{{<path to file>/}}
+%% 
+%% For more information, please see info/svg-inkscape on CTAN:
+%%   http://tug.ctan.org/tex-archive/info/svg-inkscape
+%%
+\begingroup%
+  \makeatletter%
+  \providecommand\color[2][]{%
+    \errmessage{(Inkscape) Color is used for the text in Inkscape, but the package 'color.sty' is not loaded}%
+    \renewcommand\color[2][]{}%
+  }%
+  \providecommand\transparent[1]{%
+    \errmessage{(Inkscape) Transparency is used (non-zero) for the text in Inkscape, but the package 'transparent.sty' is not loaded}%
+    \renewcommand\transparent[1]{}%
+  }%
+  \providecommand\rotatebox[2]{#2}%
+  \ifx\svgwidth\undefined%
+    \setlength{\unitlength}{395.73570812bp}%
+    \ifx\svgscale\undefined%
+      \relax%
+    \else%
+      \setlength{\unitlength}{\unitlength * \real{\svgscale}}%
+    \fi%
+  \else%
+    \setlength{\unitlength}{\svgwidth}%
+  \fi%
+  \global\let\svgwidth\undefined%
+  \global\let\svgscale\undefined%
+  \makeatother%
+  \begin{picture}(1,0.55846105)%
+    \put(0,0){\includegraphics[width=\unitlength]{MulticopterRealizationOverview.pdf}}%
+    \put(0.82258145,0.21912707){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{\macRBSI}}}%
+    \put(0.43558284,0.23750352){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{\macMCI}}}%
+    \put(0.69358189,0.28050331){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{brushless}}}%
+    \put(0.69358189,0.15150381){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{servos}}}%
+    \put(0.82258145,0.35216979){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{aerodyn.}}}%
+    \put(0.8870812,0.08700406){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{IMU}}}%
+    \put(0.57174901,0.25183674){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{BLDC}}}%
+    \put(0.20066592,0.49826129){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{Matlab}}}%
+    \put(0.07937284,0.20256007){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{RC transm.}}}%
+    \put(0.94863987,0.4883359){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{cameras}}}%
+    \put(0.69358189,0.25900348){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{motors}}}%
+    \put(0.57174901,0.22317017){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{drivers}}}%
+    \put(0.93724766,0.25183674){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{markers}}}%
+    \put(0.34399876,0.46647121){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{Vicon}}}%
+    \put(0.20066592,0.53409447){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{\macGroundstation}}}%
+    \put(0.55024911,0.1085039){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{battery}}}%
+    \put(0.05733311,0.47676133){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{xBee}}}%
+    \put(0.82258145,0.37366963){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{propeller}}}%
+    \put(0.06421121,0.34089195){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{WiFi AP}}}%
+    \put(0.29225,0.28767004){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{xBee}}}%
+    \put(0.94863987,0.50983586){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{Bonita}}}%
+    \put(0.29225,0.1945036){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{RC recv.}}}%
+    \put(0.34399876,0.43688505){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{tracker}}}%
+    \put(0.5932489,0.33066984){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{\macMulticopterRealization}}}%
+    \put(0.82258145,0.18017038){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{\macRBSII}}}%
+    \put(0.82258145,0.14121357){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{\macRBSIII}}}%
+    \put(0.43558284,0.20167034){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{\macMCII}}}%
+  \end{picture}%
+\endgroup%

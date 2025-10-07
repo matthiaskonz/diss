@@ -1,0 +1,82 @@
+\section{Additional constraints}
+In addition to geometric constraints $\geoConstraint(\sysCoord) = \tuple{0}$ that have been incorporated by the chosen coordinates $\sysCoord$ and $\sysVel$ we like to incorporate additional constraints of various forms:
+\begin{subequations}\label{eq:PossibleConstraintsGauss}
+\begin{itemize}
+\item geometric constraints:
+\begin{align}
+ \tuple{\psi}(\sysCoord) &= \tuple{0}
+\nonumber\\
+\Leftrightarrow \qquad 
+ \underbrace{\dirDiff{\LidxI}\psi^{\CidxI}(\sysCoord)}_{\accConstraintMatCoeff{\CidxI}{\LidxI}(\sysCoord)} \sysVelCoeffd{\LidxI} &= \underbrace{-\dirDiff{\LidxII} \dirDiff{\LidxI} \psi^{\CidxI}(\sysCoord) \sysVelCoeff{\LidxI} \sysVelCoeff{\LidxII}}_{\accConstraintBCoeff{\CidxI}(\sysCoord, \sysVel)},
+\quad
+ \psi^{\CidxI}(\sysCoord_0) = 0, \ \dirDiff{\LidxI} \psi^{\CidxI}(\sysCoord_0) \sysVelCoeff{\LidxI}_0 = 0
+\end{align}
+\item linear kinematic constraints (possibly nonholonomic):
+\begin{align}
+ \kinConstraintMat(\sysCoord) \sysCoordd = \underbrace{\kinConstraintMat(\sysCoord) \kinMat(\sysCoord)}_{\accConstraintMat(\sysCoord)} \sysVel &= \tuple{0}
+\nonumber\\
+\Leftrightarrow \qquad
+ \accConstraintMatCoeff{\CidxI}{\LidxI}(\sysCoord) \sysVelCoeffd{\LidxI} &= \underbrace{-\dirDiff{\LidxII} \accConstraintMatCoeff{\CidxI}{\LidxI} (\sysCoord) \sysVelCoeff{\LidxI} \sysVelCoeff{\LidxII}}_{\accConstraintBCoeff{\CidxI}(\sysCoord, \sysVel)}, \
+ \accConstraintMatCoeff{\CidxI}{\LidxI}(\sysCoord_0) \sysVelCoeff{\CidxI}_0 = 0
+\end{align}
+\item general kinematic constraints
+\begin{align}
+ \tuple{\eta}(\sysCoord, \sysVel, t) &= \tuple{0}
+\nonumber\\
+\Leftrightarrow \qquad
+ \underbrace{\tpdiff[\eta^{\CidxI}]{\sysVelCoeff{\LidxI}}(\sysCoord, \sysVel, t)}_{\accConstraintMatCoeff{\CidxI}{\LidxI}(\sysCoord, \sysVel, t)} \sysVelCoeffd{\LidxI} &= \underbrace{-\dirDiff{\LidxI} \eta^{\CidxI}(\sysCoord, \sysVel, t) \sysVelCoeff{\LidxI} - \tpdiff[\eta^{\CidxI}]{t}(\sysCoord, \sysVel, t)}_{\accConstraintBCoeff{\CidxI}(\sysCoord, \sysVel, t)}, 
+\quad
+ \eta^{\CidxI}(\sysCoord_0, \sysVel_0, t_0) = 0
+\end{align}
+\item linear\footnote{Nonlinear acceleration constraints could be handled as well, but with a more sophisticated solution than \eqref{eq:EOMMultipliers}} acceleration constraints.
+\begin{align}
+ \accConstraintMat(\sysCoord, \sysVel, t) \sysVeld = \accConstraintB(\sysCoord, \sysVel, t)
+\end{align}
+\end{itemize}
+\end{subequations}
+All these constraints can be formulated as \textit{linear acceleration constraints} $\accConstraintMat \sysVeld = \accConstraintB$ possibly supplemented by suitable conditions on the initial coordinates $\sysCoord_0 = \sysCoord(t_0)$ and $\sysVel_0 = \sysVel(t_0)$.
+Gauß suggested in \cite{Gauss:Principle} also the application to inequality constraints which will not be discussed here.
+For a contemporary discussion and applications of this see \cite[sec.\,6.1]{Pfeiffer:UnilateralContacts}.
+
+In terms of the chosen coordinates $\sysCoord$ and $\sysVel$ the Gaussian constraint $\GaussianConstraint$ can be written as
+\begin{align}
+ \GaussianConstraint &= \tfrac{1}{2} \sumParticles \particleMass{\PidxI} \norm{\overbrace{\dirDiff{\LidxII} \particlePos{\PidxI} \sysVelCoeffd{\LidxII} + \dirDiff{\LidxIII} \dirDiff{\LidxII} \particlePos{\PidxI} \sysVelCoeff{\LidxIII} \sysVelCoeff{\LidxII}}^{\particlePosdd{\PidxI}} - \tfrac{\particleForceImpressed{\PidxI}}{\particleMass{\PidxI}}}^2
+\nonumber\\
+ &= \tfrac{1}{2} \underbrace{\sumParticles \particleMass{\PidxI} \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\dirDiff{\LidxII} \particlePos{\PidxI}}}_{\sysInertiaMatCoeff{\LidxI\LidxII}} \sysVelCoeffd{\LidxI} \sysVelCoeffd{\LidxII}
+  + \underbrace{\sumParticles \particleMass{\PidxI} \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\dirDiff{\LidxIII} \dirDiff{\LidxII} \particlePos{\PidxI}} \sysVelCoeff{\LidxII} \sysVelCoeff{\LidxIII}}_{\gyroForceCoeff{\LidxI}} \sysVelCoeffd{\LidxI}
+  + \underbrace{\sumParticles \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\particleForceImpressed{\PidxI}}}_{\genForceImpressedCoeff{\LidxI}} \sysVelCoeffd{\LidxI}
+  + \GaussianConstraint_0
+\nonumber\\
+ &= \tfrac{1}{2} \sysVeld^\top \sysInertiaMat \sysVeld
+  + \sysVeld^\top (\gyroForce - \genForceImpressed)
+  + \GaussianConstraint_0
+\end{align}
+where $\GaussianConstraint_0$ collects the terms independent of the acceleration $\sysVeld$.
+Overall we can state the Gauß principle with the additional constraints $\accConstraintMat \sysVeld = \accConstraintB$ originating from \eqref{eq:PossibleConstraintsGauss} as
+\begin{align}\label{eq:GaussPrincipleAccConstraints}
+ \begin{array}{rl}
+  \minOp[\sysVeld\in\RealNum^{\dimConfigSpace}] & \GaussianConstraint = \tfrac{1}{2} \sysVeld^\top \sysInertiaMat \sysVeld + \sysVeld^\top (\gyroForce - \genForceImpressed) + \GaussianConstraint_0 \\
+  \text{s.\ t.} & \accConstraintMat \sysVeld = \accConstraintB
+ \end{array}
+\end{align}
+For whatever reason we do not want to eliminate the constraints by a change of coordinates but use the concept of the \textit{Lagrange multipliers} (\eg \cite[ch.\,14]{Luenberger:LinearAndNonlinearProgramming}):
+By defining the auxiliary function $\bar{\GaussianConstraint} = \GaussianConstraint - \LagrangeMult^\top (\accConstraintMat \sysVeld - \accConstraintB)$ the solution to \eqref{eq:GaussPrincipleAccConstraints} can be stated as
+\begin{align}\label{eq:EOMMultipliers}
+ \begin{bmatrix} \pdiff[\bar{\GaussianConstraint}]{\sysVeld} \\ \pdiff[\bar{\GaussianConstraint}]{\LagrangeMult} \end{bmatrix} = \tuple{0}
+\qquad\Leftrightarrow\qquad
+ \begin{bmatrix} \sysInertiaMat & -\accConstraintMat^\top \\ \accConstraintMat & \mat{0} \end{bmatrix}
+ \begin{bmatrix} \sysVeld \\ \LagrangeMult \end{bmatrix}
+ =
+ \begin{bmatrix} \genForceImpressed - \gyroForce \\ \accConstraintB \end{bmatrix}.
+\end{align}
+The additional quantities $\LagrangeMult$ are called the \textit{Lagrange multipliers} and can be interpreted as reaction forces.
+
+\fixme{
+The possibility of handling such a variety of constraints might put Gauß' principle in a superior position compared to other principles as pointed out in \cite[p.\,525]{Hamel:TheoretischeMechanik}.
+The Lagrange-d'Alembert principle handles linear kinematic constraints $\kinConstraintMat \sysCoordd = \tuple{0}$ by requiring $\kinConstraintMat \delta\sysCoord = \tuple{0}$. %motivated by the principle that reaction forces do no work.
+However, there are no real world examples of nonlinear nonhholonomic constraints \cite[p.\,499]{Hamel:TheoretischeMechanik}, \cite[ch.\,IV]{Neimark:NonholonomicSystems}, \cite[p.\,96]{Schwertassek:MultibodySystems} and none of acceleration constraints \cite[p.\,505 \& 525]{Hamel:TheoretischeMechanik}, so one should be careful with this context.
+Note for example that for nonlinear kinematic and acceleration constraints the reaction forces $\LagrangeMult$ enter the balance of energy.
+}
+%\cite[p.\,96]{Schwertassek:MultibodySystems} \textit{for all known mechanical nonholonomic constraints are linear in the velocity variables: Ref to} \cite{Hamel:TheoretischeMechanik}
+
+\fixme{Example?}

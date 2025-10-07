@@ -1,0 +1,28 @@
+\section{Equations of motion and total energy}
+force balance
+\begin{align}
+ \underbrace{\sysInertiaMatCoeff{\LidxI\LidxII}(\sysCoord) \sysVelCoeffd{\LidxII} + \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII}(\sysCoord) \sysVelCoeff{\LidxIII} \sysVelCoeff{\LidxII}}_{\genForceInertiaCoeff{\LidxI}}
+ + \underbrace{\sysDissMatCoeff{\LidxI\LidxII}(\sysCoord) \sysVelCoeff{\LidxII}}_{\genForceDissCoeff{\LidxI}}
+ + \underbrace{\dirDiff{\LidxI} \potentialEnergy(\sysCoord)}_{\genForcePotentialCoeff{\LidxI}}
+ &= \genForceExCoeff{\LidxI}(\sysCoord, \sysInput), \qquad \LidxI = 1,\ldots,\dimConfigSpace.
+\end{align}
+
+For the change of kinetic energy $\kineticEnergy(\sysCoord, \sysVel) = \sysInertiaMatCoeff{\LidxI\LidxII}(\sysCoord) \sysVelCoeff{\LidxI} \sysVelCoeff{\LidxII}$ we have 
+\begin{align}
+ \dot{\kineticEnergy} &= \sysInertiaMatCoeff{\LidxI\LidxII} \sysVelCoeff{\LidxI} \sysVelCoeffd{\LidxII}
+ + \tfrac{1}{2} \dirDiff{\LidxIII} \sysInertiaMatCoeff{\LidxI\LidxII} \sysVelCoeff{\LidxI} \sysVelCoeff{\LidxII} \sysVelCoeff{\LidxIII}
+ = \sysVelCoeff{\LidxI} \genForceInertiaCoeff{\LidxI}
+ + \underbrace{\big(\tfrac{1}{2} \dirDiff{\LidxIII} \sysInertiaMatCoeff{\LidxI\LidxII} - \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII}\big) \sysVelCoeff{\LidxI} \sysVelCoeff{\LidxII}}_{0} \sysVelCoeff{\LidxIII}
+\end{align}
+The marked term vanishes due to \eqref{eq:ConnCoeffSymOne}.
+Furthermore we have similar relations for the potential energy $\potentialEnergy$, the dissipation function $\dissFkt$ and we define the external power $\inputPower$ as
+\begin{align}
+ \dot{\potentialEnergy} &= \sysVelCoeff{\LidxI} \genForcePotentialCoeff{\LidxI},&
+ 2\dissFkt &= \sysVelCoeff{\LidxI} \genForceDissCoeff{\LidxI},&
+ \inputPower = \sysVelCoeff{\LidxI} \genForceExCoeff{\LidxI}.
+\end{align}
+Defining the \textit{total energy} $\totalEnergy$ as the sum of kinetic and potential energy and taking into account the kinetic equation $\genForceInertia + \genForceDiss + \genForcePotential = \genForceEx$ we find
+\begin{align}
+ \totalEnergy &= \kineticEnergy + \potentialEnergy,&
+ \dot{\totalEnergy} &= \inputPower - 2\dissFkt.
+\end{align}

@@ -1,0 +1,44 @@
+Let the system consist of $\numParticles_1$ particles with positions $\particlePos{1},\ldots,\particlePos{\numParticles_1}$ of the rigid body and the $\numParticles_2$ particles with the \textit{constant} positions $\particlePos{\numParticles_1+1},\ldots,\particlePos{\numParticles_1+\numParticles_2}$.
+\begin{align}
+ \dissFkt
+ &= \tfrac{1}{2} \sum_{\PidxI=1}^{\numParticles} \sum_{\PidxII=\PidxI+1}^{\numParticles} \particleDamping{\PidxI\PidxII} \norm{\particlePosd{\PidxI} - \particlePosd{\PidxII}}^2 
+\nonumber\\
+ &= \tfrac{1}{2} \sum_{\PidxI=1}^{\numParticles_1} \sum_{\PidxII=\PidxI+1}^{\numParticles_1+\numParticles_2} \particleDamping{\PidxI\PidxII} \norm{\particlePosd{\PidxI} - \particlePosd{\PidxII}}^2 
+  + \underbrace{\tfrac{1}{2} \sum_{\PidxI=\numParticles_1+1}^{\numParticles_1+\numParticles_2} \sum_{\PidxII=\PidxI+1}^{\numParticles_1+\numParticles_2} \particleDamping{\PidxI\PidxII} \norm{\particlePosd{\PidxI} - \particlePosd{\PidxII}}^2}_{0}
+\nonumber\\
+ &= \tfrac{1}{2} \sum_{\PidxI=1}^{\numParticles_1} \sum_{\PidxII=\PidxI+1}^{\numParticles_1} \particleDamping{\PidxI\PidxII} \norm{\particlePosd{\PidxI} - \particlePosd{\PidxII}}^2 
+  + \tfrac{1}{2} \sum_{\PidxI=1}^{\numParticles_1} \underbrace{\sum_{\PidxII=\numParticles_1+1}^{\numParticles_1+\numParticles_2} \particleDamping{\PidxI\PidxII}}_{=:\,\particleDamping{\PidxI}} \norm{\particlePosd{\PidxI}}^2 
+\end{align}
+Formulating the particle velocities as $\particlePosd{\PidxI} = \R(\v - \wedOp(\particleBodyPos{\PidxI})\w)$ yields
+\begin{align}
+ \dissFkt
+ &= \tfrac{1}{2} \sum_{\PidxI=1}^{\numParticles_1} \sum_{\PidxII=\PidxI+1}^{\numParticles_1} \particleDamping{\PidxI\PidxII} \norm{\wedOp(\particleBodyPos{\PidxI}-\particleBodyPos{\PidxII})\w}^2 
+  + \tfrac{1}{2} \sum_{\PidxI=1}^{\numParticles_1} \particleDamping{\PidxI} \norm{\v - \wedOp(\particleBodyPos{\PidxI})\w}^2
+\nonumber\\
+ &= \big[ \v^\top, \w^\top \big] \begin{bmatrix} \bodyDamping{}{}\idMat[3] & \bodyDamping{}{} \wedOp(\bodyCOD{}{})^\top \\ \bodyDamping{}{} \wedOp(\bodyCOD{}{}) & \bodyMOD{}{} \end{bmatrix} \begin{bmatrix} \v \\ \w \end{bmatrix}
+\end{align}
+where
+\begin{subequations}
+\begin{align}
+ \bodyDamping{}{} &= \sum_{\PidxI=1}^{\numParticles_1} \particleDamping{\PidxI},
+\qquad
+ \bodyCOD{}{} = \frac{1}{\bodyDamping{}{}} \sum_{\PidxI=1}^{\numParticles_1} \particleDamping{\PidxI} \particleBodyPos{\PidxI},
+\\
+ \bodyMOD{}{} &= \sum_{\PidxI=1}^{\numParticles_1} \particleDamping{\PidxI} \wedOp(\particleBodyPos{\PidxI}) \wedOp(\particleBodyPos{\PidxI})^\top + \sum_{\PidxI=1}^{\numParticles_1} \sum_{\PidxII=\PidxI+1}^{\numParticles_1} \particleDamping{\PidxI\PidxII} \wedOp(\particleBodyPos{\PidxI}-\particleBodyPos{\PidxII}) \wedOp(\particleBodyPos{\PidxI}-\particleBodyPos{\PidxII})^\top,
+\end{align} 
+\end{subequations}
+
+\begin{GrayBox}
+Dissipation function
+\begin{align}
+ \dissFkt
+ &= \tfrac{1}{2} \sum_{\PidxI=1}^{\numParticles} \sum_{\PidxII=\PidxI+1}^{\numParticles} \particleDamping{\PidxI\PidxII} \norm{\particlePosd{\PidxI} - \particlePosd{\PidxII}}^2
+\nonumber\\
+ &= \tfrac{1}{4} \sum_{\PidxI=1}^{\numParticles} \sum_{\PidxII=1}^{\numParticles} \particleDamping{\PidxI\PidxII} \norm{\particlePosd{\PidxI} - \particlePosd{\PidxII}}^2
+\nonumber\\
+ &= \tfrac{1}{4} \sum_{\PidxI=1}^{\numParticles} \sum_{\PidxII=1}^{\numParticles} \particleDamping{\PidxI\PidxII} \sProd{\particlePosd{\PidxI}}{\particlePosd{\PidxI} - \particlePosd{\PidxII}}
+  + \tfrac{1}{4} \sum_{\PidxI=1}^{\numParticles} \sum_{\PidxII=1}^{\numParticles} \particleDamping{\PidxI\PidxII} \sProd{\particlePosd{\PidxII}}{\particlePosd{\PidxII} - \particlePosd{\PidxI}}
+\nonumber\\
+ &= \tfrac{1}{2} \sum_{\PidxI=1}^{\numParticles} \sum_{\PidxII=1}^{\numParticles} \particleDamping{\PidxI\PidxII} \sProd{\particlePosd{\PidxI}}{\particlePosd{\PidxI} - \particlePosd{\PidxII}}
+\end{align} 
+\end{GrayBox}

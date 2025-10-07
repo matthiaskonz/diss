@@ -1,0 +1,421 @@
+\section{Transformation rules}\label{sec:TrafoRules}
+We use a parameterization with (possibly redundant) configuration coordinates $\sysCoord \in \configSpace = \{ \sysCoord \in \RealNum^{\numCoord} \, | \, \geoConstraint(\sysCoord) \}$ and velocity coordinates $\sysVel \in \RealNum^\dimConfigSpace$ that are related by $\sysCoordd = \kinMat\sysVel$.
+The configuration coordinates $\sysCoord$ and the velocity coordinates $\sysVel$ can be transformed independently from each other.
+The following subsections summarize the resulting coordinate expressions and state the transformation rules.
+
+\subsection{Recap coordinate expressions}
+Kinematics
+\begin{align}
+ \sysVelCoeff{\LidxI} = \kinBasisMatCoeff{\LidxI}{\GidxI} \, \sysCoordCoeffd{\GidxI},
+\qquad
+ \sysCoordCoeffd{\GidxI} = \kinMatCoeff{\GidxI}{\LidxI} \sysVelCoeff{\LidxI}
+\end{align}
+Directional derivative 
+\begin{align}
+ \partial_{\LidxI} = \kinMatCoeff{\GidxI}{\LidxI} \pdiff{\sysCoordCoeff{\GidxI}},
+\qquad
+ \partial_\LidxI \partial_\LidxII - \partial_\LidxII \partial_\LidxI = \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \partial_\LidxIII
+\end{align}
+commutation coefficients
+\begin{align}
+ \BoltzSym{\LidxIII}{\LidxI}{\LidxII}
+  = \bigg( \pdiff[\kinBasisMatCoeff{\LidxIII}{\GidxI}]{\sysCoordCoeff{\GidxII}} -  \pdiff[\kinBasisMatCoeff{\LidxIII}{\GidxII}]{\sysCoordCoeff{\GidxI}} \bigg) \kinMatCoeff{\GidxII}{\LidxII} \kinMatCoeff{\GidxI}{\LidxI}
+ &= \kinMatCoeff{\GidxI}{\LidxI} \partial_{\LidxII} \kinBasisMatCoeff{\LidxIII}{\GidxI} - \kinMatCoeff{\GidxI}{\LidxII} \partial_{\LidxI} \kinBasisMatCoeff{\LidxIII}{\GidxI}
+%\nonumber\\
+ = \kinBasisMatCoeff{\LidxIII}{\GidxI} \big( \partial_{\LidxI} \kinMatCoeff{\GidxI}{\LidxII} - \partial_{\LidxII} \kinMatCoeff{\GidxI}{\LidxI} \big)
+\end{align}
+With the Riemannian metric $\sysInertiaMat$ we have the coefficients $\ConnCoeff{}{}{}$ of the Levi-Civita connection %\cite[eq.\,8.24]{Misner:Gravitation}
+\begin{align}
+ \sysInertiaMatCoeff{\LidxI\LidxV} \ConnCoeff{\LidxV}{\LidxII}{\LidxIII}
+ = \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII} = \tfrac{1}{2} \big(
+   \partial_{\LidxIII} \sysInertiaMatCoeff{\LidxI\LidxII}
+ + \partial_{\LidxII} \sysInertiaMatCoeff{\LidxI\LidxIII}
+ - \partial_{\LidxI} \sysInertiaMatCoeff{\LidxII\LidxIII}
+ + \BoltzSym{\LidxV}{\LidxI}{\LidxII} \sysInertiaMatCoeff{\LidxV\LidxIII}
+ + \BoltzSym{\LidxV}{\LidxI}{\LidxIII} \sysInertiaMatCoeff{\LidxV\LidxII}
+ - \BoltzSym{\LidxV}{\LidxII}{\LidxIII} \sysInertiaMatCoeff{\LidxV\LidxI}
+ \big)
+\end{align}
+Riemann curvature tensor %\cite[p.\,277]{Misner:Gravitation}
+\begin{subequations}
+\begin{align}
+ R^{\LidxI}_{\LidxII\LidxIII\LidxIV} &= \partial_{\LidxIII} \ConnCoeff{\LidxI}{\LidxII}{\LidxIV} - \partial_{\LidxIV} \ConnCoeff{\LidxI}{\LidxII}{\LidxIII} + \ConnCoeff{\LidxI}{\LidxV}{\LidxIII} \ConnCoeff{\LidxV}{\LidxII}{\LidxIV} - \ConnCoeff{\LidxI}{\LidxV}{\LidxIV} \ConnCoeff{\LidxV}{\LidxII}{\LidxIII} - \ConnCoeff{\LidxI}{\LidxII}{\LidxV} \BoltzSym{\LidxV}{\LidxIII}{\LidxIV}  
+\\
+ \sysInertiaMatCoeff{\LidxI\LidxV} R^{\LidxV}_{\LidxII\LidxIII\LidxIV} = R_{\LidxI\LidxII\LidxIII\LidxIV} &= \partial_{\LidxIII} \ConnCoeffL{\LidxI}{\LidxII}{\LidxIV} - \partial_{\LidxIV} \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII}
+ - \ConnCoeffL{\LidxV}{\LidxI}{\LidxIII} \ConnCoeff{\LidxV}{\LidxII}{\LidxIV} + \ConnCoeffL{\LidxV}{\LidxI}{\LidxIV} \ConnCoeff{\LidxV}{\LidxII}{\LidxIII} - \ConnCoeffL{\LidxI}{\LidxII}{\LidxV} \BoltzSym{\LidxV}{\LidxIII}{\LidxIV}  
+\end{align}
+\end{subequations}
+
+\subsection{Change of configuration coordinates}\label{sec:AppendixCoordinateTrafo}
+Consider a different parameterization of the configuration space 
+\begin{align}
+ \configSpace \cong \{ \sysCoordW \in \RealNum^{\numCoordW} \, | \, \geoConstraintW(\sysCoordW) = 0 \}.
+\end{align}
+Let the relation to the original coordinates be
+\begin{subequations}
+\begin{align}
+ \sysCoordCoeff{\GidxI} &= \configChangeCoeff{\GidxI} (\sysCoordW), \qquad \GidxI = 1,\ldots,\numCoord, 
+\\
+ \sysCoordCoeffW{\GidxWI} &= \iconfigChangeCoeff{\GidxWI} (\sysCoord), \qquad \GidxWI = 1,\ldots,\numCoordW
+ .
+\end{align}
+\end{subequations}
+Note that the dimension of the embedding space $\numCoordW$ can be different to the original dimension $\numCoord$, only $\numCoordW - \rank\pdiff[\geoConstraintW]{\sysCoordW} = \dim \configSpace = \dimConfigSpace$ has to hold.
+Consequently the Jacobi matrices $\pdiff[\configChange]{\sysCoordW}$ and $\pdiff[\iconfigChange]{\sysCoord}$ are rectangular.
+Nevertheless we have the identities
+\begin{align}
+ \pdiff[{\configChangeCoeff{\GidxI}}]{\sysCoordCoeffW{\GidxWI}} \pdiff[{\iconfigChangeCoeff{\GidxWI}}]{\sysCoordCoeff{\GidxII}} = \delta^\GidxI_\GidxII,
+\qquad
+ \pdiff[{\iconfigChangeCoeff{\GidxWI}}]{\sysCoordCoeff{\GidxI}} \pdiff[{\configChangeCoeff{\GidxI}}]{\sysCoordCoeffW{\GidxWII}} = \delta^\GidxWI_\GidxWII
+\end{align}
+
+\paragraph{Kinematic matrices.}
+We choose the \textit{same basis} $\sysVel$ as with the original coordinates, \ie
+\begin{align}
+ \sysVelCoeff{\LidxI} &= \kinBasisMatCoeff{\LidxI}{\GidxI}(\sysCoord) \sysCoordCoeffd{\GidxI}
+ = \kinBasisMatCoeff{\LidxI}{\GidxI}(\configChange(\sysCoordW)) \tpdiff[{\configChangeCoeff{\GidxI}}]{\sysCoordCoeffW{\GidxWI}}(\sysCoordW) \, \sysCoordCoeffWd{\GidxWI}
+ = \kinBasisMatCoeffW{\LidxI}{\GidxWI}(\sysCoordW) \sysCoordCoeffWd{\GidxWI},
+\qquad
+ \LidxI = 1,\ldots,\dimConfigSpace .
+\end{align}
+The explicit dependencies should be clear from the context, so they will be dropped for the following. 
+\begin{align}
+ \kinBasisMatCoeffW{\LidxI}{\GidxWI} &= \kinBasisMatCoeff{\LidxI}{\GidxI} \tpdiff[{\configChangeCoeff{\GidxI}}]{\sysCoordCoeffW{\GidxWI}},&
+ \kinMatCoeffW{\GidxWI}{\LidxI} &= \tpdiff[{\iconfigChangeCoeff{\GidxWI}}]{\sysCoordCoeff{\GidxI}} \kinMatCoeff{\GidxI}{\LidxI},&
+ \kinBasisMatCoeff{\LidxI}{\GidxI} &= \kinBasisMatCoeff{\LidxI}{\GidxWI} \tpdiff[{\iconfigChangeCoeff{\GidxWI}}]{\sysCoordCoeff{\GidxI}},&
+ \kinMatCoeff{\GidxI}{\LidxI} &= \tpdiff[{\configChangeCoeff{\GidxI}}]{\sysCoordCoeffW{\GidxWI}} \kinMatCoeffW{\GidxWI}{\LidxI}
+ .
+\end{align}
+% The following results might be obvious from a geometric point of view as the basis $\sysVel$ is unchanged.
+% Nevertheless it might be instructive to check them in an algebraic way.
+
+\paragraph{Directional derivative.}
+Consider the function $\potentialEnergy(\sysCoord) = \potentialEnergy(\configChange(\sysCoordW)) =: \potentialEnergyW(\sysCoordW)$.
+Its differential is invariant to the change of coordinates, \ie $\dirDiff{\LidxI} \potentialEnergyW(\sysCoordW) = \big(\dirDiff{\LidxI} \potentialEnergy \big)(\configChange(\sysCoordW))$, since
+\begin{align}
+ \dirDiff{\LidxI} \potentialEnergyW
+ = \pdiff[\potentialEnergyW]{\sysCoordCoeffW{\GidxWI}} \kinMatCoeffW{\GidxWI}{\LidxI} 
+ = \pdiff[\potentialEnergy]{\sysCoordCoeff{\GidxI}} \pdiff[{\configChangeCoeff{\GidxI}}]{\sysCoordCoeffW{\GidxWI}} \kinMatCoeffW{\GidxWI}{\LidxI}
+ = \pdiff[\potentialEnergy]{\sysCoordCoeff{\GidxI}} \kinMatCoeff{\GidxI}{\LidxI}
+ = \dirDiff{\LidxI} \potentialEnergy
+ .
+\end{align}
+
+\paragraph{Commutation coefficients.}
+The Commutation coefficients are invariant, \ie $\BoltzSymW{\LidxIII}{\LidxI}{\LidxII}(\sysCoordW) = \BoltzSym{\LidxIII}{\LidxI}{\LidxII}(\configChange(\sysCoordW))$, to the change of coordinates:
+\begin{align}
+ \BoltzSymW{\LidxIII}{\LidxI}{\LidxII}
+ &= \kinBasisMatCoeffW{\LidxIII}{\GidxWI} \big( \partial_{\LidxI} \kinMatCoeffW{\GidxWI}{\LidxII} - \partial_{\LidxII} \kinMatCoeffW{\GidxWI}{\LidxI} \big)
+% = \kinBasisMatCoeff{\LidxIII}{\GidxII} \tpdiff[{\configChangeCoeff{\GidxII}}]{\sysCoordCoeffW{\GidxWI}} \big( \partial_{\LidxI} \tpdiff[{\iconfigChangeCoeff{\GidxWI}}]{\sysCoordCoeff{\GidxI}} \kinMatCoeff{\GidxI}{\LidxII} - \partial_{\LidxII} \tpdiff[{\iconfigChangeCoeff{\GidxWI}}]{\sysCoordCoeff{\GidxI}} \kinMatCoeff{\GidxI}{\LidxI} \big)
+\nonumber\\
+ &= \kinBasisMatCoeff{\LidxIII}{\GidxII} \pdiff[{\configChangeCoeff{\GidxII}}]{\sysCoordCoeffW{\GidxWI}} \Big( 
+    \partial_{\LidxI} \pdiff[{\iconfigChangeCoeff{\GidxWI}}]{\sysCoordCoeff{\GidxI}} \kinMatCoeff{\GidxI}{\LidxII} + \pdiff[{\iconfigChangeCoeff{\GidxWI}}]{\sysCoordCoeff{\GidxI}} \partial_{\LidxI} \kinMatCoeff{\GidxI}{\LidxII}
+  - \partial_{\LidxII} \pdiff[{\iconfigChangeCoeff{\GidxWI}}]{\sysCoordCoeff{\GidxI}} \kinMatCoeff{\GidxI}{\LidxI} - \pdiff[{\iconfigChangeCoeff{\GidxWI}}]{\sysCoordCoeff{\GidxI}} \partial_{\LidxII} \kinMatCoeff{\GidxI}{\LidxI}
+ \Big)
+\nonumber\\
+ &= \kinBasisMatCoeff{\LidxIII}{\GidxII} \underbrace{\pdiff[{\configChangeCoeff{\GidxII}}]{\sysCoordCoeffW{\GidxWI}} \pdiff[{\iconfigChangeCoeff{\GidxWI}}]{\sysCoordCoeff{\GidxI}}}_{\delta^{\GidxII}_{\GidxI}} \big( 
+  \partial_{\LidxI} \kinMatCoeff{\GidxI}{\LidxII} - \partial_{\LidxII} \kinMatCoeff{\GidxI}{\LidxI}
+ \big)
+ + \kinBasisMatCoeff{\LidxIII}{\GidxII} \pdiff[{\configChangeCoeff{\GidxII}}]{\sysCoordCoeffW{\GidxWI}} \underbrace{\Big(
+   \frac{\partial^2 \iconfigChangeCoeff{\GidxWI}}{\partial \sysCoordCoeff{\GidxII} \partial \sysCoordCoeff{\GidxI}}
+  -\frac{\partial^2 \iconfigChangeCoeff{\GidxWI}}{\partial \sysCoordCoeff{\GidxI} \partial \sysCoordCoeff{\GidxII}}
+ \Big)}_{0} \kinMatCoeff{\GidxII}{\LidxII} \kinMatCoeff{\GidxI}{\LidxI}
+% \nonumber\\
+% &= \kinBasisMatCoeff{\LidxIII}{\GidxI} \big( \partial_{\LidxI} \kinMatCoeff{\GidxI}{\LidxII} - \partial_{\LidxII} \kinMatCoeff{\GidxI}{\LidxI} \big)
+ = \BoltzSym{\LidxIII}{\LidxI}{\LidxII}
+ .
+\end{align}
+
+\paragraph{Connection coefficients.}
+Since the differential $\partial_{\LidxIII} \sysInertiaMatCoeff{\LidxI\LidxII}$ of the inertia matrix and the commutation coefficients $\BoltzSym{\LidxIII}{\LidxI}{\LidxII}$ are invariant to the change of configuration coordinates, so are the connection coefficients, \ie $\ConnCoeffWL{\LidxI}{\LidxII}{\LidxIII}(\sysCoordW) = \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII}(\configChange(\sysCoordW))$ .
+
+\paragraph{Lagrange's equation.}
+Consider the Lagrangian $\Lagrangian(\sysCoord, \sysVel, t) = \Lagrangian(\configChange(\sysCoordW), \sysVel, t) =: \LagrangianW(\sysCoordW, \sysVel, t)$ in terms of the transformed configuration coordinates.
+We have $\partial_\LidxI \LagrangianW(\sysCoordW) = \partial_\LidxI \Lagrangian(\configChange(\sysCoordW))$ and $\BoltzSymW{\LidxIII}{\LidxI}{\LidxII}(\sysCoordW) = \BoltzSym{\LidxIII}{\LidxI}{\LidxII}(\configChange(\sysCoordW))$ and $\spdiff[\LagrangianW]{\sysVelCoeff{\LidxI}} = \spdiff[\Lagrangian]{\sysVelCoeff{\LidxI}}$.
+Consequently Lagrange's equation is invariant to the change in configuration coordinates, \ie
+\begin{align}
+ \diff{t} \pdiff[\LagrangianW]{\sysVelCoeff{\LidxI}} + \BoltzSymW{\LidxIII}{\LidxI}{\LidxII} \sysVelCoeff{\LidxII} \pdiff[\LagrangianW]{\sysVelCoeff{\LidxIII}} - \kinMatCoeffW{\GidxWI}{\LidxI} \pdiff[\LagrangianW]{\sysCoordCoeffW{\GidxWI}}
+ = \bigg( \diff{t} \pdiff[\Lagrangian]{\sysVelCoeff{\LidxI}} + \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \sysVelCoeff{\LidxII} \pdiff[\Lagrangian]{\sysVelCoeff{\LidxIII}} - \kinMatCoeff{\GidxI}{\LidxI} \pdiff[\Lagrangian]{\sysCoordCoeff{\GidxI}} \bigg) \Big|_{\sysCoord = \configChange(\sysCoordW)}
+ .
+\end{align}
+
+\paragraph{Transport map.}
+Consider the function $\potentialEnergy(\sysCoord, \sysCoordR) = \potentialEnergy(\configChange(\sysCoordW), \configChange(\sysCoordWR)) =: \potentialEnergyW(\sysCoordW, \sysCoordWR)$ with the transport map
+\begin{align}
+ \tpdiff[\potentialEnergy]{\sysCoordCoeffR{\GidxI}} \kinMatCoeff{\GidxI}{\LidxI}(\sysCoordR)
+ = \sysTransportMapCoeff{\LidxII}{\LidxI}(\sysCoord, \sysCoordR) \tpdiff[\potentialEnergy]{\sysCoordCoeff{\GidxI}} \kinMatCoeff{\GidxI}{\LidxII}(\sysCoord)
+\end{align}
+The invariance, \ie $\sysTransportMapW(\sysCoordW, \sysCoordWR) = \sysTransportMap(\configChange(\sysCoordW), \configChange(\sysCoordWR))$, is a direct consequence of the invariance of the directional derivative:
+\begin{multline}\label{eq:TrafoCoordTransportMap}
+ \tpdiff[\potentialEnergyW]{\sysCoordCoeffWR{\GidxWI}} \kinMatCoeffW{\GidxWI}{\LidxI}(\sysCoordWR)
+ = \tpdiff[\potentialEnergy]{\sysCoordCoeffR{\GidxI}} \kinMatCoeff{\GidxI}{\LidxI}(\configChange(\sysCoordWR))
+ = \sysTransportMapCoeff{\LidxII}{\LidxI}(\configChange(\sysCoordW), \configChange(\sysCoordWR)) \tpdiff[\potentialEnergy]{\sysCoordCoeff{\GidxI}} \kinMatCoeff{\GidxI}{\LidxII}(\configChange(\sysCoord))
+\\
+ = \underbrace{\sysTransportMapCoeff{\LidxII}{\LidxI}(\configChange(\sysCoordW), \configChange(\sysCoordWR))}_{\sysTransportMapCoeffW{\LidxII}{\LidxI}(\sysCoordW, \sysCoordWR)} \tpdiff[\potentialEnergyW]{\sysCoordCoeffW{\GidxWI}} \kinMatCoeffW{\GidxWI}{\LidxII}(\sysCoordW)
+ .
+\end{multline}
+
+\subsection{Change of velocity coordinates / basis}\label{sec:AppendixBasisTrafo}
+Consider we change the velocity coordinates, but leave the configuration coordinates $\sysCoord$ unchanged:
+\begin{align}
+ \sysVelCoeff{\LidxI} = \BasisChangeCoeff{\LidxI}{\LidxWI}(\sysCoord) \sysVelCoeffW{\LidxWI},
+\qquad
+ \sysVelCoeffW{\LidxWI} = \iBasisChangeCoeff{\LidxWI}{\LidxI}(\sysCoord) \sysVelCoeff{\LidxI},
+\qquad
+ \LidxI, \LidxWI = 1,\ldots,\dimConfigSpace,
+\end{align}
+with the transformation matrix $\BasisChange(\sysCoord) = \iBasisChange^{-1}(\sysCoord) \in \RealNum^{\dimConfigSpace\times\dimConfigSpace}$.
+We have the kinematic relation
+\begin{align}
+ \sysCoordCoeffd{\GidxI} = \kinMatCoeff{\GidxI}{\LidxI}(\sysCoord) \sysVelCoeff{\LidxI} = \underbrace{\kinMatCoeff{\GidxI}{\LidxI}(\sysCoord) \BasisChangeCoeff{\LidxI}{\LidxWI}(\sysCoord)}_{\kinMatCoeffW{\GidxI}{\LidxWI}(\sysCoord)} \sysVelCoeffW{\LidxWI}
+\end{align}
+
+
+\paragraph{Kinematic matrices.}
+\begin{align}
+ \kinBasisMatCoeffW{\LidxWI}{\GidxI} &= \iBasisChangeCoeff{\LidxWI}{\LidxI} \kinBasisMatCoeff{\LidxI}{\GidxI},&
+ \kinMatCoeffW{\GidxI}{\LidxWI} &= \kinMatCoeff{\GidxI}{\LidxI} \BasisChangeCoeff{\LidxI}{\LidxWI},&
+ \kinBasisMatCoeff{\LidxI}{\GidxI} &= \BasisChangeCoeff{\LidxI}{\LidxWI} \kinBasisMatCoeffW{\LidxWI}{\GidxI},&
+ \kinMatCoeff{\GidxI}{\LidxI} &= \kinMatCoeffW{\GidxI}{\LidxWI} \iBasisChangeCoeff{\LidxWI}{\LidxI}
+\end{align}
+
+\paragraph{Directional derivative.}
+\begin{align}
+ \partial_{\LidxWI} V = \tpdiff[V]{\sysCoordCoeff{\GidxI}} \kinMatCoeffW{\GidxI}{\LidxWI} = \tpdiff[V]{\sysCoordCoeff{\GidxI}} \kinMatCoeff{\GidxI}{\LidxI} \BasisChangeCoeff{\LidxI}{\LidxWI} =  \BasisChangeCoeff{\LidxI}{\LidxWI} \partial_{\LidxI} V
+\end{align}
+
+\paragraph{Commutation coefficients.}
+\begin{align}
+ \BoltzSymW{\LidxWIII}{\LidxWI}{\LidxWII}
+%  &= \left(\pdiff[\kinBasisMatCoeffW{\LidxWIII}{\alpha}]{\sysCoord[\beta]} - \pdiff[\kinBasisMatCoeffW{\LidxWIII}{\beta}]{\sysCoord[\alpha]} \right) \kinMatCoeffW{\alpha}{\LidxWII} \kinMatCoeffW{\beta}{\LidxWI}
+% % = \left(\pdiff[\kinBasisMatCoeff{\LidxIII}{\alpha} \iBasisChangeCoeff{\LidxWIII}{\LidxIII}]{\sysCoord[\beta]} - \pdiff[\kinBasisMatCoeff{\LidxIII}{\beta} \iBasisChangeCoeff{\LidxWIII}{\LidxIII}]{\sysCoord[\alpha]} \right) \kinMatCoeff{\alpha}{\LidxII} \kinMatCoeff{\beta}{\LidxI} \BasisChangeCoeff{\LidxII}{\LidxWII} \BasisChangeCoeff{\LidxI}{\LidxWI}
+% \\
+%  &= \left(\pdiff[\kinBasisMatCoeff{\LidxIII}{\alpha}]{\sysCoord[\beta]} \iBasisChangeCoeff{\LidxWIII}{\LidxIII} + \kinBasisMatCoeff{\LidxIII}{\alpha} \pdiff[\iBasisChangeCoeff{\LidxWIII}{\LidxIII}]{\sysCoord[\beta]} - \pdiff[\kinBasisMatCoeff{\LidxIII}{\beta}]{\sysCoord[\alpha]} \iBasisChangeCoeff{\LidxWIII}{\LidxIII} - \kinBasisMatCoeff{\LidxIII}{\beta}\pdiff[ \iBasisChangeCoeff{\LidxWIII}{\LidxIII}]{\sysCoord[\alpha]} \right) \kinMatCoeff{\alpha}{\LidxII} \kinMatCoeff{\beta}{\LidxI} \BasisChangeCoeff{\LidxII}{\LidxWII} \BasisChangeCoeff{\LidxI}{\LidxWI}
+% \\
+%  &= \iBasisChangeCoeff{\LidxWIII}{\LidxIII} \left(\pdiff[\kinBasisMatCoeff{\LidxIII}{\alpha}]{\sysCoord[\beta]} - \pdiff[\kinBasisMatCoeff{\LidxIII}{\beta}]{\sysCoord[\alpha]} \right) \kinMatCoeff{\alpha}{\LidxII} \kinMatCoeff{\beta}{\LidxI} \BasisChangeCoeff{\LidxII}{\LidxWII} \BasisChangeCoeff{\LidxI}{\LidxWI}
+%   + \left( \pdiff[\iBasisChangeCoeff{\LidxWIII}{\LidxIII}]{\sysCoord[\alpha]} \BasisChangeCoeff{\LidxIII}{\LidxWII} \BasisChangeCoeff{\LidxI}{\LidxWI} - \pdiff[\iBasisChangeCoeff{\LidxWIII}{\LidxIII}]{\sysCoord[\alpha]} \BasisChangeCoeff{\LidxI}{\LidxWII} \BasisChangeCoeff{\LidxIII}{\LidxWI} \right) \kinMatCoeff{\alpha}{\LidxI} 
+% \\
+%  &= \iBasisChangeCoeff{\LidxWIII}{\LidxIII} \left( \BoltzSym{\LidxIII}{\LidxII}{\LidxI} \BasisChangeCoeff{\LidxII}{\LidxWII} \BasisChangeCoeff{\LidxI}{\LidxWI}
+%   - \left( \pdiff[ \BasisChangeCoeff{\LidxIII}{\LidxWII}]{\sysCoord[\alpha]} \BasisChangeCoeff{\LidxI}{\LidxWI} - \pdiff[\BasisChangeCoeff{\LidxIII}{\LidxWI}]{\sysCoord[\alpha]} \BasisChangeCoeff{\LidxI}{\LidxWII} \right) \kinMatCoeff{\alpha}{\LidxI} \right) 
+% \\
+%  &= \iBasisChangeCoeff{\LidxWIII}{\LidxIII} \left( \BasisChangeCoeff{\LidxII}{\LidxWII} \BasisChangeCoeff{\LidxI}{\LidxWI} \BoltzSym{\LidxIII}{\LidxII}{\LidxI}
+%   + \hat{\partial}_b \BasisChangeCoeff{\LidxIII}{\LidxWI} - \hat{\partial}_a \BasisChangeCoeff{\LidxIII}{\LidxWII} \right) 
+% \\
+ &= \kinBasisMatCoeffW{\LidxWIII}{\GidxI} \big(\partial_{\LidxWI} \kinMatCoeffW{\GidxI}{\LidxWII} - \partial_{\LidxWII} \kinMatCoeffW{\GidxI}{\LidxWI}\big)
+\nonumber\\
+%  &= \iBasisChangeCoeff{\LidxWIII}{\LidxIII} \kinBasisMatCoeff{\LidxIII}{\GidxI} \big( \partial_{\LidxWII} (\kinMatCoeff{\GidxI}{\LidxI} \BasisChangeCoeff{\LidxI}{\LidxWI}) - \partial_{\LidxWI} (\kinMatCoeff{\GidxI}{\LidxII} \BasisChangeCoeff{\LidxII}{\LidxWII}) \big)
+% \\
+ &= \iBasisChangeCoeff{\LidxWIII}{\LidxIII} \kinBasisMatCoeff{\LidxIII}{\GidxI} \big(\partial_{\LidxWI} \kinMatCoeff{\GidxI}{\LidxII} \BasisChangeCoeff{\LidxII}{\LidxWII} + \kinMatCoeff{\GidxI}{\LidxII} \partial_{\LidxWI} \BasisChangeCoeff{\LidxII}{\LidxWII} - \partial_{\LidxWII} \kinMatCoeff{\GidxI}{\LidxI} \BasisChangeCoeff{\LidxI}{\LidxWI} - \kinMatCoeff{\GidxI}{\LidxI} \partial_{\LidxWII} \BasisChangeCoeff{\LidxI}{\LidxWI} \big)
+\nonumber\\
+ &= \iBasisChangeCoeff{\LidxWIII}{\LidxIII} \big(
+    \BasisChangeCoeff{\LidxI}{\LidxWI} \BasisChangeCoeff{\LidxII}{\LidxWII} \underbrace{\kinBasisMatCoeff{\LidxIII}{\GidxI} (\partial_{\LidxI} \kinMatCoeff{\GidxI}{\LidxII} - \partial_{\LidxII} \kinMatCoeff{\GidxI}{\LidxI})}_{\BoltzSym{\LidxIII}{\LidxI}{\LidxII}}
+  + \underbrace{\kinBasisMatCoeff{\LidxIII}{\GidxI} \kinMatCoeff{\GidxI}{\LidxII}}_{\delta^{\LidxIII}_{\LidxII}} \partial_{\LidxWI} \BasisChangeCoeff{\LidxII}{\LidxWII} - \underbrace{\kinBasisMatCoeff{\LidxIII}{\GidxI} \kinMatCoeff{\GidxI}{\LidxI}}_{\delta^{\LidxIII}_{\LidxI}} \partial_{\LidxWII} \BasisChangeCoeff{\LidxI}{\LidxWI}
+  \big)
+\nonumber\\
+ &= \iBasisChangeCoeff{\LidxWIII}{\LidxIII} \big(
+    \BasisChangeCoeff{\LidxI}{\LidxWI} \BasisChangeCoeff{\LidxII}{\LidxWII} \BoltzSym{\LidxIII}{\LidxI}{\LidxII}
+  + \partial_{\LidxWI} \BasisChangeCoeff{\LidxIII}{\LidxWII} - \partial_{\LidxWII} \BasisChangeCoeff{\LidxIII}{\LidxWI}
+  \big)
+\end{align}
+
+\paragraph{Connection coefficients.}
+\begin{align}\label{eq:TrafoConnCoeff}
+ \ConnCoeffW{\LidxWI}{\LidxWIII}{\LidxWII} = \iBasisChangeCoeff{\LidxWI}{\LidxI} \big( \ConnCoeff{\LidxI}{\LidxIII}{\LidxII} \BasisChangeCoeff{\LidxIII}{\LidxWIII} \BasisChangeCoeff{\LidxII}{\LidxWII} + \dirDiffW{\LidxWII} \BasisChangeCoeff{\LidxI}{\LidxWIII}\big)
+\end{align}
+
+
+\paragraph{Lagrange's equation.}
+Consider the Lagrangian $\Lagrangian(\sysCoord, \sysVel, t) = \Lagrangian(\sysCoord, \BasisChange(\sysCoord) \sysVelW, t) =: \LagrangianW(\sysCoord, \sysVelW, t)$ in terms of the transformed velocity coordinates.
+Then we have
+\begin{subequations}
+\begin{align}
+ \diff{t} \pdiff[\LagrangianW]{\sysVelCoeffW{\LidxWI}} &= \diff{t} \pdiff[\Lagrangian]{\sysVelCoeff{\LidxI}} \BasisChangeCoeff{\LidxI}{\LidxWI} + \pdiff[\Lagrangian]{\sysVelCoeff{\LidxI}} \partial_\LidxII \BasisChangeCoeff{\LidxI}{\LidxWI} \sysVelCoeff{\LidxII},
+\\
+ \BoltzSymW{\LidxWIII}{\LidxWI}{\LidxWII} \sysVelCoeffW{\LidxWII} \pdiff[\LagrangianW]{\sysVelCoeffW{\LidxWIII}} &= 
+  \big(\BasisChangeCoeff{\LidxI}{\LidxWI} \BasisChangeCoeff{\LidxII}{\LidxWII} \BoltzSym{\LidxIII}{\LidxI}{\LidxII} + \BasisChangeCoeff{\LidxV}{\LidxWI} \partial_{\LidxV} \BasisChangeCoeff{\LidxIII}{\LidxWII} - \BasisChangeCoeff{\LidxV}{\LidxWII}\partial_{\LidxV} \BasisChangeCoeff{\LidxIII}{\LidxWI} \big)
+  \iBasisChangeCoeff{\LidxWII}{\LidxIV} \sysVelCoeff{\LidxIV}
+  \pdiff[\Lagrangian]{\sysVelCoeff{\LidxIII}}
+\\
+ \partial_\LidxWI \LagrangianW &= \BasisChangeCoeff{\LidxI}{\LidxWI} \bigg( \partial_\LidxI \Lagrangian + \pdiff[\Lagrangian]{\sysVelCoeff{\LidxIII}} \partial_\LidxI \BasisChangeCoeff{\LidxIII}{\LidxWII} \iBasisChangeCoeff{\LidxWII}{\LidxII} \sysVelCoeff{\LidxII} \bigg)
+\end{align}
+\end{subequations}
+Adding these three terms together we find that Lagrange's equations are covariant
+\begin{align}
+ \diff{t} \pdiff[\LagrangianW]{\sysVelCoeffW{\LidxWI}} + \BoltzSymW{\LidxWIII}{\LidxWI}{\LidxWII} \sysVelCoeffW{\LidxWII} \pdiff[\LagrangianW]{\sysVelCoeffW{\LidxWIII}} - \kinMatCoeffW{\GidxI}{\LidxWI} \pdiff[\LagrangianW]{\sysCoordCoeff{\GidxI}}
+ = \BasisChangeCoeff{\LidxI}{\LidxWI} \bigg( \diff{t} \pdiff[\Lagrangian]{\sysVelCoeff{\LidxI}} + \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \sysVelCoeff{\LidxII} \pdiff[\Lagrangian]{\sysVelCoeff{\LidxIII}} - \kinMatCoeff{\GidxI}{\LidxI} \pdiff[\Lagrangian]{\sysCoordCoeff{\GidxI}} \bigg)
+ .
+\end{align}
+
+
+\paragraph{System inertia matrix / metric}
+The kinetic energy $\kineticEnergy$ must be the same in terms of both velocity coordinates, so
+\begin{align}
+ \kineticEnergy = \tfrac{1}{2} \sysInertiaMatCoeffW{\LidxWI\LidxWII} \sysVelCoeffW{\LidxWI} \sysVelCoeffW{\LidxWII} = \tfrac{1}{2} \sysInertiaMatCoeff{\LidxI\LidxII} \sysVelCoeff{\LidxI} \sysVelCoeff{\LidxII}
+\end{align}
+we get the relation
+\begin{align}
+ \sysInertiaMatCoeffW{\LidxWI\LidxWII} &= \sysInertiaMatCoeff{\LidxI\LidxII} \BasisChangeCoeff{\LidxI}{\LidxWI} \BasisChangeCoeff{\LidxII}{\LidxWII},&
+ \isysInertiaMatCoeffW{\LidxWI\LidxWII} &= \isysInertiaMatCoeff{\LidxI\LidxII} \iBasisChangeCoeff{\LidxWI}{\LidxI} \iBasisChangeCoeff{\LidxWII}{\LidxII}
+ .
+\end{align}
+The differential of the inertia matrix transforms as
+\begin{align}\label{eq:DifferentialInertiaMatrix}
+ \partial_{\LidxWIII} \sysInertiaMatCoeffW{\LidxWI\LidxWII} = 
+   \BasisChangeCoeff{\LidxI}{\LidxWI} \BasisChangeCoeff{\LidxII}{\LidxWII} \BasisChangeCoeff{\LidxIII}{\LidxWIII} \partial_{\LidxIII} \sysInertiaMatCoeff{\LidxI\LidxII}
+  + ( \BasisChangeCoeff{\LidxII}{\LidxWII} \partial_{\LidxWIII} \BasisChangeCoeff{\LidxI}{\LidxWI} + \BasisChangeCoeff{\LidxI}{\LidxWI} \partial_{\LidxWIII} \BasisChangeCoeff{\LidxII}{\LidxWII} )\sysInertiaMatCoeff{\LidxI\LidxII}.
+\end{align}
+
+\paragraph{Levi-Civita connection coefficients}
+It is useful to first consider the transformation rule for the commutation coefficients with lowered indices 
+\begin{align}\label{eq:TrafoBoltzSymLower}
+ \BoltzSymL{\LidxWI}{\LidxWII}{\LidxWIII} = \BoltzSym{\LidxWIV}{\LidxWI}{\LidxWII} \sysInertiaMatCoeffW{\LidxWIV\LidxWIII} 
+%  &= \iBasisChangeCoeff{\LidxWIV}{\LidxIV} \big(
+%     \BasisChangeCoeff{\LidxI}{\LidxWI} \BasisChangeCoeff{\LidxII}{\LidxWII} \BoltzSym{\LidxIV}{\LidxI}{\LidxII}
+%   + \partial_{\LidxWII} \BasisChangeCoeff{\LidxIV}{\LidxWI} - \partial_{\LidxWI} \BasisChangeCoeff{\LidxIV}{\LidxWII}
+%   \big) 
+%   \BasisChangeCoeff{\LidxV}{\LidxWIV} \BasisChangeCoeff{\LidxIII}{\LidxWIII} \sysInertiaMatCoeff{\LidxV\LidxIII}
+% \\
+ &= \BasisChangeCoeff{\LidxI}{\LidxWI} \BasisChangeCoeff{\LidxII}{\LidxWII} \BasisChangeCoeff{\LidxIII}{\LidxWIII} \BoltzSymL{\LidxI}{\LidxII}{\LidxIII}
+%  + \BasisChangeCoeff{\LidxII}{\LidxWIII} \big(\partial_{\LidxWI} \BasisChangeCoeff{\LidxI}{\LidxWII} - \partial_{\LidxWII} \BasisChangeCoeff{\LidxI}{\LidxWI} \big) \sysInertiaMatCoeff{\LidxI\LidxII} 
+  + \big(\BasisChangeCoeff{\LidxI}{\LidxWIII} \partial_{\LidxWI} \BasisChangeCoeff{\LidxII}{\LidxWII} - \BasisChangeCoeff{\LidxII}{\LidxWIII} \partial_{\LidxWII} \BasisChangeCoeff{\LidxI}{\LidxWI} \big) \sysInertiaMatCoeff{\LidxI\LidxII} 
+\end{align}
+Utilize \eqref{eq:DifferentialInertiaMatrix} and \eqref{eq:TrafoBoltzSymLower} to compute the transformation rule for the connection coefficients
+\begin{align}
+ \ConnCoeffWL{\LidxWI}{\LidxWII}{\LidxWIII} &= \tfrac{1}{2} \left( \partial_{\LidxWIII} \sysInertiaMatCoeffW{\LidxWI\LidxWII} + \partial_{\LidxWII} \sysInertiaMatCoeffW{\LidxWI\LidxWIII} - \partial_{\LidxWIII} \sysInertiaMatCoeffW{\LidxWII\LidxWIII} + \BoltzSymWL{\LidxWI}{\LidxWII}{\LidxWIII} + \BoltzSymWL{\LidxWI}{\LidxWIII}{\LidxWII} - \BoltzSymWL{\LidxWII}{\LidxWIII}{\LidxWI}\right)
+\nonumber\\
+ &= \BasisChangeCoeff{\LidxI}{\LidxWI} \BasisChangeCoeff{\LidxII}{\LidxWII} \BasisChangeCoeff{\LidxIII}{\LidxWIII} \underbrace{\tfrac{1}{2} \big( \partial_{\LidxIII} \sysInertiaMatCoeff{\LidxI\LidxII} + \partial_{\LidxII} \sysInertiaMatCoeff{\LidxI\LidxIII} - \partial_{\LidxI} \sysInertiaMatCoeff{\LidxII\LidxIII} + \BoltzSymWL{\LidxI}{\LidxII}{\LidxIII} + \BoltzSymWL{\LidxI}{\LidxIII}{\LidxII} - \BoltzSymWL{\LidxII}{\LidxIII}{\LidxI} \big)}_{\ConnCoeffL{\LidxI}{\LidxII}{\LidxIII}}
+\nonumber\\
+ &\qquad +\tfrac{1}{2} \big(
+  \BasisChangeCoeff{\LidxII}{\LidxWII} \partial_{\LidxWIII} \BasisChangeCoeff{\LidxI}{\LidxWI} + \BasisChangeCoeff{\LidxI}{\LidxWI} \partial_{\LidxWIII} \BasisChangeCoeff{\LidxII}{\LidxWII} + \BasisChangeCoeff{\LidxI}{\LidxWIII} \partial_{\LidxWI} \BasisChangeCoeff{\LidxII}{\LidxWII} - \BasisChangeCoeff{\LidxII}{\LidxWIII} \partial_{\LidxWII} \BasisChangeCoeff{\LidxI}{\LidxWI}
+\nonumber\\
+ &\qquad\quad
+ + \BasisChangeCoeff{\LidxII}{\LidxWIII} \partial_{\LidxWII} \BasisChangeCoeff{\LidxI}{\LidxWI} + \BasisChangeCoeff{\LidxI}{\LidxWI} \partial_{\LidxWII} \BasisChangeCoeff{\LidxII}{\LidxWIII} + \BasisChangeCoeff{\LidxI}{\LidxWII} \partial_{\LidxWI} \BasisChangeCoeff{\LidxII}{\LidxWIII} - \BasisChangeCoeff{\LidxII}{\LidxWII} \partial_{\LidxWIII} \BasisChangeCoeff{\LidxI}{\LidxWI}
+\nonumber\\
+ &\qquad\quad
+ - \BasisChangeCoeff{\LidxII}{\LidxWIII} \partial_{\LidxWI} \BasisChangeCoeff{\LidxI}{\LidxWII} - \BasisChangeCoeff{\LidxI}{\LidxWII} \partial_{\LidxWI} \BasisChangeCoeff{\LidxII}{\LidxWIII} - \BasisChangeCoeff{\LidxI}{\LidxWI} \partial_{\LidxWII} \BasisChangeCoeff{\LidxII}{\LidxWIII} + \BasisChangeCoeff{\LidxII}{\LidxWI} \partial_{\LidxWIII} \BasisChangeCoeff{\LidxI}{\LidxWII}
+  \big) \sysInertiaMatCoeff{\LidxI\LidxII}
+\nonumber\\[2ex]
+ &= \BasisChangeCoeff{\LidxI}{\LidxWI} \BasisChangeCoeff{\LidxII}{\LidxWII} \BasisChangeCoeff{\LidxIII}{\LidxWIII} \tfrac{1}{2} \big( \partial_{\LidxIII} \sysInertiaMatCoeff{\LidxI\LidxII} + \partial_{\LidxII} \sysInertiaMatCoeff{\LidxI\LidxIII} - \partial_{\LidxI} \sysInertiaMatCoeff{\LidxII\LidxIII} + \BoltzSymWL{\LidxI}{\LidxII}{\LidxIII} + \BoltzSymWL{\LidxI}{\LidxIII}{\LidxII} - \BoltzSymWL{\LidxII}{\LidxIII}{\LidxI} \big)
+\nonumber\\
+ &\qquad +\tfrac{1}{2} \big(
+    \BasisChangeCoeff{\LidxI}{\LidxWI} (\partial_{\LidxWIII} \BasisChangeCoeff{\LidxII}{\LidxWII} + \partial_{\LidxWII} \BasisChangeCoeff{\LidxII}{\LidxWIII})
+  + \BasisChangeCoeff{\LidxI}{\LidxWII} (\partial_{\LidxWIII} \BasisChangeCoeff{\LidxII}{\LidxWI} - \partial_{\LidxWI} \BasisChangeCoeff{\LidxII}{\LidxWIII})
+  + \BasisChangeCoeff{\LidxI}{\LidxWIII} (\partial_{\LidxWII} \BasisChangeCoeff{\LidxII}{\LidxWI} - \partial_{\LidxWI} \BasisChangeCoeff{\LidxII}{\LidxWII})
+\nonumber\\
+  &\qquad+ \BasisChangeCoeff{\LidxII}{\LidxWIII} \big(\partial_{\LidxWI} \BasisChangeCoeff{\LidxI}{\LidxWII} - \partial_{\LidxWII} \BasisChangeCoeff{\LidxI}{\LidxWI} \big)
+   + \BasisChangeCoeff{\LidxII}{\LidxWII} \big(\partial_{\LidxWI} \BasisChangeCoeff{\LidxI}{\LidxWIII} - \partial_{\LidxWIII} \BasisChangeCoeff{\LidxI}{\LidxWI} \big)
+   - \BasisChangeCoeff{\LidxII}{\LidxWI} \big(\partial_{\LidxWII} \BasisChangeCoeff{\LidxI}{\LidxWIII} - \partial_{\LidxWIII} \BasisChangeCoeff{\LidxI}{\LidxWII} \big)
+  \big) \sysInertiaMatCoeff{\LidxI\LidxII} 
+\nonumber\\
+ &= \BasisChangeCoeff{\LidxI}{\LidxWI} \BasisChangeCoeff{\LidxII}{\LidxWII} \BasisChangeCoeff{\LidxIII}{\LidxWIII} \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII}
+  + \BasisChangeCoeff{\LidxI}{\LidxWI} \partial_{\LidxWIII} \BasisChangeCoeff{\LidxII}{\LidxWII} \sysInertiaMatCoeff{\LidxI\LidxII} 
+\label{eq:TrafoConnCoeffL}  
+\end{align}
+and
+\begin{align}
+ \ConnCoeffW{\LidxWI}{\LidxWII}{\LidxWIII}
+ = \isysInertiaMatCoeffW{\LidxWI\LidxWV} \ConnCoeffWL{\LidxWV}{\LidxWII}{\LidxWIII}
+ = \isysInertiaMatCoeff{\LidxI\LidxIV} \iBasisChangeCoeff{\LidxWI}{\LidxI} \iBasisChangeCoeff{\LidxWV}{\LidxIV}
+ \big( \BasisChangeCoeff{\LidxV}{\LidxWV} \BasisChangeCoeff{\LidxII}{\LidxWII} \BasisChangeCoeff{\LidxIII}{\LidxWIII} \ConnCoeffL{\LidxV}{\LidxII}{\LidxIII} + \BasisChangeCoeff{\LidxV}{\LidxWV} \partial_{\LidxWIII} \BasisChangeCoeff{\LidxII}{\LidxWII} \sysInertiaMatCoeff{\LidxV\LidxII} \big) 
+%  = \isysInertiaMatCoeff{\LidxI\LidxV} \iBasisChangeCoeff{\LidxWI}{\LidxI}
+%  \big( \BasisChangeCoeff{\LidxII}{\LidxWII} \BasisChangeCoeff{\LidxIII}{\LidxWIII} \ConnCoeffL{\LidxV}{\LidxII}{\LidxIII} + \partial_{\LidxWIII} \BasisChangeCoeff{\LidxII}{\LidxWII} \sysInertiaMatCoeff{\LidxV\LidxII} \big) 
+ = \iBasisChangeCoeff{\LidxWI}{\LidxI} \big( \BasisChangeCoeff{\LidxII}{\LidxWII} \BasisChangeCoeff{\LidxIII}{\LidxWIII} \ConnCoeff{\LidxI}{\LidxII}{\LidxIII} + \partial_{\LidxWIII} \BasisChangeCoeff{\LidxI}{\LidxWII} \big) 
+%\label{eq:TrafoConnCoeff}
+\end{align}
+%which is the transformation rule we formulated in \eqref{eq:TrafoRuleConnCoeff} as the requirement for a connection. 
+
+
+\paragraph{Covariant derivative.}
+The partial derivatives of the coefficients of a vector field $v$ do \textit{not} transform like a tensor
+\begin{align}
+ \partial_\LidxWII \accW{v}^\LidxWI
+% = \BasisChangeCoeff{\LidxII}{\LidxWII} \partial_\LidxII (\BasisChangeCoeff{\LidxI}{\LidxWI} v^\LidxI)
+ = \BasisChangeCoeff{\LidxII}{\LidxWII} (\iBasisChangeCoeff{\LidxWI}{\LidxI} \partial_\LidxII v^\LidxI + \partial_\LidxII \iBasisChangeCoeff{\LidxWI}{\LidxI} v^\LidxI)
+\end{align}
+but the coefficients of the covariant derivative do
+\begin{multline}
+ \nabla_\LidxWII \accW{v}^\LidxWI
+ = \partial_\LidxWII \accW{v}^\LidxWI + \ConnCoeffW{\LidxWI}{\LidxWIII}{\LidxWII} \accW{v}^\LidxWIII
+ = \BasisChangeCoeff{\LidxII}{\LidxWII} (\iBasisChangeCoeff{\LidxWI}{\LidxI} \partial_\LidxII v^\LidxI + \partial_\LidxII \iBasisChangeCoeff{\LidxWI}{\LidxI} v^\LidxI)
+ + \iBasisChangeCoeff{\LidxWI}{\LidxI} (\BasisChangeCoeff{\LidxIII}{\LidxWIII} \BasisChangeCoeff{\LidxII}{\LidxWII} \ConnCoeff{\LidxI}{\LidxIII}{\LidxII} + \BasisChangeCoeff{\LidxII}{\LidxWII} \partial_{\LidxII} \BasisChangeCoeff{\LidxI}{\LidxWIII}) \iBasisChangeCoeff{\LidxWIII}{\LidxIV} v^\LidxIV
+\\
+ = \BasisChangeCoeff{\LidxII}{\LidxWII} \iBasisChangeCoeff{\LidxWI}{\LidxI} \underbrace{\big( \partial_\LidxII v^\LidxI + \ConnCoeff{\LidxI}{\LidxIII}{\LidxII} v^\LidxIII \big)}_{\nabla_\LidxII v^\LidxI}
+ + \, \BasisChangeCoeff{\LidxII}{\LidxWII} \underbrace{(\partial_\LidxII \iBasisChangeCoeff{\LidxWI}{\LidxI} - \partial_{\LidxII} \iBasisChangeCoeff{\LidxWI}{\LidxI})}_{0}  v^\LidxI
+\end{multline}
+
+\paragraph{Transport map.}
+The covariance of the transport map $\sysTransportMap(\sysCoord, \sysCoordR)$ follows directly from the covariance of the directional derivatives:
+%$\partial_{\LidxWI} = \BasisChangeCoeff{\LidxI}{\LidxWI}(\sysCoord) \partial_{\LidxI}$ and $\partial_{\LidxWI\idxRef} = \BasisChangeCoeff{\LidxI}{\LidxWI}(\sysCoordR) \partial_{\LidxI\idxRef}$
+\begin{align}\label{eq:TrafoVelTransportMap}
+ \dirDiffR{\LidxWI} \potentialEnergy(\sysCoord, \sysCoordR) &= -\sysTransportMapCoeff{\LidxWII}{\LidxWI}(\sysCoord, \sysCoordR) \dirDiff{\LidxWII} \potentialEnergyC(\sysCoord, \sysCoordR)
+\nonumber\\
+\Leftrightarrow \qquad
+ \BasisChangeCoeff{\LidxI}{\LidxWI}(\sysCoordR) \dirDiffR{\LidxI} \potentialEnergy(\sysCoord, \sysCoordR) &= -\sysTransportMapCoeffW{\LidxWII}{\LidxWI}(\sysCoord, \sysCoordR) \BasisChangeCoeff{\LidxII}{\LidxWII}(\sysCoord) \dirDiff{\LidxII} \potentialEnergy(\sysCoord, \sysCoordR)
+\nonumber\\
+\Leftrightarrow \qquad
+ \dirDiffR{\LidxI} \potentialEnergy(\sysCoord, \sysCoordR) &= - \underbrace{\iBasisChangeCoeff{\LidxWI}{\LidxI}(\sysCoordR) \sysTransportMapCoeffW{\LidxWII}{\LidxWI}(\sysCoord, \sysCoordR) \BasisChangeCoeff{\LidxII}{\LidxWII}(\sysCoord)}_{\sysTransportMapCoeff{\LidxII}{\LidxI}(\sysCoord, \sysCoordR)} \dirDiff{\LidxII} \potentialEnergy(\sysCoord, \sysCoordR)
+\end{align}
+
+\paragraph{TBD.}
+For the scalar quantity $\kineticEnergy = \tfrac{1}{2} \sysInertiaMatCoeff{\LidxI\LidxII} v^{\LidxI} v^{\LidxII}$ we are looking for a \textit{(co-)vector} $p$ with which $\dot{\kineticEnergy} = v^{\LidxI} p_{\LidxI}$ along a curve $t\mapsto\sysCoord(t)$ with $\sysCoordd = \kinMat\sysVel$.
+Taking the time derivative yields
+\begin{align}
+ \dot{\kineticEnergy} 
+ = v^{\LidxI} \underbrace{\big( \sysInertiaMatCoeff{\LidxI\LidxII} \dot{v}^{\LidxII} + \tfrac{1}{2} \dirDiff{\LidxIII} \sysInertiaMatCoeff{\LidxI\LidxII} \sysVelCoeff{\LidxIII} v^{\LidxII} \big)}_{\text{not a tensor}}
+ = v^{\LidxI} \underbrace{\big( \sysInertiaMatCoeff{\LidxI\LidxII} \dot{v}^{\LidxII} + (\tfrac{1}{2} \dirDiff{\LidxIII} \sysInertiaMatCoeff{\LidxI\LidxII} \sysVelCoeff{\LidxIII} + S_{\LidxI\LidxII}) v^{\LidxII} \big)}_{=\, p_{\LidxI}}.
+\end{align}
+Since the first term is not a tensor, we add some skew symmetric coefficients $S_{\LidxI\LidxII} = -S_{\LidxII\LidxI}$ that cancel out in the multiplication but may be used to make $p$ a tensor.
+From the transformation rule $\accW{p}_{\LidxI} = \BasisChangeCoeff{\LidxI}{\LidxWI} p_{\LidxI}$ we can derive a transformation rule for $S$:
+\begin{align}
+ \accW{p}_{\LidxWI} 
+ &= \sysInertiaMatCoeffW{\LidxWI\LidxWII} \dot{\accW{v}}^{\LidxWII} + \big( \tfrac{1}{2} \dirDiffW{\LidxWIII} \sysInertiaMatCoeffW{\LidxWI\LidxWII} \sysVelCoeffW{\LidxWIII} + \accW{S}_{\LidxWI\LidxWII} \big) \accW{v}^{\LidxWII}
+\nonumber \\
+ &= \BasisChangeCoeff{\LidxI}{\LidxWI} \sysInertiaMatCoeff{\LidxI\LidxIV} \BasisChangeCoeff{\LidxIV}{\LidxWII} \tdiff{t} \big( \iBasisChangeCoeff{\LidxWII}{\LidxII} v^{\LidxII} \big)
+ + \big( \tfrac{1}{2} \dirDiff{\LidxIII} \big( \BasisChangeCoeff{\LidxI}{\LidxWI} \sysInertiaMatCoeff{\LidxI\LidxIV} \BasisChangeCoeff{\LidxIV}{\LidxWII} \big) \sysVelCoeff{\LidxIII} + \accW{S}_{\LidxWI\LidxWII} \big) \iBasisChangeCoeff{\LidxWII}{\LidxII} v^{\LidxII}
+\nonumber \\
+ &= \BasisChangeCoeff{\LidxI}{\LidxWI} \sysInertiaMatCoeff{\LidxI\LidxIV} \BasisChangeCoeff{\LidxIV}{\LidxWII} \big( \iBasisChangeCoeff{\LidxWII}{\LidxII} \dot{v}^{\LidxII} + \dirDiff{\LidxIII} \iBasisChangeCoeff{\LidxWII}{\LidxII} \sysVelCoeff{\LidxIII} v^{\LidxII} \big)
+\nonumber \\
+ &\hspace{3ex} + \big( \tfrac{1}{2}\big( \dirDiff{\LidxIII} \BasisChangeCoeff{\LidxI}{\LidxWI} \sysInertiaMatCoeff{\LidxI\LidxIV} \BasisChangeCoeff{\LidxIV}{\LidxWII} + \BasisChangeCoeff{\LidxI}{\LidxWI} \dirDiff{\LidxIII} \sysInertiaMatCoeff{\LidxI\LidxIV} \BasisChangeCoeff{\LidxIV}{\LidxWII} + \BasisChangeCoeff{\LidxI}{\LidxWI} \sysInertiaMatCoeff{\LidxI\LidxIV} \dirDiff{\LidxIII} \BasisChangeCoeff{\LidxIV}{\LidxWII}\big) \sysVelCoeff{\LidxIII} + \accW{S}_{\LidxWI\LidxWII} \big) \iBasisChangeCoeff{\LidxWII}{\LidxII} v^{\LidxII} 
+\nonumber \\
+ &= \BasisChangeCoeff{\LidxI}{\LidxWI} \sysInertiaMatCoeff{\LidxI\LidxII} \dot{v}^{\LidxII} - \BasisChangeCoeff{\LidxI}{\LidxWI} \sysInertiaMatCoeff{\LidxI\LidxIV} \dirDiff{\LidxIII} \BasisChangeCoeff{\LidxIV}{\LidxWII} \iBasisChangeCoeff{\LidxWII}{\LidxII} \sysVelCoeff{\LidxIII} v^{\LidxII}
+\nonumber \\
+ &\hspace{3ex} + \big( \tfrac{1}{2}\big( \dirDiff{\LidxIII} \BasisChangeCoeff{\LidxI}{\LidxWI} \sysInertiaMatCoeff{\LidxI\LidxII} + \BasisChangeCoeff{\LidxI}{\LidxWI} \dirDiff{\LidxIII} \sysInertiaMatCoeff{\LidxI\LidxII} + \BasisChangeCoeff{\LidxI}{\LidxWI} \sysInertiaMatCoeff{\LidxI\LidxIV} \dirDiff{\LidxIII} \BasisChangeCoeff{\LidxIV}{\LidxWII} \iBasisChangeCoeff{\LidxWII}{\LidxII} \big) \sysVelCoeff{\LidxIII} + \accW{S}_{\LidxWI\LidxWII} \iBasisChangeCoeff{\LidxWII}{\LidxII} \big) v^{\LidxII} 
+\nonumber \\
+ &= \BasisChangeCoeff{\LidxI}{\LidxWI} \big( \sysInertiaMatCoeff{\LidxI\LidxII} \dot{v}^{\LidxII} + \big( \tfrac{1}{2} \dirDiff{\LidxIII} \sysInertiaMatCoeff{\LidxI\LidxII} \sysVelCoeff{\LidxIII}
+ + \underbrace{\iBasisChangeCoeff{\LidxWIV}{\LidxI} \accW{S}_{\LidxWIV\LidxWII} \iBasisChangeCoeff{\LidxWII}{\LidxII} + \tfrac{1}{2}\big( \sysInertiaMatCoeff{\LidxIV\LidxII} \iBasisChangeCoeff{\LidxWIV}{\LidxI} \dirDiff{\LidxIII} \BasisChangeCoeff{\LidxIV}{\LidxWIV} - \sysInertiaMatCoeff{\LidxI\LidxIV} \iBasisChangeCoeff{\LidxWIV}{\LidxII} \dirDiff{\LidxIII} \BasisChangeCoeff{\LidxIV}{\LidxWIV} \big) \sysVelCoeff{\LidxIII}}_{S_{\LidxI\LidxII}} \big) v^{\LidxII}  \big)
+\end{align}
+or equivalently
+\begin{align}
+ \accW{S}_{\LidxWI\LidxWII}
+ = \BasisChangeCoeff{\LidxI}{\LidxWI} \BasisChangeCoeff{\LidxII}{\LidxWII} S_{\LidxI\LidxII}
+ + \tfrac{1}{2}\sysInertiaMatCoeff{\LidxI\LidxII} \big(\BasisChangeCoeff{\LidxI}{\LidxWI} \dirDiff{\LidxIII} \BasisChangeCoeff{\LidxII}{\LidxWII} - \BasisChangeCoeff{\LidxII}{\LidxWII} \dirDiff{\LidxIII} \BasisChangeCoeff{\LidxI}{\LidxWI} \big) \sysVelCoeff{\LidxIII}.
+\end{align}
+Recalling the transformation rule \eqref{eq:TrafoConnCoeff} of the connection coefficients $\ConnCoeff{\LidxI}{\LidxII}{\LidxIII}$ (not necessarily the Levi-Civita connection), this may be fulfilled by setting 
+\begin{align}
+ S_{\LidxI\LidxII} = \big( \sysInertiaMatCoeff{\LidxI\LidxV} \ConnCoeff{\LidxV}{\LidxII}{\LidxIII} - \sysInertiaMatCoeff{\LidxII\LidxV} \ConnCoeff{\LidxV}{\LidxI}{\LidxIII} \big) \sysVelCoeff{\LidxIII} + C_{\LidxI\LidxII}
+\end{align}
+where $C_{\LidxI\LidxII} = -C_{\LidxII\LidxI}$ may be any skew symmetric \textit{tensor}.
+% \begin{align}
+%  \sysInertiaMatCoeffW{\LidxWI\LidxWV} \ConnCoeffW{\LidxWV}{\LidxWII}{\LidxWIII} \sysVelCoeffW{\LidxWIII} 
+%  = \BasisChangeCoeff{\LidxI}{\LidxWI} \sysInertiaMatCoeff{\LidxI\LidxV} \big( \BasisChangeCoeff{\LidxII}{\LidxWII} \ConnCoeff{\LidxV}{\LidxII}{\LidxIII} + \dirDiff{\LidxIII} \BasisChangeCoeff{\LidxV}{\LidxWII}\big) \sysVelCoeff{\LidxIII}
+% \end{align}
+% \begin{align}
+%  \big(\sysInertiaMatCoeffW{\LidxWI\LidxWV} \ConnCoeffW{\LidxWV}{\LidxWII}{\LidxWIII} - \sysInertiaMatCoeffW{\LidxWII\LidxWV} \ConnCoeffW{\LidxWV}{\LidxWI}{\LidxWIII}\big) \sysVelCoeffW{\LidxWIII} 
+% % = \BasisChangeCoeff{\LidxI}{\LidxWI} \sysInertiaMatCoeff{\LidxI\LidxV} \big( \BasisChangeCoeff{\LidxII}{\LidxWII} \ConnCoeff{\LidxV}{\LidxII}{\LidxIII} + \dirDiff{\LidxIII} \BasisChangeCoeff{\LidxV}{\LidxWII}\big) \sysVelCoeff{\LidxIII}
+% % - \BasisChangeCoeff{\LidxI}{\LidxWII} \sysInertiaMatCoeff{\LidxI\LidxV} \big( \BasisChangeCoeff{\LidxII}{\LidxWI} \ConnCoeff{\LidxV}{\LidxII}{\LidxIII} + \dirDiff{\LidxIII} \BasisChangeCoeff{\LidxV}{\LidxWII}\big) \sysVelCoeff{\LidxIII}
+%  &= \big( \BasisChangeCoeff{\LidxI}{\LidxWI} \sysInertiaMatCoeff{\LidxI\LidxV} \BasisChangeCoeff{\LidxII}{\LidxWII} \ConnCoeff{\LidxV}{\LidxII}{\LidxIII} + \BasisChangeCoeff{\LidxI}{\LidxWI} \sysInertiaMatCoeff{\LidxI\LidxV} \dirDiff{\LidxIII} \BasisChangeCoeff{\LidxV}{\LidxWII}
+%  - \BasisChangeCoeff{\LidxI}{\LidxWII} \sysInertiaMatCoeff{\LidxI\LidxV} \BasisChangeCoeff{\LidxII}{\LidxWI} \ConnCoeff{\LidxV}{\LidxII}{\LidxIII} - \BasisChangeCoeff{\LidxI}{\LidxWII} \sysInertiaMatCoeff{\LidxI\LidxV} \dirDiff{\LidxIII} \BasisChangeCoeff{\LidxV}{\LidxWII} \big) \sysVelCoeff{\LidxIII}
+% \nonumber\\
+%  &= \big( \BasisChangeCoeff{\LidxI}{\LidxWI} \BasisChangeCoeff{\LidxII}{\LidxWII} \big( \sysInertiaMatCoeff{\LidxI\LidxV} \ConnCoeff{\LidxV}{\LidxII}{\LidxIII} - \sysInertiaMatCoeff{\LidxII\LidxV} \ConnCoeff{\LidxV}{\LidxI}{\LidxIII} \big)
+%  + \sysInertiaMatCoeff{\LidxI\LidxV} \big(\BasisChangeCoeff{\LidxI}{\LidxWI} \dirDiff{\LidxIII} \BasisChangeCoeff{\LidxV}{\LidxWII} - \BasisChangeCoeff{\LidxI}{\LidxWII} \dirDiff{\LidxIII} \BasisChangeCoeff{\LidxV}{\LidxWII}\big) \big) \sysVelCoeff{\LidxIII}
+% \end{align}
+
+Identification of the kinetic energy $\kineticEnergy = \tfrac{1}{2} \metricProd{\vect{v}}{\vect{v}}$ with the Riemannian metric and using the defining property of the Levi-Civita connection \eqref{eq:LeviCivitaMetric}, yields
+\begin{align}
+ \dot{\kineticEnergy}
+ = \tfrac{1}{2} \sysVelVect \metricProd{\vect{v}}{\vect{v}}
+ = \metricProd{\vect{v}}{\covDiffVect{\sysVelVect}{\vect{v}}}
+ = v^{\LidxI} \sysInertiaMatCoeff{\LidxI\LidxII} \big( \dirDiff{\LidxIII} v^{\LidxII} + \ConnCoeff{\LidxII}{\LidxIV}{\LidxIII} v^{\LidxIV}\big) \sysVelCoeff{\LidxIII}
+ = v^{\LidxI} \underbrace{\big( \sysInertiaMatCoeff{\LidxI\LidxII} \dot{v}^{\LidxII} + \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII}\sysVelCoeff{\LidxIII} v^{\LidxII} \big)}_{p_{\LidxI}}
+\end{align}
+This is a special case of what was derived above where $\ConnCoeff{\LidxV}{\LidxII}{\LidxIII}$ are the coefficients of the Levi-Civita connection and $C_{\LidxI\LidxII}=0$.

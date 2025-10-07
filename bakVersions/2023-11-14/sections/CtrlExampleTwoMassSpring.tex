@@ -1,0 +1,145 @@
+\subsection{Two masses connected by a spring}
+In order to illustrate the control approach for underactuated systems we consider the minimal example:
+Two bodies in prismatic joints connected by a linear spring but where only one is directly actuated by the force $F$ as illustrated in \autoref{fig:TwoMassSpring}.
+\begin{figure}[ht]
+ \centering
+ \input{graphics/TwoMassSpring.pdf_tex}
+ \caption{Model of two bodies connected by a spring}
+ \label{fig:TwoMassSpring}
+\end{figure}
+
+\paragraph{Model.}
+We choose the absolute positions of the bodies as configuration coordinates $\sysCoord = [z_1, z_2]^\top$ and their derivative as velocity coordinates $\sysVel = \sysCoordd$.
+With this the body configurations are
+\begin{align}
+ \bodyHomoCoord{0}{1} = \begin{bmatrix} 1 & 0 & 0 & z_1 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1\end{bmatrix},
+\qquad
+ \bodyHomoCoord{0}{2} = \begin{bmatrix} 1 & 0 & 0 & z_2 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1\end{bmatrix}.
+\end{align}
+With the total mass $\bodyMass{0}{1}$, $\bodyMass{0}{2}$ of the individual bodies and the spring stiffness $\bodyStiffness{1}{2}$ the resulting equations of motion may be written as
+\begin{align}\label{eq:TwoMassSpringModel}
+ \underbrace{\begin{bmatrix} \bodyMass{0}{1} & 0 \\ 0 & \bodyMass{0}{2} \end{bmatrix}}_{\sysInertiaMat}
+ \begin{bmatrix} \ddot{z}_1 \\ \ddot{z}_2 \end{bmatrix}
+ +
+ \underbrace{\begin{bmatrix} \bodyStiffness{1}{2} & -\bodyStiffness{1}{2} \\ -\bodyStiffness{1}{2} & \bodyStiffness{1}{2} \end{bmatrix}}_{\sysStiffMat}
+ \begin{bmatrix} z_1 \\ z_2 \end{bmatrix} 
+ =
+ \underbrace{\begin{bmatrix} 1 \\ 0 \end{bmatrix}}_{\sysInputMat} F
+ .
+\end{align}
+% Obviously the second equation is independent of the control force $\sysInput = F$:
+% \begin{align}\label{eq:accConstTwoMassSpring}
+%  \sysInputMatLComp = [0 \ 1], \qquad \sysInputMatLComp (\sysInertiaMat \sysVeld + \d_{\sysVel} \potentialEnergy) &= 0&
+% &\Rightarrow&
+%  \ddot{z}_2 + \underbrace{\tfrac{\bodyStiffness{1}{2}}{\bodyMass{0}{2}}}_{\varpi} (z_2 - z_1) &= 0
+%  .
+% \end{align}
+% From this its obvious that $z_2$ is a \textit{flat output} of the system and we can utilize this to compute suitable reference trajectories $t \mapsto (\sysCoord[1](t), \sysCoord[2](t))$ which obey the EOM.
+
+\paragraph{Desired closed loop.}
+We assume general body inertia $\bodyInertiaMat{0}{1},\ldots$, damping and stiffness.
+The three proposed control approaches lead to identical desired closed loop dynamics:
+\begin{align}\label{eq:TwoMassSpringClosedLoop}
+ \sysInertiaMatC \sysCoordEdd + \sysDissMatC \sysCoordEd + \sysStiffMatC \sysCoordE = \tuple{0},
+\qquad
+ \sysCoordE = \sysCoord - \sysCoordR
+\end{align}
+where
+\begin{align}
+ \sysInertiaMatC &= \begin{bmatrix} \bodyMassC{0}{1} + \bodyMassC{1}{2} & -\bodyMassC{1}{2} \\ -\bodyMassC{1}{2} & \bodyMassC{0}{2}+\bodyMassC{1}{2} \end{bmatrix},&
+ \sysDissMatC &= \begin{bmatrix} \bodyDampingC{0}{1} + \bodyDampingC{1}{2} & -\bodyDampingC{1}{2} \\ -\bodyDampingC{1}{2} & \bodyDampingC{0}{2}+\bodyDampingC{1}{2} \end{bmatrix},&
+ \sysStiffMatC &= \begin{bmatrix} \bodyStiffnessC{0}{1} + \bodyStiffnessC{1}{2} & -\bodyStiffnessC{1}{2} \\ -\bodyStiffnessC{1}{2} & \bodyStiffnessC{0}{2}+\bodyStiffnessC{1}{2} \end{bmatrix}.
+\end{align}
+The corresponding potential $\potentialEnergyC = \tfrac{1}{2} \sysCoordE^\top \sysStiffMatC \sysCoordE$ has the obvious transport map $\sysTransportMap = \idMat[2]$.
+
+
+\paragraph{Matching.}
+The matching condition \eqref{eq:MatchingCondition} for this example may be written as
+\begin{align}
+ \tuple{\lambda} = (\sysInputMatLComp)^\top (\sysInertiaMat \sysInertiaMatC^{-1} (-\sysInertiaMatC \sysCoordRdd + \sysDissMatC (\sysCoordd-\sysCoordRd) + \sysStiffMatC (\sysCoord-\sysCoordR)) - \sysStiffMat \sysCoord) &= \tuple{0}.
+\end{align}
+Since this equation is linear in the system coordinates we can separate the into
+\begin{subequations}
+\begin{align}
+ (\sysInputMatLComp)^\top (\sysInertiaMat \sysCoordRdd + \sysStiffMat \sysCoordR) &= \tuple{0}.
+\\
+ (\sysInputMatLComp)^\top \sysInertiaMat \sysInertiaMatC^{-1} \sysDissMatC &= \mat{0},
+\\
+ (\sysInputMatLComp)^\top \sysInertiaMat \sysInertiaMatC^{-1} (\sysStiffMatC - \sysStiffMat) &= \mat{0},
+\end{align}
+\end{subequations}
+Choosing $\sysInputMatLComp = [0, 1]^\top$ this is explicitly
+\begin{subequations}
+\begin{align}
+ &\ddot{z}_{2\idxRef} + \varpi (z_{2\idxRef} - z_{1\idxRef}) = 0
+ \label{eq:TwoMassSpringFlatnessCondition}
+\\
+ &\left\{ \begin{matrix}
+  \bodyMassC{0}{1} \bodyDampingC{1}{2} - \bodyMassC{1}{2} \bodyDampingC{0}{1} = 0 \\
+  \bodyMassC{0}{1} \bodyDampingC{1}{2} + (\bodyMassC{0}{1} + \bodyMassC{1}{2}) \bodyDampingC{0}{2} = 0
+ \end{matrix} \right.
+\\
+ &\left\{ \begin{matrix}
+  \bodyMassC{0}{1} \bodyStiffnessC{1}{2} - \bodyMassC{1}{2} \bodyStiffnessC{0}{1} = (\bodyMassC{0}{1} \bodyMassC{0}{2}+\bodyMassC{0}{1} \bodyMassC{1}{2}+\bodyMassC{0}{2} \bodyMassC{1}{2}) \varpi \\
+ \bodyMassC{0}{1} \bodyStiffnessC{1}{2} + (\bodyMassC{0}{1} + \bodyMassC{1}{2}) \bodyStiffnessC{0}{2} = (\bodyMassC{0}{1} \bodyMassC{0}{2}+\bodyMassC{0}{1} \bodyMassC{1}{2}+\bodyMassC{0}{2} \bodyMassC{1}{2}) \varpi
+ \end{matrix} \right.
+\end{align}
+\end{subequations}
+where $\varpi = \sfrac{\bodyStiffness{1}{2}}{\bodyMass{0}{2}}$ is the sole model parameter relevant for the matching condition.
+The first part \eqref{eq:TwoMassSpringFlatnessCondition} is a constraint on the reference trajectory as it is independent of tunable parameters.
+It can be resolved by acknowledging that $z_2$ is a \textit{flat output} of the system and planing the reference trajectory accordingly, i.e.
+\begin{align}
+ z_{1\idxRef} = z_{2\idxRef} - \sfrac{\ddot{z}_{2\idxRef}}{\varpi}. 
+\end{align}
+The other conditions can be resolved by setting
+\begin{align}\label{eq:TwoMassSpringMatchingConditionSolution}
+ \bodyStiffnessC{1}{2} &=  \tfrac{\bodyMassC{1}{2}}{\bodyMassC{0}{1}} \bodyStiffnessC{0}{1} + \tfrac{\bodyMassC{0}{1} \bodyMassC{0}{2} + \bodyMassC{0}{1} \bodyMassC{1}{2} + \bodyMassC{0}{2} \bodyMassC{1}{2}}{\bodyMassC{0}{1}} \varpi,&
+ \bodyStiffnessC{0}{2} &= -\tfrac{\bodyMassC{1}{2}}{\bodyMassC{0}{1}+\bodyMassC{1}{2}} \bodyStiffnessC{0}{1},&
+ \bodyDampingC{1}{2} &= \tfrac{\bodyMassC{1}{2}}{\bodyMassC{0}{1}} \bodyDampingC{0}{1},&
+ \bodyDampingC{0}{2} &= -\tfrac{\bodyMassC{1}{2}}{\bodyMassC{0}{1}+\bodyMassC{1}{2}} \bodyDampingC{0}{1},
+\end{align}
+which leaves the 5 tuning parameters $\bodyStiffnessC{0}{1}$, $\bodyDampingC{0}{1}$, $\bodyMassC{0}{1}$, $\bodyMassC{0}{2}$ and $\bodyMassC{1}{2}$.
+
+The resulting control law is
+\begin{multline}
+ F = \bodyMass{0}{1} \ddot{z}_{1\idxRef}  +  \bodyStiffness{1}{2} (z_{1\idxRef} - z_{2\idxRef})
+ + \big( \bodyStiffness{1}{2} + \tfrac{\bodyMass{0}{1} (\bodyMassC{1}{2} \bodyStiffness{1}{2} + \bodyMass{0}{2} (\bodyStiffnessC{0}{1} - \bodyStiffnessC{1}{2}))}{\bodyMass{0}{2} (\bodyMassC{0}{1} + \bodyMassC{1}{2})} \big) e_1
+\\
+ - \big( \bodyStiffness{1}{2} - \tfrac{\bodyMass{0}{1} (\bodyMassC{1}{2} \bodyStiffness{1}{2} - \bodyMass{0}{2} \bodyStiffnessC{1}{2})}{\bodyMass{0}{2} (\bodyMassC{0}{1} + \bodyMassC{1}{2})} \big) e_2
+ - \tfrac{\bodyMass{0}{1} (\bodyDampingC{0}{1} + \bodyDampingC{1}{2})}{\bodyMassC{0}{1} + \bodyMassC{1}{2}} \dot{e}_1
+ + \tfrac{\bodyMass{0}{1} \bodyDampingC{1}{2}}{\bodyMassC{0}{1} + \bodyMassC{1}{2}} \dot{e}_2
+ .
+\end{multline}
+
+\paragraph{Pole placement.}
+Tuning the design parameters under the given matching conditions might not be intuitive for this example.
+To resolve this we can fall back to the classical approach of placing the eigenvalues of the closed loop system \eqref{eq:TwoMassSpringClosedLoop}.
+Taking into account the matching condition \eqref{eq:TwoMassSpringMatchingConditionSolution}, the characteristic polynomial of \eqref{eq:TwoMassSpringClosedLoop} is
+\begin{align}
+ \tfrac{\det (\sysInertiaMatC \EigenVal^2 + \sysDissMatC \EigenVal + \sysStiffMatC)}{\det \sysInertiaMatC}
+ =
+ \EigenVal^4 
+ + \underbrace{\tfrac{\bodyDampingC{0}{1}}{\bodyMassC{0}{1}}}_{p_3} \EigenVal^3
+ + \underbrace{\tfrac{\bodyStiffnessC{0}{1} + (\bodyMassC{0}{1}+\bodyMassC{0}{2})\varpi}{\bodyMassC{0}{1}}}_{p_2} \EigenVal^2
+ + \underbrace{\tfrac{\varpi \bodyDampingC{0}{1}}{\bodyMassC{0}{1}+\bodyMassC{1}{2}}}_{p_1} \EigenVal
+ + \underbrace{\tfrac{\varpi \bodyStiffnessC{0}{1}}{\bodyMassC{0}{1}+\bodyMassC{1}{2}}}_{p_0}
+ .
+\end{align}
+This can be solved for
+\begin{subequations}
+\begin{align}
+ \bodyStiffnessC{0}{1}  &= \tfrac{\bodyMassC{1}{2} p_0 p_3}{\varpi p_3 - p_1},&
+ \bodyDampingC{0}{1}    &= \tfrac{\bodyMassC{1}{2} p_1 p_3}{\varpi p_3 - p_1},&
+ \bodyMassC{0}{1}       &= \tfrac{\bodyMassC{1}{2} p_1}{\varpi p_3 - p_1},&
+ \bodyMassC{0}{2}       &= \tfrac{\bodyMassC{1}{2} (p_1 p_2 - p_0 p_3 - \varpi p_1)}{\varpi(\varpi p_3 - p_1)}
+ .
+\end{align}
+\end{subequations}
+and $\bodyMassC{1}{2} \in \RealNum \neq 0$.
+Choosing any Hurwitz polynomial for the coefficients $p_i$ guarantees the asymptotic stability of the closed loop.
+In order to conclude $\sysInertiaMatC > 0$, $\sysDissMatC \geq 0$ and $\sysStiffMatC > 0$ from the Hurwitz criterion ($p_0, p_1, p_2, p_3, p_1 p_2 - p_0 p_3, p_1 p_2 p_3 - p_1^2 - p_0 p_3^2 > 0$) we need $\sign \bodyMassC{1}{2} = \sign (\varpi p_3 - p_1)$.
+
+\paragraph{Conclusions.}
+The resulting controller is equivalent to one that could be designed by standard linear state-feedback methods.
+However, this approach here might give some \textit{physical} insight to the resulting closed loop system.
+For example that the closed loop system must have an inertial coupling ($\bodyMassC{1}{2} \neq 0$) of the two bodies, if one wants to tune all 4 poles.

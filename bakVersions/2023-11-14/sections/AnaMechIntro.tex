@@ -1,0 +1,87 @@
+\chapter{Analytical mechanics of particle systems}
+\paragraph{Goal.}
+Established approaches of analytical mechanics commonly rely on the parameterization of the system in terms of \textit{minimal} generalized coordinates $\genCoord$ and their derivatives $\genCoordd$.
+In this section we like to generalize this to handle redundant configuration coordinates $\sysCoord(t) \in \configSpace$ and nonholonomic velocity coordinates $\sysVel(t)\in\RealNum^\dimConfigSpace$ as introduced in the previous section.
+%In contrast to this we will allow \textit{redundant} generalized coordinates $\sysCoord$, i.e.\ coordinates that may not be completely free, but may themselves be constrained by equations of the form $\geoConstraint(\sysCoord) = \tuple{0}$.
+%Furthermore we will consider \textit{velocity coordinates} $\sysVel$ that parameterize the change $\sysCoordd$ of the configuration coordinates.
+%In this chapter we like to review some basic concepts of analytical mechanics for systems of constrained particles with this more general parameterization.
+The resulting formulations might become more cumbersome, but with some examples we like to show that it is worth it.
+%\cite[§1]{Landau:Mechanics}: One of the fundamental concepts of mechanics is that of a \textit{particle}.
+
+\section{System under consideration}\label{sec:DefParticleSys}
+\paragraph{Particle positions.} For this chapter we consider a system of $\numParticles$ particles under geometric constraints:
+The \textit{position} of a particle in a given reference frame at a given time $t$ is $\particlePos{\PidxI}(t) \in \RealNum^3, \PidxI = 1,\ldots,\numParticles$ and the collection of all particle positions is $\particleCoord = [\particlePos{1}^\top,\ldots,\particlePos{\numParticles}^\top]^\top \in \RealNum^{3\numParticles}$.
+\textit{Geometric constraints} on the particles are captured in $\numParticleConstraints \geq 0$ smooth functions of the form $\particleGeoConstraint(\particleCoord) = [\particleGeoConstraintCoeff{1}(\particleCoord), \ldots, \particleGeoConstraintCoeff{\numParticleConstraints}(\particleCoord)]^\top = \tuple{0}$.
+The set of all mutually admissible particle positions 
+\begin{align}
+\particleConfigSpace = \{ \particleCoord \in \RealNum^{3\numParticles} \, | \, \particleGeoConstraint(\particleCoord) = \tuple{0} \} 
+\end{align}
+is called the \textit{configuration space}.
+We require $\pdiff[\particleGeoConstraint]{\particleCoord}(\particleCoord)$ to have a constant, though not necessarily full rank.
+The dimension of the configuration space is $\dim\particleConfigSpace = 3\numParticles - \rank\pdiff[\particleGeoConstraint]{\particleCoord} = \dimConfigSpace$.
+
+\paragraph{Coordinates.}
+Now let the admissible particle positions $\particleCoord \in \particleConfigSpace$ be parameterized $\particlePos{\PidxI} = \particlePos{\PidxI}(\sysCoord)$ by possibly redundant coordinates $\sysCoord \in \configSpace$.
+This means $\geoConstraint(\sysCoord) = \tuple{0}\,\Rightarrow\,\particleGeoConstraint(\particleCoord(\sysCoord)) = \tuple{0}$ and consequently $\sysCoord \in \configSpace \, \Rightarrow \, \particleCoord(\sysCoord) \in \particleConfigSpace$.
+
+With a suitable kinematics matrix $\kinMat(\sysCoord)$, as discussed in the previous section, we can parameterize the particle velocity as 
+\begin{align}
+\particlePosd{\PidxI} = \pdiff[\particlePos{\PidxI}]{\sysCoord} \kinMat \sysVel = \dirDiff{\LidxI} \particlePos{\PidxI} \sysVelCoeff{\LidxI} 
+\end{align}
+with minimal velocity coordinates $\sysVel \in \RealNum^{\dimConfigSpace}$.
+Finally we may express the particle accelerations as
+\begin{align}
+ \particlePosdd{\PidxI} &= \dirDiff{\LidxI} \particlePos{\PidxI}(\sysCoord) \sysVelCoeffd{\LidxI} + \dirDiff{\LidxII} \dirDiff{\LidxI} \particlePos{\PidxI}(\sysCoord) \sysVelCoeff{\LidxI} \sysVelCoeff{\LidxII},
+\end{align}
+From the parameterization it is evident that
+\begin{align}\label{eq:IdentityDifferentials}
+ \dirDiff{\LidxI} \particlePos{\PidxI} = \pdiff[\particlePosd{\PidxI}]{\sysVelCoeff{\LidxI}} = \pdiff[\particlePosdd{\PidxI}]{\sysVelCoeffd{\LidxI}}.
+\end{align}
+
+
+% \begin{Example}\label{Example:ThreeParticles}
+% Consider a system of $\numParticles = 3$ particles as illustrated in \autoref{fig:OrientationExample}.
+% 
+% \begin{minipage}{\textwidth}
+%  \centering
+%  \input{graphics/OrientationExample.pdf_tex}
+%  \captionof{figure}{Three particles}
+%  \label{fig:OrientationExample}
+% \end{minipage}
+% 
+% Their distance to the coordinate origin and to each other are constrained by the geometric constraints
+% \begin{subequations}\label{eq:ThreeParticleConstraint}
+% \begin{align}
+%  \label{eq:ThreeParticleConstraint1}
+%  \norm{\particlePos{1}} &= l_1,&
+%  \norm{\particlePos{2}} &= l_2,&
+%  \norm{\particlePos{3}} &= l_3,
+% \\
+%  \label{eq:ThreeParticleConstraint2}
+%  \norm{\particlePos{2} - \particlePos{3}}^2 &= l_2^2 + l_3^2,&
+%  \norm{\particlePos{1} - \particlePos{3}}^2 &= l_1^2 + l_3^2,&
+%  \norm{\particlePos{1} - \particlePos{2}}^2 &= l_1^2 + l_2^2.
+% %  \norm{\particlePos{2} - \particlePos{3}} &= \sqrt{l_2^2 + l_3^2},&
+% %  \norm{\particlePos{1} - \particlePos{3}} &= \sqrt{l_1^2 + l_3^2},&
+% %  \norm{\particlePos{1} - \particlePos{2}} &= \sqrt{l_1^2 + l_2^2}.
+% \end{align}
+% % \begin{align}
+% %  \sProd{\particlePos{2}}{\particlePos{3}} &= 0,&
+% %  \sProd{\particlePos{1}}{\particlePos{3}} &= 0,&
+% %  \sProd{\particlePos{1}}{\particlePos{2}} &= 0.
+% % \end{align}
+% Note that these constraints also imply $\sProd{\particlePos{\PidxI}}{\particlePos{\PidxII}} = 0, \PidxI \neq \PidxII$.
+% Unfortunately \eqref{eq:ThreeParticleConstraint1} and \eqref{eq:ThreeParticleConstraint2} only fixes the shape of the system up to a mirroring.
+% To overcome this we impose the constraint
+% \begin{align}
+%  \label{eq:ThreeParticleConstraint3}
+%  \sProd{\particlePos{1} \times \particlePos{2}}{\particlePos{3}} = l_1 l_2 l_3.
+% \end{align}
+% \end{subequations}
+% These $\numParticleConstraints = 7$ geometric can be rewritten to match the form $\particleGeoConstraint(\particleCoord) = \tuple{0}$.
+% Computing the Jacobian one can check that $\rank \pdiff[\particleGeoConstraint]{\particleCoord} = 6$ and consequently $\dim\particleConfigSpace = 3$.
+% \end{Example}
+
+
+
+

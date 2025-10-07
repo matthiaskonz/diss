@@ -1,0 +1,262 @@
+\section{Attitude parameterizations}
+A rotation matrix $\R \in \SpecialOrthogonalGroup(3)$ and its angular velocity $\w = \veeOp(\R^\top \Rd)$ is one possible representation of an attitude.
+The following presents some other popular representations.
+
+\subsection{Axis-angle representation}
+The (unit) axis $\axis = [\axisx, \axisy, \axisz]^\top \in \Sphere^2$, angle $\theta \in [0,\pi]$ representation are related to a rotation matrix by Rodrigues' rotation formula (\eg \cite[sec.\ 2.2]{Murray:Robotic})
+\begin{align}
+ \R &= \exp(\theta \wedOp(\axis)) = \idMat[3] + \shortsin{\theta} \wedOp(\axis) + (1-\shortcos{\theta}) \, \wedOp(\axis)^2
+\nonumber\\
+ &= \begin{bmatrix}
+ (1-\shortcos{\theta}) \axisx^2 + \shortcos{\theta} & -\shortsin{\theta} \axisz + (1-\shortcos{\theta}) \axisy \axisx & \shortsin{\theta} \axisy + (1-\shortcos{\theta}) \axisz \axisx \\
+ \shortsin{\theta} \axisz+(1-\shortcos{\theta}) \axisy \axisx & (1-\shortcos{\theta}) \axisy^2+\shortcos{\theta} & -\shortsin{\theta} \axisx+(1-\shortcos{\theta}) \axisz \axisy \\
+ -\shortsin{\theta} \axisy + (1-\shortcos{\theta}) \axisz \axisx & \shortsin{\theta} \axisx+(1-\shortcos{\theta}) \axisz \axisy & (1-\shortcos{\theta}) \axisz^2 + \shortcos{\theta}
+ \end{bmatrix}
+\label{eq:RodriguesRotationFormula}
+\\[1ex]
+\omega &= \axis \dot{\theta} + (\shortsin{\theta} \idMat[3] - (1-\shortcos{\theta}) \wedOp(\axis)) \axisd
+\nonumber\\
+ \begin{bmatrix} \wx \\ \wy \\ \wz \\ 0 \end{bmatrix}
+ &=
+ \underbrace{\begin{bmatrix}
+  \shortsin{\theta} & (1-\shortcos{\theta}) \axisz & -(1-\shortcos{\theta}) \axisy & \axisx \\
+  -(1-\shortcos{\theta}) \axisz & \shortsin{\theta} & (1-\shortcos{\theta}) \axisx & \axisy \\
+  (1-\shortcos{\theta}) \axisy & -(1-\shortcos{\theta}) \axisx & \shortsin{\theta} & \axisz \\
+  \axisx & \axisy & \axisz & 0 
+ \end{bmatrix}}_{\mat{Y}_\square}
+ \begin{bmatrix} \axisxd \\ \axisyd \\ \axiszd \\ \dot{\theta} \end{bmatrix}
+\end{align}
+Note the relations
+\begin{align}
+ \tr(\R) = 2\shortcos{\theta} + 1, \quad \veeTwoOp(\R) = 2 \shortsin{\theta} \axis.
+\end{align}
+With this we may formulate the inverse relation as
+\begin{align}
+ \theta = \atanTwo(\norm{\veeTwoOp(\R)}, \tr(\R)-1),
+ \quad
+ \axis = \frac{\veeTwoOp(\R)}{\norm{\veeTwoOp(\R)}},
+\\[1ex]
+ \begin{bmatrix} \axisxd \\ \axisyd \\ \axiszd \\ \dot{\theta} \end{bmatrix}
+ =
+ \underbrace{\begin{bmatrix}
+  \tfrac{\shortsin{\theta} (1-\axisx^2)}{2(1-\shortcos{\theta})} & -\tfrac{(\shortcos{\theta}+1) \axisy \axisx + \shortsin{\theta} \axisz}{2\shortsin{\theta}} & -\tfrac{(\shortcos{\theta}+1) \axisz \axisx-\shortsin{\theta} \axisy}{2\shortsin{\theta}} & \axisx \\
+  -\tfrac{(\shortcos{\theta}+1) \axisy \axisx-\shortsin{\theta} \axisz}{2\shortsin{\theta}} & \tfrac{\shortsin{\theta}(1-\axisy^2)}{2(1-\shortcos{\theta})} & -\tfrac{\shortsin{\theta} \axisx+(\shortcos{\theta}+1) \axisz \axisy}{2\shortsin{\theta}} & \axisy \\
+  -\tfrac{(\shortcos{\theta}+1) \axisz \axisx+\shortsin{\theta} \axisy}{2\shortsin{\theta}} & -\tfrac{-\shortsin{\theta} \axisx+(\shortcos{\theta}+1) \axisz \axisy}{2\shortsin{\theta}} & \tfrac{\shortsin{\theta}(1-\axisz^2)}{2(1-\shortcos{\theta})} & \axisz \\
+  \axisx & \axisy & \axisz & -\shortsin{\theta}
+ \end{bmatrix}}_{\mat{Y}_\square^{-1}}
+ \begin{bmatrix} \wx \\ \wy \\ \wz \\ 0 \end{bmatrix}
+\end{align}
+Note that the axis $a$ is undefined for $\shortsin{\theta} = 0$, \ie $\theta = k \pi, \, k \in \IntNum$.
+
+Potential:
+\begin{align}
+ \potentialEnergy = \tr(\mat{K}'(\idMat[3]-\R)) = (1-\shortcos{\theta}) \axis^\top \mat{K} \axis.
+\end{align}
+So for the case $\mat{K} = \idMat[3]$, the metric is related to the angle by $d^2(\R, \idMat[3]) = 1-\cos(\theta)$.
+
+\subsection{Unit quaternion}
+Instead of working with the imaginary units $\mathrm{i}, \mathrm{j}, \mathrm{k}$ for the quaternions we can consider them as a quadruple $\quat = [\quatw, \quatx, \quaty, \quatz]^\top \in \Sphere^3 = \{ \quat \in \RealNum^4 \, | \, \norm{\quat}^2 = 1 \}$.
+It is common to call $\quatw$ the scalar and $\quatxyz=[\quatx, \quaty, \quatz]^\top$ the vector component of the quaternion.
+The relation to axis-angle representation is (\eg \cite[sec.\ 2.3]{Murray:Robotic})
+\begin{align}
+ \quatw = \cos\tfrac{\theta}{2}, \quad \quatxyz = \axis \sin\tfrac{\theta}{2}
+\end{align}
+Combining this with Rodrigues' rotation formula \eqref{eq:RodriguesRotationFormula} and the half-angle formulas, we find
+\begin{align}
+ \R &= ((\quatw)^2 - \norm{\quatxyz}^2) \idMat[3] + 2 \quatxyz (\quatxyz)^\top + 2 \quatw \wedOp(\quatxyz)
+\nonumber\\
+ &\qquad=
+ \begin{bmatrix} 
+  1 - 2(\quaty^{2} + \quatz^{2}) & 2(\quaty\quatx -\quatw\quatz)  & 2(\quatz\quatx + \quatw\quaty) \\
+  2(\quaty\quatx + \quatw\quatz) & 1 - 2(\quatx^{2} + \quatz^{2}) & 2(\quaty\quatz - \quatw\quatx) \\
+  2(\quatz\quatx - \quatw\quaty) & 2(\quaty\quatz + \quatw\quatx) & 1 - 2(\quatx^{2} + \quaty^{2})
+ \end{bmatrix}
+\\[1ex]
+ \begin{bmatrix} 0 \\ \wx \\ \wy \\ \wz \end{bmatrix}
+ &=
+ 2 \underbrace{\begin{bmatrix}
+   \quatw &  \quatx &  \quaty &  \quatz \\
+  -\quatx &  \quatw &  \quatz & -\quaty \\
+  -\quaty & -\quatz &  \quatw &  \quatx \\
+  -\quatz &  \quaty & -\quatx &  \quatw
+ \end{bmatrix}}_{\widehat{q}^\top}
+ \begin{bmatrix} \quatwd \\ \quatxd \\ \quatyd \\ \quatzd \end{bmatrix}
+\end{align}
+Note that $\quat$ and $-\quat$ represent the same rotation matrix.
+For the inversion we restrict to the case $\quatw \geq 0$ and get
+\begin{align}
+ \quatw = \tfrac{1}{2} \sqrt{1 + \tr\R} \ ,
+\quad
+ \quatxyz = \tfrac{1}{2\quatw} \R^\vee
+\label{eq:RotMat2Quaternion}
+\\
+ \begin{bmatrix} \quatwd \\ \quatxd \\ \quatyd \\ \quatzd \end{bmatrix}
+ =
+ \tfrac{1}{2} \underbrace{\begin{bmatrix}
+  \quatw & -\quatx & -\quaty & -\quatz \\
+  \quatx &  \quatw & -\quatz &  \quaty \\
+  \quaty &  \quatz &  \quatw & -\quatx \\
+  \quatz & -\quaty &  \quatx &  \quatw
+ \end{bmatrix}}_{\widehat{q}}
+ \begin{bmatrix} 0 \\ \wx \\ \wy \\ \wz \end{bmatrix}
+\label{eq:AppQuaternionKinematics}
+\end{align}
+For the kinematic relation we have $\det \widehat{q} = \norm{q}^4 = 1$.
+The given geometric relation \eqref{eq:RotMat2Quaternion} is singular for $\quatw = 0$.
+This could be resolved by constructing a relation with a different combination of the diagonal elements, resulting in a different singularity, see \cite{Horn:Quaternions}.
+A more numerically stable relation is
+\begin{align}
+ \begin{bmatrix} \quatw \\ \quatx \\ \quaty \\ \quatz \end{bmatrix}
+ =
+ \tfrac{1}{2}
+ \begin{bmatrix}
+  \sqrt{1+\Rxx+\Ryy+\Rzz} \\
+  \sqrt{1+\Rxx-\Ryy-\Rzz} \sign (\Rzy-\Ryz) \\
+  \sqrt{1-\Rxx+\Ryy-\Rzz} \sign (\Rxz-\Rzx) \\
+  \sqrt{1-\Rxx-\Ryy+\Rzz} \sign (\Ryx-\Rxy) \\
+ \end{bmatrix}
+ .
+\end{align}
+
+\paragraph*{Quaternion algebra.}
+The quaternion multiplication (sometimes called the Hamilton product) can be written as a matrix multiplication (the wedge operator was introduced in \eqref{eq:AppQuaternionKinematics})
+\begin{align}
+ \quat_1 \cdot \quat_2 = \widehat{\quat_1} \quat_2
+%\qquad
+% \widehat{\quat} = \begin{bmatrix} \quatw & -\quatx & -\quaty & -\quatz \\ \quatx & \quatw & -\quatz & \quaty \\ \quaty & \quatz & \quatw & -\quatx \\ \quatz & -\quaty & \quatx & \quatw \end{bmatrix}
+\end{align}
+The conjugate of a quaternion is
+\begin{align}
+ \quat^\ast = [\quatw, (-\quatxyz)^\top ]^\top, 
+\qquad
+ \quat^\ast \cdot \quat = \quat \cdot \quat^\ast = [1,0,0,0]^\top.
+\end{align}
+We have the following relations for rotation matrices
+\begin{align}
+ \R(\quat_1) \R(\quat_2) = \R(\quat_1 \cdot \quat_2),
+\qquad
+ \big( \R(\quat) \big)^\top = \R(\quat^\ast).
+\end{align}
+
+\subsection{Euler angles}
+The rotation matrix corresponding to the Euler angles in the \textit{roll} $\rol\in (-\pi,\pi]$, \textit{pitch} $\pit\in [-\sfrac{\pi}{2},\sfrac{\pi}{2}]$, \textit{yaw} $\yaw\in (-\pi,\pi]$ convention is
+\begin{align}
+ \R
+% \R_{\mathsf{RPY}}(\rol,\pit,\yaw)
+ = \RotMatZ(\yaw) \RotMatY(\pit) \RotMatX(\rol) = 
+ \begin{bmatrix}
+  \cyaw \cpit & \cyaw \spit \srol - \syaw \crol & \cyaw \spit \crol + \syaw \srol \\
+  \syaw \cpit & \syaw \spit \srol + \cyaw \crol & \syaw \spit \crol - \cyaw \srol \\
+  -\spit & \cpit \srol & \cpit \crol
+ \end{bmatrix}
+\\
+ \begin{bmatrix} \wx \\ \wy \\ \wz \end{bmatrix}
+ =
+ \begin{bmatrix}
+  1 & 0 & -\spit \\
+  0 & \crol & \cpit \srol \\
+  0 & -\srol & \cpit \crol
+ \end{bmatrix}
+ \begin{bmatrix} \rold \\ \pitd \\ \yawd \end{bmatrix}
+ .
+\end{align}
+The inverse relation is
+\begin{align}
+ \yaw = \atanTwo(\Ryx, \Rxx),
+\quad
+ \pit = -\arcsin \Rzx,
+\quad
+ \rol = \atanTwo(\Rzy, \Rzz)
+\\
+ \begin{bmatrix} \rold \\ \pitd \\ \yawd \end{bmatrix}
+ =
+ \begin{bmatrix}
+  1 & \tfrac{\spit \srol}{\cpit} & \tfrac{\crol \spit}{\cpit} \\
+  0 & \crol & -\srol \\
+  0 & \tfrac{\srol}{\cpit} & \tfrac{\crol}{\cpit}
+ \end{bmatrix}
+ \begin{bmatrix} \wx \\ \wy \\ \wz \end{bmatrix}
+ .
+\end{align}
+Note that the kinematic relation is singular for $\cpit = 0$, \ie $\pit = \pm\tfrac{\pi}{2}$.
+
+
+\paragraph*{Quadcopter decomposition.}
+First define
+\begin{align}
+ \RotMatPZ \ &: \ \Sphere^2 \rightarrow \SpecialOrthogonalGroup(3), \ 
+ \begin{bmatrix} p_\mathsf{x} \\ p_\mathsf{y} \\ p_\mathsf{z} \end{bmatrix}
+ \mapsto
+ \begin{bmatrix}
+  1 - \frac{p_\mathsf{x}^2}{1+p_\mathsf{z}} & -\frac{p_\mathsf{x} p_\mathsf{y}}{1+p_\mathsf{z}} & p_\mathsf{x} \\
+  -\frac{p_\mathsf{x} p_\mathsf{y}}{1+p_\mathsf{z}} & 1 - \frac{p_\mathsf{y}^2}{1+p_\mathsf{z}} & p_\mathsf{y} \\
+  -p_\mathsf{x} & -p_\mathsf{y} & p_\mathsf{z}
+ \end{bmatrix},
+\end{align} 
+
+Consider the decomposition by
+\begin{align}
+ \R = \RotMatZ(\varphi) \RotMatPZ(p) =
+%  \begin{bmatrix}
+%   \shortcos{\varphi} - \tfrac{p_\mathsf{x} p_\mathsf{x}'}{1+p_\mathsf{z}} & -\shortsin{\varphi}- \tfrac{p_\mathsf{y} p_\mathsf{x}'}{1+p_\mathsf{z}} & p_\mathsf{x}' \\
+%   \shortsin{\varphi} - \tfrac{p_\mathsf{x} p_\mathsf{y}'}{1+p_\mathsf{z}} & -\shortsin{\varphi}- \tfrac{p_\mathsf{y} p_\mathsf{y}'}{1+p_\mathsf{z}} & p_\mathsf{y}' \\
+%   -p_\mathsf{x} & -p_\mathsf{y} & p_\mathsf{z} \\
+%  \end{bmatrix}
+% p_\mathsf{x}' = (\shortcos{\varphi} p_\mathsf{x} - \shortsin{\varphi} p_\mathsf{y})
+% p_\mathsf{y}' = (\shortsin{\varphi} p_\mathsf{x} + \shortcos{\varphi} p_\mathsf{y})
+ \begin{bmatrix}
+  \shortcos{\varphi} - \tfrac{p_\mathsf{x} (\shortcos{\varphi} p_\mathsf{x} - \shortsin{\varphi} p_\mathsf{y})}{1+p_\mathsf{z}} & -\shortsin{\varphi}- \tfrac{p_\mathsf{y} (\shortcos{\varphi} p_\mathsf{x} - \shortsin{\varphi} p_\mathsf{y})}{1+p_\mathsf{z}} & \shortcos{\varphi} p_\mathsf{x} - \shortsin{\varphi} p_\mathsf{y} \\
+  \shortsin{\varphi} - \tfrac{p_\mathsf{x} (\shortsin{\varphi} p_\mathsf{x} + \shortcos{\varphi} p_\mathsf{y})}{1+p_\mathsf{z}} &  \shortcos{\varphi}- \tfrac{p_\mathsf{y} (\shortsin{\varphi} p_\mathsf{x} + \shortcos{\varphi} p_\mathsf{y})}{1+p_\mathsf{z}} & \shortsin{\varphi} p_\mathsf{x} + \shortcos{\varphi} p_\mathsf{y} \\
+  -p_\mathsf{x} & -p_\mathsf{y} & p_\mathsf{z} \\
+ \end{bmatrix}
+\\
+ \begin{bmatrix} \wx \\ \wy \\ \wz \\ 0 \end{bmatrix}
+ =
+ \begin{bmatrix}
+  0 & -1 & \tfrac{p_\mathsf{y}}{1+p_\mathsf{z}} & -p_\mathsf{x} \\
+  1 & 0 & -\tfrac{p_\mathsf{x}}{1+p_\mathsf{z}} & -p_\mathsf{y} \\
+  \tfrac{p_\mathsf{y}}{1+p_\mathsf{z}} & -\tfrac{p_\mathsf{x}}{1+p_\mathsf{z}} & 0 & p_\mathsf{z} \\
+  p_\mathsf{x} & p_\mathsf{y} & p_\mathsf{z} & 0 \\
+ \end{bmatrix}
+ \begin{bmatrix} \dot{p}_\mathsf{x} \\ \dot{p}_\mathsf{y} \\ \dot{p}_\mathsf{z} \\ \dot{\varphi} \end{bmatrix}
+\end{align}
+inverse relation
+\begin{align}
+ \varphi = \atanTwo(\Ryx-\Rxy, \Rxx+\Ryy), \quad p = [-\Rzx, -\Rzy, \Rzz]^\top
+\\
+ \begin{bmatrix} \dot{p}_\mathsf{x} \\ \dot{p}_\mathsf{y} \\ \dot{p}_\mathsf{z} \\ \dot{\varphi} \end{bmatrix}
+ =
+ \begin{bmatrix}
+  0 & p_\mathsf{z} & p_\mathsf{y} & \tfrac{p_\mathsf{x}}{1+p_\mathsf{z}} \\
+  -p_\mathsf{z} & 0 & -p_\mathsf{x} & \tfrac{p_\mathsf{y}}{1+p_\mathsf{z}} \\
+  p_\mathsf{y} & -p_\mathsf{x} & 0 & 1 \\
+  -\tfrac{p_\mathsf{x}}{1+p_\mathsf{z}} & -\tfrac{p_\mathsf{y}}{1+p_\mathsf{z}} & 1 & 0 \\
+ \end{bmatrix}
+ \begin{bmatrix} \wx \\ \wy \\ \wz \\ 0 \end{bmatrix}
+\end{align}
+
+
+Note that
+\begin{align}
+ \RotMatZ(\varphi) \RotMatPZ(p) = \RotMatPZ(p') \RotMatZ(\varphi) \quad \text{where} \quad p' = \RotMatZ(\varphi) p
+\end{align}
+
+\subsection{Minimal rotation matrix}
+For two given unit vectors $a,b \in \Sphere^2$ for a rotation matrix $\RotMatAB \in \SpecialOrthogonalGroup(3)$ such that $b = \RotMatAB a$.
+Since this only fixes 2 of the 3 degrees of freedom of the rotation matrix we impose the additional requirement that we want the solution which has the minimal angle.
+This unique solution is
+\begin{align}
+ \RotMatAB &= \idMat[3] + \shortsin{\alpha} \widehat{z} + (1-\shortcos{\alpha}) \widehat{z}^2,&
+ z &= \tfrac{a \times b}{\norm{a\times b}}, \quad \shortcos{\alpha} = \sProd{a}{b}, \quad \shortsin{\alpha} = \norm{a\times b}
+\\
+ &= \idMat[3] + \widehat{c} + s \widehat{c}^2,&
+ c &= a\times b, \quad s = (1 + \sProd{a}{b})^{-1}
+\end{align}
+The angular velocity $\w = (\RT \Rd)^\vee$ can be expressed by
+\begin{align}
+ \w &= s \big( (a+b) \times (\dot{b} - \dot{a}) - 2 \sProd{c}{\dot{b}} a \big),
+\\
+ \dot{\w} &= s \big( (a+b) \times (\ddot{b} - \ddot{a}) + 2 \big( \dot{a} \times \dot{b} + \sProd{\dot{a} \times \dot{b}}{b} a - \sProd{c}{\ddot{b}} a - \sProd{c}{\dot{b}} \dot{a} \big)
+\nonumber\\
+&\qquad - (\sProd{\dot{a}}{b} + \sProd{a}{\dot{b}})\w \big),
+\end{align}

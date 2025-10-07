@@ -1,0 +1,180 @@
+\subsection{Planar rigid body}\label{sec:CtrlPlanarRigidBody}
+A planar rigid body is a free rigid body in two dimensional space, i.e.\ it can translate in two dimensions and rotate about an perpendicular axis as illustrated in \autoref{fig:PlanarRigidBody}.
+The model equations as well as the closed loop equations could be directly derived from the three dimensional rigid body by setting e.g.\ $\vz=0$, $\wx=\wy=0$ and removing the trivial equations.
+However it might be still instructive to display the resulting equations.
+
+\begin{figure}[ht]
+ \centering
+ \input{graphics/PlanarRigidBody.pdf_tex}
+ \caption{model of the planar rigid body}
+ \label{fig:PlanarRigidBody}
+\end{figure}
+
+\paragraph{Coordinates and kinematics.}
+As configuration coordinates $\sysCoord$ we use the position $\rx,\ry$ and the sine $\sa$ and cosine $\ca$ of the angle $\alpha$.
+Consequently we have to impose the constraint $\ca^2+\sa^2-1 = 0$ on the configuration coordinates.
+As velocity coordinates $\sysVel$ we use the components $\vx, \vy$ of the translational velocity w.r.t.\ the body fixed frame as illustrated in \autoref{fig:PlanarRigidBody} and the angular velocity $\wz=\dot{\alpha}$.
+This kinematic relation is
+\begin{align}
+ \ddt
+ \underbrace{\begin{bmatrix} \rx \\ \ry \\ \sa \\ \ca \end{bmatrix}}_{\sysCoord}
+ = 
+ \underbrace{\begin{bmatrix} \ca & -\sa & 0 \\ \sa & \ca & 0 \\ 0 & 0 & \ca \\ 0 & 0 & -\sa \end{bmatrix}}_{\kinMat}
+ \underbrace{\begin{bmatrix} \vx \\ \vy \\ \wz \end{bmatrix}}_{\sysVel}
+\end{align}
+The rigid body configuration $\bodyHomoCoord{0}{1}$ and the resulting body Jacobian $\bodyJac{0}{1}$ w.r.t.\ the chosen velocity coordinates are
+\begin{align}
+ \bodyHomoCoord{0}{1} = \begin{bmatrix} \ca & -\sa & 0 & \rx \\ \sa & \ca & 0 & \ry \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix},
+\qquad
+ \bodyJac{0}{1} = \begin{bmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 0 \\ 0 & 0 & 0 \\ 0 & 0 & 0 \\ 0 & 0 & 1 \end{bmatrix}
+\end{align}
+
+\paragraph{Kinetic equation.}
+Let the rigid body have the total mass $\m$, the moment of inertia $\Jz$ and the coordinates $\sx,\sy$ of the center of mass w.r.t.\ the body fixed frame.
+As control input consider the forces $\Fx, \Fy$ and the torque $\tauz$ as displayed in \autoref{fig:PlanarRigidBody}.
+The resulting kinetic equation is
+\begin{align}
+ \underbrace{\begin{bmatrix} \m & 0 & -\m\sy \\ 0 & \m & \m\sx \\ -\m\sy & \m\sx & \Jz \end{bmatrix}}_{\sysInertiaMat}
+ \underbrace{\begin{bmatrix} \vxd \\ \vyd \\ \wzd \end{bmatrix}}_{\sysVeld}
+ +
+% \underbrace{
+ \begin{bmatrix} -m(\vy + \sx\wz) \wz \\ m(\vx-\sy\wz)\wz \\ \m(\sx\vx+\sy\vy)\wz \end{bmatrix}
+% }_{\gyroForce}
+%  +
+%  \underbrace{\begin{bmatrix} m g \sin\tiltAngle \\ m g \cos\tiltAngle \\ 0 \end{bmatrix}}_{\differential \potentialEnergy}
+ =
+ \underbrace{\begin{bmatrix} \Fx \\ \Fy \\ \tauz \end{bmatrix}}_{\sysInput}.
+\end{align}
+
+\paragraph{Control parameters.}
+For the controlled kinetics we chose the following non-zero parameters
+\begin{align}\label{eq:CtrlParamPlanarRigidBody}
+ \bodyMassC{0}{1}, \bodyDamping{0}{1}, \bodyStiffness{0}{1} \in \RealNum^+,
+\quad
+ \bodyCOMCoeffC{0}{1}{\idxX}, \bodyCOMCoeffC{0}{1}{\idxY}, \bodyCODCoeffC{0}{1}{\idxX}, \bodyCODCoeffC{0}{1}{\idxY}, \bodyCOSCoeffC{0}{1}{\idxX}, \bodyCOSCoeffC{0}{1}{\idxY} \in \RealNum,
+\quad
+ \bodyMOICoeffC{0}{1}{\idxZ}, \bodyMODCoeffC{0}{1}{\idxZ}, \bodyMOSCoeffC{0}{1}{\idxZ} \in \RealNum^+ .
+\end{align}
+Since all parameters are associated with the configuration $\bodyHomoCoord{0}{1}$, we drop the indices in the following, i.e.\ $\mc = \bodyMassC{0}{1}$.
+
+\paragraph{Potential.}
+The potential, resulting from the chosen parameters \eqref{eq:CtrlParamPlanarRigidBody}, and its derivatives are
+\begin{subequations}
+\begin{align}
+ \potentialEnergyC &= \tfrac{1}{2} \kc (\rx\!-\!\rxR)^2 + \tfrac{1}{2} \kc (\ry\!-\!\ryR)^2 + \kapcz (1-\caE)
+\nonumber\\
+ &\qquad+ \kc\hcx(\ca\!-\!\caR)(\rx\!-\!\rxR) - \kc\hcy(\sa\!-\!\saR)(\rx\!-\!\rxR)
+\nonumber\\
+ &\qquad+ \kc\hcy(\ca\!-\!\caR)(\ry\!-\!\ryR) - \kc\hcx(\sa\!-\!\saR)(\ry\!-\!\ryR)
+\label{eq:CtrlPotentialPlanarRigidBody}\\
+ \differential \potentialEnergyC &= 
+ \begin{bmatrix}
+  \kc( \ca(\rx\!-\!\rxR) + \sa(\ry\!-\!\ryR) + \hcx(1-\caE) - \hcy\saE) \\
+  \kc(-\sa(\rx\!-\!\rxR) + \ca(\ry\!-\!\ryR) + \hcx\saE + \hcy(1-\caE)) \\
+  \kc( (\hcx\ca+\hcy\sa) (\ry\!-\!\ryR) - (\hcy\ca+\hcx\sa) (\rx\!-\!\rxR) ) + \kapcz\saE
+ \end{bmatrix}
+\\
+ \differential^2 \potentialEnergyC |_{\idxRef} &=
+ \begin{bmatrix}
+  \kc & 0 & -\kc\hcy \\
+  0 & \kc & \kc\hcx \\
+  -\kc\hcy & \kc\hcx & \kapcz
+ \end{bmatrix}
+\end{align}
+\end{subequations}
+The sine and cosine of the angle error $\alpha-\alpha_{\idxRef}$ are introduced just for readability
+\begin{align}\label{eq:ErrorCoordPlanarRigidBody}
+ \caE = \ca \caR + \sa \saR = \cos(\alpha-\alpha_{\idxRef}),
+\qquad
+ \saE = \sa \caR - \ca \saR = \sin(\alpha-\alpha_{\idxRef}).
+\end{align}
+From the Hessian $\differential^2 \potentialEnergyC |_{\idxRef}$ at the critical point $\sysCoord=\sysCoordR$ one can see that (local) positive definiteness requires $\kapcz > \kc (\hcx^2+\hcy^2)$.
+We will encounter the analog requirement for the controlled moment of inertia $\Jcz$ and damping $\sigcz$.
+
+A transport map for \eqref{eq:CtrlPotentialPlanarRigidBody} is given by\footnotemark
+\begin{align}\label{eq:sysVelEPlanarRigidBody}
+ \underbrace{\begin{bmatrix} \vxE \\ \vyE \\ \wzE \end{bmatrix}}_{\sysVelE}
+ =
+ \underbrace{\begin{bmatrix} \vx \\ \vy \\ \wz \end{bmatrix}}_{\sysVel}
+ - 
+ \underbrace{\begin{bmatrix}
+  \caE & \saE & \sa(\rx \!-\! \rxR) - \ca(\ry \!-\! \ryR) \\
+  -\saE & \caE & \ca(\rx \!-\! \rxR) + \sa(\ry \!-\! \ryR) \\
+  0 & 0 & 1 
+ \end{bmatrix}}_{\sysTransportMap}
+ \underbrace{\begin{bmatrix} \vxR \\ \vyR \\ \wzR \end{bmatrix}}_{\sysVelR}.
+\end{align}
+\footnotetext{
+An alternative transport map corresponding to \eqref{eq:RigidBodyAlternativeTransportMap} is
+\begin{align}
+ \sysTransportMap = \begin{bmatrix}
+   \caE & \saE & \hcx\saE - \hcy(\caE - 1) \\
+  -\saE & \caE & \hcx(\caE - 1) + \hcy\saE \\
+  0 & 0 & 1 
+ \end{bmatrix}.
+\end{align}
+}
+
+\paragraph{Particle-based approach.}
+The damping and inertia force using the particle based approach are:
+\begin{subequations}
+\begin{align}
+ \genForceDissC &=
+ \underbrace{\begin{bmatrix} \dc & 0 &-\dc\,\lcy \\ 0 & \dc & \dc\,\lcx \\ -\dc\,\lcy & \dc\,\lcx & \sigcz \end{bmatrix}}_{\sysDissMat}
+ \underbrace{\begin{bmatrix} \vx \\ \vy \\ \wz \end{bmatrix}}_{\sysVel}
+\nonumber\\
+ &\qquad-
+ \begin{bmatrix} \dc\caE & \dc\saE & \dc(\lcx\saE-\lcy\caE) \\ -\dc\saE & \dc\caE & \dc(\lcx\caE+\lcy\saE) \\ -\dc(\lcx\saE+\lcy\caE) & \dc(\lcx\caE-\lcy\saE) & \sigcz\caE \end{bmatrix}
+ \underbrace{\begin{bmatrix} \vxR \\ \vyR \\ \wzR \end{bmatrix}}_{\sysVelR},
+\\
+ \genForceInertiaC &=
+ \underbrace{\begin{bmatrix} \mc & 0 &-\mc\,\scy \\ 0 & \mc & \mc\,\scx \\ -\mc\,\scy & \mc\,\scx & \sigcz \end{bmatrix}}_{\sysDissMat}
+ \underbrace{\begin{bmatrix} \vxd \\ \vyd \\ \wzd \end{bmatrix}}_{\sysVeld}
+ +
+ \begin{bmatrix} -\mc(\vy + \scx\wz) \wz \\ \mc(\vx-\scy\wz)\wz \\ \mc(\scx\vx+\scy\vy)\wz \end{bmatrix}
+\nonumber\\
+ &\qquad-
+ \begin{bmatrix} \mc\caE & \mc\saE & \mc(\scx\saE-\scy\caE) \\ -\mc\saE & \mc\caE & \mc(\scx\caE+\scy\saE) \\ -\mc(\scx\saE+\scy\caE) & \mc(\scx\caE-\scy\saE) & \sigcz\caE \end{bmatrix}
+ \underbrace{\begin{bmatrix} \vxRd \\ \vyRd \\ \wzRd \end{bmatrix}}_{\sysVelRd}
+\nonumber\\
+ &\qquad- 
+ \begin{bmatrix} -\mc((\vyR + \scx\wzR)\caE - (\vxR-\scy\wzR)\saE) \wzR \\ \mc((\vyR + \scx\wzR)\saE + (\vxR-\scy\wzR)\caE) \wzR \\ \mc((\scx\vxR+\scy\vyR)\caE - (\scy\vxR-\scx\vyR)\saE)\wzR + \Jcz\saE\wzR^2 \end{bmatrix}.
+\end{align}
+\end{subequations}
+The corresponding total energy as defined in \eqref{eq:SolCtrlGaussPrinciple}, is not a Lyapunov function for the closed loop. 
+
+\paragraph{Body-based approach.}
+The damping and inertia force using the body-based approach are:
+\begin{subequations}
+\begin{align}
+ \genForceDissC &= \underbrace{\begin{bmatrix} \dc & 0 &-\dc\,\lcy \\ 0 & \dc & \dc\,\lcx \\ -\dc\,\lcy & \dc\,\lcx & \sigcz \end{bmatrix}}_{\sysDissMat}
+ \underbrace{\begin{bmatrix} \vxE \\ \vyE \\ \wzE \end{bmatrix}}_{\sysVelE}
+\\
+ \genForceInertiaC &= \underbrace{\begin{bmatrix} \mc & 0 & -\mc\scy \\ 0 & \mc & \mc\scx \\ -\mc\scy & \mc\scx & \Jcz \end{bmatrix}}_{\sysInertiaMat}
+ \underbrace{\begin{bmatrix} \vxEd \\ \vyEd \\ \wzEd \end{bmatrix}}_{\sysVelEd}
+ + \begin{bmatrix} 0 & -\mc\wzE & -\mc\scx\wzE \\ \mc\wzE & 0 & -\mc\scy\wzE \\ \mc\scx\wzE & \mc\scy\wzE & 0 \end{bmatrix}
+ \begin{bmatrix} \vxE \\ \vyE \\ \wzE \end{bmatrix}
+\end{align} 
+\end{subequations}
+where the velocity error $\sysVelE$ was defined in \eqref{eq:sysVelEPlanarRigidBody}.
+The total energy $\totalEnergyC = \tfrac{1}{2} \sysVelE^\top \sysInertiaMat \sysVelE + \potentialEnergyC$ is a Lyapunov function for the closed loop.
+
+\paragraph{Energy-based approach.}
+The damping and inertia forces using the energy-based approach are:
+\begin{subequations}
+\begin{align}
+ \genForceDissC &= \underbrace{\begin{bmatrix} \dc & 0 &-\dc\,\lcy \\ 0 & \dc & \dc\,\lcx \\ -\dc\,\lcy & \dc\,\lcx & \sigcz \end{bmatrix}}_{\sysDissMat}
+ \underbrace{\begin{bmatrix} \vxE \\ \vyE \\ \wzE \end{bmatrix}}_{\sysVelE},
+\\
+ \genForceInertiaC &= \underbrace{\begin{bmatrix} \mc & 0 & -\mc\scy \\ 0 & \mc & \mc\scx \\ -\mc\scy & \mc\scx & \Jcz \end{bmatrix}}_{\sysInertiaMat}
+ \underbrace{\begin{bmatrix} \vxEd \\ \vyEd \\ \wzEd \end{bmatrix}}_{\sysVelEd}
+ + \begin{bmatrix} 0 & -\mc\wz & -\mc\scx\wz \\ \mc\wz & 0 & -\mc\scy\wz \\ \mc\scx\wz & \mc\scy\wz & 0 \end{bmatrix}
+ \begin{bmatrix} \vxE \\ \vyE \\ \wzE \end{bmatrix}.
+\end{align} 
+\end{subequations}
+The total energy $\totalEnergyC = \tfrac{1}{2} \sysVelE^\top \sysInertiaMat \sysVelE + \potentialEnergyC$ coincides with the total energy for the body-based approach and is a Lyapunov function for this closed loop as well.
+Note that the two approaches do differ in the gyroscopic terms, so do lead to different solutions of the closed loop dynamics.
+
+\paragraph{Simulation result.}
+In \autoref{sec:DecouplingRigidBody} we will give and discuss a simulation result for the special parameter choice $\scx=\lcx=\hcx=0$ and $\scy=\lcy=\hcy=0$.
+

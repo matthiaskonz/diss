@@ -1,0 +1,101 @@
+\section{Hamilton's principle}
+\paragraph{Hamilton's canonical equations.}
+Define the \textit{generalized momentum} $\genMomentum$ as
+\begin{align}\label{eq:Legendre11}
+ \genMomentumCoeff{\LidxI} &= \pdiff[\Lagrangian]{\sysVelCoeff{\LidxI}}, \quad \LidxI = 1,\ldots,\dimConfigSpace.
+% \Hamiltonian(\sysCoord, \sysVel, t) &= \genMomentumCoeff{\LidxI} \sysVelCoeff{\LidxI} - \Lagrangian(\sysCoord, \sysVel, t) = \Hamiltonian(\sysCoord, \genMomentum, t)
+% \Hamiltonian &= \genMomentumCoeff{\LidxI} \sysVelCoeff{\LidxI} - \Lagrangian
+ .
+\end{align}
+and assume that this relation can be inverted to express the velocity $\sysVel = \zeta(\sysCoord, \genMomentum, t)$ in terms of the momentum.
+Then define the \textit{Hamiltonian} $\Hamiltonian$ as
+\begin{align}\label{eq:Legendre12}
+ \Hamiltonian(\sysCoord, \genMomentum, t) 
+ = \Big[ \genMomentumCoeff{\LidxI} \sysVelCoeff{\LidxI} - \Lagrangian(\sysCoord, \sysVel, t) \Big]_{\sysVel = \zeta(\sysCoord, \genMomentum, t)}
+ = \genMomentumCoeff{\LidxI} \zeta^{\LidxI}(\sysCoord, \genMomentum, t) - \Lagrangian(\sysCoord, \zeta(\sysCoord, \genMomentum, t), t)
+ .
+\end{align}
+
+The definitions \eqref{eq:Legendre11} and \eqref{eq:Legendre12} describe the \textit{Legendre transformation} $(\Lagrangian, \sysVel) \rightarrow (\Hamiltonian, \genMomentum)$, see \cite[ch.\,VI.1]{Lanczos:Variational} or \cite[sec.\,14]{Arnold:MathematicalMethodsOfClassicalMechanics} for some geometric background.
+Note that the configuration coordinates $\sysCoord$ and the time $t$ do not participate in the transformation.
+
+Evaluation of the differentials of \eqref{eq:Legendre12}, we get the relations
+\begin{subequations}\label{eq:Legendre2}
+\begin{align}
+ \partial_{\LidxII} \Hamiltonian &= \genMomentumCoeff{\LidxI} \partial_{\LidxII}\zeta^{\LidxI} - \partial_{\LidxII} \Lagrangian - \pdiff[\Lagrangian]{\sysVelCoeff{\LidxI}} \partial_{\LidxII}\zeta^{\LidxI}
+ =  -\partial_{\LidxII} \Lagrangian
+\\
+ \pdiff[\Hamiltonian]{\genMomentumCoeff{\LidxII}} &= \zeta^{\LidxII} + \genMomentumCoeff{\LidxI} \pdiff[\zeta^{\LidxI}]{\genMomentumCoeff{\LidxII}} - \pdiff[\Lagrangian]{\sysVelCoeff{\LidxI}} \pdiff[\zeta^{\LidxI}]{\genMomentumCoeff{\LidxII}}
+ = \sysVelCoeff{\LidxII}
+\\
+ \pdiff[\Hamiltonian]{t} &= \genMomentumCoeff{\LidxI} \pdiff[\zeta^{\LidxI}]{t} - \pdiff[\Lagrangian]{\sysVelCoeff{\LidxI}} \pdiff[\zeta^{\LidxI}]{t} - \pdiff[\Lagrangian]{t}
+ = -\pdiff[\Lagrangian]{t},
+\end{align}
+\end{subequations}
+With this we can express the kinematic equation \eqref{eq:DefBasisOfVelocity} and Lagrange's equation \eqref{eq:MyLagrange} in terms of the generalized momentum $\genMomentum$ and the Hamiltonian $\Hamiltonian$.
+\begin{align}
+ \sysCoordCoeffd{\GidxI} &= \kinMatCoeff{\GidxI}{\LidxI} \pdiff[\Hamiltonian]{\genMomentumCoeff{\LidxI}},&
+ \genMomentumCoeffd{\LidxI} &= \genForceExCoeff{\LidxI} - \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \pdiff[\Hamiltonian]{\genMomentumCoeff{\LidxII}} \genMomentumCoeff{\LidxIII} - \kinMatCoeff{\GidxI}{\LidxI} \pdiff[\Hamiltonian]{\sysCoordCoeff{\GidxI}}
+\end{align}
+In matrix notation they can be combined as
+\begin{align}\label{eq:HamiltonsCanonicalEquations}
+ \tdiff{t}
+ \begin{bmatrix} \sysCoord \\ \genMomentum \end{bmatrix}
+ &= \begin{bmatrix} 0 & \kinMat \\ -\kinMat^\top & G \end{bmatrix}
+ \begin{bmatrix} \tpdiff[\Hamiltonian]{\sysCoord} \\ \tpdiff[\Hamiltonian]{\genMomentum} \end{bmatrix}
+ +
+ \begin{bmatrix} 0 \\ \genForceEx \end{bmatrix}
+\end{align}
+with the skew symmetric matrix $G_{\LidxI\LidxII}(\sysCoord, \genMomentum) = -\BoltzSym{\LidxIII}{\LidxI}{\LidxII}(\sysCoord) \genMomentumCoeff{\LidxIII} = -G_{\LidxII\LidxI}(\sysCoord, \genMomentum)$.
+For the special case of minimal configuration coordinates $\genCoord$ and velocity coordinates $\sysVel = \genCoordd$ we have $\kinMat = \idMat[\dimConfigSpace]$ and $G = 0$ and \eqref{eq:HamiltonsCanonicalEquations} is called \textit{Hamilton's canonical equations}.
+
+\paragraph{A general conservation law.}
+The time derivative of the Hamiltonian along the motion is
+\begin{multline}\label{eq:BalanceHamiltonian}
+ \diff[\Hamiltonian]{t} = \pdiff[\Hamiltonian]{\sysCoordCoeff{\GidxI}} \sysCoordCoeffd{\GidxI} + \pdiff[\Hamiltonian]{\genMomentumCoeff{\LidxI}} \genMomentumCoeffd{\LidxI} + \pdiff[\Hamiltonian]{t}
+\\
+ = \underbrace{\pdiff[\Hamiltonian]{\sysCoordCoeff{\GidxI}} \kinMatCoeff{\GidxI}{\LidxI} \pdiff[\Hamiltonian]{\genMomentumCoeff{\LidxI}}
+ - \pdiff[\Hamiltonian]{\genMomentumCoeff{\LidxI}} \kinMatCoeff{\GidxI}{\LidxI} \pdiff[\Hamiltonian]{\sysCoordCoeff{\GidxI}}}_{0}
+ + \,\genMomentumCoeff{\LidxIII} \underbrace{\BoltzSym{\LidxIII}{\LidxI}{\LidxII} \pdiff[\Hamiltonian]{\genMomentumCoeff{\LidxI}} \pdiff[\Hamiltonian]{\genMomentumCoeff{\LidxII}}}_{0}
+ + \pdiff[\Hamiltonian]{\genMomentumCoeff{\LidxI}} \genForceExCoeff{\LidxI}
+ + \pdiff[\Hamiltonian]{t}.
+\end{multline}
+In terms of the original coordinates this is
+\begin{align}
+ \diff[\Hamiltonian]{t} &= \sysVelCoeff{\LidxI} \genForceExCoeff{\LidxI} - \pdiff[\Lagrangian]{t}.
+\end{align}
+This is the well known conservation law for the Hamiltonian (\eg \cite[ch.\,VI.6]{Lanczos:Variational}).
+The remarkable aspect of the conservation law (and for the Legendre transformation) is that there is no particular assumption on the structure of the Lagrangian $\Lagrangian$.
+
+However for our case of systems of mechanical particles the Lagrangian is $\Lagrangian = \tfrac{1}{2}\sysVelT \sysInertiaMat \sysVel - \potentialEnergy$, so the generalized momentum is $\genMomentum = \sysInertiaMat \sysVel$ and the Hamiltonian is the total energy $\Hamiltonian = \tfrac{1}{2}\sysVelT \sysInertiaMat \sysVel + \potentialEnergy$.
+
+\paragraph{Conclusion.}
+The redundant configuration coordinates and velocity coordinates do behave well in the context of Hamiltonian mechanics, tanking into account the considerations from \autoref{sec:RedundantCoordinatesKinematics}.
+As before, there is no new physical insight, but the formulations allow a more sophisticated parameterization that might be useful for other fields of physics or optimal control.
+
+\paragraph{Example.}
+Let the Lagrangian have the form
+\begin{align}
+ \Lagrangian(\sysCoord, \sysVel, t) = \tfrac{1}{2} \sysInertiaMatCoeff{\LidxI\LidxII}(\sysCoord, t) \sysVelCoeff{\LidxII}\sysVelCoeff{\LidxI} + b_\LidxI(\sysCoord, t) \sysVelCoeff{\LidxI} + \Lagrangian_0(\sysCoord, t)
+\end{align}
+The Euler-Lagrange equation evaluates to
+\begin{align}
+ 0 &= \diff{t} \pdiff[\Lagrangian]{\sysVelCoeff{\LidxI}} + \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \sysVelCoeff{\LidxII} \pdiff[\Lagrangian]{\sysVelCoeff{\LidxIII}} - \dirDiff{\LidxI} \Lagrangian
+\nonumber\\
+ &= \diff{t} \big( \sysInertiaMatCoeff{\LidxI\LidxII} \sysVelCoeff{\LidxII} + b_\LidxI \big) + \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \sysVelCoeff{\LidxII} \big( \sysInertiaMatCoeff{\LidxIII\LidxII} \sysVelCoeff{\LidxII} + b_\LidxIII \big) - \tfrac{1}{2} \dirDiff{\LidxI}\sysInertiaMatCoeff{\LidxIII\LidxII} \sysVelCoeff{\LidxII}\sysVelCoeff{\LidxIII} - \dirDiff{\LidxI} b_\LidxI \sysVelCoeff{\LidxI} - \dirDiff{\LidxI} \Lagrangian_0
+\nonumber\\
+ &= \sysInertiaMatCoeff{\LidxI\LidxII} \sysVelCoeffd{\LidxII} + \dirDiff{\LidxIII}\sysInertiaMatCoeff{\LidxI\LidxII} \sysVelCoeff{\LidxIII} \sysVelCoeff{\LidxII} + \pdiff[\sysInertiaMatCoeff{\LidxI\LidxII}]{t} \sysVelCoeff{\LidxII} + \pdiff[b_\LidxI]{t} + \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \sysVelCoeff{\LidxII} \big( \sysInertiaMatCoeff{\LidxIII\LidxII} \sysVelCoeff{\LidxII} + b_\LidxIII \big) - \tfrac{1}{2} \dirDiff{\LidxI}\sysInertiaMatCoeff{\LidxIII\LidxII} \sysVelCoeff{\LidxII}\sysVelCoeff{\LidxIII} - \dirDiff{\LidxI} \Lagrangian_0
+\nonumber\\
+ &= \sysInertiaMatCoeff{\LidxI\LidxII} \sysVelCoeffd{\LidxII} + \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII} \sysVelCoeff{\LidxIII} \sysVelCoeff{\LidxII} + \pdiff[\sysInertiaMatCoeff{\LidxI\LidxII}]{t} \sysVelCoeff{\LidxII} + \pdiff[b_\LidxI]{t} + \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \sysVelCoeff{\LidxII} b_\LidxIII - \dirDiff{\LidxI} \Lagrangian_0
+\end{align}
+generalized momentum
+\begin{align}
+ \genMomentumCoeff{\LidxI} = \pdiff[\Lagrangian]{\sysVelCoeff{\LidxI}} = \sysInertiaMatCoeff{\LidxI\LidxII}  \sysVelCoeff{\LidxI} + b_\LidxI
+\qquad \Leftrightarrow \qquad 
+ \sysVelCoeff{\LidxI} = \isysInertiaMatCoeff{\LidxI\LidxII} (\genMomentumCoeff{\LidxII} - b_\LidxII)
+\end{align}
+Hamiltonian
+\begin{align}
+ \Hamiltonian = \sysVelCoeff{\LidxI} (\sysInertiaMatCoeff{\LidxI\LidxII}  \sysVelCoeff{\LidxI} + b_\LidxI) - \Lagrangian
+ = \tfrac{1}{2} \sysInertiaMatCoeff{\LidxI\LidxII} \sysVelCoeff{\LidxII}\sysVelCoeff{\LidxI} - \Lagrangian_0
+\end{align}

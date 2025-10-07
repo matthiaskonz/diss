@@ -1,0 +1,107 @@
+\section{Principles of mechanics}
+Consider the system from \autoref{sec:DefParticleSys} and let each particle have an associated mass $\particleMass{\PidxI} \in \RealNum^+$ and applied force $\particleForceImpressed{\PidxI}(t)\in\RealNum^3$.
+Newton's second law states that for a system of \textit{free} particles (here $\particleGeoConstraint=\varnothing$) the equations of motion are given by %\cite[eq.\ 6.1.1]{Lurie:AnalyticalMechanics} \cite[eq.\ 1.3]{Goldstein:ClassicalMechanics}
+\begin{align}\label{eq:NewtonsSecondLaw}
+ \particleMass{\PidxI} \particlePosdd{\PidxI} = \particleForceImpressed{\PidxI}, \quad \PidxI = 1,\ldots,\numParticles.
+\end{align}
+
+\subsection{Principle of constraint release}
+The \textit{principle of constraint release} (see e.g.\ \cite[sec.\ 6.1]{Lurie:AnalyticalMechanics}, \cite[sec.\ 32]{Hamel:TheoretischeMechanik}) states that the motion of system of geometrically constrained particles is governed by
+\begin{align}\label{eq:ConstraintRelease}
+ \particleGeoConstraint(\particleCoord) = \tuple{0}, 
+\quad
+ \particleMass{\PidxI} \particlePosdd{\PidxI} = \particleForceImpressed{\PidxI} + \LagrangeMultCoeff{\CidxI} \pdiff[\particleGeoConstraintCoeff{\CidxI}]{\particlePos{\PidxI}},
+\quad \PidxI = 1,\ldots,\numParticles.
+\end{align}
+where $\LagrangeMult(t) \in \RealNum^{\numParticleConstraints}$ are commonly called \textit{Lagrange multipliers}. 
+This is called Lagrange's equation of the first kind.
+%This are $3\numParticles + \numParticleConstraints$ equations in the the same amount of variables $(\particlePosdd{1},\ldots,\particlePosdd{\numParticles}, \LagrangeMult)$.
+
+Formulation of the particle accelerations $\particlePosdd{\PidxI}$ in terms of the coordinates $\sysCoord$ and $\sysVel$ and summing up the projections of \eqref{eq:ConstraintRelease} on $\dirDiff{\LidxI}\particlePos{\PidxI}$ yields
+\begin{align}\label{eq:PrinciplesForceBalance}
+ \underbrace{\sumParticles \particleMass{\PidxI} \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\dirDiff{\LidxII} \particlePos{\PidxI} \sysVelCoeffd{\LidxII} + \dirDiff{\LidxIII} \dirDiff{\LidxII} \particlePos{\PidxI} \sysVelCoeff{\LidxIII} \sysVelCoeff{\LidxII}}}_{\genForceInertiaCoeff{\LidxI}}
+ = \underbrace{\sumParticles \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\particleForceImpressed{\PidxI}}}_{\genForceImpressedCoeff{\LidxI}}
+ + \underbrace{\sumParticles \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\LagrangeMultCoeff{\CidxI} \pdiff[\particleGeoConstraintCoeff{\CidxI}]{\particlePos{\PidxI}}}}_{0},
+ \quad \LidxI = 1,\ldots,\dimConfigSpace.
+\end{align}
+The marked term vanishes, since $\tdiff{t} \particleGeoConstraintCoeff{\CidxI} = \sumParticles \pdiff[\particleGeoConstraintCoeff{\CidxI}]{\particlePos{\PidxI}} \dirDiff{\LidxI} \particlePos{\PidxI} \sysVelCoeff{\LidxI} = 0$ holds for any $\sysVel$.
+These are $\dimConfigSpace$ equations linear in the $\dimConfigSpace$ coefficients of $\sysVeld$.
+For the following we call $\genForceInertia$ the \textit{generalized inertia force} and $\genForceImpressed$ the \textit{generalized applied force}.
+
+\subsection{Lagrange-d'Alembert's principle}
+The \textit{Lagrange-d'Alembert principle} for a system of geometrically constrained particles states (e.g.\ \cite[sec.\,1.4]{Goldstein:ClassicalMechanics} or \cite[sec.\,6.3]{Lurie:AnalyticalMechanics}):
+\begin{align}\label{eq:DAlembertPrinciple}
+ \sumParticlesFull \sProd{\delta \particlePos{\PidxI}}{\particleForceImpressed{\PidxI} - \particleMass{\PidxI}\particlePosdd{\PidxI}} = 0.
+\end{align}
+The \textit{virtual displacements} $\delta \particlePos{\PidxI}$ are tangents to possible motions:
+For particle positions constrained by $\particleGeoConstraint(\particleCoord) = \tuple{0}$ the displacements have to fulfill $\pdiff[\particleGeoConstraint]{\particleCoord} \delta\particleCoord = \tuple{0}$.
+
+Now let the particle positions $\particleCoord \in \particleConfigSpace$ be parameterized $\particleCoord = \particleCoord(\sysCoord)$ by possibly redundant coordinates $\sysCoord \in \configSpace$ such that $\sysCoord \in \configSpace \, \Rightarrow \, \particleCoord(\sysCoord) \in \particleConfigSpace$ or equivalently $\geoConstraint(\sysCoord) = \tuple{0}\,\Rightarrow\,\particleGeoConstraint(\particleCoord(\sysCoord)) = \tuple{0}$.
+With a suitable kinematics matrix $\kinMat(\sysCoord)$, as discussed in the previous section, we can parameterize the particle velocity as $\particlePosd{\PidxI} = \pdiff[\particlePos{\PidxI}]{\sysCoord} \kinMat \sysVel = \dirDiff{\LidxI} \particlePos{\PidxI} \sysVelCoeff{\LidxI}$ with minimal velocity coordinates $\sysVel \in \RealNum^{\dimConfigSpace}$.
+In the same way we parameterize the possible virtual displacements as $\delta \particlePos{\PidxI} = \dirDiff{\LidxI} \particlePos{\PidxI} \varCoordCoeff{\LidxI}$ with the minimal \textit{displacement coordinates} $\varCoord \in \RealNum^{\dimConfigSpace}$.
+Since the Lagrange-d'Alembert principle \eqref{eq:DAlembertPrinciple} has to hold for any displacement and the displacement coordinates $\varCoord$ are independent, we can conclude
+\begin{align}\label{eq:DAlembertPrincipleBasis}
+ \sumParticles \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\particleForceImpressed{\PidxI} - \particleMass{\PidxI}\particlePosdd{\PidxI}} = 0, \quad \LidxI = 1,\ldots,\dimConfigSpace.
+\end{align}
+
+
+\subsection{Gauß' principle}
+The \textit{Gauß' principle of least constraint} was originally described in \cite{Gauss:Principle}, in words rather than in equations.
+Maybe due to this one finds somewhat different mathematical formulations in more contemporary sources, e.g.\ \cite[sec.\,VII.8]{Hamel:TheoretischeMechanik}, \cite[sec.\,IV.8]{Lanczos:Variational}, \cite[sec.\,2.2]{Bremer:ElasticMultibodyDynamics}.
+For an extensive treatment of Gauß' principle and historical background see \cite[§6.6]{Papastavridis:AnalyticalMechanics}.
+A differential geometric treatment of Gauß' principle and extension the general Lagrangian systems can be found in \cite{Lewis:GaussPrinciple}.
+
+For this work we use the formulation from \cite[sec.\ 7]{Paesler:PrinzipeDerMechanik} of Gauß principle:
+\begin{align}\label{eq:GaussPrinciple}
+ \begin{array}{rl}
+  \minOp[\particleCoorddd\in\RealNum^{3\numParticles}] & \GaussianConstraint = \tfrac{1}{2} \displaystyle\sumParticlesFull \particleMass{\PidxI} \norm{\particlePosdd{\PidxI} - \particlePosdd{\PidxI}^{\idxText{f}}}^2 \\
+  \text{s.\ t.} & \ddot{\particleGeoConstraint}(\particleCoord, \particleCoordd, \particleCoorddd) = \tuple{0}
+ \end{array}
+\end{align}
+where $\particleCoord = [\particlePos{1}^\top, \ldots,\particlePos{\numParticles}^\top]^\top$ and $\particlePosdd{\PidxI}^{\idxText{f}}$ are the particle accelerations of the unconstrained system and we call $\GaussianConstraint$ the Gaussian constraint.
+Its crucial to note that the constraint equations $\ddot{\particleGeoConstraint}(\particleCoord, \particleCoordd, \particleCoorddd) = \tuple{0}$ are \textit{linear} in the accelerations $\particleCoorddd$.
+Consequently, as stressed in \cite{Gauss:Principle}, the principle \eqref{eq:GaussPrinciple} can be regarded as a (static) quadratic optimization problem with linear constraints. 
+
+The unconstrained accelerations according to Newton's second law \eqref{eq:NewtonsSecondLaw} are $\particlePosdd{\PidxI}^{\idxText{f}} = \sfrac{\particleForceImpressed{\PidxI}}{\particleMass{\PidxI}}$.
+Expressing the particle accelerations as $\particlePosdd{\PidxI} = \dirDiff{\LidxII} \particlePos{\PidxI} \sysVelCoeffd{\LidxII} + \dirDiff{\LidxIII} \dirDiff{\LidxII} \particlePos{\PidxI} \sysVelCoeff{\LidxIII} \sysVelCoeff{\LidxII}$ in terms of coordinates, transforms \eqref{eq:GaussPrinciple} to an \textit{unconstrained} problem
+\begin{align}
+ \minOp[\sysVeld\in\RealNum^{\dimConfigSpace}] \, \GaussianConstraint = \tfrac{1}{2} \sumParticles \particleMass{\PidxI} \norm{\dirDiff{\LidxII} \particlePos{\PidxI} \sysVelCoeffd{\LidxII} + \dirDiff{\LidxIII} \dirDiff{\LidxII} \particlePos{\PidxI} \sysVelCoeff{\LidxIII} \sysVelCoeff{\LidxII} - \tfrac{\particleForceImpressed{\PidxI}}{\particleMass{\PidxI}}}^2
+\end{align}
+which has the necessary condition
+\begin{align}
+ \pdiff[\GaussianConstraint]{\sysVelCoeffd{\LidxI}} = \sumParticles \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\particleMass{\PidxI} (\dirDiff{\LidxII} \particlePos{\PidxI} \sysVelCoeffd{\LidxII} + \dirDiff{\LidxIII} \dirDiff{\LidxII} \particlePos{\PidxI} \sysVelCoeff{\LidxIII} \sysVelCoeff{\LidxII}) - \particleForceImpressed{\PidxI}} = 0, \quad \LidxI = 1,\ldots,\dimConfigSpace.
+\end{align}
+This is obviously again the same result previously obtained in \eqref{eq:PrinciplesForceBalance}.
+
+
+\subsection{Hamilton's principle}
+Another principle can be stated as \cite[sec.\,12.2]{Lurie:AnalyticalMechanics} or \cite[sec.\ I.3]{Szabo:HM}:
+\begin{align}\label{eq:HamiltonPrinciple}
+ \int_{t_1}^{t_2} \big( \delta \kineticEnergy - \delta'\mathcal{W} \big) \d t = 0, 
+\qquad
+ \kineticEnergy = \tfrac{1}{2} \sumParticles \particleMass{\PidxI} \norm{\particlePosd{\PidxI}}^2, \ \delta'\mathcal{W} = \sProd{\delta \particlePos{\PidxI}}{\particleForceImpressed{\PidxI}}
+\end{align}
+where $\kineticEnergy$ is the kinetic energy and $\delta'\mathcal{W}$ is the virtual work of the applied forces.
+Using the result \eqref{eq:MyEulerLagrange} from the calculus of variations we obtain
+\begin{align}\label{eq:ResHamiltonPrinciple}
+ \underbrace{\diff{t} \pdiff[\kineticEnergy]{\sysVelCoeff{\LidxI}} + \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \sysVelCoeff{\LidxII} \pdiff[\kineticEnergy]{\sysVelCoeff{\LidxIII}} - \dirDiff{\LidxI} \kineticEnergy}_{-\genForceInertiaCoeff{\LidxI}}
+ = \underbrace{\sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\particleForceImpressed{\PidxI}}}_{\genForceImpressedCoeff{\LidxI}},
+ \quad \LidxI = 1,\ldots,\dimConfigSpace.
+\end{align}
+Evaluation and some rearrangement of the left hand term $\genForceInertia$ shows that it indeed is the generalized inertia force previously defined in \eqref{eq:PrinciplesForceBalance}:
+\begin{multline}\label{eq:CalculationLagrangeToInertiaForce}
+ -\genForceInertiaCoeff{\LidxI} = \sumParticles \particleMass{\PidxI} \Big(
+ \diff{t} \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\dirDiff{\LidxII} \particlePos{\PidxI} \sysVelCoeff{\LidxII}}
+ + \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \sysVelCoeff{\LidxII} \sProd{\dirDiff{\LidxIII} \particlePos{\PidxI}}{\dirDiff{\LidxIV} \particlePos{\PidxI} \sysVelCoeff{\LidxIV}}
+ - \sProd{\dirDiff{\LidxI} \dirDiff{\LidxII} \particlePos{\PidxI} \sysVelCoeff{\LidxII}}{\dirDiff{\LidxIII} \particlePos{\PidxI} \sysVelCoeff{\LidxIII}} \Big)
+\\
+ = \sumParticles \particleMass{\PidxI} \Big(
+  \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\dirDiff{\LidxII} \particlePos{\PidxI} \sysVelCoeffd{\LidxII} + \dirDiff{\LidxIII} \dirDiff{\LidxII} \particlePos{\PidxI} \sysVelCoeff{\LidxII} \sysVelCoeff{\LidxIII}}
+ + \sProd{\dirDiff{\LidxIV} \particlePos{\PidxI} \sysVelCoeff{\LidxIV}}{\underbrace{\big(\dirDiff{\LidxII} \dirDiff{\LidxI} \particlePos{\PidxI} - \dirDiff{\LidxI} \dirDiff{\LidxII} \particlePos{\PidxI} + \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \dirDiff{\LidxIII} \particlePos{\PidxI}\big)}_{0} \sysVelCoeff{\LidxII}} \Big).
+\end{multline}
+
+The principle of least action is closely related to \eqref{eq:HamiltonPrinciple}, but there is a crucial difference:
+The virtual work $\delta'\mathcal{W}$ is, in general, not a variation of a whatever function, so we cannot pull the variation out of the integral and \eqref{eq:HamiltonPrinciple} implies, in general, no variational statement.
+If the applied forces are conservative, then the virtual work $\delta'\mathcal{W} = \delta\potentialEnergy$ can be stated as the variation of a potential $\potentialEnergy$ and we can define the ``action'' as $\mathcal{S} = \int_{t_1}^{t_2} (\kineticEnergy - \mathcal{V}) \d t$.
+For non-autonomous or dissipative systems, which are considered in this text, one should not use the naming ``of least action'' since the ``action'' is simply not defined.
+See \cite[sec.\ 12.2]{Lurie:AnalyticalMechanics} for an extensive discussion of this subject.

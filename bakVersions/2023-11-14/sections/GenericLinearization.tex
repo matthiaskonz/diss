@@ -1,0 +1,203 @@
+\section{Linearization}\label{sec:CtrlLinearization}
+Assume that the configuration of the system $\sysCoord$ is close to its reference $\sysCoordR$. %i.e.\ $\norm{\sysCoord - \sysCoordR} \ll 1$.
+Then the first order approximation of the geometric constraint is 
+\begin{align}
+ \geoConstraint(\sysCoord) \approx \geoConstraint(\sysCoordR) + \tpdiff[\geoConstraint]{\sysCoord}(\sysCoordR) \, (\sysCoord - \sysCoordR) = 0
+\end{align}
+The first part vanishes since the reference configuration obeys the geometric constraints.
+The second part is (now) a linear constraint it is reasonable to introduce \textit{minimal error coordinates} $\LinErrorCoord(t) \in \RealNum^{\dimConfigSpace}$ and parameterize the configuration as
+\begin{align} 
+ \sysCoord = \sysCoordR + \kinMat(\sysCoordR) \LinErrorCoord. 
+\end{align}
+Assuming that the change of the error is also small $\norm{\LinErrorCoordd} \ll 1$ and also $\LinErrorCoord^\top \LinErrorCoordd \ll 1$, the first order approximation for the velocity coordinates is
+\begin{align}
+ \sysVelCoeff{\LidxI} &= \kinBasisMatCoeff{\LidxI}{\GidxI}(\sysCoord) \sysCoordCoeffd{\GidxI}
+\nonumber\\
+ &\approx \kinBasisMatCoeff{\LidxI}{\GidxI}(\sysCoordR + \kinMat(\sysCoordR) \LinErrorCoord) \big( \sysCoordCoeffRd{\GidxI} + \tpdiff[\kinMatCoeff{\GidxI}{\LidxII}]{\sysCoordCoeff{\GidxII}}(\sysCoordR) \, \sysCoordCoeffRd{\GidxII} \LinErrorCoordCoeff{\LidxII} + \kinMatCoeff{\GidxI}{\LidxII}(\sysCoordR) \, \LinErrorCoordCoeffd{\LidxII} \big)
+\nonumber\\
+ &\approx \kinBasisMatCoeff{\LidxI}{\GidxI}(\sysCoordR) \big( \sysCoordCoeffRd{\GidxI} + \tpdiff[\kinMatCoeff{\GidxI}{\LidxII}]{\sysCoordCoeff{\GidxII}}(\sysCoordR) \, \sysCoordCoeffRd{\GidxII} \LinErrorCoordCoeff{\LidxII} + \kinMatCoeff{\GidxI}{\LidxII}(\sysCoordR) \, \LinErrorCoordCoeffd{\LidxII} \big)
+  + \tpdiff[\kinBasisMatCoeff{\LidxI}{\GidxI}]{\sysCoordCoeff{\GidxII}}(\sysCoordR)  \kinMatCoeff{\GidxII}{\LidxII}(\sysCoordR) \, \LinErrorCoordCoeff{\LidxII} \sysCoordCoeffRd{\GidxI}
+\nonumber\\
+ &= \underbrace{\kinBasisMatCoeff{\LidxI}{\GidxI}(\sysCoordR) \sysCoordCoeffRd{\GidxI}}_{\sysVelCoeffR{\LidxI}}
+  + \underbrace{\kinBasisMatCoeff{\LidxI}{\GidxI}(\sysCoordR) \kinMatCoeff{\GidxI}{\LidxII}(\sysCoordR)}_{\delta^\LidxI_\LidxII} \LinErrorCoordCoeffd{\LidxII}
+  + \underbrace{\big( \tpdiff[\kinBasisMatCoeff{\LidxI}{\GidxI}]{\sysCoordCoeff{\GidxII}}(\sysCoordR) - \tpdiff[\kinBasisMatCoeff{\LidxI}{\GidxII}]{\sysCoordCoeff{\GidxI}}(\sysCoordR) \big) \kinMatCoeff{\GidxII}{\LidxII}(\sysCoordR)  \kinMatCoeff{\GidxI}{\LidxIII}(\sysCoordR)}_{\BoltzSym{\LidxI}{\LidxIII}{\LidxII}} \sysVelCoeffR{\LidxIII} \LinErrorCoordCoeff{\LidxII}
+\nonumber\\
+ &= \sysVelCoeffR{\LidxI} + \LinErrorCoordCoeffd{\LidxI} + \BoltzSym{\LidxI}{\LidxIII}{\LidxII}(\sysCoordR) \sysVelCoeffR{\LidxIII} \LinErrorCoordCoeff{\LidxII}
+\end{align}
+For the error velocity $\sysVelE$ we get (recall that $\sysTransportMap(\sysCoordR, \sysCoordR) = \idMat[\dimConfigSpace]$)
+\begin{align}
+ \sysVelCoeffE{\LidxI} = \sysVelCoeff{\LidxI} - \sysTransportMapCoeff{\LidxI}{\LidxII}(\sysCoord, \sysCoordR) \sysVelCoeffR{\LidxII}
+ \approx \LinErrorCoordCoeffd{\LidxI} + \underbrace{\big( \BoltzSym{\LidxI}{\LidxII}{\LidxIII}(\sysCoordR) - (\partial_\LidxIII \sysTransportMapCoeff{\LidxI}{\LidxII})(\sysCoordR, \sysCoordR) \big)}_{E^\LidxI_{\LidxII\LidxIII}(\sysCoordR)} \sysVelCoeffR{\LidxII} \LinErrorCoordCoeff{\LidxIII}
+\end{align}
+
+
+Closed loop kinetics (recall that $\dirDiff{\LidxI} \potentialEnergyC (\sysCoordR, \sysCoordR) = 0$)
+\begin{align}
+ 0 &= \sysInertiaMatCoeffC{\LidxI\LidxII}(\sysCoord) \sysVelCoeffEd{\LidxII} + \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII}(\sysCoord) \sysVelCoeff{\LidxIII} \sysVelCoeffE{\LidxII}
+ + \sysDissMatCoeffC{\LidxI\LidxII}(\sysCoord) \sysVelCoeffE{\LidxII}
+ + \dirDiff{\LidxI} \potentialEnergyC (\sysCoord, \sysCoordR)
+\nonumber\\
+%  &\approx \sysInertiaMatCoeffC{\LidxI\LidxII}(\sysCoordR + \kinMat(\sysCoordR) \LinErrorCoord) \big( \LinErrorCoordCoeffdd{\LidxII} + E^\LidxII_\LidxIII(\sysCoordR, \sysVelR) \LinErrorCoordCoeffd{\LidxIII} + \dot{E}^\LidxII_\LidxIII(\sysCoordR, \sysVelR, \sysVelRd) \LinErrorCoordCoeff{\LidxIII} \big)
+% \nonumber\\
+%  &\qquad+ \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII}(\sysCoordR + \kinMat(\sysCoordR) \LinErrorCoord) \big( \sysVelCoeffR{\LidxIII} + \LinErrorCoordCoeffd{\LidxIII} + \BoltzSym{\LidxIII}{\LidxIV}{\LidxV}(\sysCoordR) \sysVelCoeffR{\LidxIV} \LinErrorCoordCoeff{\LidxV} \big) \big( \LinErrorCoordCoeffd{\LidxII} + E^\LidxII_\LidxVI(\sysCoordR, \sysVelR) \LinErrorCoordCoeff{\LidxVI} \big)
+% \nonumber\\
+%  &\qquad+ \sysDissMatCoeffC{\LidxI\LidxII}(\sysCoordR + \kinMat(\sysCoordR) \LinErrorCoord) \big( \LinErrorCoordCoeffd{\LidxII} + E^\LidxII_\LidxIII(\sysCoordR, \sysVelR) \LinErrorCoordCoeff{\LidxIII} \big)
+% \nonumber\\
+%  &\qquad+ \dirDiff{\LidxI} \potentialEnergyC (\sysCoordR + \kinMat(\sysCoordR) \LinErrorCoord, \sysCoordR)
+% \nonumber\\
+ &\approx \sysInertiaMatCoeffC{\LidxI\LidxII}(\sysCoordR) \big( \LinErrorCoordCoeffdd{\LidxII} + E^\LidxII_{\LidxIII\LidxIV}(\sysCoordR) \sysVelCoeffRd{\LidxIII} \LinErrorCoordCoeff{\LidxIV} + E^\LidxII_{\LidxIII\LidxIV}(\sysCoordR) \sysVelCoeffR{\LidxIII} \LinErrorCoordCoeffd{\LidxIV} + \dot{E}^\LidxII_{\LidxIII\LidxIV}(\sysCoordR,\sysVelR) \sysVelCoeffR{\LidxIII} \LinErrorCoordCoeff{\LidxIV} \big)
+\nonumber\\
+ &\qquad+ \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII}(\sysCoordR) \sysVelCoeffR{\LidxIII} \big( \LinErrorCoordCoeffd{\LidxII} + E^\LidxII_{\LidxIV\LidxV}(\sysCoordR) \sysVelCoeffR{\LidxIV} \LinErrorCoordCoeff{\LidxV} \big)
+\nonumber\\
+ &\qquad+ \sysDissMatCoeffC{\LidxI\LidxII}(\sysCoordR) \big( \LinErrorCoordCoeffd{\LidxII} + E^\LidxII_{\LidxIII\LidxIV}(\sysCoordR) \sysVelCoeffR{\LidxIII} \LinErrorCoordCoeff{\LidxIV} \big)
+ + \big(\dirDiff{\LidxII} \dirDiff{\LidxI} \potentialEnergyC\big) (\sysCoordR, \sysCoordR)\,\LinErrorCoordCoeff{\LidxII}
+\nonumber\\
+ &=
+ \sysInertiaMatCoeffC{\LidxI\LidxII}(\sysCoordR) \LinErrorCoordCoeffdd{\LidxII} + \sysDissMatCoeffCLin{\LidxI\LidxII}(\sysCoordR, \sysVelR) \LinErrorCoordCoeffd{\LidxII}  + \sysStiffMatCoeffCLin{\LidxI\LidxII}(\sysCoordR, \sysVelR, \sysVelRd) \LinErrorCoordCoeff{\LidxII}
+\end{align}
+where
+\begin{subequations}
+\begin{align}
+ \sysDissMatCoeffCLin{\LidxI\LidxII}(\sysCoordR, \sysVelR) &= \sysDissMatCoeffC{\LidxI\LidxII}(\sysCoordR) + \big(\sysInertiaMatCoeffC{\LidxI\LidxIV}(\sysCoordR) E^\LidxIV_{\LidxIII\LidxII}(\sysCoordR) + \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII}(\sysCoordR)\big) \sysVelCoeffR{\LidxIII}
+\\
+ \sysStiffMatCoeffCLin{\LidxI\LidxII}(\sysCoordR, \sysVelR, \sysVelRd) &= (\dirDiff{\LidxII} \dirDiff{\LidxI} \potentialEnergyC) (\sysCoordR, \sysCoordR) 
+  + \sysDissMatCoeffC{\LidxI\LidxIV}(\sysCoordR) E^\LidxIV_{\LidxIII\LidxII}(\sysCoordR) \sysVelCoeffR{\LidxIII} + \sysInertiaMatCoeffC{\LidxI\LidxIV}(\sysCoordR) \dot{E}^\LidxIV_{\LidxIII\LidxII}(\sysCoordR, \sysVelR) \sysVelCoeffR{\LidxIII}
+\nonumber\\
+  &\qquad+ \ConnCoeffLC{\LidxI}{\LidxV}{\LidxIII}(\sysCoordR) E^\LidxV_{\LidxIV\LidxII}(\sysCoordR) \sysVelCoeffR{\LidxIII} \sysVelCoeffR{\LidxIV}
+  + \sysInertiaMatCoeffC{\LidxI\LidxIV}(\sysCoordR) E^\LidxIV_{\LidxIII\LidxII}(\sysCoordR) \sysVelCoeffRd{\LidxIII}
+\end{align}
+\end{subequations}
+It should be noted that the preceding expressions simplify significantly if $E = 0$ which is actually the case for most of the following examples.
+
+\clearpage
+\subsection{Generic controlled system}
+Equation of motion %with $\sysInertiaMatC(\sysCoord) \in \RealNum^{\dimConfigSpace\times\dimConfigSpace}$ and $\genForceC(\sysCoord, \sysVel, \sysCoordR, \sysVelR, \sysVelRd) \in \RealNum^{\dimConfigSpace}$
+\begin{align}
+ \geoConstraint(\sysCoord) = \tuple{0},
+\qquad
+ \sysCoordd = \kinMat(\sysCoord) \sysVel,
+\qquad
+ \sysInertiaMatC(\sysCoord) \sysVeld + \genForceC(\sysCoord, \sysVel, \sysCoordR, \sysVelR, \sysVelRd) = \tuple{0}
+\end{align}
+with $\genForceC(\sysCoordR, \sysVelR, \sysCoordR, \sysVelR, \sysVelRd) = -\sysInertiaMatC(\sysCoordR) \sysVelRd$.
+
+Generic total energy as Lyapunov function canidate %with the generic functions $\tuple{b}(\sysCoord, \sysCoordR, \sysVelR) \in \RealNum^{\dimConfigSpace}$ and $c(\sysCoord, \sysCoordR, \sysVelR) \in \RealNum$
+\begin{align}
+ \totalEnergyC(\sysCoord, \sysVel, \sysCoordR, \sysVelR) &= \tfrac{1}{2} \sysVel^\top \sysInertiaMatC(\sysCoord) \sysVel + \tuple{b}^\top(\sysCoord, \sysCoordR, \sysVelR) \sysVel + c(\sysCoord, \sysCoordR, \sysVelR)
+\end{align}
+with $\totalEnergyC(\sysCoordR, \sysVelR, \sysCoordR, \sysVelR) = 0$ and $\differential \totalEnergyC(\sysCoordR, \sysVelR, \sysCoordR, \sysVelR) = \tuple{0}$, $\tpdiff[\totalEnergyC]{\sysVel}(\sysCoordR, \sysVelR, \sysCoordR, \sysVelR) = \tuple{0}$.
+
+Change of total energy
+\begin{align}
+ \totalEnergyCd &= \sysVel^\top \sysInertiaMatC \sysVeld + \tfrac{1}{2} \sysVel^\top \sysInertiaMatCd \sysVel
+ + \tuple{b}^\top \sysVeld + \dot{\tuple{b}}^\top \sysVel + \dot{c}
+\nonumber\\
+ &= -\big(\sysVel + \sysInertiaMatC^{-1} \tuple{b} \big) \genForceC
+   + \tfrac{1}{2} \sysVel^\top \sysInertiaMatCd \sysVel + \dot{\tuple{b}}^\top \sysVel + \dot{c}
+\end{align}
+
+\paragraph{Small error approximation.}
+Assume 
+\begin{align}
+ \sysCoordCoeff{\GidxI} &\approx \sysCoordCoeffR{\GidxI} + \kinMatCoeff{\GidxI}{\LidxI}(\sysCoordR) \LinErrorCoordCoeff{\LidxI},
+\\
+ \sysVelCoeff{\LidxI} &\approx \sysVelCoeffR{\LidxI} + \LinErrorCoordCoeffd{\LidxI} + \BoltzSym{\LidxI}{\LidxIII}{\LidxII}(\sysCoordR) \sysVelCoeffR{\LidxIII} \LinErrorCoordCoeff{\LidxII}
+\end{align}
+Equation of motion %(Recall that $\genForceC(\sysCoordR, \sysVelR, \sysCoordR, \sysVelR, \sysVelRd) = -\sysInertiaMatC(\sysCoordR) \sysVelRd$)
+\begin{align}
+%  \sysInertiaMatCoeffC{\LidxI\LidxII}(\sysCoordR) \big( \LinErrorCoordCoeffdd{\LidxII} + \BoltzSym{\LidxII}{\LidxIV}{\LidxIII}(\sysCoordR) \sysVelCoeffR{\LidxIV} \LinErrorCoordCoeffd{\LidxIII} + \big(\BoltzSym{\LidxII}{\LidxIV}{\LidxIII}(\sysCoordR) \sysVelCoeffRd{\LidxIV} + \dirDiff{\LidxV}\BoltzSym{\LidxII}{\LidxIV}{\LidxIII}(\sysCoordR) \sysVelCoeffR{\LidxV} \sysVelCoeffR{\LidxIV} \big)\LinErrorCoordCoeff{\LidxIII} \big)
+%  + \dirDiff{\LidxIII} \sysInertiaMatCoeffC{\LidxI\LidxII}(\sysCoordR) \sysVelCoeffRd{\LidxII} \LinErrorCoordCoeff{\LidxIII}
+% \nonumber\\
+%  + \dirDiff{\LidxII} \genForceCoeffC{\LidxI}(\sysCoord, \sysVel, \sysCoordR, \sysVelR, \sysVelRd) \LinErrorCoordCoeff{\LidxII}
+%  + \pdiff[\genForceCoeffC{\LidxI}]{\sysVelCoeff{\LidxII}}(\sysCoord, \sysVel, \sysCoordR, \sysVelR, \sysVelRd) \big( \LinErrorCoordCoeffd{\LidxII} + \BoltzSym{\LidxII}{\LidxIV}{\LidxIII}(\sysCoordR) \sysVelCoeffR{\LidxIV} \LinErrorCoordCoeff{\LidxIII} \big)
+% = 0, \quad \LidxI = 1,\ldots,\dimConfigSpace.
+ \sysInertiaMatCLin \LinErrorCoorddd + \sysDissMatCLin \LinErrorCoordd + \sysStiffMatCLin \LinErrorCoord &= \tuple{0}
+\end{align}
+where
+\begin{subequations}
+\begin{align}
+ \sysInertiaMatCoeffCLin{\LidxI\LidxII}(\sysCoordR) &= \sysInertiaMatCoeffC{\LidxI\LidxII}(\sysCoordR),
+\\
+ \sysDissMatCoeffCLin{\LidxI\LidxII}(\sysCoordR, \sysVelR) &= \tpdiff[\genForceCoeffC{\LidxI}]{\sysVelCoeff{\LidxII}}(\sysCoordR, \sysVelR, \sysCoordR, \sysVelR, \sysVelRd)
+ + \sysInertiaMatCoeffC{\LidxI\LidxII}(\sysCoordR) \BoltzSym{\LidxII}{\LidxIV}{\LidxIII}(\sysCoordR) \sysVelCoeffR{\LidxIV},
+\\
+ \sysStiffMatCoeffCLin{\LidxI\LidxII}(\sysCoordR, \sysVelR, \sysVelRd) &= \dirDiff{\LidxII} \genForceCoeffC{\LidxI}(\sysCoordR, \sysVelR, \sysCoordR, \sysVelR, \sysVelRd)
+ + \tpdiff[\genForceCoeffC{\LidxI}]{\sysVelCoeff{\LidxIII}}(\sysCoordR, \sysVelR, \sysCoordR, \sysVelR, \sysVelRd) \BoltzSym{\LidxIII}{\LidxIV}{\LidxII}(\sysCoordR) \sysVelCoeffR{\LidxIV}
+\nonumber\\
+ &\qquad+ \sysInertiaMatCoeffC{\LidxI\LidxIII}(\sysCoordR) \big(\BoltzSym{\LidxIII}{\LidxIV}{\LidxII}(\sysCoordR) \sysVelCoeffRd{\LidxIV} + \dirDiff{\LidxV}\BoltzSym{\LidxIII}{\LidxIV}{\LidxII}(\sysCoordR) \sysVelCoeffR{\LidxV} \sysVelCoeffR{\LidxIV} \big)
+ + \dirDiff{\LidxII} \sysInertiaMatCoeffC{\LidxI\LidxIII}(\sysCoordR) \sysVelCoeffRd{\LidxIII}
+\end{align} 
+\end{subequations}
+total energy
+\begin{align}
+ \totalEnergyC &= %\totalEnergyC \evalRef
+ %+ \differential \totalEnergyC \evalRef \LinErrorCoord
+ %+ \tpdiff[\totalEnergyC]{\sysVel} \evalRef (\LinErrorCoordd + \ad{\sysVelR} \LinErrorCoord)
+ \tfrac{1}{2} (\LinErrorCoordd + \ad{\sysVelR} \LinErrorCoord)^\top  \tfrac{\partial^2 \totalEnergyC}{\partial \sysVel \partial \sysVel} \evalRef (\LinErrorCoordd + \ad{\sysVelR} \LinErrorCoord)
+ + (\LinErrorCoordd + \ad{\sysVelR} \LinErrorCoord)^\top \tpdiff[\differential \totalEnergyC]{\sysVel} \evalRef \LinErrorCoord
+ + \tfrac{1}{2} \LinErrorCoord^\top \differential^2 \totalEnergyC \evalRef \LinErrorCoord
+ + \mathcal{O}(3)
+\nonumber\\
+ &= \tfrac{1}{2} \LinErrorCoordd^\top  \tfrac{\partial^2 \totalEnergyC}{\partial \sysVel \partial \sysVel} \evalRef \LinErrorCoordd
+ + \LinErrorCoordd^\top  \tfrac{\partial^2 \totalEnergyC}{\partial \sysVel \partial \sysVel} \evalRef \ad{\sysVelR} \LinErrorCoord
+ + \tfrac{1}{2} \LinErrorCoord^\top \ad{\sysVelR}^\top  \tfrac{\partial^2 \totalEnergyC}{\partial \sysVel \partial \sysVel} \evalRef \ad{\sysVelR} \LinErrorCoord
+\nonumber\\
+ &\qquad+ \LinErrorCoordd^\top \tpdiff[\differential \totalEnergyC]{\sysVel} \evalRef \LinErrorCoord
+ + \LinErrorCoord^\top \ad{\sysVelR}^\top \tpdiff[\differential \totalEnergyC]{\sysVel} \evalRef \LinErrorCoord
+ + \tfrac{1}{2} \LinErrorCoord^\top \differential^2 \totalEnergyC \evalRef \LinErrorCoord
+ + \mathcal{O}(3)
+\nonumber\\
+ &= \tfrac{1}{2} \LinErrorCoordd^\top \underbrace{\tfrac{\partial^2 \totalEnergyC}{\partial \sysVel \partial \sysVel} \evalRef}_{\sysInertiaMatC} \LinErrorCoordd
+ + \LinErrorCoordd^\top \underbrace{\big( \tfrac{\partial^2 \totalEnergyC}{\partial \sysVel \partial \sysVel} \evalRef \ad{\sysVelR} + \tpdiff[\differential \totalEnergyC]{\sysVel} \evalRef \big)}_{\mat{C}} \LinErrorCoord
+\nonumber\\
+ &+ \tfrac{1}{2} \LinErrorCoord^\top \underbrace{\big( \differential^2 \totalEnergyC \evalRef
+  + \ad{\sysVelR}^\top \tpdiff[\differential \totalEnergyC]{\sysVel} \evalRef
+  + \big( \tpdiff[\differential \totalEnergyC]{\sysVel} \evalRef \big)^\top \ad{\sysVelR}
+  + \ad{\sysVelR}^\top  \tfrac{\partial^2 \totalEnergyC}{\partial \sysVel \partial \sysVel} \evalRef \ad{\sysVelR} \big)}_{\mat{K}} \LinErrorCoord
+ + \mathcal{O}(3)
+\nonumber\\
+ &= \tfrac{1}{2} \LinErrorCoordd^\top \sysInertiaMatC \LinErrorCoordd
+ + \LinErrorCoordd^\top \mat{C} \LinErrorCoord
+ + \tfrac{1}{2} \LinErrorCoord^\top \mat{K} \LinErrorCoord
+ + \mathcal{O}(3)
+\end{align}
+where
+\begin{align}
+ C_{\LidxI\LidxII} &= \big( \sysInertiaMatCoeffC{\LidxI\LidxIV} \BoltzSym{\LidxIV}{\LidxIII}{\LidxII} \sysVelCoeffR{\LidxIII} + \dirDiff{\LidxII}\tpdiff[\totalEnergyC]{\sysVelCoeff{\LidxI}}\big) \evalRef
+\\
+ K_{\LidxI\LidxII} &= \big( \dirDiff{\LidxII}\dirDiff{\LidxI} \totalEnergyC
+  + \big( \dirDiff{\LidxII} \tpdiff[\totalEnergyC]{\sysVelCoeff{\LidxIV}} \BoltzSym{\LidxIV}{\LidxIII}{\LidxI} + \dirDiff{\LidxI} \tpdiff[\totalEnergyC]{\sysVelCoeff{\LidxIV}} \BoltzSym{\LidxIV}{\LidxIII}{\LidxII} \big) \sysVelCoeffR{\LidxIII}
+  + \sysInertiaMatCoeffC{\LidxIII\LidxIV} \BoltzSym{\LidxIII}{\LidxV}{\LidxI} \BoltzSym{\LidxIV}{\LidxVI}{\LidxII} \sysVelCoeffR{\LidxV} \sysVelCoeffR{\LidxVI}
+ \big) \evalRef
+\end{align}
+
+
+
+\paragraph{old}
+Equation of motion
+\begin{align}
+ \sysInertiaMatCoeffC{\LidxI\LidxII}(\sysCoord) \sysVelCoeffd{\LidxII} + \genForceCoeffC{\LidxI}(\sysCoord, \sysVel, \sysCoordR, \sysVelR, \sysVelRd) &= 0, \quad \LidxI = 1,\ldots,\dimConfigSpace.
+\end{align}
+Total energy 
+\begin{align}
+ \totalEnergyC &= \tfrac{1}{2} \sysInertiaMatCoeffC{\LidxI\LidxII}(\sysCoord) \sysVelCoeff{\LidxI} \sysVelCoeff{\LidxII} + \sysVelCoeff{\LidxI} b_{\LidxI}(\sysCoord, \sysCoordR, \sysVelR) + c(\sysCoord, \sysCoordR, \sysVelR)
+\end{align}
+Change of total energy 
+\begin{align}
+ \totalEnergyCd &= \sysInertiaMatCoeffC{\LidxI\LidxII}(\sysCoord) \sysVelCoeff{\LidxI} \sysVelCoeffd{\LidxII} + \tfrac{1}{2} \dirDiff{\LidxIII} \sysInertiaMatCoeffC{\LidxI\LidxII}(\sysCoord) \sysVelCoeff{\LidxI} \sysVelCoeff{\LidxII} \sysVelCoeff{\LidxIII}
+\nonumber\\
+ &\qquad
+ + \sysVelCoeffd{\LidxI} b_{\LidxI}(\sysCoord, \sysCoordR, \sysVelR)
+ + \sysVelCoeff{\LidxI} \dot{b}_{\LidxI}(\sysCoord, \sysVel, \sysCoordR, \sysVelR, \sysVelRd)
+ + \dot{c}(\sysCoord, \sysVel, \sysCoordR, \sysVelR, \sysVelRd)
+\nonumber\\
+ &= -\big(\sysVelCoeff{\LidxI} + \isysInertiaMatCoeffC{\LidxI\LidxII}(\sysCoord) b_{\LidxII}(\sysCoord, \sysCoordR, \sysVelR) \big) \genForceCoeffC{\LidxI}(\sysCoord, \sysVel, \sysCoordR, \sysVelR, \sysVelRd)
+ +\tfrac{1}{2} \dirDiff{\LidxIII} \sysInertiaMatCoeffC{\LidxI\LidxII}(\sysCoord) \sysVelCoeff{\LidxI} \sysVelCoeff{\LidxII} \sysVelCoeff{\LidxIII}
+\nonumber\\
+ &\qquad
+ + \sysVelCoeff{\LidxI} \dot{b}_{\LidxI}(\sysCoord, \sysVel, \sysCoordR, \sysVelR, \sysVelRd)
+ + \dot{c}(\sysCoord, \sysVel, \sysCoordR, \sysVelR, \sysVelRd)
+\end{align}
+
+
+\clearpage

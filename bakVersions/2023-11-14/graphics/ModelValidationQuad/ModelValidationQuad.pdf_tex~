@@ -1,0 +1,6 @@
+\begingroup%
+  \begin{picture}(15cm,23cm)%
+    \put(0,0){\includegraphics{ModelValidationQuad/ModelValidationQuad.pdf}}%
+    \put(0.20388876,0.28824833){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{prefilter}}}%
+  \end{picture}%
+\endgroup%

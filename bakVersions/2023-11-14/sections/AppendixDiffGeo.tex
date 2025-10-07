@@ -1,0 +1,486 @@
+\clearpage
+\newcommand{\protoFcn}{f}
+\section{Differential geometry}
+
+\subsection{Embedded manifold}
+
+\paragraph{Inverse function theorem.}
+%\cite[Theo.\ 5.11]{Lee:SmoothManifolds}
+\cite[Theo.\ 1A.1]{Rockafellar:ImplicitFunctions}:
+Let $\tuple{f}:\RealNum^n \rightarrow \RealNum^n$ be continuously differentiable in a neighborhood of $\bar{\tuple{x}}$ and let $\bar{\tuple{y}} = \tuple{f}(\bar{\tuple{x}})$.
+If $\tpdiff[\tuple{f}]{\tuple{x}}(\bar{\tuple{x}})$ is nonsingular, then there exists an continuous differentiable inverse $\tuple{g}$ for some neighborhood $\mathbb{Y}\subset\RealNum^n$ of $\bar{\tuple{y}}$.
+Its Jacobian satisfies
+\begin{align}
+ \tpdiff[\tuple{g}]{\tuple{y}}(\tuple{y}) = \big(\tpdiff[\tuple{f}]{\tuple{x}}(\tuple{g}(\tuple{y}))\big)^{-1}, \quad \tuple{y} \in \mathbb{Y}.
+\end{align}
+
+
+\paragraph{Implicit function theorem.}
+%\cite[Theo.\ 5.15]{Lee:SmoothManifolds}
+\cite[Theo.\ 1B.1]{Rockafellar:ImplicitFunctions}:
+Let $\tuple{f}:\RealNum^d \times \RealNum^n \rightarrow \RealNum^n$ be continuously differentiable in a neighborhood of $(\bar{\tuple{p}},\bar{\tuple{x}})$ and let $\tuple{f}(\bar{\tuple{p}},\bar{\tuple{x}})=\tuple{0}$.
+If $\tpdiff[\tuple{f}]{\tuple{x}}(\bar{\tuple{p}}, \bar{\tuple{x}})$ is nonsingular, then there exists an continuous differentiable function $\tuple{g}:\RealNum^p \rightarrow \RealNum^n$ for some neighborhood $\mathbb{P}\subset\RealNum^d$ of $\bar{\tuple{p}}$ such that
+\begin{align}
+ \tuple{f}(\tuple{p}, \tuple{g}(\tuple{p})) = \tuple{0}, \quad \tuple{p} \in \mathbb{P}.
+\end{align}
+Its Jacobian satisfies
+\begin{align}
+ \tpdiff[\tuple{g}]{\tuple{p}}(\tuple{p}) = -\big(\tpdiff[\tuple{f}]{\tuple{x}}(\tuple{p}, \tuple{g}(\tuple{p}))\big)^{-1} \tpdiff[\tuple{f}]{\tuple{p}}(\tuple{p}, \tuple{g}(\tuple{p})), \quad \tuple{p} \in \mathbb{P}.
+\end{align}
+
+\paragraph{Embedded manifold.}
+Consider the set $\configSpace$ defined by
+\begin{align}
+ \configSpace = \{ \sysCoord \in \RealNum^{\numCoord} \, | \, \geoConstraint(\sysCoord) = \tuple{0} \}
+\end{align}
+with smooth functions $\geoConstraintCoeff{\CidxI}(\sysCoord) = 0, \CidxI=1,\ldots\numGeoConst$.
+Let their Jacobian have constant rank
+\begin{align}
+ \geoConstraintMatCoeff{\CidxI}{\GidxI}(\sysCoord) = \pdiff[\geoConstraintCoeff{\CidxI}]{\sysCoordCoeff{\GidxI}}(\sysCoord),
+\qquad
+ \rank\geoConstraintMat(\sysCoord) = \numCoord-\dimConfigSpace = \const \ \forall \ \sysCoord\in\configSpace.
+\end{align}
+Due to the rank condition, the implicit function theorem guarantees the existence of a local chart around each point $\sysCoord\in\configSpace$.
+Consequently $\configSpace$ is a $\dimConfigSpace$ dimensional \textit{embedded submanifold} of $\RealNum^{\numCoord}$.
+If there exits a global chart, then $\configSpace$ is homeomorphic to $\RealNum^\dimConfigSpace$ and the manifold is \textit{linear}.
+If this is not the case, the manifold is \textit{nonlinear}.
+
+\paragraph{Tangent space.}
+Consider a parametrized curve $\sysCoord : \RealNum \rightarrow \configSpace : t \mapsto \sysCoord(t)$.
+Since we have $\geoConstraint(\sysCoord) = \tuple{0}$, we also have
+\begin{align}
+ \tdiff{t} \geoConstraint(\sysCoord(t)) = \geoConstraintMat(\sysCoord(t)) \tdiff[\sysCoord]{t}(t) = \tuple{0},
+\end{align}
+which has to hold for any curve through $\sysCoord$.
+The set of tangent vectors $\tuple{v} = \sysCoordd$ of arbitrary curves through a particular point $\sysCoord\in\configSpace$ is the \textit{tangent space}
+\begin{align}
+ \Tangent[\sysCoord]\configSpace = \{ \tuple{v} \in \RealNum^{\numCoord} \, | \, \geoConstraintMat(\sysCoord) \tuple{v} = \tuple{0} \}.
+\end{align}
+Since $\rank\geoConstraintMat = \numCoord-\dimConfigSpace$ there is a matrix $\kinMat(\sysCoord) \in \RealNum^{\numCoord\times\dimConfigSpace}$ with $\geoConstraintMat\kinMat \equiv 0$, $\rank\kinMat=\dimConfigSpace$ with which we can give an explicit statement of the tangent space
+\begin{align}
+ \Tangent[\sysCoord]\configSpace = \{ \tuple{v} = \kinMat(\sysCoord)\sysVel \, | \, \sysVel \in \RealNum^{\dimConfigSpace} \}
+\end{align}
+i.e.\ the column space of the matrix $\kinMat$.
+
+Linear algebra guarantees the existence of a matrix $\kinMat(\sysCoord)$ at each point $\sysCoord\in\configSpace$ and the implicit function theorem guarantees that there is a neighborhood in which $\kinMat$ is smooth. 
+However, there is no guarantee for $\kinMat$ to be smooth over all $\configSpace$, i.e.\ to be global.
+In the most important case for this work $\configSpace=\SpecialOrthogonalGroup(3)$, thought the manifold is nonlinear, there is a global matrix $\kinMat$, see Example \autoref{Example:KinMatSO3}.
+The conjecture is that this is true for any \textit{Lie group}.
+In other cases, e.g.\ the 2-sphere $\configSpace = \Sphere^2$, the \textit{hairy-ball theorem}, e.g.\ \cite{Poincare:HairyBall}, states that no global matrix $\kinMat$ can exist.
+In these cases one may resort to having overlapping, local patches for $\kinMat$.
+
+\paragraph{Some identities.}
+Consider the matrices $\kinMat(\sysCoord) \in \RealNum^{\numCoord\times\dimConfigSpace}, \numCoord \geq \dimConfigSpace$ and $\geoConstraintMat(\sysCoord)\in\RealNum^{\numGeoConst\times\numCoord}, \numGeoConst \geq \numCoord-\dimConfigSpace$ with
+\begin{align}
+ \rank\kinMat = \dimConfigSpace,
+\qquad
+ \rank\geoConstraintMat = \numCoord - \dimConfigSpace,
+\qquad
+ \geoConstraintMat\kinMat = \mat{0}.
+\end{align}
+Let $\kinBasisMat(\sysCoord)\in\RealNum^{\dimConfigSpace\times\numCoord}$ and $\InvGeoConstraintMat(\sysCoord)\in\RealNum^{\numCoord\times\numGeoConst}$ be matrices that fulfill the identities
+\begin{align}\label{eq:KinIdentities}
+%  \begin{bmatrix} \kinBasisMat \\ \geoConstraintMat \end{bmatrix} \left[ \kinMat \ \InvGeoConstraintMat \right]
+%  &= \begin{bmatrix} \kinBasisMat\kinMat & \kinBasisMat \InvGeoConstraintMat \\ \geoConstraintMat\kinMat & \geoConstraintMat \InvGeoConstraintMat \end{bmatrix}
+%  = \begin{bmatrix} \idMat[\dimConfigSpace] & \mat{0} \\ \mat{0} & \idMat[\numGeoConst] \end{bmatrix}
+% \\
+% \left[ \kinMat \ \InvGeoConstraintMat \right] \begin{bmatrix} \kinBasisMat \\ \geoConstraintMat \end{bmatrix}
+ \kinBasisMat \kinMat = \idMat[\dimConfigSpace],
+\qquad
+ \kinMat \kinBasisMat + \InvGeoConstraintMat \geoConstraintMat = \idMat[\numCoord].
+\end{align}
+Recalling the properties of the Moore-Penrose-pseudoinverse \eqref{eq:AppendixPenroseConditions} and the identity \eqref{eq:OrthogonalProjectorsFromBasis}, one possible solution to this is
+\begin{align}
+ \kinBasisMat = \kinMat^+, \qquad \InvGeoConstraintMat = \geoConstraintMat^+.
+\end{align}
+
+\subsection{Vectors}
+\paragraph{Basis vectors.}
+In differential geometry it is common to identify vectors and differential operators.
+The standard basis for $\Tangent \RealNum^\numCoord$ may be written as $\basisVect[\GidxI] = \pdiff{\sysCoordCoeff{\GidxI}}, \GidxI = 1,\ldots,\numCoord$.
+For the sake of readability we adopt the notation of \cite{Frankel:GeometryOfPhysics} and denote them as $\pdiffVect{\sysCoordCoeff{\GidxI}}$ when they should be regarded as basis vectors.
+Using the relations from the previous paragraph, we define the basis vectors $\partialVect_{\LidxI}$ for the tangent space $\Tangent[\sysCoord]\configSpace$ and the complementary vectors $\partialVect_{\CidxI}^\bot$ that span $(\Tangent[\sysCoord]\configSpace)^\bot$ as
+\begin{subequations}
+\begin{align}
+ \partialVect_{\LidxI} &= \kinMatCoeff{\GidxI}{\LidxI}(\sysCoord) \pdiffVect{\sysCoordCoeff{\GidxI}},&
+ \LidxI &= 1,\ldots,\dimConfigSpace,
+\\
+ \partialVect_{\CidxI}^\bot &= \InvGeoConstraintMatCoeff{\GidxI}{\CidxI}(\sysCoord) \pdiffVect{\sysCoordCoeff{\GidxI}},&
+ \CidxI &= 1,\ldots,\numGeoConst,
+\\
+ \pdiffVect{\sysCoordCoeff{\GidxI}} &= \kinBasisMatCoeff{\LidxI}{\GidxI}(\sysCoord) \partialVect_{\LidxI} + \geoConstraintMatCoeff{\CidxI}{\GidxI}(\sysCoord) \partialVect_{\CidxI}^\bot,&
+ \GidxI &= 1,\ldots,\numCoord.
+\end{align} 
+\end{subequations}
+
+\paragraph{Directional derivative.}
+Using the basis vectors we may write any tangent vector $\vect{v} \in \Tangent[\sysCoord]\configSpace$ as $\vect{v} = v^\LidxI \partialVect_{\LidxI}$.
+The derivative of a function $\protoFcn: \configSpace \rightarrow \RealNum$ in the direction of a tangent vector $\vect{v} \in \Tangent[\sysCoord] \configSpace$ is
+\begin{align}
+ \vect{v}(\protoFcn) = v^\LidxI \partial_{\LidxI} \protoFcn = v^\LidxI \kinMatCoeff{\GidxI}{\LidxI} \pdiff[\protoFcn]{\sysCoordCoeff{\GidxI}}.
+\end{align}
+Note that for computing $\spdiff[\protoFcn]{\sysCoordCoeff{\GidxI}}$, $\protoFcn$ needs to be defined not only on $\configSpace$, but also on an (infinitesimal) neighborhood in the normal directions.
+This is usually the case if the function is expressed in terms of the redundant coordinates $\sysCoord$.
+However, we could avoid this by introducing minimal, local coordinates $\sysCoord=\configChange(\genCoord), \genCoord\in\RealNum^{\dimConfigSpace}$ and taking the derivatives in their directions.
+The crucial point is that the result, i.e.\ $\vect{v}(\protoFcn)$ is \textit{invariant} to the used coordinates.
+See the corresponding paragraphs in \autoref{sec:AppendixCoordinateTrafo} and \autoref{sec:AppendixBasisTrafo} for the explicit transformation rules.
+
+\paragraph{Vector field.}
+For the given manifold $\configSpace$, a vector field is the assignment $\vect{v}\in \Tangent[\sysCoord]\configSpace$ to each point $\sysCoord \in \configSpace$.
+The collection of vector fields on $\configSpace$ is commonly denoted by $\mathfrak{X}(\configSpace)$.
+
+\paragraph{Lie bracket.}
+The \textit{Lie bracket} is a map $\LieBracket{\cdot}{\cdot} : \mathfrak{X}(\configSpace) \times \mathfrak{X}(\configSpace) \rightarrow \mathfrak{X}(\configSpace)$.
+For $\vect{u}, \vect{v} \in \mathfrak{X}(\configSpace)$ and a function $\protoFcn: \configSpace \rightarrow \RealNum$ it yields
+\begin{align}
+ \LieBracket{\vect{u}}{\vect{v}}(\protoFcn) &= \vect{u}(\vect{v}(\protoFcn)) - \vect{v}(\vect{u}(\protoFcn))
+\nonumber\\ 
+ &= u^{\LidxI} \dirDiff{\LidxI} (v^{\LidxII} \dirDiff{\LidxII}\protoFcn) - v^{\LidxII} \dirDiff{\LidxII} (u^{\LidxI} \dirDiff{\LidxI}\protoFcn)
+%\\
+% &= u^{\LidxI} \dirDiff{\LidxI} v^{\LidxII} \dirDiff{\LidxII}f + u^{\LidxI} v^{\LidxII} \dirDiff{\LidxI}\dirDiff{\LidxII}f - v^{\LidxII} \dirDiff{\LidxII} u^{\LidxI} \dirDiff{\LidxI}f - v^{\LidxII} u^{\LidxI} \dirDiff{\LidxII} \dirDiff{\LidxI}f
+\nonumber\\
+ &= ( u^{\LidxI} \dirDiff{\LidxI} v^{\LidxII} - v^{\LidxI} \dirDiff{\LidxI} u^{\LidxII})\dirDiff{\LidxII}\protoFcn + u^{\LidxI} v^{\LidxII} (\dirDiff{\LidxI}\dirDiff{\LidxII}\protoFcn - \dirDiff{\LidxII} \dirDiff{\LidxI}\protoFcn)
+\end{align}
+Whereas derivatives like $\spdiff{\sysCoordCoeff{\GidxI}}$ do commute, this is not true for $\dirDiff{\LidxI}$.
+Instead we have
+\begin{align}
+ \dirDiff{\LidxI}\dirDiff{\LidxII}\protoFcn - \dirDiff{\LidxII} \dirDiff{\LidxI}\protoFcn 
+ &= \kinMatCoeff{\GidxI}{\LidxI} \pdiff{\sysCoordCoeff{\GidxI}} \bigg(\kinMatCoeff{\GidxII}{\LidxII} \pdiff[\protoFcn]{\sysCoordCoeff{\GidxII}} \bigg) - \kinMatCoeff{\GidxII}{\LidxII} \pdiff{\sysCoordCoeff{\GidxII}} \bigg( \kinMatCoeff{\GidxI}{\LidxI} \pdiff[\protoFcn]{\sysCoordCoeff{\GidxI}} \bigg)
+\nonumber\\
+ &= \kinMatCoeff{\GidxI}{\LidxI} \pdiff[\kinMatCoeff{\GidxII}{\LidxII}]{\sysCoordCoeff{\GidxI}} \pdiff[\protoFcn]{\sysCoordCoeff{\GidxII}} - \kinMatCoeff{\GidxII}{\LidxII} \pdiff[\kinMatCoeff{\GidxI}{\LidxI}]{\sysCoordCoeff{\GidxII}} \pdiff[\protoFcn]{\sysCoordCoeff{\GidxI}}
+ + \kinMatCoeff{\GidxI}{\LidxI} \kinMatCoeff{\GidxII}{\LidxII} \underbrace{\bigg(\frac{\partial^2 \protoFcn}{\partial \sysCoordCoeff{\GidxI} \partial \sysCoordCoeff{\GidxII}} - \frac{\partial^2 \protoFcn}{\partial \sysCoordCoeff{\GidxII} \partial \sysCoordCoeff{\GidxI}} \bigg)}_{0}
+\nonumber\\[-2ex]
+ &= \bigg( \kinMatCoeff{\GidxI}{\LidxI} \pdiff[\kinMatCoeff{\GidxII}{\LidxII}]{\sysCoordCoeff{\GidxI}} - \kinMatCoeff{\GidxI}{\LidxII} \pdiff[\kinMatCoeff{\GidxII}{\LidxI}]{\sysCoordCoeff{\GidxI}} \bigg) 
+ \overbrace{\big( \kinBasisMatCoeff{\LidxIII}{\GidxII} \dirDiff{\LidxIII}\protoFcn + \geoConstraintMatCoeff{\CidxI}{\GidxII} \partial_{\CidxI}^\bot\protoFcn \big)}^{\pdiff[\protoFcn]{\sysCoordCoeff{\GidxII}}}
+\nonumber\\
+ &= \underbrace{\big( \dirDiff{\LidxI} \kinMatCoeff{\GidxII}{\LidxII} - \dirDiff{\LidxII} \kinMatCoeff{\GidxII}{\LidxI} \big)\kinBasisMatCoeff{\LidxIII}{\GidxII}}_{\BoltzSym{\LidxIII}{\LidxI}{\LidxII}} \dirDiff{\LidxIII}\protoFcn
+% &= \underbrace{\bigg(\pdiff[\kinBasisMatCoeff{\LidxIII}{\GidxI}]{\sysCoordCoeff{\GidxII}} - \pdiff[\kinBasisMatCoeff{\LidxIII}{\GidxII}]{\sysCoordCoeff{\GidxI}}\bigg) \kinMatCoeff{\GidxI}{\LidxI} \kinMatCoeff{\GidxII}{\LidxII}}_{\BoltzSym{\LidxIII}{\LidxI}{\LidxII}} \dirDiff{\LidxIII}\protoFcn
+  + \underbrace{\bigg(\frac{\partial^2 \geoConstraintCoeff{\CidxI}}{\partial \sysCoordCoeff{\GidxII} \partial \sysCoordCoeff{\GidxI}} - \frac{\partial^2 \geoConstraintCoeff{\CidxI}}{\partial \sysCoordCoeff{\GidxI} \partial \sysCoordCoeff{\GidxII}} \bigg)}_{0} \kinMatCoeff{\GidxI}{\LidxI} \kinMatCoeff{\GidxII}{\LidxII} \partial_{\CidxI}^\bot \protoFcn
+% + \underbrace{\bigg(\pdiff[\geoConstraintMatCoeff{\CidxI}{\GidxI}]{\sysCoordCoeff{\GidxII}} - \pdiff[\geoConstraintMatCoeff{\CidxI}{\GidxII}]{\sysCoordCoeff{\GidxI}} \bigg)}_{0} \kinMatCoeff{\GidxI}{\LidxI} \kinMatCoeff{\GidxII}{\LidxII} \partial_{\CidxI}^\bot \protoFcn
+\label{eq:LieBracketCoeff}
+\end{align}
+Since this holds for any function $\protoFcn$ we can give the coordinate expression for the \textit{Lie-bracket} as
+\begin{align}
+ \LieBracket{u^\LidxI \partialVect_\LidxI}{v^\LidxII \partialVect_\LidxII}
+ &= \big( u^\LidxI \dirDiff{\LidxI} v^\LidxIII - v^\LidxI \dirDiff{\LidxI} u^\LidxIII + \BoltzSym{\LidxIII}{\LidxI}{\LidxII} u^\LidxI v^\LidxII \big) \partialVect_\LidxIII
+\end{align}
+We call its coefficients $\BoltzSym{\LidxIII}{\LidxI}{\LidxII}$, defined by $\LieBracket{\partialVect_\LidxI}{\partialVect_\LidxII} = \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \partialVect_\LidxIII$, the \textit{commutation coefficients}.
+Using the identities \eqref{eq:KinIdentities} we may also give alternative formulations
+\begin{align}
+ \BoltzSym{\LidxIII}{\LidxI}{\LidxII}
+  = \kinBasisMatCoeff{\LidxIII}{\GidxI} \big( \partial_{\LidxI} \kinMatCoeff{\GidxI}{\LidxII} - \partial_{\LidxII} \kinMatCoeff{\GidxI}{\LidxI} \big)
+  = \kinMatCoeff{\GidxI}{\LidxI} \partial_{\LidxII} \kinBasisMatCoeff{\LidxIII}{\GidxI} - \kinMatCoeff{\GidxI}{\LidxII} \partial_{\LidxI} \kinBasisMatCoeff{\LidxIII}{\GidxI}
+  = \bigg( \pdiff[\kinBasisMatCoeff{\LidxIII}{\GidxI}]{\sysCoordCoeff{\GidxII}} -  \pdiff[\kinBasisMatCoeff{\LidxIII}{\GidxII}]{\sysCoordCoeff{\GidxI}} \bigg) \kinMatCoeff{\GidxII}{\LidxII} \kinMatCoeff{\GidxI}{\LidxI}
+\end{align}
+For the Lie bracket and consequently for its coefficients, we have the antisymmetry and Jacobi identity:
+\begin{align}
+ \LieBracket{\vect{u}}{\vect{v}} = -\LieBracket{\vect{v}}{\vect{u}}&&
+ &\Leftrightarrow&
+ \BoltzSym{\LidxIII}{\LidxI}{\LidxII} = -\BoltzSym{\LidxIII}{\LidxII}{\LidxI}
+\\
+ \LieBracket{\vect{u}}{\LieBracket{\vect{v}}{\vect{w}}} + \LieBracket{\vect{w}}{\LieBracket{\vect{u}}{\vect{v}}} + \LieBracket{\vect{v}}{\LieBracket{\vect{w}}{\vect{u}}} = \vect{0}&&
+ &\Leftrightarrow&
+ \BoltzSym{\LidxV}{\LidxI}{\LidxIV} \BoltzSym{\LidxIV}{\LidxII}{\LidxIII} + \BoltzSym{\LidxV}{\LidxIII}{\LidxIV} \BoltzSym{\LidxIV}{\LidxI}{\LidxII} + \BoltzSym{\LidxV}{\LidxII}{\LidxIV} \BoltzSym{\LidxIV}{\LidxIII}{\LidxI} = 0.
+\end{align}
+The commutation coefficients are invariant to a change in the coordinates, see \autoref{sec:AppendixCoordinateTrafo}.
+They do, however, depend on the basis $\partialVect_{\LidxI}$ and do consequently \textit{not} form a tensor themselves.
+See \autoref{sec:AppendixBasisTrafo} for the transformation rule.
+Nevertheless, the Lie bracket itself is, of course, coordinate independent.
+
+
+\paragraph{Connection and covariant derivative.}
+The partial derivatives $\dirDiff{\LidxII} v^{\LidxI}$ of the coefficients of a vector do \textit{not} yield a tensor.
+A more sophisticated concept is required to establish a notion for the change of a vector.
+
+A \textit{connection} is a map $\covDiffVect{}{} : \mathfrak{X}(\configSpace) \times \mathfrak{X}(\configSpace) \rightarrow \mathfrak{X}(\configSpace)$ defined through the following properties \cite[Def.\,VII.3.1]{Boothby:DiffGeo}:
+\begin{subequations}
+\begin{align}
+ \covDiffVect{f\vect{v}+g\vect{w}}{\vect{u}} &= f \covDiffVect{\vect{v}}{\vect{u}} + g \covDiffVect{\vect{w}}{\vect{u}},
+\\
+ \covDiffVect{\vect{v}}{(f\,\vect{u})} &= f \covDiffVect{\vect{v}}{\vect{u}} + \vect{v}(f) \vect{u},
+\\
+ \covDiffVect{\vect{v}}{(\vect{u} + \vect{w})} &= \covDiffVect{\vect{v}}{\vect{u}} + \covDiffVect{\vect{v}}{\vect{w}}
+\end{align}
+\end{subequations}
+for all $f,g : \configSpace \rightarrow \RealNum$ and $\vect{u}, \vect{v}, \vect{w} \in \mathfrak{X}(\configSpace)$.
+Using basis vectors we have
+\begin{align}\label{eq:CovariantDerivativeCoordinates}
+ \covDiffVect{\vect{v}}{\vect{u}} = \covDiffVect{v^\LidxII \partialVect_\LidxII}{(u^\LidxI \partialVect_\LidxI)}
+ = v^\LidxII \big( (\dirDiff{\LidxII} u^\LidxI) \partialVect_\LidxI + u^\LidxI \underbrace{\covDiffVect{\partialVect_\LidxII}{\partialVect_\LidxI}}_{\ConnCoeff{\LidxIII}{\LidxI}{\LidxII} \partialVect_\LidxIII} \big)
+ = \big(\underbrace{ \dirDiff{\LidxII} u^\LidxI + \ConnCoeff{\LidxI}{\LidxIII}{\LidxII} u^\LidxIII}_{\covDiff{\LidxII}{u^\LidxI}} \big) v^\LidxII \partialVect_\LidxI.
+\end{align}
+Here we have introduced the \textit{connection coefficients} $\ConnCoeff{\LidxI}{\LidxIII}{\LidxII}$, defined by $\covDiffVect{\partialVect_\LidxII}{\partialVect_\LidxI} = \ConnCoeff{\LidxIII}{\LidxI}{\LidxII} \partialVect_\LidxIII$.
+For the coordinate expression \eqref{eq:CovariantDerivativeCoordinates} to make sense, it has to be the same in any basis:
+Consider another set of basis vectors $\accW{\partialVect}_\LidxWI, \LidxWI = 1,\ldots,\dimConfigSpace$ and the relations
+\begin{align}\label{eq:BasisTransformation}
+ \vect{u} &= u^\LidxI \partialVect_\LidxI = \accW{u}^\LidxWI \accW{\partialVect}_\LidxWI,&
+ u^\LidxI &= \BasisChangeCoeff{\LidxI}{\LidxWI} \accW{u}^\LidxWI, \quad \partialVect_\LidxI = \iBasisChangeCoeff{\LidxWI}{\LidxI} \accW{\partialVect}_\LidxWI, \quad \iBasisChange = \BasisChange^{-1}.
+\end{align}
+Then the following has to hold
+\begin{multline}
+ \covDiffVect{v^\LidxII \partialVect_\LidxII}{(u^\LidxI \partialVect_\LidxI)} 
+ = \big( \dirDiff{\LidxII} u^\LidxI + \ConnCoeff{\LidxI}{\LidxIII}{\LidxII} u^\LidxIII \big) v^\LidxII \partialVect_\LidxI
+ = \big( \iBasisChangeCoeff{\LidxWIV}{\LidxII} \accW{\partial}_\LidxWIV (\BasisChangeCoeff{\LidxI}{\LidxWIII} \accW{u}^\LidxWIII) + \ConnCoeff{\LidxI}{\LidxIII}{\LidxII} \BasisChangeCoeff{\LidxIII}{\LidxWIII} \accW{u}^\LidxWIII \big) \BasisChangeCoeff{\LidxII}{\LidxWII} \accW{v}^\LidxWII \iBasisChangeCoeff{\LidxWI}{\LidxI} \accW{\partialVect}_\LidxWI
+% = \big( \iBasisChangeCoeff{\LidxWI}{\LidxI} \accW{\partial}_\LidxWII (\BasisChangeCoeff{\LidxI}{\LidxWIII} \accW{u}^\LidxWIII) + \ConnCoeff{\LidxI}{\LidxIII}{\LidxII} \BasisChangeCoeff{\LidxIII}{\LidxWIII} \BasisChangeCoeff{\LidxII}{\LidxWII} \iBasisChangeCoeff{\LidxWI}{\LidxI} \accW{u}^\LidxWIII \big) \accW{v}^\LidxWII \accW{\partialVect}_\LidxWI
+\\
+ = \big( \accW{\partial}_\LidxWII \accW{u}^\LidxWI + \underbrace{\iBasisChangeCoeff{\LidxWI}{\LidxI} \big( \accW{\partial}_\LidxWII \BasisChangeCoeff{\LidxI}{\LidxWIII} + \ConnCoeff{\LidxI}{\LidxIII}{\LidxII} \BasisChangeCoeff{\LidxIII}{\LidxWIII} \BasisChangeCoeff{\LidxII}{\LidxWII}\big)}_{\ConnCoeffW{\LidxWI}{\LidxWIII}{\LidxWII}} \accW{u}^\LidxWIII \big) \accW{v}^\LidxWII \accW{\partialVect}_\LidxWI
+ = \covDiffVect{\accW{v}^\LidxWII \accW{\partialVect}_\LidxWII}{(\accW{u}^\LidxWI \accW{\partialVect}_\LidxWI)} 
+ .
+\label{eq:TrafoRuleConnCoeff}
+\end{multline}
+This implies the transformation law for the connection coefficients.
+From this it should be clear that the connection coefficients $\ConnCoeff{\LidxIII}{\LidxI}{\LidxII}$ do \textit{not} form a tensor despite being indexed in the same way.
+The connection does transform covariantly, thus $\covDiffVect{\vect{v}}{\vect{u}}$ is also called the \textit{covariant derivative} of $\vect{u}$ along $\vect{v}$.
+
+In the special case of coordinate basis vectors the transformation law \eqref{eq:TrafoRuleConnCoeff} simplifies to
+\begin{align}
+ \dirDiff{\LidxI} = \tpdiff{\genCoordCoeff{\LidxI}}, \ \accW{\partial}_\LidxWI = \tpdiff{\genCoordCoeffW{\LidxWI}}
+\quad \Rightarrow \quad
+ \BasisChangeCoeff{\LidxI}{\LidxWI} = \tpdiff[{\genCoordCoeff{\LidxI}}]{\genCoordCoeffW{\LidxWI}}, \ \iBasisChangeCoeff{\LidxWI}{\LidxI} = \tpdiff[{\genCoordCoeffW{\LidxWI}}]{\genCoordCoeff{\LidxI}}, \
+ \ConnCoeffW{\LidxWI}{\LidxWIII}{\LidxWII} = \tpdiff[{\genCoordCoeffW{\LidxWI}}]{\genCoordCoeff{\LidxI}} \Big( \tfrac{\partial^2 \genCoordCoeff{\LidxI}}{\partial\genCoordCoeffW{\LidxWII} \partial\genCoordCoeffW{\LidxWIII}} + \ConnCoeff{\LidxI}{\LidxIII}{\LidxII} \tpdiff[{\genCoordCoeff{\LidxIII}}]{\genCoordCoeffW{\LidxWIII}} \tpdiff[{\genCoordCoeff{\LidxII}}]{\genCoordCoeffW{\LidxWII}} \Big)
+\end{align}
+which can be found in \eg \cite[Vol.\,2, p.\,221]{Spivak:DiffGeo} or \cite[p.\,145]{Abraham:FoundationsOfMechanics}.
+
+\subsection{Riemannian geometry}
+\paragraph{Riemannian metric.}
+A \textit{Riemannian metric} is a (bilinear, symmetric and positive definite) inner product $\metricProd{\cdot}{\cdot}: \Tangent[\sysCoord]\configSpace \times \Tangent[\sysCoord]\configSpace \rightarrow \RealNum$ that may vary smoothly over the manifold $\configSpace$.
+In terms of basis vectors we have
+\begin{align}
+ \metricProd{\vect{u}}{\vect{v}} = \metricProd{u^{\LidxI}\partialVect_{\LidxI}}{v^{\LidxII}\partialVect_{\LidxII}} = u^{\LidxI} v^{\LidxII} \underbrace{\metricProd{\partialVect_{\LidxI}}{\partialVect_{\LidxII}}}_{\sysInertiaMatCoeff{\LidxI\LidxII}}
+\end{align}
+The symmetry and positive definiteness of the inner product imply symmetry and positive definiteness of the \textit{metric coefficients} $\sysInertiaMat \in \SymMatP(\dimConfigSpace)$.
+A differentiable manifold equipped with a Riemannian metric is called a \textit{Riemannian manifold}.
+
+\paragraph{Levi-Civita connection.}
+For a Riemannian manifold there exists a unique connection $\covDiffVect{}{}$, commonly called the \textit{Levi-Civita connection}, determined by the additional properties
+\begin{subequations}\label{eq:LeviCivitaProp}
+\begin{align}
+ \label{eq:LeviCivitaMetric}
+% &\text{compatible with metric}&
+ \vect{w} \metricProd{\vect{u}}{\vect{v}} &= \metricProd{\covDiffVect{\vect{w}}{\vect{u}}}{\vect{v}} + \metricProd{\vect{u}}{\covDiffVect{\vect{w}}{\vect{v}}}
+\\
+ \label{eq:LeviCivitaSymmetry}
+% &\text{no torsion}&
+ \LieBracket{\vect{u}}{\vect{v}} &= \covDiffVect{\vect{u}}{\vect{v}} - \covDiffVect{\vect{v}}{\vect{u}}.
+\end{align}
+\end{subequations}
+In \cite[Theo.\,VII.3.3]{Boothby:DiffGeo} this is called the \textit{fundamental theorem of Riemannian geometry}.
+
+Combination of permutations of \eqref{eq:LeviCivitaMetric} and \eqref{eq:LeviCivitaSymmetry} yield
+\begin{align}
+ \metricProd{\vect{u}}{\covDiffVect{\vect{w}}{\vect{v}}} &= \vect{w} \metricProd{\vect{u}}{\vect{v}} - \metricProd{\covDiffVect{\vect{w}}{\vect{u}}}{\vect{v}}
+\nonumber\\
+ &= \vect{w} \metricProd{\vect{u}}{\vect{v}} - \metricProd{\LieBracket{\vect{w}}{\vect{u}}}{\vect{v}} - \metricProd{\covDiffVect{\vect{u}}{\vect{w}}}{\vect{v}}
+\nonumber\\
+ &= \vect{w} \metricProd{\vect{u}}{\vect{v}} - \metricProd{\LieBracket{\vect{w}}{\vect{u}}}{\vect{v}} - \vect{u} \metricProd{\vect{w}}{\vect{v}} - \metricProd{\vect{w}}{\covDiffVect{\vect{u}}{\vect{v}}}
+\nonumber\\
+ &= \vect{w} \metricProd{\vect{u}}{\vect{v}} - \metricProd{\LieBracket{\vect{w}}{\vect{u}}}{\vect{v}} - \vect{u} \metricProd{\vect{w}}{\vect{v}} + \metricProd{\vect{w}}{\LieBracket{\vect{u}}{\vect{v}}} - \metricProd{\vect{w}}{\covDiffVect{\vect{v}}{\vect{u}}}
+\nonumber\\
+ &= \vect{w} \metricProd{\vect{u}}{\vect{v}} - \metricProd{\LieBracket{\vect{w}}{\vect{u}}}{\vect{v}} - \vect{u} \metricProd{\vect{w}}{\vect{v}} + \metricProd{\vect{w}}{\LieBracket{\vect{u}}{\vect{v}}} + \vect{v} \metricProd{\vect{w}}{\vect{u}} - \metricProd{\covDiffVect{\vect{v}}{\vect{w}}}{\vect{u}}
+\nonumber\\
+ &= \vect{w} \metricProd{\vect{u}}{\vect{v}} - \metricProd{\LieBracket{\vect{w}}{\vect{u}}}{\vect{v}} - \vect{u} \metricProd{\vect{w}}{\vect{v}} + \metricProd{\vect{w}}{\LieBracket{\vect{u}}{\vect{v}}} + \vect{v} \metricProd{\vect{w}}{\vect{u}} + \metricProd{\LieBracket{\vect{v}}{\vect{w}}}{\vect{u}}
+\nonumber\\
+ &\qquad - \metricProd{\covDiffVect{\vect{w}}{\vect{v}}}{\vect{u}}
+\nonumber\\
+ \Leftrightarrow \quad \metricProd{\vect{u}}{\covDiffVect{\vect{w}}{\vect{v}}} &= \tfrac{1}{2} \big(
+   \vect{w} \metricProd{\vect{u}}{\vect{v}}
+ + \vect{v} \metricProd{\vect{u}}{\vect{w}}
+ - \vect{u} \metricProd{\vect{v}}{\vect{w}}
+\nonumber\\
+ &\qquad + \metricProd{\vect{w}}{\LieBracket{\vect{u}}{\vect{v}}}
+ + \metricProd{\vect{v}}{\LieBracket{\vect{u}}{\vect{w}}}
+ - \metricProd{\vect{u}}{\LieBracket{\vect{v}}{\vect{w}}}
+ \big).
+\label{eq:LeviCivitaVect}
+\end{align}
+This result can also be found in \cite[proof of Theorem 2.7.6]{Abraham:FoundationsOfMechanics}, but is evaluated in terms of coordinate basis vectors so that the Lie brackets cancel.
+Recall the previous definitions for the commutation coefficients $\LieBracket{\partialVect_\LidxI}{\partialVect_\LidxII} = \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \partialVect_\LidxIII$, the connection coefficients $\covDiffVect{\partialVect_\LidxII}{\partialVect_\LidxI} = \ConnCoeff{\LidxIII}{\LidxI}{\LidxII} \partialVect_\LidxIII$ and the metric coefficients $\metricProd{\partialVect_{\LidxI}}{\partialVect_{\LidxII}} = \sysInertiaMatCoeff{\LidxI\LidxII}$.
+Evaluation of \eqref{eq:LeviCivitaVect} with the basis vectors yields
+\begin{align}\label{eq:DefConnCoeffLeviCivita}
+\metricProd{\partialVect_\LidxI}{\covDiffVect{\partialVect_{\LidxIII}}{\partialVect_{\LidxII}}}
+ = \sysInertiaMatCoeff{\LidxI\LidxV} \ConnCoeff{\LidxV}{\LidxII}{\LidxIII}
+ = \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII} 
+ = \tfrac{1}{2}\big( \dirDiff{\LidxIII} \sysInertiaMatCoeff{\LidxI\LidxII} + \dirDiff{\LidxII} \sysInertiaMatCoeff{\LidxI\LidxIII} - \dirDiff{\LidxI} \sysInertiaMatCoeff{\LidxII\LidxIII} + \BoltzSym{\LidxV}{\LidxI}{\LidxII} \sysInertiaMatCoeff{\LidxV\LidxIII} + \BoltzSym{\LidxV}{\LidxI}{\LidxIII} \sysInertiaMatCoeff{\LidxV\LidxII} - \BoltzSym{\LidxV}{\LidxII}{\LidxIII} \sysInertiaMatCoeff{\LidxV\LidxI} \big).
+\end{align}
+where we also defined the completely covariant\footnote{Covariant refers to the placement of the indices, $\ConnCoeffL{\LidxI}{\LidxII}{\LidxIII}$ is not a tensor just as $\ConnCoeff{\LidxI}{\LidxII}{\LidxIII}$ is not.} connection coefficients $\ConnCoeffL{\LidxI}{\LidxII}{\LidxIII}$.
+Note that the coordinate expressions for \eqref{eq:LeviCivitaMetric} and \eqref{eq:LeviCivitaSymmetry} are
+\begin{subequations}
+\begin{align}
+ \dirDiff{\LidxIII} \sysInertiaMatCoeff{\LidxI\LidxII} &= \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII} + \ConnCoeffL{\LidxII}{\LidxI}{\LidxIII}
+\\
+ \label{eq:blah21341313}
+ \BoltzSym{\LidxIII}{\LidxI}{\LidxII} &= \ConnCoeff{\LidxIII}{\LidxII}{\LidxI} - \ConnCoeff{\LidxIII}{\LidxI}{\LidxII}
+\end{align}
+\end{subequations}
+The only source known to the author that states the result in \eqref{eq:DefConnCoeffLeviCivita} is \cite[eq.\ 8.24]{Misner:Gravitation}, though still restricted to minimal configuration coordinates.
+Most books state the coefficients of the Levi-Civita connection restricted to the case of coordinate basis vector in which case they are called the \textit{Christoffel symbols} (\eg \cite[sec.\,9.2]{Frankel:GeometryOfPhysics}):
+\begin{align}
+ \dirDiff{\LidxI} = \tpdiff{\genCoordCoeff{\LidxI}}
+\quad \Rightarrow \quad
+ \BoltzSym{\LidxIII}{\LidxI}{\LidxII} = 0, \quad
+ \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII} &= \tfrac{1}{2} \Big( \tpdiff[{\sysInertiaMatCoeff{\LidxI\LidxII}}]{\genCoordCoeff{\LidxIII}} + \tpdiff[{\sysInertiaMatCoeff{\LidxI\LidxIII}}]{\genCoordCoeff{\LidxII}} - \tpdiff[{\sysInertiaMatCoeff{\LidxII\LidxIII}}]{\genCoordCoeff{\LidxI}} \Big) = \ConnCoeffL{\LidxI}{\LidxIII}{\LidxII}
+\end{align}
+In \cite[eq.\,4.10.9]{Lurie:AnalyticalMechanics} only the first three terms of \eqref{eq:DefConnCoeffLeviCivita} are introduced as the ``generalized Christoffel symbols'' in the context of minimal coordinates and non-coordinate basis vectors.
+This might be misleading since these quantities do not obey the transformation rule \eqref{eq:TrafoRuleConnCoeff}, so do not define a connection.
+
+\paragraph{Gradient.}
+The gradient vector of a scalar function $f$ on a Riemannian manifold is defined as \cite[sec.\ 2.1d]{Frankel:GeometryOfPhysics}
+\begin{align}\label{eq:DefGradient}
+ \vect{v}(\protoFcn) = \metricProd{\vect{v}}{\grad(\protoFcn)}
+\end{align}
+with an arbitrary vector $\vect{v} \in\Tangent[\sysCoord]\configSpace$.
+With $\isysInertiaMatCoeff{\LidxI\LidxII}$ being the coefficients of the inverse $\sysInertiaMat^{-1}$ of the metric coefficients we may write it as 
+\begin{align}
+ \gradVect = \isysInertiaMatCoeff{\LidxI\LidxII} \, \partialVect_\LidxII .
+\end{align}
+
+\paragraph{Hessian.}
+The Hessian of a scalar function $f$ on a Riemannian manifold may be defined as (\eg \cite[sec.\,6.1.4]{Bullo:GeometricControl})
+\begin{align}
+ (\Hess f)(\vect{u},\vect{v}) = \metricProd{\vect{u}}{\covDiffVect{\vect{v}}{\gradVect f}}.
+\end{align}
+% The symmetry of the Hessian might be not that obvious, but can be shown by using the definition of the gradient \eqref{eq:DefGradient} and the properties \eqref{eq:LeviCivitaProp} of the Levi-Civita connection:
+% \begin{align}
+%  &\metricProd{\vect{u}}{\covDiffVect{\vect{v}}{\gradVect f}} - \metricProd{\vect{v}}{\covDiffVect{\vect{u}}{\gradVect f}}
+% \nonumber\\
+%  &\qquad\overset{\eqref{eq:LeviCivitaMetric}}{=} \vect{v} \metricProd{\vect{u}}{\gradVect f} - \metricProd{\covDiffVect{\vect{v}}{\vect{u}}}{\gradVect f} 
+%   - \vect{u} \metricProd{\vect{v}}{\gradVect f} + \metricProd{\covDiffVect{\vect{u}}{\vect{v}}}{\gradVect f}
+% \nonumber\\
+%  &\qquad\overset{\eqref{eq:DefGradient}}{=} \vect{v} (\vect{u}(f)) - \vect{u} (\vect{v}(f)) - \metricProd{\covDiffVect{\vect{v}}{\vect{u}} - \covDiffVect{\vect{u}}{\vect{v}}}{\gradVect f}
+% \nonumber\\
+%  &\qquad\overset{\eqref{eq:LeviCivitaSymmetry}}{=} \LieBracket{\vect{v}}{\vect{u}}(f) - \metricProd{\LieBracket{\vect{v}}{\vect{u}}}{\gradVect f}
+%  \overset{\eqref{eq:DefGradient}}{=} 0
+% \end{align}
+With the property \eqref{eq:LeviCivitaMetric} of the Levi-Civita connection $\covDiffVect{}{}$ we may formulate its coefficients $H_{\LidxI\LidxII}$ as
+\begin{align}
+H_{\LidxI\LidxII}
+ = \metricProd{\partialVect_\LidxI}{\covDiffVect{\partialVect_\LidxII}{\gradVect f}}
+ = \partial_\LidxII \metricProd{\partialVect_\LidxI}{\gradVect f} - \metricProd{\covDiffVect{\partialVect_\LidxII}{\partialVect_\LidxI}}{\gradVect f}
+ %\overset{\eqref{eq:DefGradient}, \eqref{eq:DefConnCoeff}}{=} \partial_\LidxII (\partial_\LidxI f) - \ConnCoeff{\LidxIII}{\LidxI}{\LidxII} \partial_\LidxIII f
+ = \partial_\LidxII (\partial_\LidxI f) - \ConnCoeff{\LidxIII}{\LidxI}{\LidxII} \partial_\LidxIII f
+\end{align}
+Note that the second property \eqref{eq:LeviCivitaSymmetry} of the Levi-Civita connection implies the symmetry $H_{\LidxI\LidxII} = H_{\LidxII\LidxI}$ of the Hessian.
+
+\subsection{The induced metric}
+For the Euclidean space $\RealNum^{\numCoord}$ we have the standard metric 
+\begin{align}
+ \sProd{\pdiffVect{\sysCoordCoeff{\GidxI}}}{\pdiffVect{\sysCoordCoeff{\GidxII}}} = \delta_{\GidxI\GidxII},
+\qquad
+ \delta_{\GidxI\GidxII} = \begin{cases} 1 \ : & \GidxI = \GidxII \\ 0 \ : & \GidxI \neq \GidxII \end{cases}
+\end{align}
+The corresponding \textit{induced metric} for the tangent space is
+\begin{align}
+ \metricProd{\partialVect_\LidxI}{\partialVect_\LidxII} = \kinMatCoeff{\GidxI}{\LidxI} \delta_{\GidxI\GidxII} \kinMatCoeff{\GidxII}{\LidxII} = \sysInertiaMatCoeff{\LidxI\LidxII}
+\end{align}
+As $\rank\kinMat=\dimConfigSpace$ we have $\kinBasisMat = \kinMat^+ = (\kinMat^\top \kinMat)^{-1}\kinMat^\top$ and $\sysInertiaMat^{-1} = \kinBasisMat \kinBasisMat^\top$.
+The coefficients of the Levi-Civita connection with the induced metric may be written as
+\begin{subequations}
+\begin{align}
+ \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII}
+%  &= \tfrac{1}{2}\big( \dirDiff{\LidxIII} \sysInertiaMatCoeff{\LidxI\LidxII} + \dirDiff{\LidxII} \sysInertiaMatCoeff{\LidxI\LidxIII} - \dirDiff{\LidxI} \sysInertiaMatCoeff{\LidxII\LidxIII} + \BoltzSym{\LidxV}{\LidxI}{\LidxII} \sysInertiaMatCoeff{\LidxV\LidxIII} + \BoltzSym{\LidxV}{\LidxI}{\LidxIII} \sysInertiaMatCoeff{\LidxV\LidxII} - \BoltzSym{\LidxV}{\LidxII}{\LidxIII} \sysInertiaMatCoeff{\LidxV\LidxI} \big).
+% \nonumber\\
+ &= \tfrac{1}{2}\big( \dirDiff{\LidxIII} (\kinMatCoeff{\GidxI}{\LidxI} \delta_{\GidxI\GidxII} \kinMatCoeff{\GidxII}{\LidxII}) + \dirDiff{\LidxII} (\kinMatCoeff{\GidxI}{\LidxI} \delta_{\GidxI\GidxII} \kinMatCoeff{\GidxII}{\LidxIII}) - \dirDiff{\LidxI} (\kinMatCoeff{\GidxI}{\LidxII} \delta_{\GidxI\GidxII} \kinMatCoeff{\GidxII}{\LidxIII})
+\nonumber\\
+ &\quad+ \kinBasisMatCoeff{\LidxV}{\GidxV} \big( \partial_{\LidxI} \kinMatCoeff{\GidxV}{\LidxII} - \partial_{\LidxII} \kinMatCoeff{\GidxV}{\LidxI} \big) (\kinMatCoeff{\GidxI}{\LidxV} \delta_{\GidxI\GidxII} \kinMatCoeff{\GidxII}{\LidxIII})
+       + \kinBasisMatCoeff{\LidxV}{\GidxV} \big( \partial_{\LidxI} \kinMatCoeff{\GidxV}{\LidxIII} - \partial_{\LidxIII} \kinMatCoeff{\GidxV}{\LidxI} \big) (\kinMatCoeff{\GidxI}{\LidxV} \delta_{\GidxI\GidxII} \kinMatCoeff{\GidxII}{\LidxII})
+\nonumber\\
+ &\quad- \kinBasisMatCoeff{\LidxV}{\GidxV} \big( \partial_{\LidxII} \kinMatCoeff{\GidxV}{\LidxIII} - \partial_{\LidxIII} \kinMatCoeff{\GidxV}{\LidxII} \big) (\kinMatCoeff{\GidxI}{\LidxV} \delta_{\GidxI\GidxII} \kinMatCoeff{\GidxII}{\LidxI}) \big).
+% \nonumber\\
+%  &= \tfrac{1}{2}\big( \dirDiff{\LidxIII} \kinMatCoeff{\GidxI}{\LidxI} \delta_{\GidxI\GidxII} \kinMatCoeff{\GidxII}{\LidxII} + \kinMatCoeff{\GidxI}{\LidxI} \delta_{\GidxI\GidxII} \dirDiff{\LidxIII} \kinMatCoeff{\GidxII}{\LidxII}
+%                     + \dirDiff{\LidxII} \kinMatCoeff{\GidxI}{\LidxI} \delta_{\GidxI\GidxII} \kinMatCoeff{\GidxII}{\LidxIII} + \kinMatCoeff{\GidxI}{\LidxI} \delta_{\GidxI\GidxII} \dirDiff{\LidxII} \kinMatCoeff{\GidxII}{\LidxIII}
+%                     - \dirDiff{\LidxI} \kinMatCoeff{\GidxI}{\LidxII} \delta_{\GidxI\GidxII} \kinMatCoeff{\GidxII}{\LidxIII} - \kinMatCoeff{\GidxI}{\LidxII} \delta_{\GidxI\GidxII} \dirDiff{\LidxI}\kinMatCoeff{\GidxII}{\LidxIII}
+% \nonumber\\
+%  &\quad+ \big( \partial_{\LidxI} \kinMatCoeff{\GidxV}{\LidxII} - \partial_{\LidxII} \kinMatCoeff{\GidxV}{\LidxI} \big) \kinBasisMatCoeff{\LidxV}{\GidxV} \kinMatCoeff{\GidxI}{\LidxV} \delta_{\GidxI\GidxII} \kinMatCoeff{\GidxII}{\LidxIII}
+%        + \big( \partial_{\LidxI} \kinMatCoeff{\GidxV}{\LidxIII} - \partial_{\LidxIII} \kinMatCoeff{\GidxV}{\LidxI} \big) \kinBasisMatCoeff{\LidxV}{\GidxV} \kinMatCoeff{\GidxI}{\LidxV} \delta_{\GidxI\GidxII} \kinMatCoeff{\GidxII}{\LidxII}
+% \nonumber\\
+%  &\quad- \big( \partial_{\LidxII} \kinMatCoeff{\GidxV}{\LidxIII} - \partial_{\LidxIII} \kinMatCoeff{\GidxV}{\LidxII} \big) \kinBasisMatCoeff{\LidxV}{\GidxV} \kinMatCoeff{\GidxI}{\LidxV} \delta_{\GidxI\GidxII} \kinMatCoeff{\GidxII}{\LidxI} \big).
+\nonumber\\
+ &= \tfrac{1}{2}\big( \dirDiff{\LidxIII} \kinMatCoeff{\GidxV}{\LidxI} \underbrace{(\delta_{\GidxV}^{\GidxI} - \kinBasisMatCoeff{\LidxV}{\GidxV} \kinMatCoeff{\GidxI}{\LidxV}) \delta_{\GidxI\GidxII} \kinMatCoeff{\GidxII}{\LidxII}}_{0}
+                    + \dirDiff{\LidxIII} \kinMatCoeff{\GidxV}{\LidxII} \underbrace{(\delta_{\GidxV}^{\GidxI} + \kinBasisMatCoeff{\LidxV}{\GidxV} \kinMatCoeff{\GidxI}{\LidxV}) \delta_{\GidxI\GidxII} \kinMatCoeff{\GidxII}{\LidxI}}_{2\delta_{\GidxI\GidxII} \kinMatCoeff{\GidxII}{\LidxI}}
+                    + \dirDiff{\LidxII} \kinMatCoeff{\GidxV}{\LidxI} \underbrace{(\delta_{\GidxV}^{\GidxI} - \kinBasisMatCoeff{\LidxV}{\GidxV} \kinMatCoeff{\GidxI}{\LidxV}) \delta_{\GidxI\GidxII} \kinMatCoeff{\GidxII}{\LidxIII}}_{0}
+\nonumber\\
+ &\quad             + \dirDiff{\LidxII} \kinMatCoeff{\GidxV}{\LidxIII} \underbrace{(\delta_{\GidxV}^{\GidxI} - \kinBasisMatCoeff{\LidxV}{\GidxV} \kinMatCoeff{\GidxI}{\LidxV}) \delta_{\GidxI\GidxII} \kinMatCoeff{\GidxII}{\LidxI}}_{0} 
+                    - \dirDiff{\LidxI} \kinMatCoeff{\GidxV}{\LidxII} \underbrace{(\delta_{\GidxV}^{\GidxI} - \kinBasisMatCoeff{\LidxV}{\GidxV} \kinMatCoeff{\GidxI}{\LidxV}) \delta_{\GidxI\GidxII} \kinMatCoeff{\GidxII}{\LidxIII}}_{0}
+                    - \dirDiff{\LidxI} \kinMatCoeff{\GidxV}{\LidxIII} \underbrace{(\delta_{\GidxV}^{\GidxI} - \kinBasisMatCoeff{\LidxV}{\GidxV} \kinMatCoeff{\GidxI}{\LidxV}) \delta_{\GidxI\GidxII} \kinMatCoeff{\GidxII}{\LidxII}}_{0} \big)
+\nonumber\\
+ &=  \kinMatCoeff{\GidxI}{\LidxI} \delta_{\GidxI\GidxII} \dirDiff{\LidxIII} \kinMatCoeff{\GidxII}{\LidxII}
+\\
+\ConnCoeff{\LidxI}{\LidxII}{\LidxIII} &= \isysInertiaMatCoeff{\LidxI\LidxV} \ConnCoeffL{\LidxV}{\LidxII}{\LidxIII} = \kinBasisMatCoeff{\LidxI}{\GidxI} \dirDiff{\LidxIII} \kinMatCoeff{\GidxI}{\LidxII}
+\end{align} 
+\end{subequations}
+Consider a parameterized curve $\sysCoordVect:\RealNum \mapsto \configSpace$ with $\sysCoordCoeffd{\GidxI} = \kinMatCoeff{\GidxI}{\LidxI}\sysVelCoeff{\LidxI}$.
+The velocity vector is
+\begin{align}
+  \dot{\sysCoordVect} &= \sysCoordCoeffd{\GidxI} \pdiffVect{\sysCoordCoeff{\GidxI}}
+ = \kinMatCoeff{\GidxI}{\LidxI} \sysVelCoeff{\LidxI} \big( \kinBasisMatCoeff{\LidxII}{\GidxI} \partialVect_{\LidxII} + \geoConstraintMatCoeff{\CidxI}{\GidxI} \partialVect_{\CidxI}^\bot \big)
+ = \sysVelCoeff{\LidxI} \partialVect_{\LidxI}.
+\end{align}
+The acceleration vector is
+\begin{align}
+ \ddot{\sysCoordVect} = \sysCoordCoeffdd{\GidxI} \pdiffVect{\sysCoordCoeff{\GidxI}}
+ &= \big(\kinMatCoeff{\GidxI}{\LidxI} \sysVelCoeffd{\LidxI} + \dirDiff{\LidxIII} \kinMatCoeff{\GidxI}{\LidxI} \sysVelCoeff{\LidxIII} \sysVelCoeff{\LidxI} \big) \! \big( \kinBasisMatCoeff{\LidxII}{\GidxI} \partialVect_{\LidxII} + \geoConstraintMatCoeff{\CidxI}{\GidxI} \partialVect_{\CidxI}^\bot \big)
+\nonumber\\
+ &= \big(\sysVelCoeffd{\LidxI} + \kinBasisMatCoeff{\LidxI}{\GidxI} \dirDiff{\LidxIII} \kinMatCoeff{\GidxI}{\LidxII} \sysVelCoeff{\LidxII} \sysVelCoeff{\LidxIII} \big) \partialVect_{\LidxII} + \dirDiff{\LidxIII} \kinMatCoeff{\GidxI}{\LidxI} \sysVelCoeff{\LidxIII} \sysVelCoeff{\LidxI} \geoConstraintMatCoeff{\CidxI}{\GidxI} \partialVect_{\CidxI}^\bot
+\end{align}
+
+
+
+
+\subsection{Riemannian geometry and Lagrangian mechanics.}
+Consider a mechanical system parameterized by the config.\ coordinates $(\sysCoordCoeff{1},\ldots,\sysCoordCoeff{\numCoord})(t) \in \configSpace$ and the velocity coordinates $(\sysVelCoeff{1}, \ldots, \sysVelCoeff{\dimConfigSpace})(t)\in\RealNum^{\dimConfigSpace}$ related by $\sysCoordCoeffd{\GidxI} = \kinMatCoeff{\GidxI}{\LidxI}\sysVelCoeff{\LidxI}$.
+Define the velocity \textit{vector} as $\vect{v} = \sysVelCoeff{\LidxI}\partialVect_\LidxI$.
+The correspondence between Riemannian geometry and Lagrangian mechanics is established by relating the metric coefficients to the kinetic energy:
+\begin{align}
+ \kineticEnergy = \tfrac{1}{2}\sysInertiaMatCoeff{\LidxI\LidxII} \sysVelCoeff{\LidxI} \sysVelCoeff{\LidxII} = \tfrac{1}{2} \sProd{\vect{v}}{\vect{v}}.
+\end{align}
+This determines the (Levi-Civita) connection coefficients $\ConnCoeffL{\LidxI}{\LidxII}{\LidxIII}$ and we have
+\begin{align}\label{eq:InertiaForceRiemannianGeo}
+ \metricProd{\partialVect_\LidxI}{\covDiffVect{\vect{v}}{\vect{v}}}
+ = \sysInertiaMatCoeff{\LidxI\LidxII} \big( \dirDiff{\LidxIII} \sysVelCoeff{\LidxII} + \ConnCoeff{\LidxII}{\LidxIV}{\LidxIII} \sysVelCoeff{\LidxIV} \big) \sysVelCoeff{\LidxIII}
+ = \sysInertiaMatCoeff{\LidxI\LidxII} \sysVelCoeffd{\LidxII} + \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII} \sysVelCoeff{\LidxII} \sysVelCoeff{\LidxIII}
+ = \genForceInertiaCoeff{\LidxI},
+\qquad \LidxI = 1\ldots\dimConfigSpace
+\end{align}
+\ie the coefficients $\genForceInertiaCoeff{\LidxI}$ of the generalized inertia force are the projections of the covariant derivative $\covDiffVect{\vect{v}}{\vect{v}}$ of the velocity vector along itself to the tangent vectors $\partialVect_\LidxI$.
+Equivalently we could say $\genForceInertiaCoeff{\LidxI}$ are the coefficients of the co-vector corresponding to $\covDiffVect{\vect{v}}{\vect{v}}$.
+
+The conservative force of a potential $\potentialEnergy(\sysCoord)$ are $\genForcePotentialCoeff{\LidxI} = \metricProd{\partialVect_\LidxI}{\gradVect\potentialEnergy}$.
+
+Overall, we may give the equation of motion of a conservative, autonomous mechanical system in the vector form
+\begin{align}
+ \covDiffVect{\vect{v}}{\vect{v}} + \gradVect \potentialEnergy = \vect{0}.
+\end{align}
+
+
+\subsection{Relation to Euclidean geometry.}
+In the previous subsection on Euclidean geometry we considered a special choice of coordinates, such that the kinetic energy $\kineticEnergy$ resembles the Euclidean metric and the inertia matrix $\sysInertiaMatCoeff{\LidxI\LidxII} = \kinMatCoeff{\GidxI}{\LidxI} \delta_{\GidxI\GidxII} \kinMatCoeff{\GidxII}{\LidxII}$ is the \textit{induced metric} for the tangent space.
+In total we have
+\begin{subequations}
+\begin{align}
+ \sysInertiaMatCoeff{\LidxI\LidxII} &= \kinMatCoeff{\GidxI}{\LidxI} \delta_{\GidxI\GidxII} \kinMatCoeff{\GidxII}{\LidxII},& 
+ \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII} &= \kinMatCoeff{\GidxI}{\LidxI} \delta_{\GidxI\GidxII} \dirDiff{\LidxIII} \kinMatCoeff{\GidxII}{\LidxII}
+\\
+ \isysInertiaMatCoeff{\LidxI\LidxII} &= (\kinMat^+)^{\LidxI}_{\GidxI} \delta^{\GidxI\GidxII} (\kinMat^+)^{\LidxII}_{\GidxII},&
+ \ConnCoeff{\LidxI}{\LidxII}{\LidxIII} = \isysInertiaMatCoeff{\LidxI\LidxV} \ConnCoeffL{\LidxV}{\LidxII}{\LidxIII} &= (\kinMat^+)^{\LidxI}_{\GidxI} \dirDiff{\LidxIII} \kinMatCoeff{\GidxI}{\LidxII}
+\end{align}
+\end{subequations}
+The computations here might take some extra lines but it is all pretty straight forward when expressing the commutation symbols (??) with the pseudo inverse and using the defining criteria of the pseudo inverse.
+
+\fixme{Probably remove section on Euclidean geometry and put the conclusions here.}
+
+\fixme{
+The Levi-Civita connection resembles the result we would get from Euclidean geometry but \textit{without requiring an isometric embedding}
+Due to the arbitrary choice of configuration coordinates the standard metric for the (embedded) configuration space is meaningless for the mechanics.
+}
+
+% \fixme{
+% \paragraph{Geodesics}
+% A geodesic is a curve $t \mapsto \sysCoordVect(t)$ for which $\covDiffVect{\sysCoordVectd}{\sysCoordVectd} = 0$.
+% In terms of redundant coordinates and minimal velocity coordinates the geodesic equations is
+% \begin{align}
+%  \sysCoordCoeffd{\GidxI} = \kinMatCoeff{\GidxI}{\LidxI} \sysVelCoeff{\LidxI},
+% \qquad
+%  \sysVelCoeffd{\LidxI} + \ConnCoeff{\LidxI}{\LidxII}{\LidxIII} \sysVelCoeff{\LidxII} \sysVelCoeff{\LidxIII} = 0,
+% \end{align}
+% \cite[ch.\,10]{Frankel:GeometryOfPhysics}
+% }

@@ -1,0 +1,128 @@
+\subsection{Robot arm}
+As a more complex multibody system we consider a robot arm as illustrated in \autoref{fig:RobotArmModel}.
+For this example the model equations and the resulting closed loop equations become quite cumbersome and are not displayed explicitly.
+However this displays some benefits of the proposed control approach: One does not have to look at e.g.\ the actual system inertia matrix but only at the much less cumbersome body inertia matrices to conclude e.g.\ stability of the closed loop. 
+
+\paragraph{Model.}
+\begin{figure}[ht]
+ \centering
+ \input{graphics/KukaRobotModel.pdf_tex}
+ \caption{A model of a robot arm (background image from www.kuka.de)}
+ \label{fig:RobotArmModel}
+\end{figure}
+A reasonable parameterization of the system are the joint angles $\sysCoord = [\jointAngle[1], \ldots, \jointAngle[6]]^\top$ as minimal configuration coordinates and trivial kinematics, \ie $\sysVel = \sysCoordd$.
+The body configurations can be computed from the following relative transformations
+\begin{align}
+ \bodyHomoCoord{0}{1}{}{} &=
+ \begin{bmatrix}
+  \cos\jointAngle[1] & -\sin\jointAngle[1] & 0 & 0 \\
+  \sin\jointAngle[1] &  \cos\jointAngle[1] & 0 & 0 \\
+  0 & 0 & 1 & 0 \\
+  0 & 0 & 0 & 1
+ \end{bmatrix},&
+ \bodyHomoCoord{1}{2}{}{} &=
+ \begin{bmatrix}
+  \cos\jointAngle[2] & 0 & \sin\jointAngle[2] & l_1 \\
+  0 & 1 & 0 & 0 \\
+  -\sin\jointAngle[2] & 0 & \cos\jointAngle[2] & 0 \\
+  0 & 0 & 0 & 1
+ \end{bmatrix},
+\nonumber\\
+ \bodyHomoCoord{2}{3}{}{} &=
+ \begin{bmatrix}
+  \cos\jointAngle[3] & 0 & \sin\jointAngle[3] & 0 \\
+  0 & 1 & 0 & 0 \\
+  -\sin\jointAngle[3] & 0 & \cos\jointAngle[3] & l_2 \\
+  0 & 0 & 0 & 1
+ \end{bmatrix},&
+ \bodyHomoCoord{3}{4}{}{} &=
+ \begin{bmatrix}
+  1 & 0 & 0 & l_3 \\
+  0 & \cos\jointAngle[4] & -\sin\jointAngle[4] & 0 \\
+  0 & \sin\jointAngle[4] &  \cos\jointAngle[4] & 0 \\
+  0 & 0 & 0 & 1
+ \end{bmatrix},
+\nonumber\\
+ \bodyHomoCoord{4}{5}{}{} &=
+ \begin{bmatrix}
+  \cos\jointAngle[5] & 0 & \sin\jointAngle[5] & 0 \\
+  0 & 1 & 0 & 0 \\
+  -\sin\jointAngle[5] & 0 & \cos\jointAngle[5] & 0 \\
+  0 & 0 & 0 & 1
+ \end{bmatrix},&
+ \bodyHomoCoord{5}{6}{}{} &=
+ \begin{bmatrix}
+  1 & 0 & 0 & 0 \\
+  0 & \cos\jointAngle[6] & -\sin\jointAngle[6] & 0 \\
+  0 & \sin\jointAngle[6] &  \cos\jointAngle[6] & 0 \\
+  0 & 0 & 0 & 1
+ \end{bmatrix}
+ .
+\end{align}
+This together with the body inertia matrices and the gravity coefficients $\gravityAcc$ and the control forces, $\sysInput = [\tau_1, \ldots, \tau_6]^\top$ determines the equations of motion.
+
+\paragraph{Controller parameterization 1: Joint space control.}
+Like above we consider two different sets of controller parameterizations: 
+For the first case, the nonzero control parameters are
+\begin{align}
+ \bodyMOSCoeffC{0}{1}{\idxZ\idxZ}, \bodyMOSCoeffC{1}{2}{\idxY\idxY}, \bodyMOSCoeffC{2}{3}{\idxY\idxY}, \bodyMOSCoeffC{3}{4}{\idxX\idxX}, \bodyMOSCoeffC{4}{5}{\idxY\idxY}, \bodyMOSCoeffC{5}{6}{\idxX\idxX} &\in \RealNum > 0
+\nonumber\\
+ \bodyMODCoeffC{0}{1}{\idxZ\idxZ}, \bodyMODCoeffC{1}{2}{\idxY\idxY}, \bodyMODCoeffC{2}{3}{\idxY\idxY}, \bodyMODCoeffC{3}{4}{\idxX\idxX}, \bodyMODCoeffC{4}{5}{\idxY\idxY}, \bodyMODCoeffC{5}{6}{\idxX\idxX} &\in \RealNum > 0
+\nonumber\\
+ \bodyMOICoeffC{0}{1}{\idxZ\idxZ}, \bodyMOICoeffC{1}{2}{\idxY\idxY}, \bodyMOICoeffC{2}{3}{\idxY\idxY}, \bodyMOICoeffC{3}{4}{\idxX\idxX}, \bodyMOICoeffC{4}{5}{\idxY\idxY}, \bodyMOICoeffC{5}{6}{\idxX\idxX} &\in \RealNum > 0
+\end{align}
+A transport map for the resulting potential energy is $\sysTransportMap = \idMat[6]$.
+The resulting closed loop kinetics are 6 decoupled equations identical to the ones for the SCARA \eqref{eq:ScaraClosedLoop12} resp.\ \eqref{eq:ScaraClosedLoop12}.
+
+\paragraph{Controller parameterization 2: Work space control.}
+As a second case consider: For many applications the task of the robot arm is to control the position and orientation of a tool mounted at the end of its kinematic chain.
+This tool might have a particularly meaningful center point (TCP) and and principle axis.
+Let the configuration $\bodyHomoCoord{6}{7} = \const$ capture these tool specific parameters, for example the tip position and direction of a welding electrode as shown in \autoref{fig:WeldingTool}.
+
+\begin{figure}[ht]
+ \centering
+ \input{graphics/WeldingTool.pdf_tex}
+ \caption{Welding tool attached to the robot arm (background image from www.kuka.de)}
+ \label{fig:WeldingTool}
+\end{figure}
+
+For this example it could be useful to control the tool as if it is a free rigid body (with its center of mass, damping and stiffness at the TCP) and not care about the particular mechanism that is used to give it this degree of freedom.
+This is achieved by the following nonzero control parameters
+\begin{align}
+ \bodyStiffnessC{0}{7}, \bodyDampingC{0}{7}, \bodyMassC{0}{7} \in \RealNumP,
+\qquad
+ \bodyMOSC{0}{7}, \bodyMODC{0}{7}, \bodyMOIC{0}{7} \in \SymMatP(3).
+%\qquad
+% \bodyCOSC{0}{7}, \bodyCODC{0}{7}, \bodyCOMC{0}{7} = \tuple{0}.
+\end{align}
+The resulting potential and corresponding transport map are
+\begin{align}
+ \potentialEnergyC(\sysCoord, \sysCoordR) = \tfrac{1}{2} \norm[\bodyStiffMatCp{0}{7}]{ ((\bodyHomoCoord{0}{7}(\sysCoordR))^{-1}\, \bodyHomoCoord{0}{7}(\sysCoord) - \idMat[4] )^\top}^2,
+\quad
+ \sysTransportMap(\sysCoord,\sysCoordR) = \big( \bodyJac{7}{0}(\sysCoord) \big)^{-1} \, \bodyJac{7}{0}(\sysCoordR).
+\end{align}
+% A transport map for the resulting potential is
+% \begin{align}
+%  \sysTransportMap(\sysCoord,\sysCoordR)
+% % = \big( \bodyJac{0}{7}(\sysCoord) \big)^{-1} \Ad{(\bodyHomoCoord{0}{7}(\sysCoord))^{-1} \bodyHomoCoord{0}{7}(\sysCoordR)} \bodyJac{0}{7}(\sysCoordR)
+%  = \big( \bodyJac{7}{0}(\sysCoord) \big)^{-1} \, \bodyJac{7}{0}(\sysCoordR)
+% \end{align}
+The resulting closed loop dynamics of the robot arm may be written by plugging the absolute tool configuration $\bodyHomoCoord{0}{7}(\sysCoord)$ and its reference $\bodyHomoCoord{0}{7}(\sysCoordR)$ into the dynamics of a single rigid body for either of the three proposed approaches \eqref{eq:RBCtrlParticles}, \eqref{eq:RBCtrlBody} or \eqref{eq:RBCtrlEnergy}.
+
+The determinant of the transport map is
+\begin{align}
+ \det \sysTransportMap(\sysCoord,\sysCoordR) = \frac{\det \bodyJac{0}{7}(\sysCoordR)}{\det \bodyJac{0}{7}(\sysCoord)},
+\quad
+ \det \bodyJac{0}{7}(\sysCoord) = -l_2 l_3 (l_1 + l_2 \sin\jointAngle[2] + l_3 \cos(\jointAngle[2]+\jointAngle[3])) \cos\jointAngle[3] \sin\jointAngle[5]
+\end{align}
+If the term in the brackets vanishes means that the wrist lies on the axis of $\jointAngle[1]$ and $\cos\jointAngle[3] = 0$ is the case if the arm is completely straight which is the singularity we already encountered with the SCARA robot.
+The last three axis with angles $\jointAngle[4]$, $\jointAngle[5]$, $\jointAngle[6]$ can be regarded as Euler angles in the sequence XYX and $\sin\jointAngle[5] = 0$ is their singularity.
+Comparing this to the motivation example in \autoref{sec:AnaMechMotivation} we have the same problem but the other way around:
+The Euler angles are an absolutely appropriate choice of coordinates since the mechanism is realized like this.
+Consequently the configuration manifold of this part is $\Sphere^1 \times \Sphere^1 \times \Sphere^1$ and we are assigning a control that was designed for $\SpecialOrthogonalGroup(3)$.
+
+\paragraph*{Conclusion.}
+The behavior of the two different parameterizations are quite analog to the two parameterizations of the SCARA robot.
+Which one is more suitable depends on the actual control task.
+Furthermore, the two presented parameterizations are just two special cases of which dynamics can be achieved with the more general approach of control of this work. 
+

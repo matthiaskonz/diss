@@ -1,0 +1,45 @@
+\clearpage
+\section{Summary}
+There is an algorithm:
+\begin{align}
+ \big( \sysCoord, \sysVel, \kinMat, \bodyHomoCoord{\BidxI}{\BidxII}, \bodyInertiaMatp{0}{\BidxII}, \bodyDissMatp{\BidxI}{\BidxII}, \bodyStiffMatp{\BidxI}{\BidxII}, \bodyHomoCoordR{\BidxI}{\BidxII}, \gravityAcc \big) \ \mapsto \ \big( \sysInertiaMat, \gyroForce, \genForceDiss, \genForceStiff, \genForceGravity \big)
+\end{align}
+which is
+\begin{subequations}
+\begin{align}
+ \bodyJac{\BidxI}{\BidxII}(\sysCoord) = \pdiff{\sysCoordd} \veeOp\Big( \bodyHomoCoord{\BidxII}{\BidxI}(\sysCoord) \diff{t} \big(\bodyHomoCoord{\BidxI}{\BidxII}(\sysCoord) \big) \Big) \kinMat(\sysCoord)
+\end{align}
+fill the graph
+\begin{align}
+ \bodyHomoCoord{\BidxI}{\BidxIII} &= \bodyHomoCoord{\BidxI}{\BidxII} \bodyHomoCoord{\BidxII}{\BidxIII},&
+ \bodyHomoCoord{\BidxII}{\BidxI} &= \bodyHomoCoord{\BidxI}{\BidxII}^{-1},&
+\\
+ \bodyJac{\BidxI}{\BidxIII} &= \Ad{\bodyHomoCoord{\BidxIII}{\BidxII}} \bodyJac{\BidxI}{\BidxII} + \bodyJac{\BidxII}{\BidxIII},&
+ \bodyJac{\BidxII}{\BidxI} &= -\Ad{\bodyHomoCoord{\BidxI}{\BidxII}} \bodyJac{\BidxI}{\BidxII},&
+\\
+ \bodyJacd{\BidxI}{\BidxIII} &= \Ad{\bodyHomoCoord{\BidxIII}{\BidxII}} \big(\bodyJacd{\BidxI}{\BidxII} + \ad{\bodyJac{\BidxIII}{\BidxII}\sysVel} \bodyJac{\BidxI}{\BidxII} \big) + \bodyJacd{\BidxII}{\BidxIII},&
+ \bodyJacd{\BidxII}{\BidxI} &= -\Ad{\bodyHomoCoord{\BidxI}{\BidxII}} \big(\bodyJacd{\BidxI}{\BidxII} + \ad{\bodyJac{\BidxI}{\BidxII}\sysVel} \bodyJac{\BidxI}{\BidxII} \big),&
+% \BidxI, \BidxII, \BidxIII &= 0,\ldots,\numRigidBodies.
+\end{align}
+system assembly
+\begin{align}
+ \sysInertiaMat &= \sumBodies \bodyJac{0}{\BidxII}^\top \veeMatOp(\bodyInertiaMatp{0}{\BidxII}) \bodyJac{0}{\BidxII},
+\\
+ \gyroForce &= \sumBodies \bodyJac{0}{\BidxII}^\top \veeTwoOp \big(\big(\wedOp(\bodyJacd{0}{\BidxII} \sysVel) + \wedOp(\bodyJac{0}{\BidxII} \sysVel)^2 \big) \bodyInertiaMatp{0}{\BidxII} \big) 
+ %= \sum_{\BidxII} \big( \bodyJac{0}{\BidxII}^\top \bodyInertiaMat{0}{\BidxII} \bodyJacd{0}{\BidxII} - \ad{\bodyJac{0}{\BidxII}\sysVel}^\top \bodyInertiaMat{0}{\BidxII} \bodyJac{0}{\BidxII}\big) \sysVel
+\\
+ \sysDissMat &= \sumBodiesAB \bodyJac{\BidxI}{\BidxII}^\top \veeMatOp(\bodyDissMatp{0}{\BidxII}) \bodyJac{\BidxI}{\BidxII}
+\\
+ \genForceStiff &= \sumBodiesAB \bodyJac{\BidxI}{\BidxII}^\top \veeTwoOp \big( (\idMat[4] - \bodyHomoCoord{\BidxII}{\BidxI} \bodyHomoCoordR{\BidxI}{\BidxII}) \bodyStiffMatp{\BidxI}{\BidxII} \big)
+\\
+ \genForceGravity &= \sumBodies \bodyJac{0}{\BidxII}^\top \veeMatOp(\bodyInertiaMatp{0}{\BidxII}) \Ad{\bodyHomoCoord{\BidxII}{0}} \gravityAccWrench, \qquad \gravityAccWrench = [\gravityAcc^\top, \tuple{0}_{1\times3}]^\top
+\\
+ \kineticEnergy &= \tfrac{1}{2} \norm[\sysInertiaMat]{\sysVel}^2
+\\
+ \dissFkt &= \tfrac{1}{2} \norm[\sysDissMat]{\sysVel}^2
+\\
+ \potentialStiff &= \sumBodiesAB \tfrac{1}{2} \norm[\bodyStiffMatp{\BidxI}{\BidxII}]{\bodyHomoCoord{\BidxI}{\BidxII}^\top - \bodyHomoCoordR{\BidxI}{\BidxII}^\top}^2
+\\
+ \potentialGravity &= \sumBodies \sProd[\bodyInertiaMatp{0}{\BidxII}]{\bodyHomoCoord{0}{\BidxII}^\top}{\wedOp(\gravityAccWrench)},
+\end{align} 
+\end{subequations}

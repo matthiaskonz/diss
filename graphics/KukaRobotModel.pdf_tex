@@ -1,4 +1,4 @@
-%% Creator: Inkscape inkscape 0.48.4, www.inkscape.org
+%% Creator: Inkscape 1.4 (86a8ad7, 2024-10-11), www.inkscape.org
 %% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
 %% Accompanies image file 'KukaRobotModel.pdf' (pdf, eps, ps)
 %%
@@ -35,8 +35,10 @@
     \renewcommand\transparent[1]{}%
   }%
   \providecommand\rotatebox[2]{#2}%
+  \newcommand*\fsize{\dimexpr\f@size pt\relax}%
+  \newcommand*\lineheight[1]{\fontsize{\fsize}{#1\fsize}\selectfont}%
   \ifx\svgwidth\undefined%
-    \setlength{\unitlength}{443.25615234bp}%
+    \setlength{\unitlength}{415.55264282bp}%
     \ifx\svgscale\undefined%
       \relax%
     \else%
@@ -48,16 +50,20 @@
   \global\let\svgwidth\undefined%
   \global\let\svgscale\undefined%
   \makeatother%
-  \begin{picture}(1,0.61139966)%
-    \put(0,0){\includegraphics[width=\unitlength]{KukaRobotModel.pdf}}%
-    \put(0.6779053,0.11086982){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{$l_1$}}}%
-    \put(0.77866543,0.31200823){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{$l_2$}}}%
-    \put(0.88577539,0.46515273){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{$l_3$}}}%
-    \put(0.68633545,0.08070972){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\theta_1$}}}%
-    \put(0.79740377,0.2388996){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\theta_2$}}}%
-    \put(0.55774759,0.45805699){\color[rgb]{0,0,0}\makebox(0,0)[rb]{\smash{$\theta_3$}}}%
-    \put(0.77851644,0.5273494){\color[rgb]{0,0,0}\makebox(0,0)[rb]{\smash{$\theta_4$}}}%
-    \put(0.80990056,0.58405005){\color[rgb]{0,0,0}\makebox(0,0)[rb]{\smash{$\theta_5$}}}%
-    \put(0.96441242,0.59726788){\color[rgb]{0,0,0}\makebox(0,0)[rb]{\smash{$\theta_6$}}}%
+  \begin{picture}(1,0.6109803)%
+    \lineheight{1}%
+    \setlength\tabcolsep{0pt}%
+    \put(0,0){\includegraphics[width=\unitlength,page=1]{KukaRobotModel.pdf}}%
+    \put(0.6779053,0.1108698){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{0}\smash{\begin{tabular}[t]{c}$l_1$\end{tabular}}}}%
+    \put(0.77866543,0.31200821){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{0}\smash{\begin{tabular}[t]{c}$l_2$\end{tabular}}}}%
+    \put(0.88577539,0.46515272){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{0}\smash{\begin{tabular}[t]{c}$l_3$\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=2]{KukaRobotModel.pdf}}%
+    \put(0.68633545,0.0807097){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}$\theta_1$\end{tabular}}}}%
+    \put(0.79740377,0.23889958){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}$\theta_2$\end{tabular}}}}%
+    \put(0.55774758,0.45805697){\color[rgb]{0,0,0}\makebox(0,0)[rt]{\lineheight{0}\smash{\begin{tabular}[t]{r}$\theta_3$\end{tabular}}}}%
+    \put(0.77851644,0.52734938){\color[rgb]{0,0,0}\makebox(0,0)[rt]{\lineheight{0}\smash{\begin{tabular}[t]{r}$\theta_4$\end{tabular}}}}%
+    \put(0.80990056,0.58405003){\color[rgb]{0,0,0}\makebox(0,0)[rt]{\lineheight{0}\smash{\begin{tabular}[t]{r}$\theta_5$\end{tabular}}}}%
+    \put(0.96441242,0.59726786){\color[rgb]{0,0,0}\makebox(0,0)[rt]{\lineheight{0}\smash{\begin{tabular}[t]{r}$\theta_6$\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=3]{KukaRobotModel.pdf}}%
   \end{picture}%
 \endgroup%

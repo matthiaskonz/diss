@@ -1,4 +1,4 @@
-%% Creator: Inkscape inkscape 0.48.4, www.inkscape.org
+%% Creator: Inkscape 1.4 (86a8ad7, 2024-10-11), www.inkscape.org
 %% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
 %% Accompanies image file 'lsrMulticopters.pdf' (pdf, eps, ps)
 %%
@@ -35,8 +35,10 @@
     \renewcommand\transparent[1]{}%
   }%
   \providecommand\rotatebox[2]{#2}%
+  \newcommand*\fsize{\dimexpr\f@size pt\relax}%
+  \newcommand*\lineheight[1]{\fontsize{\fsize}{#1\fsize}\selectfont}%
   \ifx\svgwidth\undefined%
-    \setlength{\unitlength}{453.54329834bp}%
+    \setlength{\unitlength}{425.19685364bp}%
     \ifx\svgscale\undefined%
       \relax%
     \else%
@@ -48,15 +50,19 @@
   \global\let\svgwidth\undefined%
   \global\let\svgscale\undefined%
   \makeatother%
-  \begin{picture}(1,0.31250002)%
-    \put(0,0){\includegraphics[width=\unitlength]{lsrMulticopters.pdf}}%
-    \put(0.71250002,0.17772228){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\PropForce[2]$}}}%
-    \put(0.71875002,0.23750007){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\PropTilt[2]$}}}%
-    \put(0.99374998,0.17772228){\color[rgb]{0,0,0}\makebox(0,0)[rb]{\smash{$\PropForce[1]$}}}%
-    \put(0.97500005,0.23750007){\color[rgb]{0,0,0}\makebox(0,0)[rb]{\smash{$\PropTilt[1]$}}}%
-    \put(0.05867064,0.13657234){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\PropForce[1]$}}}%
-    \put(0.19695742,0.17486996){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\PropForce[2]$}}}%
-    \put(0.17679871,0.25172508){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\PropForce[3]$}}}%
-    \put(0.07883987,0.24070078){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$\PropForce[4]$}}}%
+  \begin{picture}(1,0.31250001)%
+    \lineheight{1}%
+    \setlength\tabcolsep{0pt}%
+    \put(0,0){\includegraphics[width=\unitlength,page=1]{lsrMulticopters.pdf}}%
+    \put(0.7125,0.17772228){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}$\PropForce[2]$\end{tabular}}}}%
+    \put(0.71875,0.23750007){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}$\PropTilt[2]$\end{tabular}}}}%
+    \put(0.99374995,0.17772228){\color[rgb]{0,0,0}\makebox(0,0)[rt]{\lineheight{0}\smash{\begin{tabular}[t]{r}$\PropForce[1]$\end{tabular}}}}%
+    \put(0.97500002,0.23750007){\color[rgb]{0,0,0}\makebox(0,0)[rt]{\lineheight{0}\smash{\begin{tabular}[t]{r}$\PropTilt[1]$\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=2]{lsrMulticopters.pdf}}%
+    \put(0.05867064,0.13657233){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}$\PropForce[1]$\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=3]{lsrMulticopters.pdf}}%
+    \put(0.19695741,0.17486995){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}$\PropForce[2]$\end{tabular}}}}%
+    \put(0.17679871,0.25172508){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}$\PropForce[3]$\end{tabular}}}}%
+    \put(0.07883987,0.24070078){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}$\PropForce[4]$\end{tabular}}}}%
   \end{picture}%
 \endgroup%

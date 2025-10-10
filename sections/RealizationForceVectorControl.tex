@@ -1,23 +1,17 @@
 \section{Control of the generalized force}\label{sec:RealizationForceVectorControl}
-
-\begin{enumerate}
- \item Servo simulation
- \item Propeller tracking control
- \item Tricopter force filter
- \item Quadcopter force filter
- \item reconstruction of the generalized force
-\end{enumerate}
-
-
 The rigid body controller computes a \textit{desired} generalised force $\genForceD$ for the corresponding multicopter.
-Since the force $\genForce$ itself is subject to its own actuator dynamics (see \autoref{sec:RealizationModels}), it is not possible to realize it instantaneously.
+This force cannot be realized instantaneously as its subject to its own actuator dynamics, see \autoref{sec:RealizationModels}.
+This section describes a control approach for the generalized force $\genForce$
+
+Since the force $\genForce$ itself is subject , it is not possible to realize it instantaneously.
 However, we can pursue to realise it reasonably fast, which is the subject of this section.
 At the same time we need an accurate estimate for the current generalized force for the rigid body observer.
+The coarse structure was alredy given in \autoref{fig:StructureMulticopterAgent}.
 
 \subsection{Servo simulation}
 The integrated servo controller uses an internal angle measurement but this is not available for the main controller.
-So for validation of the servo dynamics \eqref{eq:TriModelServoDynamics} and identification of its parameters $\ServoParam[0]$ and $\ServoParam[1] $, a dedicated test bench with an incremental encoder for the tilt angle $\aServo$ was used.
-Since the model is asymptotically stable a simple online simulation of the model is sufficient to get an estimate of the current servo angle.
+A dedicated test bench (see \autoref{fig:PropellerTestBench}) with an absolute encoder for the tilt angle $\aServo$ was used for validation of the servo dynamics \eqref{eq:TriModelServoDynamics} and identification of its parameters $\ServoParam[0]$ and $\ServoParam[1] $.
+Since the model is asymptotically stable, a simple online simulation of the model with the known servo setpoint $\aServoU[][k]$ is sufficient to get an estimate of the current servo angle.
 For this a simple forward Euler discretization of \eqref{eq:TriModelServoDynamics} is implemented on the main controller
 \begin{subequations}\label{eq:ServoSimulator}
 \begin{align}
@@ -95,7 +89,7 @@ Its characteristic polynomial is
  - \tfrac{\Ts}{2} \big( \PropObsGainVel + \Ts \PropObsGainBias \big)
  = 0
 \end{align}
-The roots $\lambda$ for the given parameters are shown in (??).
+The roots $\lambda$ for the given parameters are shown in \fixme{(fixme)}.
 
 % \begin{subequations}
 % \begin{align}
@@ -156,7 +150,7 @@ In addition the computed values are saturated to $0.3\,\unit{N} \leq \PropForceD
 The desired servo angles $\aServoD[i]$ are directly forwarded to the servo controllers.
 In contrast, for the desired thrusts $\PropForce[i]$ a first order filter is applied:
 \begin{align}\label{eq:PropPrefilter}
- \PropForceDF[][k\!+\!2] = \lambda_{\mathsf{Filt}} \PropForceDF[][k\!+\!1] + (1-\lambda_{\mathsf{Filt}}) \PropForceD[][k\!+\!1],
+ \PropForceDF[][k\!+\!2] = c_F \PropForceDF[][k\!+\!1] + (1-c_F) \PropForceD[][k\!+\!1],
 \qquad
  \PropVelDF[][k\!+\!2] = \sqrt{\sfrac{\PropForceDF[][k\!+\!2]}{\kappaF}}.
 \end{align}

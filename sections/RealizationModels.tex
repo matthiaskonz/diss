@@ -490,11 +490,12 @@ Generalized force from propellers
 \end{align}
 Propeller drive dynamics
 \begin{align}
- \PropVeld[j] + \PropParam[1] \PropVel[j]^2 = \PropParam[2] \BLDCCurr[j] - \PropParam[3], \qquad j=1,2,3.
+ \PropInertia \PropVeld[j] + \kappaT \PropVel[j]^2 = \BLDCTorqueConstant[j] \BLDCCurr[j] - \BLDCFriction[j], \qquad j=1,2,3
+% \PropVeld[j] + \PropParam[1] \PropVel[j]^2 = \PropParam[2] \BLDCCurr[j] - \PropParam[3], \qquad j=1,2,3.
 \end{align}
 Servo dynamics
 \begin{align}\label{eq:TriModelServoDynamics}
- \aServodd[j] + \ServoParam[1] \aServod[j] + \ServoParam[0] \aServo[j] = \ServoParam[0] \aServoU[j], \qquad j=1,2,3.
+ \aServodd[j] + \ServoParam[1] \aServod[j] + \ServoParam[0] \aServo[j] = \ServoParam[0] \aServoU[j], \qquad j=1,2,3
 \end{align}
 
 \end{subequations}

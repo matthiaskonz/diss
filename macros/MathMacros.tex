@@ -1133,7 +1133,7 @@
 \newcommand{\wyEd}{\dot{\bodyAngVelSym}_{\idxY\idxErr}}
 \newcommand{\wzEd}{\dot{\bodyAngVelSym}_{\idxZ\idxErr}}
 %
-\newcommand{\F}{\bodyForceSym}
+\newcommand{\F}{\tuple{\bodyForceSym}}
 \newcommand{\Fx}{\bodyForceSym_{\idxX}}
 \newcommand{\Fy}{\bodyForceSym_{\idxY}}
 \newcommand{\Fz}{\bodyForceSym_{\idxZ}}
@@ -1378,8 +1378,8 @@
 \newcommand{\quatyd}{\dot{\quatSym}_{\idxText{y}}}
 \newcommand{\quatzd}{\dot{\quatSym}_{\idxText{z}}}
 \newcommand{\quatxyzd}{\dot{\tuple{\quatSym}}_{\idxText{xyz}}}
-\newcommand{\RotMatQuat}{\bodyRotSym_{\idxText{quat}}}
-\newcommand{\kinMatQuat}{\kinMatSym_{\idxText{quat}}}
+\newcommand{\RotMatQuat}{\mat{\bodyRotSym}_{\idxText{quat}}}
+\newcommand{\kinMatQuat}{\mat{\kinMatSym}_{\idxText{quat}}}
 %
 \newcommand{\RotMatAB}{\mat{\bodyRotSym}_{\idxText{AB}}}
 \newcommand{\RotMatPZ}{\mat{\bodyRotSym}_{\idxText{PZ}}}
@@ -1438,17 +1438,17 @@
 \newcommand{\FP}{\bodyForceSym_{\mathsf{P}}}
 \newcommand{\tauP}{\bodyTorqueSym_{\mathsf{P}}}
 %
-\newcommand{\FB}{\bodyForceSym_{\mathsf{B}}}
-\newcommand{\FBd}{\dot{\bodyForceSym}_{\mathsf{B}}}
+\newcommand{\FB}{\tuple{\bodyForceSym}_{\mathsf{B}}}
+\newcommand{\FBd}{\dot{\tuple{\bodyForceSym}}_{\mathsf{B}}}
 \newcommand{\FBx}{\bodyForceSym_{\mathsf{Bx}}}
 \newcommand{\FBy}{\bodyForceSym_{\mathsf{By}}}
 \newcommand{\FBz}{\bodyForceSym_{\mathsf{Bz}}}
 %
-\newcommand{\tauB}{\bodyTorqueSym_{\mathsf{B}}}
+\newcommand{\tauB}{\tuple{\bodyTorqueSym}_{\mathsf{B}}}
 \newcommand{\tauBx}{\bodyTorqueSym_{\mathsf{Bx}}}
 \newcommand{\tauBy}{\bodyTorqueSym_{\mathsf{By}}}
 \newcommand{\tauBz}{\bodyTorqueSym_{\mathsf{Bz}}}
-\newcommand{\tauBd}{\dot{\bodyTorqueSym}_{\mathsf{B}}}
+\newcommand{\tauBd}{\dot{\tuple{\bodyTorqueSym}}_{\mathsf{B}}}
 %%%%%%%%%%%%%%%%%% multicopter state estimation
 % sampling time
 \newcommand{\Ts}{T_{\idxSamp}}
@@ -1471,9 +1471,11 @@
 \newcommand{\wIMU}{\tuple{\bodyAngVelSym}_{\idxText{M}}}
 \newcommand{\aIMU}{\tuple{a}_{\idxText{M}}}
 % IMU errors
-\newcommand{\RIMUBL}{\mat{\bodyRotSym}_{\idxText{IMU,BL}}}
-\newcommand{\RIMUBR}{\mat{\bodyRotSym}_{\idxText{IMU,BR}}}
-\newcommand{\RPYIMUBR}{\tuple{\varepsilon}_{\idxText{IMU,BR}}}
+%\newcommand{\RIMUBL}{\mat{\bodyRotSym}_{\idxText{IMU,BL}}}
+%\newcommand{\RIMUBR}{\mat{\bodyRotSym}_{\idxText{IMU,BR}}}
+%\newcommand{\RPYIMUBR}{\tuple{\varepsilon}_{\idxText{IMU,BR}}} 
+\newcommand{\RIMUBR}{\mat{\bodyRotSym}_{\idxText{B}}}
+\newcommand{\RPYIMUBR}{\tuple{\varepsilon}_{\idxText{B}}}
 \newcommand{\wIMUB}{\tuple{\bodyAngVelSym}_{\idxText{B}}}
 \newcommand{\wIMUN}{\tuple{\bodyAngVelSym}_{\idxText{N}}}
 \newcommand{\aIMUB}{\tuple{a}_{\idxText{B}}}
@@ -1481,10 +1483,10 @@
 \newcommand{\aIMUN}{\tuple{a}_{\idxText{N}}}
 % VICON Measurement
 \newcommand{\tVIC}{t_{\idxText{VIC}}}
-\newcommand{\rVIC}{\tuple{r}_{\idxText{VIC}}}
-\newcommand{\qVIC}{\tuple{q}_{\idxText{VIC}}}
-\newcommand{\RVIC}{\mat{\bodyRotSym}_{\idxText{VIC}}}
-\newcommand{\yawVIC}{\yaw_{\idxText{VIC}}}
+\newcommand{\rVIC}{\tuple{r}_{\idxText{M}}}
+\newcommand{\qVIC}{\tuple{q}_{\idxText{M}}}
+\newcommand{\RVIC}{\mat{\bodyRotSym}_{\idxText{M}}}
+\newcommand{\yawVIC}{\yaw_{\idxText{M}}}
 %
 \newcommand{\TVICS}{T_{\idxText{VIC,S}}}
 \newcommand{\TsVIC}{T'_{\idxText{S}}}

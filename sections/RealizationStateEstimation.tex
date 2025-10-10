@@ -1,68 +1,104 @@
 \section{State estimation}\label{sec:RealizationStateEstimation}
-Rigid body model
+The rigod body controller requires the current rigid body state (position, velocity, attiude and angular velocity) and the assumed offset force and torque.
+The subject of this section is the estimation of these values based on the available measurements from IMU and motion capturing system.
+
+\paragraph{Rigid body dynamics.}
+The rigid body attitude may be parameterized by a unit quaternion $\quat = [\quatw, \quatx, \quaty, \quatz] \in \Sphere^3$ which allows for a more efficient implementation of the microcontroller and is pretty common in this field.
+The corresponding kinematics may be derived as proposed in \autoref{sec:MathCoordinates}.
+Furthermore, using the velocity coefficients $\rd$ w.r.t. the reference frame, the rigid body dynamics are
+\begin{subequations}\label{eq:RealizationStateDyn}
 \begin{align}
- m (\rdd - \gravityAcc) + d \rd &= \RotMatQuat(\quat) (F + \FB)
+ m (\rdd - \gravityAcc) + d \rd = \RotMatQuat(\quat) (\F + \FB)
 \\
  \quatd = \kinMatQuat(\quat) \, \w, \qquad
- \Theta \dot{\w} + \wedOp(\w) \Theta \w &= \tau + \tauB
+ \bodyMOI{}{} \dot{\w} + \wedOp(\w) \bodyMOI{}{} \w = \bodyTorque{}{} + \tauB
 \end{align}
-measurements
+with
 \begin{align}
- \rVIC &= \r,&
- \qVIC &= \quat
+ \RotMatQuat(\quat) &=
+ \begin{bmatrix} 
+  1 - 2(\quaty^{2} + \quatz^{2}) & 2(\quaty\quatx -\quatw\quatz)  & 2(\quatz\quatx + \quatw\quaty) \\
+  2(\quaty\quatx + \quatw\quatz) & 1 - 2(\quatx^{2} + \quatz^{2}) & 2(\quaty\quatz - \quatw\quatx) \\
+  2(\quatz\quatx - \quatw\quaty) & 2(\quaty\quatz + \quatw\quatx) & 1 - 2(\quatx^{2} + \quaty^{2})
+ \end{bmatrix}
 \\
- \wIMU &= \w + \wIMUN,&
- \aIMU &=  R^\top (\ddot{r} - \gravityAcc) + \aIMUB + \aIMUN
+ \kinMatQuat(\quat) &=
+ \tfrac{1}{2} \begin{bmatrix}
+  -\quatx & -\quaty & -\quatz \\
+  \quatw & -\quatz &  \quaty \\
+  \quatz &  \quatw & -\quatx \\
+  -\quaty &  \quatx &  \quatw
+ \end{bmatrix}
+\end{align}
+\end{subequations}
+
+\paragraph{IMU measurements.}
+The \textsc{VectorNav VN100s} contains a 3-axis accelerometer, gyroscope and magnetometer connected to microcontroller which implements an extended Kalman-filter to estimate the attitude quaternion and gyroscope biases.
+While the attitude estimate is used for outdoor applications with the multicopter, it is not used here, as in the lab the more precise estimate from the motion capturing system available.
+%Nevertheless, we will use the bias compensated gyroscope measurement.
+
+Gyroscope and accelerometer measure the \textit{inertial} angular velocity and acceleration.
+While for tactical and navigation grade IMUs the angular velocity of the Earth is an integral part of the navigation algorithms, see e.g.\ \cite{Savage:Strapdown1}, for the consumer grade IMU here, it cannot be distinguished from the reminescent bias in gyroscope.
+Similarly, the coriolis acceleration on the accelerometer may be ignored and the only external parameter is Earth's gravity $\gravityAcc$ at the current position.
+
+The IMU is mounted to the corresponding multicopter to roughly align with its body fixed frame, more precicly the body fixed frame determined by the reflective markers for the motion capture.
+We will call the remaining, constant misalgnment $\RIMUBR \in \SpecialOrthogonalGroup(3)$.
+While the gyroscope bias is compensated, the accelerometer contains a noticable slowly varying bias $\aIMUB \in \RealNum^3$.
+Furthermore, both sensors contain a noticable noise $\wIMUN[k], \aIMUN[k] \in \RealNum^3$ which is not further investigated here.
+Overall, with a constant sampling time $\Ts=0.005\,\unit{s}$, we assume the IMU measurments $\wIMU$ and $\aIMU$ to be related to the rigid body state by:
+\begin{align}
+ \wIMU[k] &= \RIMUBR \w(k\Ts) + \wIMUN[k],
+\\
+ \aIMU[k] &=  \RIMUBR \R^\top(k\Ts) (\rdd(k\Ts) - \gravityAcc) + \aIMUB + \aIMUN[k]
+ .
 \end{align}
 
-\begin{figure}[ht]
+\paragraph{VICON measurements.}
+The \textsc{VICON} motion capturing system measures the position $\r$ and the attitude, reported as quaternion $\quat$, by means of tracking the reflective markers on the multicopters.
+The refernce frame of the system was carefully adjusted to align with gravity using a pendulum with reflective markers.
+
+In contrast to the IMU measurments, there is no evidence for systematic errors in the measurements for the VICON system.
+However, their processing and transmission to to the multicopter processor results in a substantial latency, i.e.\ measurements corresponding to time $t$ are available to the controller only after time $t+\TVICD$.
+Furthermore, as non-realtime systems are involved, the latency varies slightly.
+Mostly due to bandwidth limitations on the wireless transmission, the sampling time is only $\TsVIC=0.1\,\unit{s}$ while the main controller runs at $\Ts=0.005\,\unit{s}$.
+The measurements $\rVIC$ and $\qVIC$ are related to the rigid body state by
+\begin{align}
+ \rVIC[k'] = \r(k'\TsVIC - \TVICD),
+\qquad
+ \qVIC[k'] = \quat(k'\TsVIC - \TVICD).
+\end{align}
+
+\begin{figure}
  \centering
  \input{graphics/StateEstimationBlock.pdf_tex}
  \caption{Overall structure of the state estimation}
  \label{fig:StateEstimationBlock}
 \end{figure}
 
-sadsadv \autoref{fig:StateEstimationBlock}.
+\paragraph{Overall observer design.}
+Instead of designing one large observer, the estimation problem is split into smaller subproblems as illustrated in \autoref{fig:StateEstimationBlock}.
+The the following subsections will discuss these.
 
 
-\subsection{IMU model and misalignment correction}
-Onboard the multicopters there is an inertial measurement unit (IMU), the model VN100 from \textsc{VectorNav}.
-The IMU contains a 3-axis accelerometer, gyroscope and magnetometer connected to microcontroller which implements an extended Kalman-filter to estimate the attitude quaternion and gyroscope biases.
 
-By construction the IMU has a small misalignment $\RIMUBR \in \SpecialOrthogonalGroup(3)$ to the body fixed frame.
-Also the reference frame of the IMU is aligned with the gravity direction and the direction to magnetic north.
-The lab frame $(\hx, \hy, \hz)$ is also aligned with the gravity $\gravityAcc = [0,0,-9.81]^\top$ but the $\hx$ and $\hy$ axis are aligned with the walls for convenience, yielding a misalignment $\RIMUBL \in \SpecialOrthogonalGroup(3)$.
 
-Overall the relation of the IMU measurements $(\RIMU, \wIMU, \aIMU)$ and the real system variables $(\R, \w, \rdd)$ is assumed as
-\begin{subequations}
+\subsection{IMU misalignment correction}
+For a static $\sysCoord=\const$ multicopter the accelerometer model is
 \begin{align}
- \R &= \RIMUBL \RIMU \RIMUBR^\top
-\\
- \omega &= \RIMUBR (\wIMU + \wIMUN)
-\\
- \RT (\ddot{r} - \gravityAcc) &= \RIMUBR (\aIMU + \aIMUB + \aIMUN).
-\end{align}
-\end{subequations}
+ \aIMU[k] &=  -\RIMUBR \R^\top \gravityAcc + \aIMUB + \aIMUN[k].
+\end{align} 
+Here we are interested in the value $\RIMUBR$, but for its estimation propsed here we also need to estimate the accelerometer bias $\aIMUN$.
+For a shorttime measurment ($\Delta t<10\,\unit{min}$) is can be assumed to be constant.
+Taking into account that the reference frame was carefully aligned, and the official gravitation value for Saarland, we have $\gravityAcc = [0, 0, -9.8107]^\top \tfrac{\unit{m}}{\unit{s}^2}$.
 
-\paragraph*{Identification of mounting misalignment and accelerometer bias.}
-For identification of the misalignment $\RIMUBR$ and the accelerometer bias $\aIMUB$ a multicopter is placed ($\r = \const$) in different random orientations $\R = \const$ while the accelerometer measurements $\aIMU$ are recorded.
-Since the robot is not moving the acceleration that \textit{should} be measured is $a = -\R^\top \gravityAcc$.
-We record measurements over $10\,\unit{s}$ ($2000$ samples) and take the mean values to eliminate the noise $\aIMUN$.
-At the same time the attitude $\R = \RVIC$ captured with the Vicon system.
-Between the measurements we have the relation
+The multicopter is placed in different random orientations while the accelerometer measurements $\aIMU$ and the attitude $\R$ is recorded.
+To compensate the noise $\aIMUN[k]$ we take the mean value $\bar{\tuple{a}}_{\idxText{M}}$ over $10\,\unit{s}$.
+For each measurement with index $i$ and different attitudes $\bar{\R}[i]$ we have the mean accelerometer measurement $\bar{\tuple{a}}_{\idxText{M}}[i]$.
+With this, we estimate the values for misalignment $\RIMUBR$ and bias $\aIMUB$ as the ones that minimize the sum over the squared errors of the experiments:
 \begin{align}
- -\RVIC^\top \gravityAcc &= \RIMUBR (\aIMU + \aIMUB).
-\label{eq:IdentEquationAIMUNonlin}
+ \mathcal{J}(\RIMUBR, \aIMUB) = \tfrac{1}{2} \sum_i \norm{ \bar{\tuple{a}}_{\idxText{M}}[i] + \RIMUBR \bar{\R}^\top[i] \gravityAcc + \aIMUB }^2
 \end{align}
-We assume that the misalignment $\RIMUBR$ is small, so 
-\begin{align}
- \RIMUBR = \exp (\wedOp(\RPYIMUBR)) \approx \idMat[3] + \wedOp(\RPYIMUBR), \quad \RPYIMUBR \in \RealNum^3.
-\end{align}
-Now can write \eqref{eq:IdentEquationAIMUNonlin} in a form that is \textit{linear} in the parameters 
-\begin{align}
- (-\RVIC^\top \gravityAcc)^\wedge \, \RPYIMUBR - \aIMUB &= \aIMU + \RVIC^\top \gravityAcc
-\end{align}
-and use a least squares approximation to identify values for $\RPYIMUBR$ and $\aIMUB$.
+Note that this minimization problem is mathematically identical to the one considered in \autoref{sec:RBStiffness}.
 
 \begin{figure}[htb]
  \centering
@@ -76,20 +112,28 @@ The red lines are the raw measurements $\gravityAcc = \RVIC \aIMU$, the green li
 Most notably one can see that even the magnitude $\norm{\gravityAcc}$ of the raw acceleration is off by about $5\%$ for some experiments whereas the compensated values are all within a window of about $0.2\%$.
 
 \subsection{Angular velocity and torque bias}
-The model for the rotational kinetics and the gyroscope measurement are
+Recall the mechanical model of the angular velocity $\w$, disturbance torque $\tauB$ and gyroscope $\wIMU$ motivated above:
 \begin{align}
- \Theta \dot{\w} + \wedOp(\w) \Theta \w = \tau + \tauB,
+ \J \dot{\w} + \wedOp(\w) \J \w = \bodyTorque{}{} + \tauB,
+\qquad
+ \dot{\tau}_{\textsf{B}} = \tuple{0},
 \qquad
  \wIMU = \w + \wIMUN.
 \end{align}
-Luenberger Observer
+The input torque $\bodyTorque{}{}$ is known as discussed in \autoref{sec:RealizationForceVectorControl}.
+
+The multicopters implement a simple Luenberger observer based on the forward Euler discretization and scalar gains $L_\omega, L_\tau$: 
 \begin{subequations}\label{eq:AngVelObs}
 \begin{align}
- \wObs[\kPlusOne] &= \wObs[k] + \Ts \J^{-1} \big( \tau[k] + \tauBObs[k] - \wedOp(\wObs[k]) \Theta \wObs[k] \big) + L_{\w} (\wIMU[][k] - \wObs[k])
+ \wObs[\kPlusOne] &= \wObs[k] + \Ts \J^{-1} \big( \bodyTorque{}{}[k] + \tauBObs[k] - \wedOp(\wObs[k]) \J \wObs[k] \big) + L_\omega (\wIMU[k] - \wObs[k])
 \\
- \tauBObs[\kPlusOne] &= \tauBObs[k] + L_\tau (\wIMU[][k] - \wObs[k])
+ \tauBObs[\kPlusOne] &= \tauBObs[k] + L_\tau (\wIMU[k] - \wObs[k])
+ .
 \end{align}
 \end{subequations}
+In practice, the gains $L_\omega = 0.2$ and $L_\tau=0.01$ did yield good results.
+The disturbance observer here takes the place of the integral controller, as the rigid body controller is "just" a PD controller.
+
 % side calculation
 % \begin{align}
 %  -\wedOp(\w[k]) \Theta \w[k] + \wedOp(\wObs[k]) \Theta \wObs[k]
@@ -106,42 +150,43 @@ Luenberger Observer
 % \\
 %  e_\tau[\kPlusOne] &= e_\tau[k] - L_\tau e_\w[k] - L_\tau \wIMUN
 % \end{align}
-Introducing the error quantities $e_{\w} = \w - \wObs$ and $e_\tau = \tauB - \tauBObs$ and subtracting the observer \eqref{eq:AngVelObs} from the discretized model we find the \textit{observer error dynamics}:
-\begin{multline}\label{eq:AngVelObsErrorDyn}
- \begin{bmatrix} e_{\w}[\kPlusOne] \\ e_{\tau}[\kPlusOne] \end{bmatrix} 
- = \begin{bmatrix} 
-  \idMat[3] - L_{\w} - S(\w[k]) & \Ts \J^{-1} \\
-  - L_{\tau} & \idMat[3]
- \end{bmatrix}
- \begin{bmatrix} e_{\w}[k] \\ e_{\tau}[k] \end{bmatrix}
-\\
- +
- \begin{bmatrix} \Ts \J^{-1} \wedOp(e_{\w}[k]) \Theta e_{\w}[k] \\ 0 \end{bmatrix} 
- -
- \begin{bmatrix} L_{\w} \\ L_{\tau} \end{bmatrix} 
- \wIMUN
-\end{multline}
-where
-\begin{align}
- S(\w[k]) = \Ts \J^{-1} \big( \wedOp(\w[k]) \Theta - \wedOp(\Theta \w[k]) \big).
-\end{align}
-Note that the term quadratic in $e_{\w}$ is negligible if assuming small errors.
-The term $S(\w[k])$ contains the time-variant part of the error dynamics.
-However, for a reasonable gain $L_{\w}$ and typical working conditions (\eg $\norm{\w} < 10\,\sfrac{\unit{rad}}{\unit{s}}$) the gain $L_{\w}$ dominates over the time-variant part and the error dynamics are asymptotically stable.
-Furthermore, for the linearization about the hover case, $\w \approx 0$, the matrix $S$ drops out completely.
-This is used to compute the gains $L_{\w} = \diag(l_{\wx}, l_{\wy}, l_{\wz})$ and $L_{\tau} = \diag(l_{\taux}, l_{\tauy}, l_{\tauz})$ corresponding to given desired closed loop poles at this expansion point.
+% Introducing the error quantities $e_{\w} = \w - \wObs$ and $e_\tau = \tauB - \tauBObs$ and subtracting the observer \eqref{eq:AngVelObs} from the discretized model we find the \textit{observer error dynamics}:
+% \begin{multline}\label{eq:AngVelObsErrorDyn}
+%  \begin{bmatrix} e_{\w}[\kPlusOne] \\ e_{\tau}[\kPlusOne] \end{bmatrix} 
+%  = \begin{bmatrix} 
+%   \idMat[3] - L_{\w} - S(\w[k]) & \Ts \J^{-1} \\
+%   - L_{\tau} & \idMat[3]
+%  \end{bmatrix}
+%  \begin{bmatrix} e_{\w}[k] \\ e_{\tau}[k] \end{bmatrix}
+% \\
+%  +
+%  \begin{bmatrix} \Ts \J^{-1} \wedOp(e_{\w}[k]) \Theta e_{\w}[k] \\ 0 \end{bmatrix} 
+%  -
+%  \begin{bmatrix} L_{\w} \\ L_{\tau} \end{bmatrix} 
+%  \wIMUN
+% \end{multline}
+% where
+% \begin{align}
+%  S(\w[k]) = \Ts \J^{-1} \big( \wedOp(\w[k]) \Theta - \wedOp(\Theta \w[k]) \big).
+% \end{align}
+% Note that the term quadratic in $e_{\w}$ is negligible if assuming small errors.
+% The term $S(\w[k])$ contains the time-variant part of the error dynamics.
+% However, for a reasonable gain $L_{\w}$ and typical working conditions (\eg $\norm{\w} < 10\,\sfrac{\unit{rad}}{\unit{s}}$) the gain $L_{\w}$ dominates over the time-variant part and the error dynamics are asymptotically stable.
+% Furthermore, for the linearization about the hover case, $\w \approx 0$, the matrix $S$ drops out completely.
+% This is used to compute the gains $L_{\w} = \diag(l_{\wx}, l_{\wy}, l_{\wz})$ and $L_{\tau} = \diag(l_{\taux}, l_{\tauy}, l_{\tauz})$ corresponding to given desired closed loop poles at this expansion point.
 
 
-\subsection{Configuration measurement delay}
-the configuration measurement $(\rVIC, \qVIC)$ is done by a \textsc{Vicon} motion capturing system.
-This measurement relies on the optical tracking of reflective markers fixed on the multicopters by infrared cameras mounted at the walls of the lab and connected to the ground station PC.
-The groundstation software runs a timer at $\TsVIC = 0.1\,\unit{ms}$ which reads the measurement, validates it and forwards it to the xBee radio module.
-Finally the multicopter microcontroller receives the measurements through its ratio module.
+\subsection{Configuration measurement latency}
+The configuration measurement $(\rVIC, \qVIC)$ is done by a \textsc{Vicon} motion capturing system.
+This measurement relies on the optical tracking of reflective markers fixed on the multicopters by infrared cameras mounted at the walls of the lab and connected to the ground station, a Windows 7 PC.
+The groundstation software is written in \textsc{Matlab}.
+It runs a timer at $\TsVIC = 0.1\,\unit{ms}$ which reads the measurement, validates and forwards it to the xBee radio module.
+Finally, the multicopter microcontroller receives the measurements through its ratio module.
+The radio module also handles other transmitions like receiving commands and sending measurements to the groundstation.
 
-\textsc{Matlab} is not a real-time system and the radio modules are transmitting and receiving other data at the same time.
-Thus the frequency at which the configuration measurements are available to the multicopter is \textit{not} constant, but varies by several main sampling steps $\Ts$, see \autoref{fig:ViconDelayIllustrate} for actual measurements.
-Furthermore the process is not performed instantaneously but takes some, again variable, time. 
-Overall we assume a \textit{variable time delay} $\TVICD[k']$ for each measurement.
+As a result of this chain of non realtime elements, the latency at which the configuration measurements are available to the multicopter is \textit{not} constant, but varies by several main sampling steps $\Ts$ in addition to its average value.
+Actual timings of these measuremnts are presented in \autoref{fig:ViconDelayIllustrate} for actual measurements.
+The estimation of the resulting \textit{variable time delay} $\TVICD[k']$ is the subject of this subsection.
 
 \begin{figure}[htb]
  \centering
@@ -151,7 +196,7 @@ Overall we assume a \textit{variable time delay} $\TVICD[k']$ for each measureme
 \end{figure}
 
 To get an estimate $\TVICDObs[k']$ for this delay we utilize the clocks on the ground station PC, $t'$, and the microcontroller, $t$.
-The clocks are assumed to be synchronous but have an unknown offset $\TPC = t - t' = \const$ depending on when each clock was started.
+The clocks are assumed to be synchronous but have an unknown offset $\TPC = t - t' = \const$ depending on when each device was powered.
 \autoref{fig:ViconDelayClocks} illustrates the time $\tVICp[k']$ at which a measurement was taken and the time $\tRec[k']$ at which it is received/available on the microcontroller.
 Taking a large enough sample of these times we have the relation
 \begin{align}\label{eq:meanTPC}
@@ -160,8 +205,9 @@ Taking a large enough sample of these times we have the relation
 Whereas $\TPC$ changes whenever the ground station or the micocontroller restarts, the average delay $\meanTVICD = \text{mean}(\TVICD[1,\ldots,K'])$ remains constant.
 
 \paragraph{Experimental average delay identification.}
-The Identification of the average delay $\meanTVICD$ is done in a dedicated experiment:
-The vehicle is mounted on an incremental encoder that serves as a reference for the yaw-angle.
+The identification of the average delay $\meanTVICD$ is done in a dedicated experiment:
+A multicopter is mounted on an incremental encoder directly connected to the multicopter main processor.
+It serves as a reference for the yaw-angle and is assumed to have negligible latency.
 The encoder signal and the yaw-angle from the motion capture system are recorded by the multicopter microcontroller.
 The experimental data here is about $1\,\unit{min}$ long and captures about $K' = 600$ \textsc{Vicon} frames.
 Now we can plot the reference encoder angle $\yaw[k]$ at the sampling points $t = k\Ts$ and the yaw angle $\yawVIC[k']$ received from the Vicon system at the shifted time $\tVICp[k'] + \text{mean}(\tRec[1,\ldots,K'] - \tVICp[1,\ldots,K'])$.
@@ -198,40 +244,9 @@ Finally, the estimated delay of the $k'$-th Vicon measurement is
  \label{fig:ViconDelayIllustrate}
 \end{figure}
 
-\subsection{Attitude}
-The attitude measurement for the Vicon system is given in terms of an attitude quaternion $\qVIC$.
-\fixme{delay}
-
-\paragraph{Attitude quaternion.}
-A unit quaternion is the quadruple $\quat = [\quatw, \quatx, \quaty, \quatz]^\top \in \RealNum^4$ with the geometric constraint 
-\begin{align}
- \geoConstraint(\quat) = \norm{\quat}^2 - 1 = \quatw^2 + \quatx^2 + \quaty^2 + \quatz^2 - 1 = 0.
-\end{align}
-What makes it an attitude quaternion is the relation to the rotation matrix
-\begin{align}
- \RotMatQuat(\quat) =
- \begin{bmatrix} 
-  1 - 2(\quaty^{2} + \quatz^{2}) & 2(\quaty\quatx -\quatw\quatz)  & 2(\quatz\quatx + \quatw\quaty) \\
-  2(\quaty\quatx + \quatw\quatz) & 1 - 2(\quatx^{2} + \quatz^{2}) & 2(\quaty\quatz - \quatw\quatx) \\
-  2(\quatz\quatx - \quatw\quaty) & 2(\quaty\quatz + \quatw\quatx) & 1 - 2(\quatx^{2} + \quaty^{2})
- \end{bmatrix}
- \in \SpecialOrthogonalGroup(3)
- .
-\end{align}
-% Direct calculation 
-% \begin{align}
-%  \big( \RotMatQuat(\quat) \big)^\top \RotMatQuat(\quat) \overset{\norm{\quat} = 1}{=} \idMat[3],
-% \qquad
-%  \det \RotMatQuat(\quat) \overset{\norm{\quat} = 1}{=} +1
-%  .
-% \end{align}
-The kinematic relation between the quaternion $\quat$ and the angular velocity $\w$ arises form
-\begin{align}
- \tdiff{t} \big( \RotMatQuat(\quat) \big) &= \RotMatQuat(\quat) \wedOp(\w)&
- &\Leftrightarrow&
- \dot{q} &= \kinMatQuat(\quat) \w.
-\end{align}
-Adding a stabilization term for the constraint, motivated in \fixme{??}, the explicit relations are
+\subsection{Attitude integration}
+Once the latency $\TVICDObs[k']$ of the attitude measurement $\qVIC$ is known, the current attitude is simply integrated based on buffered angular velocity measurements.
+The quaternion kinematics \eqref{eq:RealizationStateDyn} supplemented with a stabilization term for the constraint $\quat \in \Sphere^3$, as motivated in \autoref{sec:ConstraintStabilization}, reads
 \begin{align}\label{eq:QuaternionKinematics}
  \tdiff{t} \underbrace{\begin{bmatrix} \quatw \\ \quatx \\ \quaty \\ \quatz \end{bmatrix}}_{\quat}
  = \underbrace{\tfrac{1}{2} \begin{bmatrix} -\quatx & -\quaty & -\quatz \\ \quatw & -\quatz & \quaty \\ \quatz & \quatw & -\quatx \\ -\quaty & \quatx & \quatw \end{bmatrix}}_{\kinMatQuat(\quat)}
@@ -241,20 +256,17 @@ Adding a stabilization term for the constraint, motivated in \fixme{??}, the exp
  \lambda\underbrace{(\norm{\quat}^2 - 1)}_{\geoConstraint(\quat)}
  .
 \end{align}
-The forward Euler discretization with the stabilization gain chosen as $\lambda=\sfrac{2}{\Ts}$ is
+The actual implementation uses the forward Euler discretization with the stabilization gain $\lambda=\sfrac{2}{\Ts}$, i.e.\
 \begin{align}\label{eq:QuaternionKinematicsDiscrete}
  \quat[k\!+\!1] = \quat[k] + \Ts \kinMatQuat(\quat[k]) \w[k] - (\norm{\quat[k]}^2-1) \quat[k].
 \end{align}
-Note that with this particular gain the stabilization coincides with an approximation of the normalization
-\begin{align*}
- \quat \mapsto \sfrac{\quat}{\norm{\quat}} \ \overset{\norm{\quat} \approx 1}{\approx} \ \quat - (\norm{\quat}^2-1) \quat.
-\end{align*}
-In contrast to the exact normalization, the approximation avoids computation of a square root and division.
+Note that with this particular gain the stabilization coincides with the 1st order Taylor expansion of the normalization $\sfrac{\quat}{\norm{\quat}} \approx \quat - (\norm{\quat}^2-1) \quat$ for $\norm{\quat} \approx 1$.
+In contrast to the exact normalization, the approximation avoids the expensive computation of a square root and division.
 
-\paragraph{Attitude integration.}
-From the previous subsection we know the micro controller time $\tVIC[k'] = \tRec[k'] - \TVICDObs[k']$ at which the received attitude measurement $\qVIC[k']$ was taken.
-To get the an estimate $\quatObs[k]$ for the current attitude we \textit{integrate} the attitude quaternion kinematics \eqref{eq:QuaternionKinematicsDiscrete} using the measurement $\qVIC[k']$ as initial value and the (ring) buffered angular velocity estimates $\wObs[k-\text{floor}(\sfrac{\TVICDObs[k']}{\Ts})],\ldots, \wObs[k]$.
-Since the delay $\TVICDObs[k']$ is usually not a multiple of the micro controller sampling time $\Ts$ a linear interpolation of the angular velocity $\wObs(\tVIC[k'])$ is used.
+% \paragraph{Attitude integration.}
+% From the previous subsection we know the micro controller time $\tVIC[k'] = \tRec[k'] - \TVICDObs[k']$ at which the received attitude measurement $\qVIC[k']$ was taken.
+% To get the an estimate $\quatObs[k]$ for the current attitude we \textit{integrate} the attitude quaternion kinematics \eqref{eq:QuaternionKinematicsDiscrete} using the measurement $\qVIC[k']$ as initial value and the (ring) buffered angular velocity estimates $\wObs[k-\text{floor}(\sfrac{\TVICDObs[k']}{\Ts})],\ldots, \wObs[k]$.
+% Since the delay $\TVICDObs[k']$ is usually not a multiple of the micro controller sampling time $\Ts$ a linear interpolation of the angular velocity $\wObs(\tVIC[k'])$ is used.
 
 
 \subsection{Position, velocity and accelerometer bias}

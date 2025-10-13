@@ -46,7 +46,7 @@ We will call the remaining, constant misalgnment $\RIMUBR \in \SpecialOrthogonal
 While the gyroscope bias is compensated, the accelerometer contains a noticable slowly varying bias $\aIMUB \in \RealNum^3$.
 Furthermore, both sensors contain a noticable noise $\wIMUN[k], \aIMUN[k] \in \RealNum^3$ which is not further investigated here.
 Overall, with a constant sampling time $\Ts=0.005\,\unit{s}$, we assume the IMU measurments $\wIMU$ and $\aIMU$ to be related to the rigid body state by:
-\begin{align}
+\begin{align}\label{eq:RealizationImuModel}
  \wIMU[k] &= \RIMUBR \w(k\Ts) + \wIMUN[k],
 \\
  \aIMU[k] &=  \RIMUBR \R^\top(k\Ts) (\rdd(k\Ts) - \gravityAcc) + \aIMUB + \aIMUN[k]
@@ -83,7 +83,7 @@ The the following subsections will discuss these.
 
 
 \subsection{IMU misalignment correction}
-For a static $\sysCoord=\const$ multicopter the accelerometer model is
+For a static $\sysCoord=\const$ multicopter the accelerometer model reads
 \begin{align}
  \aIMU[k] &=  -\RIMUBR \R^\top \gravityAcc + \aIMUB + \aIMUN[k].
 \end{align} 
@@ -271,45 +271,27 @@ In contrast to the exact normalization, the approximation avoids the expensive c
 
 \subsection{Position, velocity and accelerometer bias}
 For the translational dynamics we have a similar situation as for the attitude kinematics:
-We have a down-sampled and delayed position measurement $\rVIC$ and a biased and noisy measurement of the acceleration $\aIMU$.
+We have a acurate but low sampled and delayed position measurement $\rVIC$ and a biased and noisy measurement of the acceleration $\aIMU$.
 From this we want to estimate the current position $\r$ and velocity $\rd$ required for the controller implementation.
 
-The relation between position and accelerometer measurement and the differential equation for a constant accelerometer bias are
-% \begin{align}
-%  \rdd = \gravityAcc + \R (\aIMU - \aIMUB - \aIMUN),
-% \qquad
-%  \aIMUBd = 0
-% \end{align}
-% A discrete approximation for this is
-% \begin{multline}\label{eq:AccelerometerDynamicsDiscrete}
-%  \underbrace{\begin{bmatrix} \r[\kPlusOne] \\ \rd[\kPlusOne] \\ \aIMUB[\kPlusOne] \end{bmatrix}}_{z[\kPlusOne]}
-%  =
-%  \underbrace{\begin{bmatrix} \idMat[3] & \Ts\idMat[3] & -\tfrac{\Ts^2}{2}\R[k] \\ 0 & \idMat[3] & -\Ts\R[k] \\ 0 & 0 & \idMat[3] \end{bmatrix}}_{A[k]}
-%  \underbrace{\begin{bmatrix} \r[k] \\ \rd[k] \\ \aIMUB[k] \end{bmatrix}}_{z[k]}
-%  +
-%  \underbrace{\begin{bmatrix} \tfrac{\Ts^2}{2}\idMat[3] \\ \Ts \idMat[3] \\ 0 \end{bmatrix}}_{B}
-%  \big(\underbrace{\gravityAcc + \R[k] \aIMU[k]}_{u[k]} - \underbrace{R[k] \aIMUN[k]}_{u_{\mathsf{N}}[k]} \big)
-% % -
-% % \underbrace{\begin{bmatrix} \tfrac{\Ts^2}{2}\idMat[3] \\ \Ts \idMat[3] \\ 0 \end{bmatrix} \R[k] \aIMUN[k]}_{u_{\mathsf{N}}[k]}
-% \end{multline}
-% Note that this approximation assumes that the attitude $\R$ is constant within one sampling step.
-% If this would be the case, the discretization would be exact.
-\begin{align}
- \aIMU = \R^\top(\rdd - \gravityAcc) + \aIMUB + \aIMUN,
-\qquad
- \aIMUBd = 0
-\end{align}
-Introducing the state $z = [\r^\top, \rd^\top, \aIMUB^\top]^\top$ and neglecting the accelerometer noise $\aIMUN=0$, this can be written as
+The differential relation between position and accelerometer measurement is givein in \eqref{eq:RealizationImuModel}. 
+For the following we assume a constant bias $\aIMUBd = \tuple{0}$ and drop the noise term $\aIMUN = \tuple{0}$.
+Furthermore, the IMU misalignment has already been corrected, i.e.\ $\RIMUBR = \idMat[3]$.
+Introducing the state $\tuple{z} = [\r^\top, \rd^\top, \aIMUB^\top]^\top \in \RealNum^9$ we may write 
+%\begin{subequations}
 \begin{align}\label{eq:AccelerometerDynamicsState}
  \tdiff{t}
- \underbrace{\begin{bmatrix} \r \\ \rd \\ \aIMUB \end{bmatrix}}_{z}
+ \underbrace{\begin{bmatrix} \r \\ \rd \\ \aIMUB \end{bmatrix}}_{\tuple{z}}
  &=
- \underbrace{\begin{bmatrix} 0 & \idMat[3] & 0 \\ 0 & 0 & -\R \\ 0 & 0 & 0 \end{bmatrix}}_{A}
- \underbrace{\begin{bmatrix} \r \\ \rd \\ \aIMUB \end{bmatrix}}_{z}
+ \underbrace{\begin{bmatrix} 0 & \idMat[3] & 0 \\ 0 & 0 & -\R \\ 0 & 0 & 0 \end{bmatrix}}_{\mat{A}}
+ \underbrace{\begin{bmatrix} \r \\ \rd \\ \aIMUB \end{bmatrix}}_{\tuple{z}}
  +
- \underbrace{\begin{bmatrix} 0 \\ \idMat[3] \\ 0 \end{bmatrix}}_{B}
- \underbrace{(\gravityAcc + \R \aIMU)}_{u}
+ \underbrace{\begin{bmatrix} 0 \\ \idMat[3] \\ 0 \end{bmatrix}}_{\mat{B}}
+ \underbrace{(\gravityAcc + \R \aIMU)}_{\tuple{u}},&
+ \rVIC &= \underbrace{[\idMat[3], \mat{0}, \mat{0}]}_{\mat{C}}
+ \underbrace{\begin{bmatrix} \r \\ \rd \\ \aIMUB \end{bmatrix}}_{\tuple{z}}
 \end{align}
+%\end{subequations}
 
 \paragraph{Estimator implementation.}
 The implemented estimation algorithm on the \microcontroller works as follows:
@@ -319,77 +301,75 @@ After having received 2 subsequent position measurements $\rVIC[1]$, $\rVIC[2]$ 
 \qquad
  \rdObs(\tVIC[2]) = \tfrac{\rVIC[2]-\rVIC[1]}{\Ts'[1]}
 \qquad
- \aIMUB(\tVIC[2]) = 0.
+ \aIMUB(\tVIC[2]) = \tuple{0}.
 \end{align}
-Then a discrete approximation of the accelerometer dynamics \eqref{eq:AccelerometerDynamicsState}:
+Then we use the zero order hold discretization of \eqref{eq:AccelerometerDynamicsState} to integrate the current state based on (ring) buffered accelerometer measurments $\aIMU$ and estimated attitudes $\RObs$:
 \begin{align}\label{eq:PosPredictor}
- \underbrace{\begin{bmatrix} \rObs[\kPlusOne] \\ \rdObs[\kPlusOne] \\ \aIMUBObs[\kPlusOne] \end{bmatrix}}_{\hat{z}[\kPlusOne]}
+ \underbrace{\begin{bmatrix} \rObs[\kPlusOne] \\ \rdObs[\kPlusOne] \\ \aIMUBObs[\kPlusOne] \end{bmatrix}}_{\hat{\tuple{z}}[\kPlusOne]}
  =
- \underbrace{\begin{bmatrix} \idMat[3] & \Ts\idMat[3] & -\tfrac{\Ts^2}{2}\RObs[k] \\ 0 & \idMat[3] & -\Ts\RObs[k] \\ 0 & 0 & \idMat[3] \end{bmatrix}}_{\hat{A}_\idxSamp[k]}
- \underbrace{\begin{bmatrix} \rObs[k] \\ \rdObs[k] \\ \aIMUBObs[k] \end{bmatrix}}_{\hat{z}[k]}
+ \underbrace{\begin{bmatrix} \idMat[3] & \Ts\idMat[3] & -\tfrac{\Ts^2}{2}\RObs[k] \\ 0 & \idMat[3] & -\Ts\RObs[k] \\ 0 & 0 & \idMat[3] \end{bmatrix}}_{\hat{\mat{A}}_\idxSamp[k]}
+ \underbrace{\begin{bmatrix} \rObs[k] \\ \rdObs[k] \\ \aIMUBObs[k] \end{bmatrix}}_{\hat{\tuple{z}}[k]}
  +
- \underbrace{\begin{bmatrix} \tfrac{\Ts^2}{2}\idMat[3] \\ \Ts \idMat[3] \\ 0 \end{bmatrix}}_{B_\idxSamp}
- \underbrace{(\gravityAcc + \RObs[k] \aIMU[k])}_{\hat{u}[k]}
+ \underbrace{\begin{bmatrix} \tfrac{\Ts^2}{2}\idMat[3] \\ \Ts \idMat[3] \\ 0 \end{bmatrix}}_{\mat{B}_\idxSamp}
+ \underbrace{(\gravityAcc + \RObs[k] \aIMU[k])}_{\hat{\tuple{u}}[k]}
 \end{align}
-is used to integrate the current position and velocity.
 Note that the measurement time $\tVIC[2]$ usually does not coincide with a sampling step, see \autoref{fig:ViconDelayClocks}.
 Consequently the value $\Ts$ in \eqref{eq:PosPredictor} has to be adjusted to match the time from the initial value to the subsequent sampling step.
-Furthermore the accelerometer measurement $\aIMU$ is linearly interpolated to approximate the acceleration at the initial time $\tVIC[2]$.
-The attitude $\R$ at the initial point is $\RotMatQuat(\qVIC[2])$ which is received simultaneously with $\rVIC[2]$.
+%Furthermore the accelerometer measurement $\aIMU$ is linearly interpolated to approximate the acceleration at the initial time $\tVIC[2]$.
+%The attitude $\R$ at the initial point is $\RotMatQuat(\qVIC[2])$ which is received simultaneously with $\rVIC[2]$.
 
 After this initial procedure, \eqref{eq:PosPredictor} is computed once every sampling step with the most recent accelerometer measurement $\aIMU[k]$ yielding the most recent predictions for the position and velocity.
 The position estimates $\rObs[k]$ for the last 64 sampling steps are stored in a ring buffer.
 
 When a new configuration measurement $(\rVIC[k'], \RVIC[k'])$ and its timestamp $\tVIC[k']$ are available, the corresponding estimate $\rObs(\tVIC[k'])$ is interpolated.
-This is used to correct the estimate \textit{at the measurement time} $\tVIC[k']$, i.e.\
+This is used to correct the estimate \textit{at the measurement time} $\tVIC[k']$ with yet to define gains $\mat{L}_r, \mat{L}_v, \mat{L}_a \in \RealNum^{3\times3}$:
 \begin{align}\label{eq:PosCorrector}
  \underbrace{\begin{bmatrix} \rObs(\tVIC[k']) \\ \rdObs(\tVIC[k']) \\ \aIMUBObs(\tVIC[k']) \end{bmatrix}}_{\hat{z}(\tVIC[k'])}
  \leftarrow 
  \underbrace{\begin{bmatrix} \rObs(\tVIC[k']) \\ \rdObs(\tVIC[k']) \\ \aIMUBObs(\tVIC[k']) \end{bmatrix}}_{\hat{z}(\tVIC[k'])}
  +
- \underbrace{\begin{bmatrix} L_r[k'] \\ L_v[k'] \\ L_a[k'] (\RVIC[k'])^\top \end{bmatrix}}_{L[k']}
+ \underbrace{\begin{bmatrix} \mat{L}_r[k'] \\ \mat{L}_v[k'] \\ \mat{L}_a[k'] (\RVIC[k'])^\top \end{bmatrix}}_{\mat{L}[k']}
  (\rVIC[k'] - \rObs(\tVIC[k'])).
 \end{align}
-After the correction the prediction for the current sampling step is again integrated from \eqref{eq:PosPredictor}.
-Note that this also requires a (ring) buffer for the last accelerometer measurements.
+Finally, the state estimate \textit{for current time} is again integrated from \eqref{eq:PosPredictor}.
+
 
 \paragraph{Error dynamics and tuning.}
-To chose reasonable correction gains $L_r$, $L_v$ and $L_a$ we investigate the resulting error dynamics of the proposed estimator.
-Here we do the coarse assumption that the attitude is constant and perfectly known $\RObs = \bar{\R}$.
-Then the dynamic matrix $A$ in the continuous model \eqref{eq:AccelerometerDynamicsState} is constant and is denoted by $\bar{A}$.
+To chose reasonable correction gains $\mat{L}_r$, $\mat{L}_v$ and $\mat{L}_a$ we investigate the resulting error dynamics of the estimation algorithm above.
+Assuming the attitude is constant and perfectly known $\RObs = \bar{\R}$ the matrix $A$ in the continuous model \eqref{eq:AccelerometerDynamicsState} is constant and is denoted by $\bar{\mat{A}}$.
 
 From measurement time $\tVIC[k']$ till the next one at $\tVIC[k'+1]$ there are several prediction steps \eqref{eq:PosPredictor}:
 The first from the measurement time till the subsequent sampling step with integration time $T_\mathsf{I}$.
 Then several steps with integration time $\Ts$ till the sampling step before $\tVIC[k'+1]$, and finally a step integration time $T_\mathsf{F}$ till $\tVIC[k'+1]$.
 Overall this results in the dynamic matrix 
 \begin{align}
- \bar{A}'_\idxSamp = \exp(\bar{A}\,T_\mathsf{I}) \exp(\bar{A}\,\Ts) \cdots \exp(\bar{A}\,\Ts) \exp(\bar{A}\,T_\mathsf{F}) = \exp(\bar{A}\,\Tsp), 
+ \bar{\mat{A}}'_\idxSamp = \exp(\bar{\mat{A}}\,T_\mathsf{I}) \exp(\bar{\mat{A}}\,\Ts) \cdots \exp(\bar{\mat{A}}\,\Ts) \exp(\bar{\mat{A}}\,T_\mathsf{F}) = \exp(\bar{\mat{A}}\,\Tsp), 
 \end{align}
 where $\Tsp[k'] = T_\mathsf{I}[k'] + \Ts + \ldots + \Ts + T_\mathsf{F}[k'] = \tVIC[k'] - \tVIC[k'-1]$.
-Since $\Tsp[k']$ is known and exploiting this property of the exponential map, we do not need to worry about the different integration times of the predictions.
+%Since $\Tsp[k']$ is known and exploiting this property of the exponential map, we do not need to worry about the different integration times of the predictions.
 
-Finally we add one correction step \eqref{eq:PosCorrector} and subtract the estimator from the discretization of the model \eqref{eq:AccelerometerDynamicsState} to obtain the relation for the error $e = z - \hat{z}$ at one correction/measurement time $\tVIC[k']$ to the next one at $\tVIC[k'+1]$ as
+Finally, adding one correction step \eqref{eq:PosCorrector} and subtracting the estimator from the discretization of the model \eqref{eq:AccelerometerDynamicsState}, we obtain the relation for the error $\tuple{e} = \tuple{z} - \hat{\tuple{z}}$ for one correction/measurement cycle from $\tVIC[k']$ to the next one at $\tVIC[k'+1]$ as
 \begin{align}
- e(\tVIC[k'\!+\!1]) = \underbrace{(\idMat[9] - \bar{L}[k'] C) \bar{A}'_\idxSamp[k']}_{\bar{A}'_e[k']} e(\tVIC[k'])
+ \tuple{e}(\tVIC[k'\!+\!1]) = \underbrace{(\idMat[9] - \bar{\mat{L}}[k'] \mat{C}) \bar{\mat{A}}'_\idxSamp[k']}_{\bar{\mat{A}}'_e[k']} \tuple{e}(\tVIC[k'])
 \end{align}
 where
-\begin{align}
- \bar{A}'_\idxSamp[k'] &=
- \begin{bmatrix}
-  \idMat[3] & \Tsp[k'] \idMat[3] & -\tfrac{(\Tsp[k'])^2}{2} \bar{\R} \\
-  0 & \idMat[3] & -\Tsp[k']\bar{\R} \\
-  0 & 0 & \idMat[3]
- \end{bmatrix},&
- \bar{L}[k'] &= \begin{bmatrix} L_r[k'] \\ L_v[k'] \\ L_a[k'] \bar{\R}^\top \end{bmatrix},&
- C &= [\idMat[3] \ 0 \ 0]
-\end{align}
-and finally
+% \begin{align}
+%  \bar{\mat{A}}'_\idxSamp[k'] &=
+%  \begin{bmatrix}
+%   \idMat[3] & \Tsp[k'] \idMat[3] & -\tfrac{(\Tsp[k'])^2}{2} \bar{\R} \\
+%   0 & \idMat[3] & -\Tsp[k']\bar{\R} \\
+%   0 & 0 & \idMat[3]
+%  \end{bmatrix},&
+%  \bar{\mat{L}}[k'] &= \begin{bmatrix} \mat{L}_r[k'] \\ \mat{L}_v[k'] \\ \mat{L}_a[k'] \bar{\R}^\top \end{bmatrix},&
+%  \mat{C} &= [\idMat[3] \ 0 \ 0]
+% \end{align}
+% and finally
 \begin{align}
  \bar{A}_e[k'] = 
  \begin{bmatrix} 
-  \idMat[3] - L_r[k'] & \Tsp(\idMat[3] - L_r[k']) & \tfrac{(\Tsp[k'])^2}{2}(L_r[k'] - \idMat[3]) \bar{\R} \\
-  -L_v[k'] & \idMat[3] - \Tsp[k'] L_v[k'] & \Ts(\tfrac{\Tsp[k']}{2} L_v[k'] - \idMat[3])\bar{\R} \\
-  -L_a[k'] \bar{\R}^\top & -\Tsp[k'] L_a[k'] \bar{\R}^\top & \idMat[3] + \tfrac{\Tsp[k']^2}{2} L_a[k']
+  \idMat[3] - \mat{L}_r[k'] & \Tsp(\idMat[3] - \mat{L}_r[k']) & \tfrac{(\Tsp[k'])^2}{2}(\mat{L}_r[k'] - \idMat[3]) \bar{\R} \\
+  -\mat{L}_v[k'] & \idMat[3] - \Tsp[k'] \mat{L}_v[k'] & \Ts(\tfrac{\Tsp[k']}{2} \mat{L}_v[k'] - \idMat[3])\bar{\R} \\
+  -\mat{L}_a[k'] \bar{\R}^\top & -\Tsp[k'] \mat{L}_a[k'] \bar{\R}^\top & \idMat[3] + \tfrac{\Tsp[k']^2}{2} \mat{L}_a[k']
  \end{bmatrix}
 %  \begin{bmatrix} 
 %   (1-l_r)\idMat[3] & \Ts'(1 - l_r)\idMat[3] & \tfrac{\Ts'^2}{2}(l_r - 1) \bar{\R} \\
@@ -399,9 +379,9 @@ and finally
 \end{align}
 Scaling the gains with the variable integration time $\Tsp[k']$ between two correction steps as
 \begin{align}
- L_r[k'] &= l_r \idMat[3],& 
- L_v[k'] &= \tfrac{l_v}{\Tsp[k']} \idMat[3],&
- L_a[k'] &= \tfrac{2 l_a}{(\Tsp[k'])^2}
+ \mat{L}_r[k'] &= l_r \idMat[3],& 
+ \mat{L}_v[k'] &= \tfrac{l_v}{\Tsp[k']} \idMat[3],&
+ \mat{L}_a[k'] &= \tfrac{2 l_a}{(\Tsp[k'])^2}
 \end{align}
 yields the characteristic polynomial with constant coefficients
 \begin{align}
@@ -419,19 +399,12 @@ These rather fast eigenvalues also reflect a high confidence in the position mea
 
 
 \subsection{Force bias}
-Recall the translational \Multicopter dynamics and the accelerometer measurement $\aIMU$ equation
+Combining the translational multicopter model \eqref{eq:RealizationStateDyn} and the accelerometer model \eqref{eq:RealizationImuModel}, we may write
 \begin{align}
- m (\rdd - \gravityAcc) + d \rd &= \R (F + \FB),&
- \aIMU &= \RT (\ddot{r} - \gravityAcc) + \aIMUN + \aIMUB.
+ \FB &= m (\aIMU - \aIMUN - \aIMUB) + d \RT \rd - \bodyForce{}{}.
 \end{align}
-Solving these equations for the force bias $\FB$ and elimination of the acceleration $\rdd$ yields
-\begin{align}
- \FB &= m (\aIMU - \aIMUN - \aIMUB) + d \RT \dot{r} - F.
-\end{align}
-From the previous subsections we have estimates for the attitude $\RObs$, velocity $\rdObs$ and the accelerometer bias $\aIMUBObs$.
-From the previous section on the actuator dynamics we have a an estimate for the \Multicopter force $\FObs$.
-However, the accelerometer measurement $\aIMU$ contains the significant, unknown noise $\aIMUN$.
-In order to suppress this noise we use a simple low-pass to obtain the estimate $\FBObs$ for the force bias
+From the previous sections we have estimates for the all quantities on the right hand side except the measurement noise $\aIMUN$.
+This motivates a simple low-pass to obtain the estimate $\FBObs$ for the force bias
 \begin{align}
  \FBObs[\kPlusOne] = l_F \FBObs[k] + (1 - l_F) \big( m (\aIMU[k] - \aIMUBObs[k]) + d (\RObs[k])^\top \rdObs[k] - \FObs[k] \big)
  .

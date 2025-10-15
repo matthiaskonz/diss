@@ -65,7 +65,7 @@ There it coincides with the matrix $\bar{\mat{H}}$ defined in \eqref{eq:TaylorEx
 
 
 \subsection{Commutation coefficients}\label{sec:CommutationCoeff}
-For a function $\potentialEnergy : \RealNum^{\numCoord} \rightarrow \RealNum$ we are used to the fact that partial derivatives commute, \ie $\sfrac{\partial^2 \potentialEnergy}{\partial \sysCoordCoeff{\GidxI} \partial \sysCoordCoeff{\GidxII}} = \sfrac{\partial^2 \potentialEnergy}{\partial \sysCoordCoeff{\GidxII} \partial \sysCoordCoeff{\GidxI}}$.
+For a function $\potentialEnergy : \RealNum^{\numCoord} \rightarrow \RealNum$ we are used to the fact that partial derivatives commute, i.e.\ $\sfrac{\partial^2 \potentialEnergy}{\partial \sysCoordCoeff{\GidxI} \partial \sysCoordCoeff{\GidxII}} = \sfrac{\partial^2 \potentialEnergy}{\partial \sysCoordCoeff{\GidxII} \partial \sysCoordCoeff{\GidxI}}$.
 Unfortunately this is (in general) not the case for a directional derivatives like $\dirDiff{\LidxI}$ defined in \eqref{eq:DefBasisDiff}.
 Consequently we investigate the following commutation relation
 \begin{align}\label{eq:DerivationCommCoeff1}
@@ -138,7 +138,7 @@ For a change of configuration coordinates $\sysCoord = f(\sysCoordW)$ the commut
 This might be obvious from a geometric point of view, but the explicit calculation of the coordinate transformation is shown in see \fixme{[sec:TrafoRules]}.
 It will even turn out that for most of our examples the coefficients will be constants.
 
-The commutation coefficients $\BoltzSym{\LidxI}{\LidxII}{\LidxIII}$ vanish if the corresponding velocity coordinates $\sysVelCoeff{\LidxI}$ are \textit{integrable}, \ie
+The commutation coefficients $\BoltzSym{\LidxI}{\LidxII}{\LidxIII}$ vanish if the corresponding velocity coordinates $\sysVelCoeff{\LidxI}$ are \textit{integrable}, i.e.\
 \begin{align}
  \exists \ \pi^\LidxI \, : \, \dot{\pi}^\LidxI &= \sysVelCoeff{\LidxI} = \kinBasisMatCoeff{\LidxI}{\GidxI} \sysCoordCoeffd{\GidxI}&
  &\Rightarrow&

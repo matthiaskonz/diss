@@ -235,7 +235,7 @@ or more explicitly
 \begin{subequations}
 \begin{align}
  \genForceStiffC
- &= \begin{bmatrix} \kc \RE^\top (\rE + (\RE-\idMat[3])\hc) \\ \kc \wedOp(\hc) \RE^\top \rE + 2 \veeOp\big( \veeMatOp(\kapc) (\RE-\idMat[3]) \big) \end{bmatrix}
+ &= \begin{bmatrix} \kc \RE^\top (\rE + (\RE-\idMat[3])\hc) \\ \kc \wedOp(\hc) \RE^\top \rE + \veeTwoOp\big( \veeMatOp(\kapc) (\RE-\idMat[3]) \big) \end{bmatrix}
 \\
  \genForceDissC 
  &= \underbrace{\begin{bmatrix} \dc \,\idMat[3] & \!\!\dc \wedOp(\lc)^\top \\ \dc \wedOp(\lc) & \sigc \end{bmatrix}}_{\bodyDissMatC{}{}} \underbrace{\begin{bmatrix} \v \\ \w \end{bmatrix}}_{\sysVel}

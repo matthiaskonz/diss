@@ -1,4 +1,4 @@
-\subsection{Quadcopter}
+\subsection{Quadcopter}\label{sec:CtrlExampleQuadcopter}
 
 \begin{figure}[ht]
  \centering
@@ -66,6 +66,8 @@ Due to symmetry considerations we set $\scx = \scy = 0$, $\Jcxx=\Jcyy$, $\Jcxy=\
 The explicit matching conditions are too cumbersome to be displayed here.
 Instead we start again with the linearized version:
 The linearized system matrices for model and closed loop template are
+\begin{subequations}
+\allowdisplaybreaks
 \begin{align*}
  \sysInertiaMatLin &= 
  \begin{bmatrix}
@@ -124,6 +126,7 @@ The linearized system matrices for model and closed loop template are
   0 & 0 & 0 & 0 & 0 & \!\kapcz\! \\
  \end{bmatrix}.
 \end{align*}
+\end{subequations}
 Taking into account the symmetries between x and y directions, the remaining linearized matching conditions are
 \begin{subequations}
 \begin{align}

@@ -2,7 +2,7 @@
 A rigid body system is a system of $\numRigidBodies \geq 1$ rigid bodies which may be constrained to each other and/or to the surrounding space.
 As before, this section restricts to geometric constraints.
 
-There are many established textbooks on this subject \eg \cite{Schwertassek:MultibodySystems}, \cite{Murray:Robotic}, \cite{Kane:Dynamics}.
+There are many established textbooks on this subject e.g.\ \cite{Schwertassek:MultibodySystems}, \cite{Murray:Robotic}, \cite{Kane:Dynamics}.
 However, all these excellent texts restrict to \textit{minimal} generalized coordinates or are even more restrictive by requiring Denavit-Hartenberg parameters \cite{DenavitHartenbergParam}.
 While this is just fine when dealing only with one-dimensional joints, it may be too restrictive when dealing with multidimensional joints as e.g.\ mobile robots.
 Furthermore, the texts mentioned above mostly focus on inertia but not dissipation and stiffness.
@@ -58,7 +58,7 @@ Then \eqref{eq:rigidBodyRelCoordRules} is equivalent to
 \end{align}
 \end{subequations}
 For a system of $\numRigidBodies$ body fixed frames and a reference frame there are $(\numRigidBodies+1)^2$ transformations, but due to the rules \eqref{eq:rigidBodyRelCoordRules2}, only $\numRigidBodies$ of them can be independent.
-So, a \RBS can have at most $6\numRigidBodies$ degrees of freedom, which is only the case if there are no constraints (like joints) between the bodies.
+So, a RBS can have at most $6\numRigidBodies$ degrees of freedom, which is only the case if there are no constraints (like joints) between the bodies.
 Constraints of a joint between body $a$ and $b$ can be captured inside the corresponding transformation $\bodyHomoCoord{\BidxI}{\BidxII}{}{}$.
 %The description of a rigid body system by a set of transformations is shown in the following example.
 We will discuss this in the following example.
@@ -173,10 +173,10 @@ On the other hand it should also show that the following algorithm handles minim
 
 A generalization of the example states:
 A rigid body system can be parameterized by a set of $\numCoord$ (possibly redundant) coordinates $\sysCoord$ which again parameterize a set of configurations $\bodyHomoCoord{\BidxI}{\BidxII}(\sysCoord)$ which form a \textit{connected} graph.
-The property connected is essential: it ensures that, with the rules \eqref{eq:rigidBodyRelCoordRules2}, all remaining configurations of the graph can be computed \ie the corresponding \textit{complete} graph.
+The property connected is essential: it ensures that, with the rules \eqref{eq:rigidBodyRelCoordRules2}, all remaining configurations of the graph can be computed, i.e.\ the corresponding \textit{complete} graph.
 Loops in the graph and the property $\bodyHomoCoord{\BidxI}{\BidxII} \in \SpecialEuclideanGroup(3)$ may imply geometric constraints.
 
-The use of graph theory in the context of algorithms for rigid body systems is quite common, see \eg \cite[sec.\,8.2]{Schwertassek:MultibodySystems} or \cite[sec.\,5.3]{Wittenburg:DynamicsOfMultibodySystems}.
+The use of graph theory in the context of algorithms for rigid body systems is quite common, see e.g.\ \cite[sec.\,8.2]{Schwertassek:MultibodySystems} or \cite[sec.\,5.3]{Wittenburg:DynamicsOfMultibodySystems}.
 However, we will not go any deeper into this.
 All we need for the following is that any configuration $\bodyHomoCoord{\BidxI}{\BidxII}(\sysCoord), \BidxI,\BidxII = 0\ldots\numRigidBodies$ can be expressed in terms of the configuration coordinates $\sysCoord$.
 
@@ -270,7 +270,7 @@ The body velocities associated with the configuration matrices from \eqref{eq:co
 \quad k=1,2,3.
 \end{align}
 \end{subequations}
-From this it should clear how the corresponding body Jacobians look like, \eg $\bodyJac{0}{1} = [\idMat[6] \ 0]$.
+From this it should clear how the corresponding body Jacobians look like, e.g.\ $\bodyJac{0}{1} = [\idMat[6] \ 0]$.
 
 For the formulation of the kinetic energy in the following subsection we will need the body Jacobians $\bodyJac{0}{\BidxII}, \BidxII=1,\ldots,\numRigidBodies$.
 From the graph structure and the rules \eqref{eq:rulesBodyJacobian} we can compute them iteratively as

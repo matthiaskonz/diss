@@ -59,7 +59,7 @@ Assuming that the angular acceleration $\PropVeld$ is roughly constant within on
  \PropVeld[][k\!-\!1] = \tfrac{1}{\Ts} \big( \PropVel[][k] - \PropVel[][k\!-\!1] \big)
  .
 \end{align}
-So the estimate corresponds to the mean velocity between the current and the last sampling step, \ie
+So the estimate corresponds to the mean velocity between the current and the last sampling step, i.e.\
 \begin{align}\label{eq:PropMeaseq}
  \PropVelMeas[][k] = \tfrac{1}{2} \big( \PropVel[][k] + \PropVel[][k\!-\!1] \big)
  .
@@ -116,7 +116,7 @@ Taking this into account we propose the control law:
 \end{align}
 \end{subequations}
 It is essentially a (shifted) copy of the discrete model \eqref{eq:PropDynamics} supplemented with a linear error feedback with the gain $\PropCtrlGain \in \RealNum$.
-Plugging the control law \eqref{PropCtrlLaw} into the model \eqref{eq:PropDynamics} and assuming the observer has converged, \ie $\PropVelObs[][k] = \PropVel[][k]$ and $\PropParamObs[3][k] = \PropParam[3]$, yields the tracking error dynamics
+Plugging the control law \eqref{PropCtrlLaw} into the model \eqref{eq:PropDynamics} and assuming the observer has converged, i.e.\ $\PropVelObs[][k] = \PropVel[][k]$ and $\PropParamObs[3][k] = \PropParam[3]$, yields the tracking error dynamics
 \begin{align}
  e[k\!+\!1] + \big( \Ts (2 \PropParam[1] \PropVel[][k] + \PropCtrlGain) - 1 \big) e[k] + \Ts \PropParam[1] \big( e[k] \big)^2 = 0.
 \end{align}
@@ -136,7 +136,7 @@ For a the linearization about the expansion point $e = 0$, $\PropVel = \PropVelS
 \end{figure}
 
 \subsection{Tricopter force control}
-The generalized force $\genForce$ on the \Tricopter is a static transformation of the propeller velocities $\PropVel[1], \ldots \PropVel[3]$ and the servo angles $\aServo[1],\ldots,\aServo[3]$ as given in \eqref{eq:TriActuatorTrafo}.
+The generalized force $\genForce$ on the tricopter is a static transformation of the propeller velocities $\PropVel[1], \ldots \PropVel[3]$ and the servo angles $\aServo[1],\ldots,\aServo[3]$ as given in \eqref{eq:TriActuatorTrafo}.
 For a given desired generalized force $\genForceD$ we can (partially) invert this relation to obtain the corresponding propeller thrusts $\PropForceD[1], \ldots \PropForceD[3]$ and servo angles $\aServoD[1],\ldots,\aServoD[3]$ as
 \begin{align}\label{eq:TriInvActuatorTrafo}
  \F_{\idxDes}^\mathsf{VH} = B^{-1} \genForceD,
@@ -155,9 +155,9 @@ In contrast, for the desired thrusts $\PropForce[i]$ a first order filter is app
  \PropVelDF[][k\!+\!2] = \sqrt{\sfrac{\PropForceDF[][k\!+\!2]}{\kappaF}}.
 \end{align}
 This yields the desired propeller velocities $\PropVelDF[i][k+1]$ and $\PropVelDF[i][k+2]$ for the next \textit{two} sampling steps which are required for the propeller \textit{tracking} controller.
-After the propeller controller has converged, \ie $\PropForce[i] = \PropForceDF[i]$, the thrust dynamic is completely determined by this filter.
+After the propeller controller has converged, i.e.\ $\PropForce[i] = \PropForceDF[i]$, the thrust dynamic is completely determined by this filter.
 
-Overall we can combine the discrete servo dynamics \eqref{eq:ServoSimulator}, the thrust filter \eqref{eq:PropPrefilter} and the static transformations \eqref{eq:TriActuatorTrafo} and \eqref{eq:TriInvActuatorTrafo} to obtain a nonlinear dynamic system with the input $\genForceD$ and the output $\genForce$, the \textit{\Tricopter actuator dynamics}.
+Overall we can combine the discrete servo dynamics \eqref{eq:ServoSimulator}, the thrust filter \eqref{eq:PropPrefilter} and the static transformations \eqref{eq:TriActuatorTrafo} and \eqref{eq:TriInvActuatorTrafo} to obtain a nonlinear dynamic system with the input $\genForceD$ and the output $\genForce$, the \textit{tricopter actuator dynamics}.
 For a quantitative analysis its first order approximation about a general expansion point $(\PropForceStat[1], \PropForceStat[2], \PropForceStat[3], \aServoStat[1], \aServoStat[2], \aServoStat[3])$ is considered.
 Using the $z$-transformation $\ZTrafo{\cdot}$ the linearized dynamics between $\genForce$ and $\genForceD$ can be written as 
 \begin{align}
@@ -189,7 +189,7 @@ and $J$ is the Jacobian matrix of the force transformation \eqref{eq:TriActuator
 % \begin{bmatrix} \Delta \PropForce[1] \\ \Delta \PropForce[2] \\ \Delta \PropForce[3] \\ \Delta \aServo[1] \\ \Delta \aServo[2] \\ \Delta \aServo[3] \end{bmatrix}
  .
 \end{align}
-Note that $\PropForceStat$ cancels out in \eqref{eq:TriActuatorTransferFunction}, \ie $\GenForceTransferFunction$ is independent of it.
+Note that $\PropForceStat$ cancels out in \eqref{eq:TriActuatorTransferFunction}, i.e.\ $\GenForceTransferFunction$ is independent of it.
 
 From the structure of $\GenForceTransferFunction$ in \eqref{eq:TriActuatorTransferFunction} it is clear that its entries are linear combinations of the transfer functions the the thrust and the servos, $\ThrustTransferFunction$ and $\ServoTransferFunction$.
 Also it is evident that if $\ThrustTransferFunction = \ServoTransferFunction$, then $\GenForceTransferFunction$ would be diagonal.
@@ -207,7 +207,7 @@ Furthermore, the off-diagonal entries have a significantly larger magnitude.
 \begin{figure}
  \centering
  \includegraphics{graphics/TriActuatorDynamics/BodeTriActorDyn.pdf}
- \caption{Bode magnitude plot of the normalized \Tricopter actuator dynamics transfer function $\GenForceTransferFunctionNorm$ at different expansion points}
+ \caption{Bode magnitude plot of the normalized tricopter actuator dynamics transfer function $\GenForceTransferFunctionNorm$ at different expansion points}
  \label{fig:BodeTriActorDyn}
 \end{figure}
 
@@ -261,7 +261,7 @@ With this representation of the filter dynamics it is very simple to add a satur
 The combination of \eqref{eq:QuadcopterActuatorFilter} and \eqref{eq:QuadcopterActuatorFilterDiscretization} constitute a time discrete nonlinear system with the input $\genForceQuadD[k]$ and the output $\PropVelDF[][k]$, $\PropVelDF[][k+1]$, the \textit{quadcopter actuator dynamics}.  
 
 \paragraph{Tuning.}
-The filter gains $K_1$ and $K_2$ are chosen as diagonal matrices and for symmetry considerations the gains corresponding to $\taux$ and $\tauy$ are identical, \ie
+The filter gains $K_1$ and $K_2$ are chosen as diagonal matrices and for symmetry considerations the gains corresponding to $\taux$ and $\tauy$ are identical, i.e.\
 \begin{align}
  K_0 = \diag(\kPMag, \kPTilt, \kPTilt, \kPHead),
 \qquad
@@ -345,7 +345,7 @@ However, since the real force on the quadcopter does contain the dynamic part as
 The Bode magnitude plot of the transfer functions is displayed in \autoref{fig:BodeQuadActorDynTraditional} on the left side.
 Even for the hover case (thick lines) the transfer function $G_{44}$ for $\tauz$ has an unacceptable overshot.
 
-In oder to improve the behavior we can do the same as before: adjust the parameters in $G_{44}$, \ie $\kPHead$ and $\kDHead$, such that there is a pole-zero cancelation at the hover expansion point.
+In oder to improve the behavior we can do the same as before: adjust the parameters in $G_{44}$, i.e.\ $\kPHead$ and $\kDHead$, such that there is a pole-zero cancelation at the hover expansion point.
 The resulting Bode magnitude plot is shown on the right side of \autoref{fig:BodeQuadActorDynTraditional}.
 It is already a significant improvement compared to the right side but is much worse as the previous result shown in \autoref{fig:BodeQuadActorDyn}.
 Moreover, the magnitude of the off-diagonal transfer functions at low frequencies is much higher for both cases in \autoref{fig:BodeQuadActorDynTraditional} than in \autoref{fig:BodeQuadActorDyn}.

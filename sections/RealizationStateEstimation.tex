@@ -294,7 +294,7 @@ Introducing the state $\tuple{z} = [\r^\top, \rd^\top, \aIMUB^\top]^\top \in \Re
 %\end{subequations}
 
 \paragraph{Estimator implementation.}
-The implemented estimation algorithm on the \microcontroller works as follows:
+The implemented estimation algorithm on the microcontroller works as follows:
 After having received 2 subsequent position measurements $\rVIC[1]$, $\rVIC[2]$ and their reconstructed time $\tVIC[1]$, $\tVIC[2]$ with $\Ts'[1]=\tVIC[2]-\tVIC[1]$ we set the initial value for the estimator state $\hat{z} = [\rObs^\top, \rdObs^\top, \aIMUBObs^\top]^\top$ as
 \begin{align}
  \rObs(\tVIC[2]) = \rVIC[2], 

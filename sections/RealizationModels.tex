@@ -111,6 +111,7 @@ With the above assumptions, and the propeller model \eqref{eq:RealizationModelPr
 \end{align}
 where
 \begin{subequations}\label{eq:RealizationMulticopterForces}
+\allowdisplaybreaks
 \begin{align}
  \sysInertiaMat(\tuple{\PropTilt}) &=
  \begin{bmatrix}[1.1]
@@ -328,7 +329,7 @@ From the measured trajectory $t\mapsto\alpha$ of the twist angle we can estimate
 
 On the right side of \autoref{fig:QuadPendulumIdent}, the acceleration $\ddot{\alpha}$ computed from the model \eqref{eq:PendulumIdent} with the estimated parameters is plotted against the measured acceleration, computed from the onboard gyroscope readings.
 
-This test was conducted for all three axis, \ie for $\Jxx$, $\Jyy$ and $\Jzz$ for Tri- and Quadcopter and the resulting parameters are given in \autoref{tab:ParamTriQuad}.
+This test was conducted for all three axis, i.e.\ for $\Jxx$, $\Jyy$ and $\Jzz$ for Tri- and Quadcopter and the resulting parameters are given in \autoref{tab:ParamTriQuad}.
 The identified parameters match the values computed from a detailed CAD model by $\pm 10\%$.
 
 \paragraph*{Parameter identification from flight test.}
@@ -378,7 +379,7 @@ However, the magnitudes of the displayed identified values are less than $3\%$ c
  \setlength{\tabcolsep}{.1em}
  \begin{tabular}{crlrll}
   \toprule
-  Symbol & \multicolumn{2}{c}{tricopter value} & \multicolumn{2}{c}{tuadcopter value} & \multicolumn{1}{c}{Source} \\
+  symbol & \multicolumn{2}{c}{tricopter value} & \multicolumn{2}{c}{quadcopter value} & \multicolumn{1}{c}{source} \\
   \midrule
   $\quad\m\quad$ & $1.251$&$\unit{kg}$ & $1.001$&$\unit{kg}$ & directly measured
   \\[1ex]
@@ -423,7 +424,7 @@ However, the magnitudes of the displayed identified values are less than $3\%$ c
   $\tauBz$ & $-0.003$&$\unit{N}\unit{m}$ & $-0.012$&$\unit{N}\unit{m}$ & flight test \\
   \bottomrule
  \end{tabular}
- \caption{Parameter values for tri- and quadcopter}
+ \caption{Parameter values for tri- and quadcopter model}
  \label{tab:ParamTriQuad}
 \end{table}
 
@@ -435,7 +436,7 @@ From this quantitative analysis we can also motivate which parts of the model ca
 
 \paragraph*{Tricopter.}
 \autoref{fig:ValidationTricopter} shows the accelerations $\sysVeld$ during a benchmark fight test for the tricopter.
-The data corresponds to a $20\,\unit{s}$ sample at the beginning of \url{https://youtu.be/oS5PHr6H0K4}.
+The data corresponds to a $20\,\unit{s}$ sample at the beginning of the video available here\footnote{\url{https://youtu.be/oS5PHr6H0K4}}.
 The gray lines are obtained by applying a Savitzky–Golay derivative filter to the measured generalized velocities $\sysVel$.
 The blue lines are the accelerations $\sysVeld$ computed from the model \eqref{eq:RealizationMulticopterKinetics} with the parameters from \autoref{tab:ParamTriQuad} and the measured configuration, velocity and inputs.
 The dashed red lines are the accelerations computed in the same way but from a simplified model that will be proposed now:
@@ -516,7 +517,7 @@ The resulting model reads:
 \begin{RedBox}
 \textbf{Simplified quadcopter model.}
 Rigid body dynamics
-\begin{subequations}
+\begin{subequations}\label{eq:QuadcopterSimpModel}
 \begin{align}
  \rd &= \R\, \v,&
  \m(\vd + \wedOp(\w)\v - \RT \gravityAcc) + \bodyDamping{}{} \v &= \Fz e_3 + \FB,

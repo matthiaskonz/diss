@@ -12,14 +12,14 @@ This results in
  = \underbrace{\tpdiff[\geoConstraint]{\sysCoord} \kinMat}_{0} \sysVel - \underbrace{\tpdiff[\phi]{x} \InvGeoConstraintMat{}{}}_{\idMat[n-\nu]} \Lambda \phi
  =  - \Lambda \geoConstraint
 \end{align}
-\ie for an appropriate $\Lambda \in \RealNum^{(\numCoord-\dimConfigSpace) \times (\numCoord-\dimConfigSpace)}$ the error to the geometric constraint converges exponentially.
+i.e.\ for an appropriate $\Lambda \in \RealNum^{(\numCoord-\dimConfigSpace) \times (\numCoord-\dimConfigSpace)}$ the error to the geometric constraint converges exponentially.
 For the example of the rigid body orientation \eqref{eq:KinNumStab} can also be written in the probably more intuitive matrix form
 \begin{align}
  \Rd = \R (\widehat{\w} - \Lambda (\RT \R - \idMat[3]))
 \end{align}
 with a symmetric positive definite matrix $\Lambda = \Lambda^\top \in \RealNum^{3\times3} > 0$.
 
-The resulting EoM with Lagrangian multipliers \eqref{eq:EOMMultipliers} only consider the derivatives of the constraints, \eg $\ddot{\psi} = 0$ or $\dot{\eta} = 0$.
+The resulting EoM with Lagrangian multipliers \eqref{eq:EOMMultipliers} only consider the derivatives of the constraints, e.g.\ $\ddot{\psi} = 0$ or $\dot{\eta} = 0$.
 As before, for the case of bad initial conditions or the errors of numerical integration, we should add a stabilization term:
 In the case of kinematic constraints this is
 \begin{subequations}

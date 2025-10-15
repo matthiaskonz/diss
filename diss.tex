@@ -54,7 +54,7 @@
 
 \usepackage{url} % um Links in Bibtex anzuzeigen
 \usepackage{breakcites}
-\usepackage{xspace}
+%\usepackage{xspace}
 %\allowdisplaybreaks
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -95,40 +95,22 @@
 % \renewcommand{\labelenumii}{\theenumii}
 % \renewcommand{\labelenumiii}{\theenumiii}
 
-%%%%%%%%%%% custom macros %%%%%%%%%%%%%%%%
-%\input{/home/matthias/texStyle/jokerMacros}
-%\newcommand{\figref}[1]{fig.~\ref{#1}}
-%\newcommand{\Figref}[1]{Fig.~\ref{#1}}
-\newcommand{\wrt}{w.r.t.\ }
-\newcommand{\ie}{i.e.\xspace}
-\newcommand{\eg}{e.g.\ }
-\newcommand{\etc}{etc.\xspace}
-\newcommand{\WLOG}{w.l.o.g.\xspace}
-\newcommand{\Tricopter}{tricopter\xspace}
-\newcommand{\Quadcopter}{quadcopter\xspace}
-\newcommand{\Multicopter}{multicopter\xspace}
-\newcommand{\Multicopters}{multicopters\xspace}
-\newcommand{\RB}{RB\xspace}
-\newcommand{\RBs}{RBs\xspace}
-\newcommand{\RBS}{RBS\xspace}
-\newcommand{\RBSs}{RBSs\xspace}
-\newcommand{\microcontroller}{microcontroller\xspace}
 % farben
-\definecolor{jokerGray}{gray}{0.4}
-\definecolor{jokerDarkGreen}{rgb}{0,0.65,0} % 0, 166, 0
-\definecolor{jokerTeal}{rgb}{0,0.5,0.5}
-\definecolor{jokerMagenta}{rgb}{1,0,0.5} % {255, 0, 128}
+%\definecolor{jokerGray}{gray}{0.4}
+%\definecolor{jokerDarkGreen}{rgb}{0,0.65,0} % 0, 166, 0
+%\definecolor{jokerTeal}{rgb}{0,0.5,0.5}
+%\definecolor{jokerMagenta}{rgb}{1,0,0.5} % {255, 0, 128}
 % boxes
 \theoremstyle{definition}
 \newtheorem{exmp}{Example}
 \newenvironment{GrayBox}{\colorlet{shadecolor}{gray!15}\begin{shaded}}{\end{shaded}}
 \newenvironment{GreenBox}{\colorlet{shadecolor}{green!15}\begin{shaded}}{\end{shaded}}
 \newenvironment{RedBox}{\colorlet{shadecolor}{red!15}\begin{shaded}}{\end{shaded}}
-\newenvironment{BlueBox}{\colorlet{shadecolor}{blue!15}\begin{shaded}}{\end{shaded}}
-\newenvironment{DefinitionBox}{\colorlet{shadecolor}{red!15}\begin{shaded}\textbf{Definition.} }{\end{shaded}}
+%\newenvironment{BlueBox}{\colorlet{shadecolor}{blue!15}\begin{shaded}}{\end{shaded}}
+%\newenvironment{DefinitionBox}{\colorlet{shadecolor}{red!15}\begin{shaded}\textbf{Definition.} }{\end{shaded}}
 \newenvironment{Example}{\colorlet{shadecolor}{green!10}\begin{shaded}\vspace{-1.5ex}\begin{exmp}}{\vspace{-2ex}\end{exmp}\end{shaded}}
-\newenvironment{Remark}{\colorlet{shadecolor}{gray!10}\begin{shaded}\textbf{Remark.}}{\end{shaded}}
-\newenvironment{NamedRemark}[1]{\colorlet{shadecolor}{gray!10}\begin{shaded}\textbf{Remark {(#1)}.}}{\end{shaded}}
+%\newenvironment{Remark}{\colorlet{shadecolor}{gray!10}\begin{shaded}\textbf{Remark.}}{\end{shaded}}
+%\newenvironment{NamedRemark}[1]{\colorlet{shadecolor}{gray!10}\begin{shaded}\textbf{Remark {(#1)}.}}{\end{shaded}}
 % tag for subequations
 \makeatletter
 \newenvironment{varsubequations}[1]
@@ -183,7 +165,8 @@
 \input{sections/CtrlExampleRigidBodyOrientation}
 \input{sections/CtrlExamplePlanarRigidBody}
 \input{sections/CtrlExampleFreeRigidBody}
-\input{sections/CtrlExampleScara}\clearpage
+\input{sections/CtrlExampleScara}
+\clearpage
 \input{sections/CtrlExampleRobotArm}
 \clearpage
 \section{Examples of underactuated systems}
@@ -197,10 +180,10 @@
 \input{sections/RealizationModels}
 \input{sections/RealizationForceVectorControl}
 \input{sections/RealizationStateEstimation} 
-%\input{sections/RealizationReferenceGeneration}
-%\input{sections/RealizationFlightTestResults}
+\input{sections/RealizationReferenceGeneration}
+\input{sections/RealizationFlightTestResults}
 % 
-%\input{sections/Conclusion}
+\input{sections/Conclusion}
 
 \appendix
 \chapter{TBD} 
@@ -211,14 +194,14 @@
 % \input{sections/AppendixDiffGeo}
 % \input{sections/AppendixCovariance}
 % \input{sections/AppendixStaticOptimization}
-% %
+
 % \input{sections/AppendixAttitudeParameterizations}
 \input{sections/AppendixConstraintStabilization}
 % \input{sections/AppendixRigidBodyCoord}
-% % 
+ 
 % \input{sections/AppendixNonholonomicSys}
 % \input{sections/AppendixHamilton}
-%\input{sections/AppendixGenRigidBodyPotential}
+\input{sections/AppendixGenRigidBodyPotential}
 
 %\bibliographystyle{alpha}
 \bibliographystyle{apalike}

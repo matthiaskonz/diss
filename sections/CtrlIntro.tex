@@ -39,8 +39,8 @@ The design task for a \textit{tracking controller} is:
 Find a function $\sysInput = \sysInput(\sysCoord, \sysVel, \sysCoordR, \sysVelR, \sysVelRd)$ (the controller) such that $t \mapsto \sysCoordR(t)$ is a stable and attractive trajectory of the closed loop which is the combination of model \eqref{eq:CtrlSysMdl2} and controller.
 
 \paragraph{State of the art.}
-This is a pretty general task and may be tackled by various standard approaches from control theory, see \eg \cite[chap.\,7-10]{Spong:RobotModelingAndControl} for some overview.
-For fully actuated systems a popular approach is \textit{computed torque}, see \eg \cite[sec.\,4.5.2]{Murray:Robotic}, also called \textit{inverse dynamics} in \cite[sec.\,8.3]{Spong:RobotModelingAndControl}.
+This is a pretty general task and may be tackled by various standard approaches from control theory, see e.g.\ \cite[chap.\,7-10]{Spong:RobotModelingAndControl} for some overview.
+For fully actuated systems a popular approach is \textit{computed torque}, see e.g.\ \cite[sec.\,4.5.2]{Murray:Robotic}, also called \textit{inverse dynamics} in \cite[sec.\,8.3]{Spong:RobotModelingAndControl}.
 It can be regarded as a particularly simple case of feedback linearization utilizing the fact that any set of minimal generalized coordinates $\genCoord(t)\in\RealNum^{\dimConfigSpace}$ is a \textit{flat output} of a fully actuated mechanical system \cite[sec.\,7.1]{Martin:FlatSystems}.
 
 For underactuated systems there is no standard textbook approach.

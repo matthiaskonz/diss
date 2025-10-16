@@ -1,24 +1,41 @@
-\chapter{Conclusion}
+\chapter{Summary and Conclusions}
 
 This work discussed the modeling and tracking control of rigid body systems.
 Both subjects are well covered in the dedicated literature.
-In the modeling aspect, this work extended some well established formalisms by allowing for redundnant configuration coordinates and velocity coordinates. 
+However, the literature is somewhat split into two viewpoints:
+Small academic examples are treated independently with a lot of emphasis on the particular geometry like e.g. \cite{Marsden:MechanicsAndSymmetry}.
+Larger multibody systems are handled by general formalisms, but treated by minimal generalized coordinates as if their configuration manifold is $\RealNum^\dimConfigSpace$ as in e.g.\ \cite{Schwertassek:MultibodySystems}.
+This work attemts to combine both these points of view:
+The proposed recipie for the equations of motion holds for general multibody systems \textit{and} allows a parameterization through redundant configuration coordinates that respect the underlying geometry of the system.
 
-rigid body attiutde is the most common case. rotation matrix for theory, quaternion for efficient implementation, euler angles for user interface.
+While inertia is arguably the core aspect of a rigid body system, this work also investigated into analog, natural stiffness and damping formulations.
+The resulting damping and stiffnes parameters, are not presented, maybe even unknown, in the dedicated literature.
+The way e.g.\ the moment of stiffnes matrix $\bodyMOS{}{}$ was derived here, it is just as natural as the (absolutly established) moment of inertia matrix $\bodyMOI{}{}$.
 
-\fixme{
-Many machines, vehicles and robots may be modeled as rigid body systems, i.e.\ a number of interconnected, undeformable bodies subject to inertia, gravity, and other forces.
-Energy-based methods for derivation of their equations of motion, like the Lagrange formalism, are standard in engineering education and well established in the dedicated literature.
-These algorithms commonly rely on the use of a minimal set of generalized coordinates.
-This is appropriate for many applications, e.g. machines containing only one-dimensional joints.
-For systems whose configuration space is nonlinear, e.g. mobile robots whose configiguration space contains the rigid body attitude, the use of minimal coordinates necessarily leads to singularities.
-From the point of view of differential geometry, this is a well known fact.
-}
+For control design, it is a common approach to design the desired closed loop dynamics and derive the actually required control law from it.
+Flatness based control formalizes this approach but the vast mayority combines it with linear error dynamics, thus treating the system as if its configuration manifold is $\RealNum^\numInputs$.
+This work proposes desired closed loop dynamics based on a general mechanical model of a rigid body system.
+As a result, the closed loop dynamics are invariant to the choice of coordinates in the same way as the motion of a mechanical system is unchanged by the choice of coordinates with which it is parameterized.
+Furthermore, all control parameters have intrinsic mechanical interpretation, so should be intuitive for tuning.
 
-\cite{Konz:Mathmod}
-\cite{Konz:Mathmod2018}
-\cite{Irscheid:HeavyRopesTricopter}
-\cite{Konz:GaussTrackingControl}
-\cite{Kastelan:Tricopter}
-\cite{Konz:Mechatronics}
-\cite{Konz:MechatronicsBook}
+Motivated by this basic idea, this work proposed three candidates for closed loop tracking dynamics:
+One motivated by the dynamics of a particle system, one motivatd by the rigid body energies and one motivated by the total energy of the system.
+When dealing with the stabilization of a constant reference, the three approches coincide and resemble an actual rigid body system subject to inertia, viscous damping and linear springs but not gravity.
+For this case, the total energy is a Lyapunov function.
+For tracking a general reference trajectory, only the third approach guarantees stability.
+In contrast, this approch has the drawback of requiring an additional ingredient, the transport map, whose existance is not guaranteed.
+Though not necessarily being a Lyapunov function, each approach comes with a formulation for a total energy that is positive definite, i.e.\ positive and zero if, and only if, the tracking objective is fulfilled, usually $\sysCoord=\sysCoordR$ and $\sysVel = \sysVelR$.
+
+The three control approaches were applied to various examples of rigid body systems and tested in simulation with reasonable reference trajectories and initial conditions.
+While the total energy was not always monotonically decresing, it always eventually converged to zero.
+So the general control objective was fulfilled.
+
+
+
+% \cite{Konz:Mathmod}
+% \cite{Konz:Mathmod2018}
+% \cite{Irscheid:HeavyRopesTricopter}
+% \cite{Konz:GaussTrackingControl}
+% \cite{Kastelan:Tricopter}
+% \cite{Konz:Mechatronics}
+% \cite{Konz:MechatronicsBook}

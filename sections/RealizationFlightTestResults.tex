@@ -4,6 +4,58 @@ The task for the experiments is to track different reference trajectories while 
 As the tracking errors for the following experiments were small, there was no distinguishable difference between the particle, body and energy based approaches.
 The data for the presented figures were recorded while using the body based control approach.
 
+The controller parameters for the following experiments are summarized in \autoref{tab:ParamTriQuadCtrl}.
+Note that the values for inertia etc.\ are w.r.t.\ the body fixed frame and not w.r.t.\ the (closed loop) center of mass as done in \autoref{sec:CtrlExampleQuadcopter}.
+Consequently the some values differ from what the matching conditions in \eqref{eq:CtrlExampleQuatMatchedParam} would suggest.
+
+\begin{table}
+ \centering
+ \setlength{\tabcolsep}{.1em}
+ \begin{tabular}{crlrll}
+  \toprule
+  \phantom{|} \quad symbol \quad\phantom{|} & \multicolumn{2}{c}{\phantom{|} \quad tricopter value \quad\phantom{|} } & \multicolumn{2}{c}{\phantom{|} \quad quadcopter value \quad\phantom{|}} & \multicolumn{1}{c}{\phantom{|} \qquad comment \qquad\phantom{|}} \\
+  \midrule
+  $\Ts$  & \multicolumn{4}{c}{$0.005\,\unit{s}$} & main sampling time \\
+  \midrule
+  $\quad\mc\quad$ & \phantom{|} \qquad$1.251$&$\unit{kg}$ & \phantom{|} \qquad$1.001$&$\unit{kg}$ & same as model \\
+  $\scz$ & $ 0 $&$\unit{m}$ & $ 0.043$&$\unit{m}$ & center of mass \\
+  $\Jcxx=\Jcyy$ & $0.0192$&$\unit{kg}\,\unit{m}^2$& $0.0095$&$\unit{kg}\,\unit{m}^2$ & tilt inertia \\
+  $\Jczz$ & $0.0308$&$\unit{kg}\,\unit{m}^2$ & $0.0307$&$\unit{kg}\,\unit{m}^2$ & same as model 
+  \\[.3ex]
+  $\quad\dc\quad$ & $6$&$\tfrac{\unit{kg}}{\unit{s}}$ & $4.4$&$\tfrac{\unit{kg}}{\unit{s}}$ & translation damping \\
+  $\lcz$ & $ 0 $&$\unit{m}$ & $ 0.255$&$\unit{m}$ & center of damping \\
+  $\sigcxx=\sigcyy$ & $0.3$&$\tfrac{\unit{kg}\,\unit{m}^2}{\unit{s}}$& $0.4$&$\tfrac{\unit{kg}\,\unit{m}^2}{\unit{s}}$ & tilt damping \\
+  $\sigczz$ & $0.25$&$\tfrac{\unit{kg}\,\unit{m}^2}{\unit{s}}$ & $0.1$&$\tfrac{\unit{kg}\,\unit{m}^2}{\unit{s}}$ & yaw damping
+  \\[.3ex]
+  $\quad\kc\quad$ & $8$&$\tfrac{\unit{kg}}{\unit{s}^2}$ & $8$&$\tfrac{\unit{kg}}{\unit{s}^2}$ & translation stiffness \\
+  $\hcz$ & $ 0 $&$\unit{m}$ & $ 0.255$&$\unit{m}$ & center of stiffness \\
+  $\kapcxx=\kapcyy$ & $1.7$&$\tfrac{\unit{kg}\,\unit{m}^2}{\unit{s}}$& $2.6$&$\tfrac{\unit{kg}\,\unit{m}^2}{\unit{s}}$ & tilt stiffness \\
+  $\kapczz$ & $0.7$&$\tfrac{\unit{kg}\,\unit{m}^2}{\unit{s}}$ & $0.2$&$\tfrac{\unit{kg}\,\unit{m}^2}{\unit{s}}$ & yaw stiffness \\
+  \midrule
+  $\PropObsGainVel$  & \multicolumn{4}{c}{$0.1$} & propeller obs.\ gain 1 \\
+  $\PropObsGainBias$  & \multicolumn{4}{c}{$0.01\,\unit{Hz}$} & propeller obs.\ gain 2 \\
+  $\PropCtrlGain$  & \multicolumn{4}{c}{$0.25$} & propeller control gain \\
+  $c_F$ & $0.1$& & & & thrust filter param \\
+  $\omega_{\mathsf{mag}}$ & & & $100$&$\tfrac{\unit{RAD}}{\unit{s}}$ & thrust mag.\ bandw.\ \\
+  $\zeta_{\mathsf{mag}}$ & & & $0.707$& & thrust mag.\ damp.\ ratio \\
+  $\omega_{\mathsf{tilt}}$ & & & $125$&$\tfrac{\unit{RAD}}{\unit{s}}$ & tilt torque bandw.\ \\
+  $\zeta_{\mathsf{tilt}}$ & & & $0.707$& & tilt torque damp.\ ratio \\
+  $\omega_{\mathsf{head}}$ & & & $66$&$\tfrac{\unit{RAD}}{\unit{s}}$ & head.\ torque bandw.\ \\
+  \midrule
+  $L_\omega$  & \multicolumn{4}{c}{$0.2$} & ang.\ vel.\ obs.\ gain \\
+  $L_\tau$  & \multicolumn{4}{c}{$0.01$} & torque bias obs.\ gain \\
+  $\cTPC$  & \multicolumn{4}{c}{$0.99$} & clock offset estimator root \\
+  $l_r$  & \multicolumn{4}{c}{$1$} & pos.\ obs.\ fb.\ gain 1 \\
+  $l_v$  & \multicolumn{4}{c}{$0.575$} & pos.\ obs.\ fb.\ gain 2 \\
+  $l_a$  & \multicolumn{4}{c}{$-0.025$} & pos.\ obs.\ fb.\ gain 3 \\
+  $l_F$  & \multicolumn{4}{c}{$0.01$} & force bias obs.\ fb.\ gain \\
+  \bottomrule
+ \end{tabular}
+ \caption{Parameter values for tri- and quadcopter controller}
+ \label{tab:ParamTriQuadCtrl}
+\end{table}
+
+
 \paragraph{Error quantization.}
 In order to quantify the tracking performance we use the scalar quantities 
 %position error $e_{\r}$, attitude error $e_{\R}$ and heading error $e_{\head}$ defined as

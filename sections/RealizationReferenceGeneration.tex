@@ -40,11 +40,11 @@ The singularity for $\rdd = \gravityAcc$, is practically not realizable, since t
 
 
 \paragraph{Real-time trajectory generator.}
-The multicopter firmware includes a real-time trajectory generaor for the corresponding flat output discussed above.
+The multicopter firmware includes a real-time trajectory generator for the corresponding flat output discussed above.
 It knows the current reference $\tuple{y}_\idxRef(t), \ldots, \tuple{y}^{(4)}_\idxRef(t)$ and when receiving a new static setpoint $\tuple{y}_\idxRef(t+T) = \const$, with a given transition time $T$, it computes and evaluates the interpolating polynomials of sufficient degree.
-The actutual reference values $(\rR, \RR, \vR, \wR, \vRd, \wRd)[k]$ for the main rigid body controller are computed from \eqref{eq:RealizationQuatFlatness}, \eqref{eq:RealizationEulerAngles} and their derivatives.
+The actual reference values $(\rR, \RR, \vR, \wR, \vRd, \wRd)[k]$ for the main rigid body controller are computed from \eqref{eq:RealizationQuatFlatness}, \eqref{eq:RealizationEulerAngles} and their derivatives.
 
-The setpoints are the standard command interface for the multicopter GUI on the groundstation PC.
+The set points are the standard command interface for the multicopter GUI on the groundstation PC.
 The results in \autoref{fig:TriManeuver42Result} and \autoref{fig:QuadManeuver42Result} which are discussed in the next section utilized these trajectories.
 
 \paragraph{Precomputed position trajectories.}
@@ -78,16 +78,16 @@ In this mode the position measurements are not available or not used, e.g.\ in o
 Instead a human pilot is tasked with controlling the multicopter with a two joystick remote control (RC).
 
 The parameters of the rigid body controller, see \autoref{chap:Ctrl}, are set as follows:
-The desired ineria coincides with the model inertia, i.e.\ $\mc = m, \Jc = \J, \sc=\tuple{0}$.
+The desired inertia coincides with the model inertia, i.e.\ $\mc = m, \Jc = \J, \sc=\tuple{0}$.
 The center of damping and stiffness coincides with the center of mass $\lc=\hc=\tuple{0}$.
-As previously discused in \autoref{sec:DecouplingRigidBody}, this decouples the rotational part of the closed loop dynamics.
+As previously discussed in \autoref{sec:DecouplingRigidBody}, this decouples the rotational part of the closed loop dynamics.
 As the pilot is charged with controlling th position, we set vanishing translational stiffness $\kc=0$ and damping $\dc=0$.
-For the particle based approach (see \autoref{sec:CtrlApproachParticlesSingleBody}) this results in the trivial closed loop dynamics $\rdd = \rRdd$ andthe translational part of the explicit control law reads
+For the particle based approach (see \autoref{sec:CtrlApproachParticlesSingleBody}) this results in the trivial closed loop dynamics $\rdd = \rRdd$ and the translational part of the explicit control law reads
 \begin{align}\label{eq:RealizationPilotTranslationControl}
  \bodyForce{}{} = m \R^\top (\rRdd - \gravityAcc)
 \end{align}
-Unfortunatly, for the body-based and energy based approaches, terms with $\r-\rR$ and $\rd-\rRd$ still appear in gyroscopic terms.
-For the actual microcontroller implementation these terms were simply set to zero which ultimatly implies the same translational control as for the particle based approach \eqref{eq:RealizationPilotTranslationControl}.
+Unfortunately, for the body-based and energy based approaches, terms with $\r-\rR$ and $\rd-\rRd$ still appear in gyroscopic terms.
+For the actual microcontroller implementation these terms were simply set to zero which ultimately implies the same translational control as for the particle based approach \eqref{eq:RealizationPilotTranslationControl}.
 
 In practice, the forward direction of the multicopter is more intuitive to a pilot than the e.g.\ the north directions.
 With similar arguments \cite{Kastelan:Tricopter} proposes the use of a heading referenced acceleration $\tuple{a}_\idxRef = \R_{\mathsf{Z}}^\top(\yaw_\idxRef) \rRdd$ which is used in the following as well.
@@ -114,7 +114,7 @@ The filter coefficients $a_i$ are chosen to resemble a (continuous) Bessel filte
 A Bessel filter is characterized by having a maximally flat group delay, i.e.\ it preserves the (time-domain) shape of the signal in the passband (opposed to a Butterworth filter which preserves the amplitude in the frequency domain).
 With rising order the (IIR) Bessel filter converges to a (FIR) Gaussian filter \cite[sec.\ 4.9.2]{Rabiner:DSP}.
 
-The actual implementation is the exaxt discretization of \eqref{eq:RealizationRCFilter}.
-\autoref{fig:RCFilter} shows the impulse response and application to a measured example RC-channel of the used Bessel filter and a corresponding Gaussian filter (windowlength 43).
+The actual implementation is the exact discretization of \eqref{eq:RealizationRCFilter}.
+\autoref{fig:RCFilter} shows the impulse response and application to a measured example RC-channel of the used Bessel filter and a corresponding Gaussian filter (window length 43).
 Even though the difference is visible on the impulse response, the result of the implemented filter and the Gauss filter are indistinguishable in the practical application.
 

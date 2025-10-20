@@ -20,7 +20,7 @@ Using the metric from \eqref{eq:DefMatrixMetric} with a weight $\mat{K}\in\SymMa
 \\
  = \underbrace{\tfrac{1}{2} \tr\big( \mat{Q}^\top \mat{K} \mat{Q} + \mat{K} \big)}_{\const} - \tr\big( \underbrace{\mat{Q}^\top \mat{K}}_{\mat{P}_3} \R \big)
 \end{multline}
-Each of these problems essentially asks for an $\R\in\SpecialOrthogonalGroup(3)$ wich minimizes $\potentialEnergy = -\tr(\mat{P} \R)$ for some given $\mat{P}\in\RealNum^{3\times3}$.
+Each of these problems essentially asks for an $\R\in\SpecialOrthogonalGroup(3)$ which minimizes $\potentialEnergy = -\tr(\mat{P} \R)$ for some given $\mat{P}\in\RealNum^{3\times3}$.
 
 Solutions to Wahba's problem are given in \cite{Davenport:QMethod} using attitude quaternions and in \cite{Kabsch:SSVD} using the singular value decomposition.
 A proof of a unique minimum in \cite{Bullo:TrackingAutomatica} relies on $\mat{P}$ having distinct singular values.
@@ -101,7 +101,7 @@ Depending on the constellation of the eigenvalues we have the following critical
 % \end{align}
 % So, for a critical point $\bar{\R}_0 : \differential \bar{\potentialEnergy}(\bar{\R}_0)=\tuple{0}$ we need the matrix $\wedMatOp(\mat{\varLambda}) \bar{\R}_0$ to be symmetric.
 % An obvious critical point is $\bar{\R}_0 = \idMat[3]$ which is a minimum if $\differential^2 \bar{\potentialEnergy}(\idMat[3]) = \mat{\varLambda}$ is positive definite.
-% Depending on the actual constellation of $\lambda_1 \geq \lambda_2 \geq \lambda_3 \geq 0$ we have more critical points or submanifolds which are analysed in the following:
+% Depending on the actual constellation of $\lambda_1 \geq \lambda_2 \geq \lambda_3 \geq 0$ we have more critical points or submanifolds which are analyzed in the following:
 \begin{subequations}
 \begin{itemize}
 \item Distinct eigenvalues: $\lambda_3 > \lambda_2 > \lambda_1 > 0$: We have the critical points
@@ -232,7 +232,7 @@ Within this work, this will be called the \textit{special polar decomposition}.
 
 
 % \paragraph{Prototype for a positive definite function.}
-% Substracting the minimal value $\potentialEnergy(\R_0)$ from the function we obtain
+% Subtracting the minimal value $\potentialEnergy(\R_0)$ from the function we obtain
 % \begin{subequations}
 % \begin{align}
 %  \hat{\potentialEnergy}(\R) &= \potentialEnergy(\R) - \potentialEnergy(\R_0)
@@ -262,4 +262,4 @@ Within this work, this will be called the \textit{special polar decomposition}.
 % \end{align}
 % \end{subequations}
 % The form \eqref{eq:NavFunctionSO3} is called the \textit{navigation function} for $\SpecialOrthogonalGroup(3)$ in \cite{Koditschek:TotalEnergy}.
-% From its properties $\hat{\potentialEnergy}$ is an $\SpecialOrthogonalGroup(3)$ analogon to $\tfrac{1}{2}(\tuple{x}-\tuple{x}_0)^\top\mat{K}(\tuple{x}-\tuple{x}_0), \tuple{x},\tuple{x}_0\in\RealNum^3$.
+% From its properties $\hat{\potentialEnergy}$ is an $\SpecialOrthogonalGroup(3)$ analog to $\tfrac{1}{2}(\tuple{x}-\tuple{x}_0)^\top\mat{K}(\tuple{x}-\tuple{x}_0), \tuple{x},\tuple{x}_0\in\RealNum^3$.

@@ -24,7 +24,7 @@ For an underactuated system, i.e.\ $\rank\sysInputMat = \numInputs < \dimConfigS
 
 \paragraph{The idea.}
 If the desired closed loop dynamics \eqref{eq:CtrlClosedLoopUnderactuated} cannot be achieved exactly, the next best thing is to get ``as close as possible'' while still obeying the model dynamics \eqref{eq:CtrlSysMdlUnderactuated}.
-In order to formalize the ``as close as possible'' we take again inspiration from mechanics, more precicely from Gauss' principle of least constraint, previously discussed in \autoref{sec:MechConstrainedParticles}:
+In order to formalize the ``as close as possible'' we take again inspiration from mechanics, more precisely from Gauss' principle of least constraint, previously discussed in \autoref{sec:MechConstrainedParticles}:
 The free motion is the solution of the desired closed loop \eqref{eq:CtrlClosedLoopUnderactuated}, the optimization metric is the desired closed loop inertia $\sysInertiaMatC$ and the constraints are the model kinetics \eqref{eq:CtrlSysMdlUnderactuated}.
 Then the control law is the solution of the static optimization problem
 \begin{align}\label{eq:MinProbUnderactuated}
@@ -80,7 +80,7 @@ Unfortunately the form of $\GaussianConstraintC_0$ in \eqref{eq:UnderactuatedCon
 In the following we like to find a more handy formulation.
 
 \subsection{Matching condition}\label{sec:MatchingCondition}
-Instead of elimiating the accelerations $\sysVeld$ we may also eliminate the controls $\sysInput$ from \eqref{eq:MinProbUnderactuated}.
+Instead of eliminating the accelerations $\sysVeld$ we may also eliminate the controls $\sysInput$ from \eqref{eq:MinProbUnderactuated}.
 Let $\sysInputMatLComp \in \RealNum^{\dimConfigSpace\times(\dimConfigSpace-\numInputs)}$ be any orthogonal complement to $\sysInputMat$, i.e.\ $\rank \sysInputMatLComp = \dimConfigSpace-\numInputs$ and $\sysInputMat^\top \sysInputMatLComp = \mat{0}$.
 With this \eqref{eq:MinProbUnderactuated} is equivalent to
 \begin{align}\label{eq:MinProbUnderactuatedMatch}
@@ -92,7 +92,7 @@ With this \eqref{eq:MinProbUnderactuated} is equivalent to
  .
 \end{align}
 Using the method of Lagrangian multipliers with $\Lagrangian = \GaussianConstraintC + \tuple{\mu}^\top (\sysInputMatLComp)^\top \big(\sysInertiaMat \sysVeld + \sysForce\big)$ 
-leads to the neccessary condition
+leads to the necessary condition
 \begin{align}
   \begin{bmatrix} \pdiff[\Lagrangian]{\sysVeld} \\ \pdiff[\Lagrangian]{\tuple{\mu}} \end{bmatrix}
   =
@@ -115,7 +115,7 @@ With this, the feasible closed loop kinetics and the residual Gaussian constrain
 \qquad
  \GaussianConstraintC_0 = \tfrac{1}{2} \norm[\mat{S}]{\tuple{\lambda}}^2.
 \end{align}
-It is much simpler to analyse $\tuple{\lambda}$ which has only the dimension of the underactuation $\dimConfigSpace-\numInputs$ instead of $\tilde{\tuple{b}}$ which has the full dimension $\dimConfigSpace$ of the configuration space.
+It is much simpler to analyze $\tuple{\lambda}$ which has only the dimension of the underactuation $\dimConfigSpace-\numInputs$ instead of $\tilde{\tuple{b}}$ which has the full dimension $\dimConfigSpace$ of the configuration space.
 % The value of $\GaussianConstraintC_0$ is a measure of how much the actual closed loop \eqref{eq:UnderactuatedControlledKinetics} differs from the original desired closed loop \eqref{eq:CtrlClosedLoopUnderactuated}.
 % With the use of a basis, the columns of $\sysInputMatLComp$, we are able to formulate this measure in terms of minimal coefficients $\tuple{\lambda}$.
 % This will turn out very useful for the actual design.
@@ -137,7 +137,7 @@ Instead the quantity $\tuple{\lambda}$, which we will call the \textit{matching 
 
 \subsection{Approximations}
 The matching force \eqref{eq:MatchingCondition} may become very cumbersome for complex systems and might even be impossible to vanish with the given parameters.
-It might be instructive to analyse it for particular situations.
+It might be instructive to analyze it for particular situations.
 
 \paragraph{Zero error.}
 Assume that the controller tracks the reference perfectly, i.e.\ $\sysCoord = \sysCoordR$ and $\sysVel=\sysVelR$.

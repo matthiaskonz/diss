@@ -5,7 +5,6 @@
 %
 \usepackage[T1]{fontenc}
 %\renewcommand{\familydefault}{\sfdefault}
-\usepackage{ifthen}
 %%%%%%%%%%% paper margins
 \usepackage[
 	a4paper,
@@ -18,7 +17,7 @@
 %%%%%%%%%%% math environment
 \usepackage{amsmath, amssymb, amsthm}
 %%%%%%%%%%% graphics
-\usepackage[svgnames]{xcolor} % [svgnames] loads additional named colors
+\usepackage[svgnames]{xcolor} % [svg names] loads additional named colors
 \usepackage{graphicx}
 \graphicspath{{graphics/}}
 \makeatletter
@@ -41,24 +40,23 @@
 	hyperfootnotes=false,
 	bookmarksopen=false
 ]{hyperref}
-%%%%%%%%%%% Tabellen
+%%%%%%%%%%% tables 
 \usepackage{array}
-\usepackage{booktabs}
+\usepackage{booktabs} 
 %%%%%%%%%%% color boxes
 \usepackage{framed}
-%%%%%%%%%%% Formatierung Absaetze
-\setlength{\parindent}{0mm} % einzug nach absatz
-\setlength{\parskip}{1.5ex} % extrazeilenabstand nach absatz
+%%%%%%%%%%% format sections
+\setlength{\parindent}{0mm}
+\setlength{\parskip}{1.5ex}
 
-\usepackage{fancyhdr} % ändern von Kopf- und Fußzeile
 
-\usepackage{url} % um Links in Bibtex anzuzeigen
+\usepackage{url}
 \usepackage{breakcites}
 %\usepackage{xspace}
 %\allowdisplaybreaks
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% PDF-Dokumenteigenschaften festlegen %%%%%%%%%%%%%%
+% PDF-properties
 \hypersetup{pdfauthor = Matthias Konz}
 \hypersetup{pdftitle = Dissertation}
 \hypersetup{pdfsubject = Modeling and Control of Rigid Body Systems with Realization on Multicopters}
@@ -67,7 +65,8 @@
 %\pdfsuppresswarningpagegroup=1
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Seiten-Layout festlegen %%%%%%%%%%%%%%%%%%%%%%%%%%
+% page layout %%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{fancyhdr}
 \pagestyle{fancyplain}
 \renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}}
 \renewcommand{\chaptermark}[1]{\markboth{#1}{}}
@@ -78,13 +77,10 @@
 %\fancyhead[RE]{\hspace*{1cm}\leftmark}
 %\fancyhead[LE]{\thepage}
 \fancypagestyle{plain}{
- \fancyhead{} % Header enfernen
- \renewcommand{\headrulewidth}{0pt} % Trennlinie entfernen
+ \fancyhead{}
+ \renewcommand{\headrulewidth}{0pt} % remove head rule
 }
   
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Nummerierungen festlegen %%%%%%%%%%%%%%%%%%%%%%%%%
 \numberwithin{equation}{chapter}
 \numberwithin{figure}{chapter}
 \numberwithin{table}{chapter}
@@ -95,7 +91,6 @@
 % \renewcommand{\labelenumii}{\theenumii}
 % \renewcommand{\labelenumiii}{\theenumiii}
 
-% farben
 %\definecolor{jokerGray}{gray}{0.4}
 %\definecolor{jokerDarkGreen}{rgb}{0,0.65,0} % 0, 166, 0
 %\definecolor{jokerTeal}{rgb}{0,0.5,0.5}
@@ -111,15 +106,15 @@
 \newenvironment{Example}{\colorlet{shadecolor}{green!10}\begin{shaded}\vspace{-1.5ex}\begin{exmp}}{\vspace{-2ex}\end{exmp}\end{shaded}}
 %\newenvironment{Remark}{\colorlet{shadecolor}{gray!10}\begin{shaded}\textbf{Remark.}}{\end{shaded}}
 %\newenvironment{NamedRemark}[1]{\colorlet{shadecolor}{gray!10}\begin{shaded}\textbf{Remark {(#1)}.}}{\end{shaded}}
-% tag for subequations
-\makeatletter
-\newenvironment{varsubequations}[1]
-{\begin{subequations} \renewcommand{\theparentequation}{#1} \def\@currentlabel{#1} }
-{\end{subequations}\ignorespacesafterend}
-\makeatother
+% tag for sub equations
+%\makeatletter
+%\newenvironment{varsubequations}[1]
+%{\begin{subequations} \renewcommand{\theparentequation}{#1} \def\@currentlabel{#1} }
+%{\end{subequations}\ignorespacesafterend}
+%\makeatother
 %
 \input{macros/MathMacros}
-\newcommand{\fixme}[1]{\textcolor{orange}{#1}}
+\newcommand{\fixme}[1]{\textcolor{orange}{#1}} 
 
 \begin{document}
 \input{sections/Titelblatt}

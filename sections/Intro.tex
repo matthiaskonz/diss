@@ -9,7 +9,6 @@ It starts by approximating the system under consideration by a mechanical model.
 The mathematical part requires the choice of coordinates $\sysState$ to capture the state (positions and velocities) of the model.
 Combining this with principles of mechanics, we may derive a set of ordinary differential equations that capture its motion.
 This work mainly deals with this second part, i.e.\ the derivation of \textit{equations of motion}.
-%Since there is generally an infinite set of possible parameterizations for a rigid body model, the equations of motion are not unique.
 
 \begin{figure}[ht]
  \centering
@@ -21,7 +20,7 @@ This work mainly deals with this second part, i.e.\ the derivation of \textit{eq
  \label{fig:ModelingIllustration}
 \end{figure}
 
-A very common approach for deriving equations of motion of finite-demensional, holonomic mechanical systems is the so called \textit{Lagrange formalism}:
+A very common approach for deriving equations of motion of finite-dimensional, holonomic mechanical systems is the so called \textit{Lagrange formalism}:
 First, the system is parameterized by so called \textit{generalized coordinates} $\genCoord$.
 Then the kinetic energy $\kineticEnergy$, the potential energy $\potentialEnergy$ and virtual work $\delta \mathcal{W}$ of external forces are formulated in terms of these coordinates and their derivatives $\genCoordd = \sfrac{\d \genCoord}{\d t}$:
 \begin{align}
@@ -89,7 +88,7 @@ In particular, the four propeller quadcopter configuration has became quite popu
 \end{figure}
 
 The \textit{Chair of Systems Theory and Control Engineering} at Saarland University has developed realizations of a quadcopter and a tricopter with three tiltable propellers (see \autoref{fig:introLsrMulticopters}).
-A bicopter with two titlable and inclined propellers has been studied through simulations.
+A bicopter with two tiltable and inclined propellers has been studied through simulations.
 In particular the lsr-quadcopter has an excellent thrust to weight ratio and is consequently well suited for aggressive, aerobatic maneuvers, e.g. a looping as shown in \autoref{fig:introQuadLoopSnapshots}.
 
 \begin{figure}[ht]
@@ -239,4 +238,3 @@ Furthermore, these algorithms are extended to tackle underactuated systems.
 These algorithms are discussed through several examples.
 
 The fourth chapter presents the developed quadcopter and tricopter and their performance for real control of aerobatic maneuvers.
-

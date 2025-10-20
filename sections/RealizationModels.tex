@@ -1,6 +1,6 @@
 \section{Multicopter Models}\label{sec:RealizationModels}
 This section derives a mathematical model for a multicopter based on the theory and the example from \autoref{sec:RBSRigidBodySys}.
-Furthermore, it covers parametrer identification, model simplifications and validation with the LSR quad and tricopter.
+Furthermore, it covers parameter identification, model simplifications and validation with the LSR quad and tricopter.
 The resulting models are the basis for simulation and controller design. 
 
 \subsection{Actuator models}
@@ -8,7 +8,7 @@ The resulting models are the basis for simulation and controller design.
 \paragraph{Propeller motor.}
 A multicopter propeller is mounted on a small brushless DC motor (BLDC) which is controlled by dedicated driver electronics.
 This driver implements the electronic commutation and a digital current control with sampling frequency of $64\,\unit{kHz}$.
-It recieves the desired, torque generating current $\BLDCCurr$ from the maincontroller with the sampling frequency of $200\,\unit{Hz}$. 
+It receives the desired, torque generating current $\BLDCCurr$ from the main controller with the sampling frequency of $200\,\unit{Hz}$. 
 Consequently we assume that all electrical dynamics of the propeller drive are negligible on the timescale of the main controller and the motor torque on the propeller is proportional to its current as
 \begin{align}
  \BLDCTorque = \BLDCTorqueConstant \BLDCCurr.
@@ -18,11 +18,11 @@ Consequently we assume that all electrical dynamics of the propeller drive are n
 On the tricopter there are servo motors controlling the tilt $\aServo$ of the propellers.
 These are standard hobbyist servos which combine a small motor, a gearbox, a potentiometer and some digital controller which takes the desired servo angle $\aServoR$ as input.
 The integrated controller is probably a fast PID controller since it handles constant loads as well as fast transitions quite well.
-However, at the maincontroller sampling frequency, $200\,\unit{Hz}$, the fast internal dynamics are neglectable and for modeling we only assume a PD controller
+However, at the main controller sampling frequency, $200\,\unit{Hz}$, the fast internal dynamics are negligible and for modeling we only assume a PD controller
 \begin{align}
  \ServoTorque = \ServoKP (\aServoR - \aServo) - \ServoKD \aServod.
 \end{align}
-Comparison of the resulting model and actual measurments in \autoref{fig:ServoSimRes}, show that this assumtion is valid here.
+Comparison of the resulting model and actual measurements in \autoref{fig:ServoSimRes}, show that this assumption is valid here.
 
 \paragraph{Propeller aerodynamics.}
 Propellers are designed to generate a force in its spinning direction.
@@ -258,7 +258,7 @@ The same model up to different dissipative forces, requiring $\bodyCOM{}{}{}=\tu
 \subsection{Parameter identification}
 The preceding mathematical model for the multicopters contains various constant parameters of which only the total mass $\m$ and the arm radius $\ArmRadius$ can be measured directly.
 Some crucial parameters are identified in dedicated experimental setups which will be discussed in the following.
-The remaining parameters are estimated by the method of least squares based on the system model and actual in-flight measurments.
+The remaining parameters are estimated by the method of least squares based on the system model and actual in-flight measurements.
 
 %As mentioned before the overall rigid body system has a constant total mass $\m \in \RealNum$, combined center of mass $\bodyCOM{}{}{} \in \RealNum^3$ and combined moment of inertia $\bodyMOI{}{}{}=\bodyMOI{}{}{}^\top \in\RealNum^{3\times3}$.
 
@@ -437,7 +437,7 @@ From this quantitative analysis we can also motivate which parts of the model ca
 \paragraph*{Tricopter.}
 \autoref{fig:ValidationTricopter} shows the accelerations $\sysVeld$ during a benchmark fight test for the tricopter.
 The data corresponds to a $20\,\unit{s}$ sample at the beginning of the video available here\footnote{\url{https://youtu.be/oS5PHr6H0K4}}.
-The gray lines are obtained by applying a Savitzky–Golay derivative filter to the measured generalized velocities $\sysVel$.
+The gray lines are obtained by applying a Savitzky-Golay derivative filter to the measured generalized velocities $\sysVel$.
 The blue lines are the accelerations $\sysVeld$ computed from the model \eqref{eq:RealizationMulticopterKinetics} with the parameters from \autoref{tab:ParamTriQuad} and the measured configuration, velocity and inputs.
 The dashed red lines are the accelerations computed in the same way but from a simplified model that will be proposed now:
 
@@ -563,11 +563,11 @@ Up to a change in velocity coordinates this model is identical to the one propos
 As discussed above for the tricopter, the validation result for the quadcopter is shown in \autoref{fig:ValidationQuadcopter} which is the first $20\,\unit{s}$ from \url{https://youtu.be/x66sua3M6RQ}.
 The full model and simplified model can hardly be distinguished, so one may say that the simplifications are justified.
 The measured translational accelerations and the propeller acceleration fit the model quite well.
-For the angular accelerations there are slightly varying offsets between model and measurments.
+For the angular accelerations there are slightly varying offsets between model and measurements.
 These are probably aerodynamic disturbances rather than mechanical modeling errors.
 Nevertheless, this motivates the use of a disturbance observer which will be discussed in a following section.
 
 In contrast to the tricopter simplifications, the simplified quadcopter model did not drop the inertial coupling between the propellers and the yaw dynamics.
-The reson for this is twofold:
+The reason for this is twofold:
 The tricopter may generate yaw torque by tilting the propellers, whereas the quadcopter relies on the propeller drag and the inertial coupling, which are nominally much smaller.
-Secondly, the experiments with the quadcopter perorm much more dynamic maneuvers which result in higher propeller accelerations as can be seen examplary by comparing \autoref{fig:ValidationQuadcopter} to \autoref{fig:ValidationTricopter}.
+Secondly, the experiments with the quadcopter perform much more dynamic maneuvers which result in higher propeller accelerations as can be seen exemplary by comparing \autoref{fig:ValidationQuadcopter} to \autoref{fig:ValidationTricopter}.

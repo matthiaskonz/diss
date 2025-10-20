@@ -47,7 +47,7 @@ Its crucial to note that the constraint equations $\ddot{\particleGeoConstraint}
 Consequently, as stressed in \cite{Gauss:Principle}, the principle \eqref{eq:GaussPrinciple} is a (static) quadratic optimization problem with linear constraints.
 
 
-% A system of particles with positions $\particlePos[\PidxI], \PidxI=1,\ldots,\numParticles$ and masses $\particleMass{\PidxI}$, constrainted by 
+% A system of particles with positions $\particlePos[\PidxI], \PidxI=1,\ldots,\numParticles$ and masses $\particleMass{\PidxI}$, constrained by 
 % \begin{align}\label{eq:GaussPrinciple}
 %  \begin{array}{rl}
 %   \minOp[\particleCoorddd\in\RealNum^{3\numParticles}] & \GaussianConstraint = \tfrac{1}{2} \displaystyle\sumParticlesFull \particleMass{\PidxI} \norm{\particlePosdd{\PidxI} - \particlePosdd{\PidxI}^{\idxText{f}}}^2 \\
@@ -194,7 +194,7 @@ Plugging this into \eqref{eq:DAlembertPrinciple} we get
 Since this has to hold for any $\varCoord$, we have the identical result as above \eqref{eq:ConstraintReleaseEliminated}.
 
 \paragraph{Application to the Gauß principle.}
-Parameterizing the particle accelerations $\particlePosdd{\PidxI} = \particlePosdd{\PidxI}(\sysCoord, \sysVel, \sysVeld)$ in terms of the chosen coordinates \eqref{eq:particleAcc} in Gauß' principle \eqref{eq:GaussPrinciple} eliminates the constraints.
+Parameterizing the particle accelerations $\particlePosdd{\PidxI} = \particlePosdd{\PidxI}(\sysCoord, \sysVel, \sysVeld)$ in terms of the chosen coordinates \eqref{eq:particleAcc} in Gauss' principle \eqref{eq:GaussPrinciple} eliminates the constraints.
 So it essentially transforms it to an \textit{unconstrained} minimization problem.
 The Gaussian constraint now reads
 \begin{align}
@@ -304,7 +304,7 @@ For the special case of minimal configuration coordinates $\sysCoord=\genCoord$ 
 A nearly identical form as \eqref{eq:InertiaForceKinEnergy} can be found in \cite[p.\ 17]{Hamel:LagrangeEuler}.
 The difference is that, in contrast to this work, the directional derivative $\dirDiff{\LidxI}$ and the commutation coefficients $\BoltzSym{\LidxIII}{\LidxI}{\LidxII}$ are therein restricted to minimal configuration coordinates. 
 
-It is worth noting that the quatitiy $2\kineticEnergy$ which appeared in this context, was called \textit{vis viva} in older publications and translated to \textit{living force} or \textit{lebendige Kraft} \cite{Hamel:LagrangeEuler}.
+It is worth noting that the quantity $2\kineticEnergy$ which appeared in this context, was called \textit{vis viva} in older publications and translated to \textit{living force} or \textit{lebendige Kraft} \cite{Hamel:LagrangeEuler}.
 The contemporary term \textit{kinetic energy} seems to have established in the early 20th century.
 
 
@@ -488,8 +488,8 @@ Its time derivative is
 \end{align}
 Note that the equation of motion implies $\genForceInertia + \genForcePotential = \genForceEx - \genForceDiss$.
 
-A mechanical system is called skleronomic (otherwise rheonomic) if it does not contain explicit time dependency. 
-For this important case the change of total energy may be exressed by the external and dissipative forces alone
+A mechanical system is called scleronomic (otherwise rheonomic) if it does not contain explicit time dependency. 
+For this important case the change of total energy may be expressed by the external and dissipative forces alone
 \begin{align}
  \dot{\totalEnergy} = \sysVel^\top \big( \genForceEx - \genForceDiss \big) %+ \sumParticles \particleMass{\PidxI} \sProd{\pdiff[\particlePos{\PidxI}]{t}}{\particlePosdd{\PidxI}} + \pdiff[\potentialEnergy]{t}
  .
@@ -503,12 +503,12 @@ Define the \textit{Lagrangian} as $\Lagrangian = \kineticEnergy - \potentialEner
  \Hamiltonian &= \genMomentumCoeff{\LidxI} \sysVelCoeff{\LidxI} - \Lagrangian = \underbrace{\tfrac{1}{2} \sumParticles \particleMass{\PidxI} \norm{\particlePosd{\PidxI}}^2 + \potentialEnergy}_{\totalEnergy} - \sumParticles \particleMass{\PidxI} \sProd{\pdiff[\particlePos{\PidxI}]{t}}{\particlePosd{\PidxI}} 
  .
 \end{align}
-Extending the derivation from \autoref{sec:HamiltonsEquations} with the nonconservative forces $\genForceDiss$ and $\genForceEx$ we find the change of the Hamiltonian along the solutions of the equations of motion as
+Extending the derivation from \autoref{sec:HamiltonsEquations} with the non-conservative forces $\genForceDiss$ and $\genForceEx$ we find the change of the Hamiltonian along the solutions of the equations of motion as
 \begin{align}
  \dot{\Hamiltonian} &=  \sysVel^\top \big( \genForceEx - \genForceDiss \big) - \pdiff[\Lagrangian]{t}
  = \sysVel^\top \big( \genForceEx - \genForceDiss \big) - \sumParticles \particleMass{\PidxI} \sProd{\pdiff[\particlePosd{\PidxI}]{t}}{\particlePosd{\PidxI}} + \pdiff[\potentialEnergy]{t}
 \end{align}
-Note that for a skleronomic system, the Hamiltonian $\Hamiltonian$ coincides with the total energy $\totalEnergy$. 
+Note that for a scleronomic system, the Hamiltonian $\Hamiltonian$ coincides with the total energy $\totalEnergy$. 
 
 %For the important case that the particle positions have no no explicit time dependency, i.e.\ $\spdiff[\particlePos{\PidxI}]{t} = \tuple{0}$, and consequently $\spdiff[\kineticEnergy]{t} = 0$, the Hamiltonian $\Hamiltonian$ coincides with the total energy $\totalEnergy$.
 

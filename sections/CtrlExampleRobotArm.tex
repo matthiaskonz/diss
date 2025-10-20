@@ -4,12 +4,14 @@ For this example the model equations and the resulting closed loop equations bec
 However this displays some benefits of the proposed control approach: One does not have to look at e.g.\ the actual system inertia matrix but only at the much less cumbersome body inertia matrices to conclude e.g.\ stability of the closed loop. 
 
 \paragraph{Model.}
+
 \begin{figure}
  \centering
  \input{graphics/KukaRobotModel.pdf_tex}
  \caption{A model of a robot arm (background image from www.kuka.de)}
  \label{fig:RobotArmModel}
 \end{figure}
+
 A reasonable choice of coordinates of the system are the joint angles $\sysCoord = [\jointAngle[1], \ldots, \jointAngle[6]]^\top$ and trivial kinematics $\sysVel = \sysCoordd$.
 The body configurations can be computed from the following relative transformations
 \begin{align}

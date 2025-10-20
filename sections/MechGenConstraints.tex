@@ -43,9 +43,9 @@ All these constraints can be formulated as \textit{linear acceleration constrain
 %For the following we assume that $\accConstraintMat$ has full rank.
 %Roughly speaking, this assumes that the constraints are independent.
 
-\paragraph{Gauß' principle.}
+\paragraph{Gauss' principle.}
 Let the free system (without these additional constraints) be governed by the acceleration $\sysVeld = \sysInertiaMat^{-1}\sysForce$.
-Then Gauß' principle for the system with the additional constraint states
+Then Gauss' principle for the system with the additional constraint states
 \begin{align}\label{eq:GaussPrincipleAccConstraints}
  \begin{array}{rl}
   \minOp[\sysVeld\in\RealNum^{\dimConfigSpace}] & \GaussianConstraint = \tfrac{1}{2} \sysVeld^\top \sysInertiaMat \sysVeld - \sysVeld^\top \sysForce + \GaussianConstraint_0 \\
@@ -110,7 +110,7 @@ to eliminate the Lagrange multipliers and obtain the equations of motion as
 \fixme{
 The possibility of handling such a variety of constraints might put Gauß' principle in a superior position compared to other principles as pointed out in \cite[p.\,525]{Hamel:TheoretischeMechanik}.
 The Lagrange-d'Alembert principle handles linear kinematic constraints $\kinConstraintMat \sysCoordd = \tuple{0}$ by requiring $\kinConstraintMat \delta\sysCoord = \tuple{0}$. %motivated by the principle that reaction forces do no work.
-However, there are no real world examples of nonlinear nonhholonomic constraints \cite[p.\,499]{Hamel:TheoretischeMechanik}, \cite[ch.\,IV]{Neimark:NonholonomicSystems}, \cite[p.\,96]{Schwertassek:MultibodySystems} and none of acceleration constraints \cite[p.\,505 \& 525]{Hamel:TheoretischeMechanik}, so one should be careful with this context.
+However, there are no real world examples of nonlinear nonholonomic constraints \cite[p.\,499]{Hamel:TheoretischeMechanik}, \cite[ch.\,IV]{Neimark:NonholonomicSystems}, \cite[p.\,96]{Schwertassek:MultibodySystems} and none of acceleration constraints \cite[p.\,505 \& 525]{Hamel:TheoretischeMechanik}, so one should be careful with this context.
 Note for example that for nonlinear kinematic and acceleration constraints the reaction forces $\LagrangeMult$ enter the balance of energy.
 }
 %\cite[p.\,96]{Schwertassek:MultibodySystems} \textit{for all known mechanical nonholonomic constraints are linear in the velocity variables: Ref to} \cite{Hamel:TheoretischeMechanik}

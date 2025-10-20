@@ -3,7 +3,7 @@ A rigid body system is a system of $\numRigidBodies \geq 1$ rigid bodies which m
 As before, this section restricts to geometric constraints.
 
 There are many established textbooks on this subject e.g.\ \cite{Schwertassek:MultibodySystems}, \cite{Murray:Robotic}, \cite{Kane:Dynamics}.
-However, all these excellent texts restrict to \textit{minimal} generalized coordinates or are even more restrictive by requiring Denavit-Hartenberg parameters \cite{DenavitHartenbergParam}.
+However, all these excellent texts restrict to \textit{minimal} generalized coordinates or are even more restrictive by requiring Denavit–Hartenberg parameters \cite{DenavitHartenbergParam}.
 While this is just fine when dealing only with one-dimensional joints, it may be too restrictive when dealing with multidimensional joints as e.g.\ mobile robots.
 Furthermore, the texts mentioned above mostly focus on inertia but not dissipation and stiffness.
 
@@ -358,7 +358,7 @@ There is some controversy (starting in \cite{Desloge:KaneAppell}) about the nami
 See \cite{Lesser:GeometricInterpretationOfKanesEquations} or \cite[p.\ 714]{Papastavridis:AnalyticalMechanics} for an overview.
 
 In contrast to the sources above, the derivation here does allow for redundant configuration coordinates $\sysCoord$ and general velocity coordinates $\sysVel$.
-This im mostly due to the more general formulation \eqref{eq:DefBodyJacobian} of the body jacobian $\bodyJac{0}{\BidxII}$, wheras the formulation of the inertia matrix $\sysInertiaMat$ and gyroscopic terms $\gyroForce$ should look familiar.
+This im mostly due to the more general formulation \eqref{eq:DefBodyJacobian} of the body jacobian $\bodyJac{0}{\BidxII}$, whereas the formulation of the inertia matrix $\sysInertiaMat$ and gyroscopic terms $\gyroForce$ should look familiar.
 
 \subsection{Gravitation}
 The potential energy of gravitation of a rigid body system is the sum of the potentials of the individual bodies \eqref{eq:RBGravityEnergyHomo}.

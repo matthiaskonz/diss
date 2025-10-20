@@ -1,12 +1,12 @@
 \section{Control of the generalized force}\label{sec:RealizationForceVectorControl}
-The rigid body controller computes a \textit{desired} generalised force $\genForceD$ for the corresponding multicopter.
+The rigid body controller computes a \textit{desired} generalized force $\genForceD$ for the corresponding multicopter.
 This force cannot be realized instantaneously as its subject to its own actuator dynamics, see \autoref{sec:RealizationModels}.
 This section describes a control approach for the generalized force $\genForce$
 
 Since the force $\genForce$ itself is subject , it is not possible to realize it instantaneously.
-However, we can pursue to realise it reasonably fast, which is the subject of this section.
+However, we can pursue to realize it reasonably fast, which is the subject of this section.
 At the same time we need an accurate estimate for the current generalized force for the rigid body observer.
-The coarse structure was alredy given in \autoref{fig:StructureMulticopterAgent}.
+The coarse structure was already given in \autoref{fig:StructureMulticopterAgent}.
 
 \subsection{Servo simulation}
 The integrated servo controller uses an internal angle measurement but this is not available for the main controller.
@@ -326,7 +326,7 @@ Furthermore one can see that the influence of the off-diagonal entries is restri
 
 \paragraph{Comparison to static approach.}
 The proposed filter \eqref{eq:QuadActuatorFilterDesign} might seem complicated.
-In particular one might argue that the dynamic part $\genForceQuadDyn$ in the model \eqref{eq:QuadForceVelctorModel} is neglectable, as is done in most publications on this subject.
+In particular one might argue that the dynamic part $\genForceQuadDyn$ in the model \eqref{eq:QuadForceVelctorModel} is negligible, as is done in most publications on this subject.
 
 To answer this question we can replace \eqref{eq:QuadActuatorFilterDesign} by
 \begin{align}\label{eq:QuadActuatorFilterDesignTraditional}
@@ -345,7 +345,7 @@ However, since the real force on the quadcopter does contain the dynamic part as
 The Bode magnitude plot of the transfer functions is displayed in \autoref{fig:BodeQuadActorDynTraditional} on the left side.
 Even for the hover case (thick lines) the transfer function $G_{44}$ for $\tauz$ has an unacceptable overshot.
 
-In oder to improve the behavior we can do the same as before: adjust the parameters in $G_{44}$, i.e.\ $\kPHead$ and $\kDHead$, such that there is a pole-zero cancelation at the hover expansion point.
+In oder to improve the behavior we can do the same as before: adjust the parameters in $G_{44}$, i.e.\ $\kPHead$ and $\kDHead$, such that there is a pole-zero cancellation at the hover expansion point.
 The resulting Bode magnitude plot is shown on the right side of \autoref{fig:BodeQuadActorDynTraditional}.
 It is already a significant improvement compared to the right side but is much worse as the previous result shown in \autoref{fig:BodeQuadActorDyn}.
 Moreover, the magnitude of the off-diagonal transfer functions at low frequencies is much higher for both cases in \autoref{fig:BodeQuadActorDynTraditional} than in \autoref{fig:BodeQuadActorDyn}.

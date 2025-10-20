@@ -9,7 +9,7 @@ The planar vertical take off landing aircraft (PVTOL) as depicted in \autoref{fi
 \end{figure}
 
 \paragraph{Model.}
-The model of the PVTOL is a planar rigid body alredy discussed in \autoref{sec:CtrlPlanarRigidBody} supplemented with gravity and the specific actuation $F_\text{r}$, $F_\text{l}$ depicted in \autoref{fig:PVTOLModel}.
+The model of the PVTOL is a planar rigid body already discussed in \autoref{sec:CtrlPlanarRigidBody} supplemented with gravity and the specific actuation $F_\text{r}$, $F_\text{l}$ depicted in \autoref{fig:PVTOLModel}.
 Here, we chose the body fixed frame to be positioned at the center of mass, i.e.\ $\sx = \sy = 0$.
 The kinetic equation takes the form
 \begin{align}
@@ -39,7 +39,7 @@ The kinetic equation takes the form
 
 \paragraph{Reference trajectory.}
 For the following we chose $\sysInputMatLComp = [1, 0, -\tfrac{\sin\beta}{l \cos\beta}]$ as a left complement to $\sysInputMat$.
-With this, the matiching condition for the reference from \eqref{eq:MatchingForceZeroError} reads
+With this, the matching condition for the reference from \eqref{eq:MatchingForceZeroError} reads
 \begin{align}
  \lambda^{\text{ZeroError}} = \m \big(\vRxd - \underbrace{\tfrac{\Jz \sin\beta}{\m \ArmRadius \cos\beta}}_{\eps} \wRzd - \wRz \vRy + \gravityAccConst \sin\tiltAngleR \big) = 0
 \end{align}
@@ -152,9 +152,9 @@ Note that for a constant reference motion $\vRd = 0$ (which implies $\tiltAngleR
 The closed loop template is a planar rigid body with attached springs and dampers as motivated in \autoref{sec:RB} but without gravity.
 Taking into account the parameter constraints \eqref{eq:PVTOLMatchingSolution}, the controlled PVTOL corresponds to the mechanical system illustrated in \autoref{fig:PVTOLPendulum}.
 The condition $\hcy > \scy$ implies that the center of mass must be below the center of stiffness.
-As dicussed in \autoref{sec:DecouplingRigidBody}, $\hcy \neq \scy$ results in a coupling between translational and rotational motion.
-From a stability/attractiveness point of view this is necessary: As there is no inherent rotational dissipation $\sigcz = 0$, the correponding energy is dissipated through its coupling to the translational motion.
-The coupling also reflects the characteristic behaviour of the PVTOL that tilting is required for sideways motion.
+As discussed in \autoref{sec:DecouplingRigidBody}, $\hcy \neq \scy$ results in a coupling between translational and rotational motion.
+From a stability/attractiveness point of view this is necessary: As there is no inherent rotational dissipation $\sigcz = 0$, the corresponding energy is dissipated through its coupling to the translational motion.
+The coupling also reflects the characteristic behavior of the PVTOL that tilting is required for sideways motion.
 
 
 
@@ -193,11 +193,11 @@ From a desired polynomial of forth degree $\EigenVal^4 + p_3 \EigenVal^3 + p_2 \
  \kapcz &= \frac{\mc \gravityAccConst^2 (p_1 p_2 p_3 - p_1^2 - p_0 p_3)}{p_1 (p_1 p_2 - p_0 p_3)}, 
 \end{align}
 and leaves an arbitrary choice for $\mc > 0$.
-Note that the Hurwitz criterion ($p_0, p_1, p_2, p_3, p_1 p_2 - p_0 p_3, p_1 p_2 p_3 - p_1^2 - p_0 p_3^2 > 0$) implies that $\kc, \dc, \Jcz, \kapcz > 0$ which ultimatly implies positive definiteness of the total energy and non-negativity of its derivative.
+Note that the Hurwitz criterion ($p_0, p_1, p_2, p_3, p_1 p_2 - p_0 p_3, p_1 p_2 p_3 - p_1^2 - p_0 p_3^2 > 0$) implies that $\kc, \dc, \Jcz, \kapcz > 0$ which ultimately implies positive definiteness of the total energy and non-negativity of its derivative.
 
 \paragraph{Simulation.}
-A very similar control design approch for the PVTOL was presented in \cite{Konz:AT}.
-Therein on finds two examplary simulation results for stabilization and tracking or a looping trajectory.
+A very similar control design approach for the PVTOL was presented in \cite{Konz:AT}.
+Therein on finds two exemplary simulation results for stabilization and tracking or a looping trajectory.
 
 The PVTOL is a simpler version of the 3d bicopter which will be discussed in the following and the simulation results there also apply to the PVTOL.
 

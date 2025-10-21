@@ -24,32 +24,32 @@ Each of these problems essentially asks for an $\R\in\SpecialOrthogonalGroup(3)$
 
 Solutions to Wahba's problem are given in \cite{Davenport:QMethod} using attitude quaternions and in \cite{Kabsch:SSVD} using the singular value decomposition.
 A proof of a unique minimum in \cite{Bullo:TrackingAutomatica} relies on $\mat{P}$ having distinct singular values.
-
-In the following we extend theses results in the sense that, we do not impose assumptions on $\mat{P}$ and are also interested other extrema of $\potentialEnergy$.
+Within this work we will encounter similar problems.
+In the following we extend theses results in that, we do not impose assumptions on $\mat{P}$ and are also interested other extrema of $\potentialEnergy$.
 
 \paragraph{Problem definition.}
-Similar problems to the ones above will also appear in this work.
-So we are interested in the extrema, and their nature, of the of the function
+Given a matrix $\mat{P} \in \RealNum^{3\times3}$, what are the extrema and their nature of the function
 \begin{align}
- \potentialEnergy: \SpecialOrthogonalGroup(3) \rightarrow \RealNum \, : \, \R \mapsto -\tr(\mat{P} \R)
+ \potentialEnergy: \SpecialOrthogonalGroup(3) \rightarrow \RealNum \, : \, \R \mapsto -\tr(\mat{P} \R).
 \end{align}
-with the parameter $\mat{P} \in \RealNum^{3\times3}$.
+
 
 \paragraph{Coordinate transformation.}
-Consider a singular value decomposition $\mat{P} = \mat{X} \mat{\varSigma} \mat{Y}^\top$ with $\mat{X}, \mat{Y} \in \OrthogonalGroup(3)$ and $\mat{\varSigma} = \diag(\sigma_1, \sigma_2, \sigma_3)$, $\sigma_1 \geq \sigma_2 \geq \sigma_3 \geq 0$.
-\cite{Kabsch:SSVD}: Define 
-\begin{subequations}
+Let $\mat{P} = \mat{X} \mat{\varSigma} \mat{Y}^\top$ be a singular value decomposition with $\mat{X}, \mat{Y} \in \OrthogonalGroup(3)$ and $\mat{\varSigma} = \diag(\sigma_1, \sigma_2, \sigma_3)$, $\sigma_1 \geq \sigma_2 \geq \sigma_3 \geq 0$.
+As proposed in \cite{Kabsch:SSVD}, define 
+\begin{subequations}\label{eq:DefSSVD}
 \begin{align}
  \bar{\mat{X}} &= \mat{X} \diag(1, 1, \det\mat{X}) \in \SpecialOrthogonalGroup(3),
 \\
  \bar{\mat{Y}} &= \mat{Y} \diag(1, 1, \det\mat{Y}) \in \SpecialOrthogonalGroup(3),
 \\
- \bar{\mat{\varSigma}} &= \diag(\sigma_1, \sigma_2, \bar{\sigma}_3), \ \bar{\sigma}_3 = \det\mat{X}\det\mat{Y} \sigma_3
+ \bar{\mat{\varSigma}} &= \diag(\sigma_1, \sigma_2, \bar{\sigma}_3), \ \bar{\sigma}_3 = \det\mat{X}\det\mat{Y} \sigma_3 .
 \end{align} 
 \end{subequations}
-which yields a decomposition $\mat{P} = \bar{\mat{X}} \bar{\mat{\varSigma}} \bar{\mat{Y}}^\top$ with proper rotations.
+This means flipping the direction of the eigenvectors corresponding to the smallest singular value $\sigma_3$, if the corresponding matrix $\mat{X}, \mat{Y}$ contains a reflection.
+This yields a decomposition $\mat{P} = \bar{\mat{X}} \bar{\mat{\varSigma}} \bar{\mat{Y}}^\top$ with proper rotations.
 Using the cyclic permutation property of the trace we get
-\begin{align}
+\begin{align}\label{eq:AttitudePotentialTrafo}
  \potentialEnergy(\R) = -\tr( \bar{\mat{X}} \bar{\mat{\varSigma}} \bar{\mat{Y}}^\top \R) = -\tr( \bar{\mat{\varSigma}} \underbrace{\bar{\mat{Y}}^\top \R \bar{\mat{X}}}_{\bar{\R}}) =: \bar{\potentialEnergy}(\bar{\R})
 \end{align}
 Since the SVD is not unique in general, the transformed function $\bar{\potentialEnergy}$ is neither.
@@ -57,22 +57,26 @@ However, since the coordinate transformation $\R = \bar{\mat{Y}} \bar{\R} \bar{\
 %The SVD is also the most robust approach for the numerical solution of the problem \cite{Markley:Wahba}.
 
 \paragraph{Critical points.}
-Using the operators defined above, we may formulate the differential and Hessian of the transformed function as
+Using the operators defined above, we may formulate the differential of the transformed function as
 \begin{align}
- \differential \bar{\potentialEnergy}(\bar{\R}) &= \veeTwoOp(\bar{\mat{\varSigma}} \bar{\R}),
-\\
- \differential^2 \bar{\potentialEnergy}(\bar{\R}) &= \veeMatOp(\bar{\mat{\varSigma}} \bar{\R})^\top.
+ \differential \bar{\potentialEnergy}(\bar{\R}) &= \veeTwoOp(\bar{\mat{\varSigma}} \bar{\R}).
 \end{align}
 For a critical point $\bar{\R}_0 : \differential \bar{\potentialEnergy}(\bar{\R}_0)=\tuple{0}$ we need the matrix $\bar{\mat{\varSigma}} \bar{\R}_0$ to be symmetric.
+As $\bar{\mat{\varSigma}}$ is diagonal, this implies that $\bar{\R}_0$ must be symmetric.
+The Hessian at a critical point is
+\begin{align}
+ \differential^2 \bar{\potentialEnergy}(\bar{\R}_0) &= \veeMatOp(\bar{\mat{\varSigma}} \bar{\R}_0).
+\end{align}
+
 For the following it will be useful to substitute the entries/eigenvalues of $\veeMatOp(\bar{\mat{\varSigma}}) = \diag(\lambda_1, \lambda_2, \lambda_3) = \mat{\Lambda}$ as
 \begin{align}
- &\left.\begin{matrix}[1.2]
+ \left.\begin{matrix}[1.2]
  \lambda_1 = \sigma_2 + \bar{\sigma}_3, \\
  \lambda_2 = \bar{\sigma}_3 + \sigma_1, \\
  \lambda_3 = \sigma_1 + \sigma_2\hphantom{,}  
- \end{matrix}\right\}&
-&\Leftrightarrow&
- &\left\{\begin{matrix}[1.2]
+ \end{matrix}\right\}
+\qquad\Leftrightarrow \qquad
+ \left\{\begin{matrix}[1.2]
  \sigma_1 = \tfrac{1}{2} (\lambda_2 + \lambda_3 - \lambda_1), \\
  \sigma_2 = \tfrac{1}{2} (\lambda_3 + \lambda_1 - \lambda_2), \\
  \bar{\sigma}_3 = \tfrac{1}{2} (\lambda_1 + \lambda_2 - \lambda_3)\hphantom{,}  
@@ -192,43 +196,44 @@ Furthermore we have a saddle point at $\bar{\R}_{2}$ and a maximum at $\bar{\R}_
 which includes $\bar{\R}_{0}$, $\bar{\R}_{1}$ and $\bar{\R}_{2}$ and corresponds to an arbitrary rotation about an axis $[\quatx, \quaty, 0]^\top$.
 Furthermore we have a maximum at $\bar{\R}_{3}$.
 
-\item All zero Eigenvalues: $\lambda_3 = \lambda_2 = \lambda_1 = 0$: for this we have $\bar{\mat{\varSigma}} = \mat{P} = \mat{0}$ and the function is $\potentialEnergy = 0$.
+\item All zero eigenvalues: $\lambda_3 = \lambda_2 = \lambda_1 = 0$: for this we have $\bar{\mat{\varSigma}} = \mat{P} = \mat{0}$ and the function is $\potentialEnergy = 0$.
 
 \end{itemize}
 \end{subequations}
 We may conclude that the function $\bar{\potentialEnergy}$ has a minimum at $\bar{\R}_0 = \idMat[3]$ and a maximum at $\bar{\R}_3 = \diag(-1,-1,1)$, though they may not be strict.
-The minimum is strict if and only if $\lambda_1 > 0$. 
-The maximum is strict if and only if $\lambda_3>\lambda_2$.
+The minimum is strict if, and only if, $\lambda_1 > 0$. 
+The maximum is strict if, and only if, $\lambda_3 > \lambda_2$.
 
-It should also be noted that the results of this paragraph would be much more ``symmetric'' if we would not have required the descending order of the singular values $\sigma_i$.
+It should also be noted that the results of this paragraph would be more ``symmetric'' if we would not have required the descending order of the singular values $\sigma_i$.
 This did however reduce the number of cases to distinguish.
 
 \paragraph{Original coordinates.}
+Reversing the coordinate transformation from \eqref{eq:AttitudePotentialTrafo} we may conclude:
 The original function $\potentialEnergy$ has a minimum at $\R_0 = \bar{\mat{Y}} \bar{\mat{X}}^\top$.
-% We may decompose
-% \begin{align}
-%  \mat{P}
-%  = \bar{\mat{X}} \bar{\mat{\varSigma}} \bar{\mat{Y}}^\top 
-%  = \bar{\mat{X}} \wedMatOp(\mat{\Lambda}) \underbrace{\bar{\mat{X}}^\top \bar{\mat{X}}}_{\idMat[3]} \bar{\mat{Y}}^\top
-%  = \wedMatOp( \underbrace{\bar{\mat{X}} \mat{\Lambda} \bar{\mat{X}}^\top }_{\mat{K}}) \R_0^\top
-% \end{align}
-% with $\mat{K} \in \SymMatSP(3)$.
-The minimum $\R_0$ is strict, if, and only if, $\lambda_i > 0, i=1,2,3$ or equivalently if $\mat{K} \in \SymMatSP(3)$ is positive definite:
+The Hessian at the minimum may be written as
 \begin{align}
- \mat{K} = \differential^2 \potentialEnergy (\R_0) 
+ \differential^2 \potentialEnergy (\R_0) 
  = \veeMatOp(\mat{P}\R_0) 
  = \veeMatOp(\bar{\mat{X}} \bar{\mat{\varSigma}} \bar{\mat{Y}}^\top \bar{\mat{Y}} \bar{\mat{X}}^\top)
- = \bar{\mat{X}} \veeMatOp(\bar{\mat{\varSigma}}) \bar{\mat{X}}^\top
- = \bar{\mat{X}} \mat{\Lambda} \bar{\mat{X}}^\top.
+ = \bar{\mat{X}} \veeMatOp(\bar{\mat{\varSigma}}) \bar{\mat{X}}^\top\!
+ = \bar{\mat{X}} \mat{\Lambda} \bar{\mat{X}}^\top\!
+ =: \mat{K}
 \end{align}
-%Note that the minimum $\R_0$ and the Hessian $\mat{K}$ coincide with the special orthogonal decomposition $\mat{P}^\top = \R_0 \wedMatOp(\mat{K})$ introduced above.
+with $\mat{K} \in \SymMatSP(3)$.
+The minimum $\R_0$ is strict if, and only if, $\lambda_1 > 0$ which implies $\mat{K} > 0$.
 
 \paragraph{Special polar decomposition.}
-From the results of this section we may also conclude the following:
-For any matrix $\mat{M} \in\RealNum^{3\times3}$ there is a matrix $\R \in \SpecialOrthogonalGroup(3)$ and a unique matrix $\mat{K} \in \SymMatSP(3)$, such that $\mat{M} = \R \wedMatOp(\mat{K})$.
+Using the \textit{special singular value decomposition} from \eqref{eq:DefSSVD} we may write
+\begin{align}
+ \mat{M} = \bar{\mat{X}} \bar{\mat{\varSigma}} \bar{\mat{Y}}^\top
+ = \bar{\mat{X}} \bar{\mat{Y}}^\top \bar{\mat{Y}} \bar{\mat{\varSigma}} \bar{\mat{Y}}^\top
+ = \underbrace{\bar{\mat{X}} \bar{\mat{Y}}^\top}_{\R} \wedMatOp\big(\underbrace{\bar{\mat{Y}} \veeMatOp(\bar{\mat{\varSigma}}) \bar{\mat{Y}}^\top}_{\mat{K}}\big).
+\end{align}
+From this we may conclude:
+For any matrix $\mat{M} \in\RealNum^{3\times3}$ there is a matrix $\R \in \SpecialOrthogonalGroup(3)$ and a unique, positive semidefinite matrix $\mat{K} \in \SymMatSP(3)$, such that $\mat{M} = \R \wedMatOp(\mat{K})$.
 The matrix $\R$ is unique if, and only if, the matrix $\mat{K}$ is positive definite.
 Within this work, this will be called the \textit{special polar decomposition}.
-
+Note that the matrix $\wedMatOp(\mat{K})$ is, in general, indefinite.
 
 
 % \paragraph{Prototype for a positive definite function.}

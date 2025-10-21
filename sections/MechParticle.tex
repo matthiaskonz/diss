@@ -1,12 +1,11 @@
 \section{A single free particle}
-\cite[§1]{Landau:Mechanics}: \textit{One of the fundamental concepts of mechanics is that of a \textit{particle}, also called material point.}
-This abstracts a body whose dimensions may be neglected and all its mass $\particleMass{}$ is located at a point with the Cartesian coordinates $\particlePos{}(t)\in\RealNum^3$ at time $t$.
+\cite[§1]{Landau:Mechanics}: \textit{One of the fundamental concepts of mechanics is that of a \textit{particle}. By this we mean a body whose dimensions may be neglected in describing its motion.}
 Its motion obeys Newton's second law \cite[p.\ 13, lex II]{Newton:Principia}, english translation \cite[p.\ 83]{Newton:PrincipiaEnglish}: \textit{The alternation of motion is ever proportional to the motive force impressed; and is made in the direction of the right line in which that force is impressed}. 
-The contemporary version reads (e.g.\ \cite[eq.\ 6.1.1]{Lurie:AnalyticalMechanics} or \cite[eq.\ 1.3]{Goldstein:ClassicalMechanics})
+The contemporary version reads (e.g.\ \cite[eq.\ 1.3]{Goldstein:ClassicalMechanics} or \cite[eq.\ 6.1.1]{Lurie:AnalyticalMechanics})
 \begin{align}\label{eq:NewtonsSecondLaw}
  \particleMass{} \particlePosdd{} &= \particleForceImpressed{}.
 \end{align}
-where $\particlePosdd{} \equiv \sfrac{\d^2 \particlePos{}}{\d t^2}$ is Newton's notation of differentiation and the applied force $\particleForceImpressed{}$ collects all other (non inertial) influences on the particle.
+where $\particleMass{}\in \RealNum^+$ is the particles mass, $\particlePos{}(t)\in\RealNum^3$ its Cartesian position, $\particlePosdd{} \equiv \sfrac{\d^2 \particlePos{}}{\d t^2}$ is Newton's notation of differentiation and the applied force $\particleForceImpressed{}(t)\in\RealNum^3$ collects all other (non inertial) influences on the particle.
 In this work we will investigate three sources of applied forces: gravity, linear springs and viscous friction.
 
 \paragraph{Gravity.}
@@ -22,17 +21,19 @@ Commonly the reference frame is chosen such that the $\ez$ axis is opposing grav
 Let the particle be connected with a spring to a point $\particlePos{0}$.
 The simplest model of a spring is that of Hooke's law \cite{Hooke:OfSprings}: The force $\particleForceStiff{}$ on the particle is opposite and proportional by a factor $\particleStiffness{} \in \RealNum^+$ to the spring displacement $\particlePos{} - \particlePos{0}$, i.e.\
 \begin{align}\label{eq:ParticleStiffness}
- \particleForceStiff{} &= -\particleStiffness{} (\particlePos{} - \particlePos{0}).
+ \particleForceStiff{} &= -\particleStiffness{} (\particlePos{} - \particlePos{0})
+ .
 \end{align}
 
 \paragraph{Viscous friction.}
 \cite[§81]{Rayleigh:TheoryOfSound}: \textit{There is another group of forces whose existence is often advantageous to recognize specially, namely those arising from friction or viscosity. [..] we suppose that each particle is retarded by forces proportional to its component velocities.}
 We may think of the particle to be immersed in a viscous fluid which, at the particle position, has the velocity $\tuple{\mathfrak{v}}_0$.
-The force on the particle is
+With the damping parameter $\particleDamping{} \in \RealNum^+$ the force on the particle is
 \begin{align}\label{eq:ParticleDamping}
  \particleForceDiss{} = -\particleDamping{} (\particlePosd{} - \tuple{\mathfrak{v}}_0)
+ .
 \end{align}
-with the damping parameter $\particleDamping{} \in \RealNum^+$.
+
 
 \paragraph{Equation of motion.}
 A single free particle that is subject to all the aforementioned forces and a general, not further specified external force $\particleForceEx{}$, i.e.\ $\particleForceImpressed{} = \particleForceGravity{} + \particleForceStiff{} + \particleForceDiss{} + \particleForceEx{}$, has the equation of motion 

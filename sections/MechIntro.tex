@@ -1,30 +1,7 @@
 \chapter{Analytical mechanics of particle systems}
-\paragraph{Goal.}
-Established approaches of analytical mechanics commonly rely on the parameterization of the system in terms of \textit{minimal} generalized coordinates $\genCoord$ and their derivatives $\genCoordd$.
-In this section we like to generalize this to handle redundant configuration coordinates $\sysCoord(t) \in \configSpace$ and nonholonomic velocity coordinates $\sysVel(t)\in\RealNum^\dimConfigSpace$ as introduced in the previous section.
-%In contrast to this we will allow \textit{redundant} generalized coordinates $\sysCoord$, i.e.\ coordinates that may not be completely free, but may themselves be constrained by equations of the form $\geoConstraint(\sysCoord) = \tuple{0}$.
-%Furthermore we will consider \textit{velocity coordinates} $\sysVel$ that parameterize the change $\sysCoordd$ of the configuration coordinates.
-%In this chapter we like to review some basic concepts of analytical mechanics for systems of constrained particles with this more general parameterization.
-The resulting formulations might become more cumbersome, but with some examples we like to show that it is worth it.
 
-% \subsection{Additional constraints}
-% 
-% \subsection{Balance of Energy}
-% 
-% \subsection{Formulations}
-% Levi-Civita
-% \begin{align}
-%  \genForceInertiaCoeff{\LidxI} &= \sysInertiaMatCoeff{\LidxI\LidxII}(\sysCoord) \sysVelCoeffd{\LidxII} + \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII}(\sysCoord) \sysVelCoeff{\LidxIII} \sysVelCoeff{\LidxII},&
-%  \sysInertiaMatCoeff{\LidxI\LidxII} &= \sumParticles \particleMass{\PidxI} \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\dirDiff{\LidxII} \particlePos{\PidxI}}
-% \end{align}
-% Lagrange formulation
-% \begin{align}
-%  \genForceInertiaCoeff{\LidxI} &= \diff{t} \pdiff[\kineticEnergy]{\sysVelCoeff{\LidxI}} + \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \sysVelCoeff{\LidxII} \pdiff[\kineticEnergy]{\sysVelCoeff{\LidxIII}} - \dirDiff{\LidxI} \kineticEnergy,&
-%  \kineticEnergy &= \tfrac{1}{2} \sumParticles \particleMass{\PidxI} \norm{\particlePosd{\PidxI}}^2 = \tfrac{1}{2} \sysInertiaMatCoeff{\LidxI\LidxII} \sysVelCoeff{\LidxII} \sysVelCoeff{\LidxI}
-% \end{align}
-% Gibbs-Appell formulation
-% \begin{align}
-%  \genForceInertiaCoeff{\LidxI} &= \pdiff[\accEnergy]{\sysVelCoeffd{\LidxI}},&
-%  \accEnergy &= \tfrac{1}{2} \sumParticles \particleMass{\PidxI} \norm{\particlePosdd{\PidxI}}^2 = \tfrac{1}{2} \sysInertiaMatCoeff{\LidxI\LidxII} \sysVelCoeffd{\LidxII} \sysVelCoeffd{\LidxI} + \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII} \sysVelCoeff{\LidxIII} \sysVelCoeff{\LidxII} \sysVelCoeffd{\LidxI} + \accEnergy_0
-% \end{align}
+Established approaches of analytical mechanics commonly rely on the parameterization of the system in terms of \textit{minimal} generalized coordinates $\genCoord$ and their derivatives $\genCoordd$.
+In this section we like to review these approaches for redundant configuration coordinates $\sysCoord(t) \in \configSpace$ and nonholonomic velocity coordinates $\sysVel(t)\in\RealNum^\dimConfigSpace$ as introduced in the previous section.
+The formulations might become more cumbersome, but with some examples we like to show that the resulting equations of motions might actually be less cumbersome and reflect the geometry of the system better.
+
 

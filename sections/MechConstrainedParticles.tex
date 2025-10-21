@@ -1,7 +1,7 @@
 \section{Systems of constrained particles}\label{sec:MechConstrainedParticles}
 
 \paragraph{System under consideration.} For this section we consider a system of $\numParticles$ particles under geometric constraints:
-The \textit{position} of a particle with respect to a given inertial frame at a given time $t$ is $\particlePos{\PidxI}(t) \in \RealNum^3, \PidxI = 1,\ldots,\numParticles$ and the collection of all particle positions is $\particleCoord = [\particlePos{1}^\top,\ldots,\particlePos{\numParticles}^\top]^\top \in \RealNum^{3\numParticles}$.
+The \textit{position} of a particle with respect to a given reference frame at a given time $t$ is $\particlePos{\PidxI}(t) \in \RealNum^3, \PidxI = 1,\ldots,\numParticles$ and the collection of all particle positions is $\particleCoord = [\particlePos{1}^\top,\ldots,\particlePos{\numParticles}^\top]^\top \in \RealNum^{3\numParticles}$.
 \textit{Geometric constraints} on the particles are captured in $\numParticleConstraints \geq 0$ smooth functions of the form $\particleGeoConstraint(\particleCoord) = [\particleGeoConstraintCoeff{1}(\particleCoord), \ldots, \particleGeoConstraintCoeff{\numParticleConstraints}(\particleCoord)]^\top = \tuple{0}$.
 The set of all mutually admissible particle positions 
 \begin{align}
@@ -12,27 +12,32 @@ We require $\pdiff[\particleGeoConstraint]{\particleCoord}(\particleCoord)$ to h
 %The dimension of the configuration space is $\dim\particleConfigSpace = 3\numParticles - \rank\pdiff[\particleGeoConstraint]{\particleCoord} = \dimConfigSpace$.
 
 \subsection{First principles}
+There are several first principles for systems of constrained particles (see \cite{Lanczos:Variational} for a great overview).
+Of course they are mathematically equivalent, i.e.\ lead to the same motion, but each may offer a useful point of view for different problems.
+The following states some of the more popular principles in terms of the notation of this work:
+
 \paragraph{Principle of constraint release.} 
-The principle of constraint release (see e.g.\ \cite[sec.\ 32]{Hamel:TheoretischeMechanik} or \cite[sec.\ 6.1]{Lurie:AnalyticalMechanics}) states that the motion of system of geometrically constrained particles is governed by
+The principle of constraint release (see e.g.\ \cite[sec.\ III.5]{Lanczos:Variational}, \cite[sec.\ 32]{Hamel:TheoretischeMechanik} or \cite[sec.\ 6.1]{Lurie:AnalyticalMechanics}) adds additional terms to Newton's equation \eqref{eq:NewtonsSecondLaw} and states
 \begin{align}\label{eq:ConstraintRelease}
- \particleGeoConstraint(\particleCoord) = \tuple{0}, 
+ \particleGeoConstraint(\particleCoord) = \tuple{0},
 \quad
  \particleMass{\PidxI} \particlePosdd{\PidxI} = \particleForceImpressed{\PidxI} + \LagrangeMultCoeff{\CidxI} \pdiff[\particleGeoConstraintCoeff{\CidxI}]{\particlePos{\PidxI}},
 \quad \PidxI = 1,\ldots,\numParticles.
 \end{align}
+The additional quantities $\LagrangeMultCoeff{\CidxI}$ are commonly called \textit{Lagrange multipliers} and may be interpreted as reaction forces tasked with enforcing the constraint.
 
 \paragraph{Lagrange-d'Alembert principle.} 
-For a system of geometrically constrained particles states (e.g.\ \cite[sec.\,1.4]{Goldstein:ClassicalMechanics} or \cite[sec.\,6.3]{Lurie:AnalyticalMechanics}):
+This principle states (e.g.\ \cite[sec.\ IV.2]{Lanczos:Variational}, \cite[sec.\,1.4]{Goldstein:ClassicalMechanics} or \cite[sec.\,6.3]{Lurie:AnalyticalMechanics}):
 \begin{align}\label{eq:DAlembertPrinciple}
  \sumParticlesFull \sProd{\delta \particlePos{\PidxI}}{\particleForceImpressed{\PidxI} - \particleMass{\PidxI}\particlePosdd{\PidxI}} = 0 
 \qquad \forall \quad \pdiff[\particleGeoConstraint]{\particleCoord} \delta\particleCoord = \tuple{0}.
 \end{align}
-The \textit{virtual displacements} $\delta \particlePos{\PidxI}$ are tangents to possible motions:
-For particle positions constrained by $\particleGeoConstraint(\particleCoord) = \tuple{0}$ the displacements have to fulfill $\pdiff[\particleGeoConstraint]{\particleCoord} \delta\particleCoord = \tuple{0}$.
+The $\pdiff[\particleGeoConstraint]{\particleCoord} \delta\particleCoord = \tuple{0}$ part is commonly stated as: The \textit{virtual displacements} $\delta \particlePos{\PidxI}$ are tangents to possible motions.
+%For particle positions constrained by $\particleGeoConstraint(\particleCoord) = \tuple{0}$ the displacements have to fulfill $\pdiff[\particleGeoConstraint]{\particleCoord} \delta\particleCoord = \tuple{0}$.
 
 \paragraph{Gauß principle.}
 Gauss's principle of least constraint was originally described in \cite{Gauss:Principle} in words rather than equations.
-Maybe because of this, one finds somewhat different mathematical formulations in more contemporary sources, e.g.\ \cite[sec.\ 7]{Paesler:PrinzipeDerMechanik}, \cite[sec.\,IV.8]{Lanczos:Variational}, \cite[sec.\,2.2]{Bremer:ElasticMultibodyDynamics}. %\cite[sec.\,VII.8]{Hamel:TheoretischeMechanik} %\cite[p.\,82]{UdwadiaKalaba:AnalyticalDynamics}
+Maybe because of this, one finds somewhat different mathematical formulations in more contemporary sources, e.g.\ \cite[sec.\ 7]{Paesler:PrinzipeDerMechanik}, \cite[sec.\ IV.8]{Lanczos:Variational}, \cite[sec.\,2.2]{Bremer:ElasticMultibodyDynamics}. %\cite[sec.\,VII.8]{Hamel:TheoretischeMechanik} %\cite[p.\,82]{UdwadiaKalaba:AnalyticalDynamics}
 %For some historical background see \cite[§6.6]{Papastavridis:AnalyticalMechanics}.
 
 For the system given above, Gauss' principle states that the particle accelerations $\particlePosdd{\PidxI}, \PidxI=1,\ldots,\numParticles$ minimize the so-called Gaussian constrain $\GaussianConstraint$:
@@ -44,8 +49,7 @@ For the system given above, Gauss' principle states that the particle accelerati
 \end{align}
 where $\particlePosdd{\PidxI}^{\idxText{f}}$ are the \textit{unconstrained} particle accelerations, i.e.\ Newtons's second law $\particlePosdd{\PidxI}^{\idxText{f}}=\tfrac{\particleForceImpressed{\PidxI}}{\particleMass{\PidxI}}$.
 Its crucial to note that the constraint equations $\ddot{\particleGeoConstraint}(\particleCoord, \particleCoordd, \particleCoorddd) = \tuple{0}$ are \textit{linear} in the accelerations $\particleCoorddd$.
-Consequently, as stressed in \cite{Gauss:Principle}, the principle \eqref{eq:GaussPrinciple} is a (static) quadratic optimization problem with linear constraints.
-
+Consequently, as stressed in \cite{Gauss:Principle}, the principle \eqref{eq:GaussPrinciple} is a quadratic optimization problem with linear constraints.
 
 % A system of particles with positions $\particlePos[\PidxI], \PidxI=1,\ldots,\numParticles$ and masses $\particleMass{\PidxI}$, constrained by 
 % \begin{align}\label{eq:GaussPrinciple}
@@ -61,7 +65,7 @@ Consequently, as stressed in \cite{Gauss:Principle}, the principle \eqref{eq:Gau
 
 \paragraph{Hamilton's principle.}
 %E.g. \cite[ch.\,V.1]{Lanczos:Variational}: \textit{Hamilton's principle} states that the trajectories of a mechanical system are such that the action functional $\mathcal{A} = \int_{t_0}^{t_1} \Lagrangian\, \d t$ is stationary in the sense of the calculus of variations \autoref{sec:CalculusOfVariations}.
-\cite[p.\,113]{Lanczos:Variational}: \textit{Hamilton's principle states that the motion of a mechanical system occurs in such a way that the action} $\mathcal{A} = \int_{t_0}^{t_1} \Lagrangian\, \d t$ \textit{becomes stationary for arbitrary possible variations of the configuration of the system, provided the initial and final conditions are prescribed}.
+\cite[sec.\ V.1]{Lanczos:Variational}: \textit{Hamilton's principle states that the motion of a mechanical system occurs in such a way that the action} $\mathcal{A} = \int_{t_0}^{t_1} \Lagrangian\, \d t$ \textit{becomes stationary for arbitrary possible variations of the configuration of the system, provided the initial and final conditions are prescribed}.
 \textit{The Lagrangian $\Lagrangian=\kineticEnergy-\potentialEnergy$ is the excess of kinetic energy $\kineticEnergy$ over potential energy $\potentialEnergy$.}
 For the system considered here, the kinetic energy is $\kineticEnergy = \tfrac{1}{2} \sumParticlesFull \particleMass{\PidxI} \norm{\particlePosd{\PidxI}}^2$.
 The potential energy may have various origins, some of them will be discussed later.
@@ -69,9 +73,9 @@ The potential energy may have various origins, some of them will be discussed la
 %For this context of mechanics it can be derived from Lagrange-d'Alembert's principle \eqref{eq:DAlembertPrinciple}, see \eg \cite[ch.\,V.1]{Lanczos:Variational}.
 %However, the remarkable quality of the principle of stationary action is that it is used interdisciplinary:
 
-The remarkable quality of the principle of stationary action is that it is used interdisciplinary:
-With appropriate formulation of the Lagrangian $\Lagrangian$ it has applications in all branches of physics e.g.\ general relativity \cite{Einstein:HamiltonsPrinciple}, electromagnetic field theory \cite[ch.\,4]{Landau:Fields} or optics, the original context of Hamilton \cite[p.\,192]{Klein:EntwicklungDerMathematik}.
-Apart form physics, there is optimal control that builds up on essentially the same idea e.g.\ \cite{Bryson:AppliedOptimalControl}.
+The remarkable quality of Hamilton's principle is that analog principles have since been found for all branches of physics:
+With appropriate formulation of the Lagrangian $\Lagrangian$ the \textit{principle of stationary action} can be found in e.g.\ electromagnetic field theory \cite[ch.\ 4]{Landau:Fields}, general relativity \cite{Einstein:HamiltonsPrinciple} or optics, the original context of Hamilton \cite[p.\,192]{Klein:EntwicklungDerMathematik}.
+Apart form physics, there is optimal control that builds up on essentially the same idea, see e.g.\ \cite{Bryson:AppliedOptimalControl}.
 
 % \cite[S.\ 233]{Hamel:TheoretischeMechanik} Prinzip der kleinsten Wirkung
 % \cite[S.61]{Szabo:HM},
@@ -180,8 +184,10 @@ Parameterizing the particle accelerations $\particlePosdd{\PidxI}$ in terms of t
 Mathematically, the matrix $\sysInertiaMat$ is symmetric and (assuming $\particleMass{\PidxI} \geq 0$) is positive semidefinite.
 Physically, we may assume that $\sysInertiaMat$ is actually positive definite, otherwise there is a degree of freedom with no inertia attached which would rather be an error in modeling.
 For this work we will assume that $\sysInertiaMat$ is symmetric positive definite and consequently invertible.
-Then the acceleration coordinates can be expressed as 
+Overall, the motion of the system may be expressed through the explicit ordinary differential equations
 \begin{align}
+ \sysCoordd = \kinMat \sysVel,
+\qquad 
  \sysVeld = \sysInertiaMat^{-1} \sysForce.
 \end{align}
 
@@ -207,7 +213,7 @@ The Gaussian constraint now reads
 \nonumber\\
  &= \tfrac{1}{2} \sysVel^\top \sysInertiaMat \sysVel - \sysVel^\top \sysForce + \GaussianConstraint_0.
 \end{align}
-The necessary condition for a critical point is
+The necessary condition $\GaussianConstraint$ to be stationary is 
 \begin{align}
  \pdiff[\GaussianConstraint]{\sysVeld} = \tuple{0}
 \qquad\Leftrightarrow\qquad
@@ -276,7 +282,7 @@ Using the identity of the differentials \eqref{eq:IdentityDifferentials} we may 
  \LidxI = 1,\ldots,\dimConfigSpace.
 \label{eq:InertiaForceAccEnergy}
 \end{align}
-So the generalized inertia force $\genForceInertia$ may be derived from the function $\accEnergy = \accEnergy(\sysCoord, \sysVel, \sysVeld, t)$ which is commonly called the \textit{acceleration energy} though its dimension is \textit{not} that of energy.
+So the generalized inertia force $\genForceInertia$ may be derived from the function $\accEnergy = \accEnergy(\sysCoord, \sysVel, \sysVeld, t)$ which is commonly called the \textit{acceleration energy} though its unit is \textit{not} that of energy.
 
 This formulation was first proposed by \cite{Gibbs:FundamentalFormulaeOfDynamics} for Cartesian, minimal coordinates and by \cite{Appell:formeGenerale} also using nonholonomic velocity coordinates.
 Some historic overview is given in \cite[sec. 1]{Lewis:GaussPrinciple}.
@@ -304,11 +310,9 @@ For the special case of minimal configuration coordinates $\sysCoord=\genCoord$ 
 A nearly identical form as \eqref{eq:InertiaForceKinEnergy} can be found in \cite[p.\ 17]{Hamel:LagrangeEuler}.
 The difference is that, in contrast to this work, the directional derivative $\dirDiff{\LidxI}$ and the commutation coefficients $\BoltzSym{\LidxIII}{\LidxI}{\LidxII}$ are therein restricted to minimal configuration coordinates. 
 
-It is worth noting that the quantity $2\kineticEnergy$ which appeared in this context, was called \textit{vis viva} in older publications and translated to \textit{living force} or \textit{lebendige Kraft} \cite{Hamel:LagrangeEuler}.
+It is worth noting that the quantity $2\kineticEnergy$ which appeared in this context, was called \textit{vis viva} in older publications and translated to \textit{living force} or \textit{lebendige Kraft}, e.g.\ \cite{Hamel:LagrangeEuler} or \cite[chap.\ 5]{Klein:EntwicklungDerMathematik}.
 The contemporary term \textit{kinetic energy} seems to have established in the early 20th century.
 
-
-%\cite[p.\,480, eq.\,II]{Hamel:HM}.
 
 \paragraph{Levi-Civita formulation.}
 Formulation of the particle accelerations $\particlePosdd{\PidxI}$ explicitly in terms of the chosen coordinates \eqref{eq:particleAcc} yields
@@ -362,7 +366,7 @@ Plugging these together while permuting the indices, we find
 This means the coefficients $\ConnCoeffL{\LidxI}{\LidxII}{\LidxIII}$ are completely determined by the inertia matrix $\sysInertiaMat$ and the geometric matrix $\kinMat$ which determines the directional derivative $\dirDiff{\LidxI}$ and the commutation coefficients $\mat{\BoltzSymSym}$.
 
 A similar, coordinate free derivation can be found in \cite[proof of Theorem 2.7.6]{Abraham:FoundationsOfMechanics} for the proof of the fundamental theorem of Riemannian geometry, i.e.\ the existence and uniqueness of the \textit{Levi-Civita connection}.
-However, all coordinate versions therein are restricted to minimal holonomic coordinates.
+However, all coordinate versions therein are restricted to minimal coordinates.
 For this \textit{special case}, i.e.\ $\sysCoord = \genCoord$, $\sysVel = \genCoordd$, $\kinMat=\idMat[\dimConfigSpace]$ and consequently $\BoltzSym{}{}{} = 0$, \eqref{eq:DefConnCoeffL} simplifies to the familiar definition of the \textit{Christoffel symbols} $\ConnCoeffL{\LidxI}{\LidxII}{\LidxIII} = \tfrac{1}{2}\big( \pdiff[\sysInertiaMatCoeff{\LidxI\LidxII}]{\genCoordCoeff{\LidxIII}} + \pdiff[\sysInertiaMatCoeff{\LidxI\LidxIII}]{\genCoordCoeff{\LidxII}} - \pdiff[\sysInertiaMatCoeff{\LidxII\LidxIII}]{\genCoordCoeff{\LidxI}} \big)$, see e.g.\ \cite[p.\,145]{Abraham:FoundationsOfMechanics} or \cite[Vol.\,2, p.\,221]{Spivak:DiffGeo}.
 %\begin{align} 
 % \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII} &= \tfrac{1}{2}\Big( \pdiff[\sysInertiaMatCoeff{\LidxI\LidxII}]{\genCoordCoeff{\LidxIII}} + \pdiff[\sysInertiaMatCoeff{\LidxI\LidxIII}]{\genCoordCoeff{\LidxII}} - \pdiff[\sysInertiaMatCoeff{\LidxII\LidxIII}]{\genCoordCoeff{\LidxI}} \Big).
@@ -389,8 +393,8 @@ The resulting generalized force on the system is
 The force may also be derived from the \textit{gravitational potential} $\potentialGravity$ of the system which is simply the sum of the potentials of the individual particles.
 %Since it can be derived from a potential $\potentialGravity:\configSpace\rightarrow\RealNum$, it is called a \textit{conservative force}.
 
-The \textit{gravitational mass} $\particleMass{\PidxI}$ in \eqref{eq:ParticleSysGravity} takes the same value as the \textit{inertial mass} from the previous section.
-This is sometimes referred to as the \textit{(Galilean) equivalence principle} and is crucial topic for general relativity, see e.g., \cite[chap.\,16]{Misner:Gravitation}.
+The \textit{gravitational mass} $\particleMass{\PidxI}$ in \eqref{eq:ParticleSysGravity} takes the same value as the \textit{inertial mass} from the previous subsection.
+This is sometimes referred to as the \textit{(Galilean) equivalence principle} and is a crucial topic for general relativity, see e.g., \cite[chap.\,16]{Misner:Gravitation}.
 In this context, there is no \textit{absolute} acceleration $\particlePosdd{\PidxI}$, instead, we are interested in the deviation from the free fall acceleration $\gravityAcc$.
 This motivates the following formulation for the sum of generalized inertial and gravitational force
 \begin{multline}
@@ -404,6 +408,7 @@ This motivates the following formulation for the sum of generalized inertial and
  \label{eq:EinsteinianForce}
 \end{multline}
 The quantity $\accEnergyInertial$ may be regarded as a metric for the deviation of the system to its natural acceleration, the free fall.
+If there are no other forces acting on the system, then $\accEnergyInertial$ coincides with the Gaussian constraint $\GaussianConstraint$.
 
 \newcommand{\particleVelGravity}[1]{\particleStyle{v}_{#1\idxText{G}}}
 Taking this one step further, we may consider the free fall velocities $\particleVelGravity{\PidxI}(t) = \gravityAcc t + \particleStyle{v}_{\PidxI 0}$ with arbitrary initial velocities $\particleStyle{v}_{\PidxI 0} \in \RealNum^3, \PidxI=1,\ldots,\numParticles$ and compute analog to \eqref{eq:InertiaForceKinEnergy}:
@@ -420,6 +425,7 @@ Taking this one step further, we may consider the free fall velocities $\particl
   \qquad
   \LidxI = 1,\ldots,\dimConfigSpace.
 \end{align}
+The formulations with $\kineticEnergyInertial$ and $\accEnergyInertial$ are not really useful for the modeling case here, \fixme{FIXME}
 
 \subsection{Stiffness}\label{sec:ParticleSysStiffness}
 Consider that \textit{one} particle $\particlePos{\PidxI}$ of the system is connected by a linear spring with stiffness $\particleStiffness{\PidxI}$ to a position $\springHubPos{\PidxI}$.

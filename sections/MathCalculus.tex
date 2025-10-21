@@ -142,11 +142,11 @@ The commutation coefficients $\BoltzSym{\LidxI}{\LidxII}{\LidxIII}$ vanish if th
 \begin{align}
  \exists \ \pi^\LidxI \, : \, \dot{\pi}^\LidxI &= \sysVelCoeff{\LidxI} = \kinBasisMatCoeff{\LidxI}{\GidxI} \sysCoordCoeffd{\GidxI}&
  &\Rightarrow&
-  \kinBasisMatCoeff{\LidxI}{\GidxI} &= \pdiff[\pi^i]{\sysCoordCoeff{\GidxII}}
+  \kinBasisMatCoeff{\LidxI}{\GidxI} &= \pdiff[\pi^i]{\sysCoordCoeff{\GidxI}}
 \nonumber\\
 &&
 &\Rightarrow&
- \pdiff[\kinBasisMatCoeff{\LidxI}{\GidxI}]{\sysCoordCoeff{\GidxI}}
+ \pdiff[\kinBasisMatCoeff{\LidxI}{\GidxI}]{\sysCoordCoeff{\GidxII}}
  &= \frac{\partial^2 \pi^i}{\partial \sysCoordCoeff{\GidxII} \partial \sysCoordCoeff{\GidxI}}
  = \pdiff[\kinBasisMatCoeff{\LidxI}{\beta}]{\sysCoordCoeff{\GidxI}},&
 &\Rightarrow&
@@ -309,6 +309,7 @@ we obtain
  %+ \veeTwoOp(\bodyMOSp{}{} \R)
  .
 \end{align}
+This is Euler's rotation equation, previously stated in \eqref{eq:ExampleEulerEqKinetics}.
 \end{Example}
 
 

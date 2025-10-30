@@ -21,11 +21,11 @@ Now let the curve be parameterized by $\sysCoordd(t) = \kinMat(\sysCoord(t))\sys
   + \tfrac{1}{2} t^2 \Big( \frac{\partial^2 \potentialEnergy}{\partial\sysCoordCoeff{\GidxII} \partial\sysCoordCoeff{\GidxI}}(\sysCoordB) \kinMatCoeffB{\GidxI}{\LidxI} \kinMatCoeffB{\GidxII}{\LidxII} \sysVelCoeffB{\LidxI} \sysVelCoeffB{\LidxII} + \pdiff[\potentialEnergy]{\sysCoordCoeff{\GidxI}}(\sysCoordB) \Big( \pdiff[\kinMatCoeff{\GidxI}{\LidxI}]{\sysCoordCoeff{\GidxII}}(\sysCoordB) \kinMatCoeffB{\GidxII}{\LidxII} \sysVelCoeffB{\LidxI}\sysVelCoeffB{\LidxII} + \kinMatCoeffB{\GidxI}{\LidxI} \sysVelCoeffBd{\LidxI}\Big) \Big)
   + \mathcal{O}(t^3)
 \end{multline}
-Introducing the notation
+Throughout this work we will use the following notation for the derivative in the direction of the $\LidxI$-th basis vector:
 \begin{align}\label{eq:DefBasisDiff}
  \dirDiff{\LidxI} = \kinMatCoeff{\GidxI}{\LidxI} \pdiff{\sysCoordCoeff{\GidxI}}, \ \LidxI = 1,\ldots,\dimConfigSpace
 \end{align}
-for the derivative in the direction of the $\LidxI$-th basis vector, we can state the Taylor expansion as
+Then we may state the Taylor expansion as
 \begin{align}
  \potentialEnergy(\sysCoord(t)) = \potentialEnergy(\sysCoordB)
   + t \, \dirDiff{\LidxI} \potentialEnergy(\sysCoordB) \sysVelCoeffB{\LidxI}
@@ -61,7 +61,33 @@ Plugging this into \eqref{eq:TaylorExpansionOne} we find a coordinate form of th
 %The Hessian is a symmetric tensor, which follows from the definition of the connection coefficients \fixme{(??)}.
 At a critical point $\sysCoordB$, the Hessian of the potential is independent of the connection coefficients $\ConnCoeff{\LidxI}{\LidxII}{\LidxIII}$ and consequently of the underlying metric.
 There it coincides with the matrix $\bar{\mat{H}}$ defined in \eqref{eq:TaylorExpansionTwo}.
-\end{itemize}
+\end{itemize} 
+
+Within this work we will express time derivatives always in terms of the velocity coordinates, e.g.\ as already done above for $\dot{\potentialEnergy}(\sysCoord, \sysVel)$.
+Then we have the useful relations
+\begin{subequations}
+\begin{align}
+ \dirDiff{\LidxI} \potentialEnergy &= \pdiff[\dot{\potentialEnergy}]{\sysVelCoeff{\LidxI}},&
+ \LidxI &= 1,\ldots,\dimConfigSpace
+\\
+ \dirDiff{\LidxI} \potentialEnergy = 0, i=1,\ldots,\dimConfigSpace 
+\quad \Rightarrow  \quad
+ \dirDiff{\LidxII} \dirDiff{\LidxI} \potentialEnergy = \dirDiff{\LidxI} \dirDiff{\LidxII} \potentialEnergy &= \frac{\partial^2 \ddot{\potentialEnergy}}{\partial \sysVelCoeff{\LidxII} \partial \sysVelCoeff{\LidxI}},&
+ \LidxI, \LidxII &= 1,\ldots,\dimConfigSpace
+ .
+\end{align}
+\end{subequations}
+Analog, with $\differential = [\dirDiff{1}, \ldots ,\dirDiff{\dimConfigSpace}]^\top$ we have
+\begin{subequations}
+\begin{align}
+ \differential \potentialEnergy &= \pdiff[\dot{\potentialEnergy}]{\sysVel},
+\\
+ \differential \potentialEnergy = \tuple{0} 
+\quad \Rightarrow  \quad
+ \differential^2 \potentialEnergy &= \frac{\partial^2 \ddot{\potentialEnergy}}{\partial \sysVel \partial \sysVel}
+ .
+\end{align}
+\end{subequations}
 
 
 \subsection{Commutation coefficients}\label{sec:CommutationCoeff}

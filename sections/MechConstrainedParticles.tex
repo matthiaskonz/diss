@@ -394,7 +394,7 @@ The force may also be derived from the \textit{gravitational potential} $\potent
 %Since it can be derived from a potential $\potentialGravity:\configSpace\rightarrow\RealNum$, it is called a \textit{conservative force}.
 
 The \textit{gravitational mass} $\particleMass{\PidxI}$ in \eqref{eq:ParticleSysGravity} takes the same value as the \textit{inertial mass} from the previous subsection.
-This is sometimes referred to as the \textit{(Galilean) equivalence principle} and is a crucial topic for general relativity, see e.g., \cite[chap.\,16]{Misner:Gravitation}.
+This is sometimes referred to as the \textit{Galilean equivalence principle} and is a crucial topic for general relativity, see e.g., \cite[chap.\,16]{Misner:Gravitation}.
 In this context, there is no \textit{absolute} acceleration $\particlePosdd{\PidxI}$, instead, we are interested in the deviation from the free fall acceleration $\gravityAcc$.
 This motivates the following formulation for the sum of generalized inertial and gravitational force
 \begin{multline}
@@ -407,7 +407,7 @@ This motivates the following formulation for the sum of generalized inertial and
   \LidxI = 1,\ldots,\dimConfigSpace.
  \label{eq:EinsteinianForce}
 \end{multline}
-The quantity $\accEnergyInertial$ may be regarded as a metric for the deviation of the system to its natural acceleration, the free fall.
+%The quantity $\accEnergyInertial$ may be regarded as a metric for the deviation of the system to its natural acceleration, the free fall.
 If there are no other forces acting on the system, then $\accEnergyInertial$ coincides with the Gaussian constraint $\GaussianConstraint$.
 
 \newcommand{\particleVelGravity}[1]{\particleStyle{v}_{#1\idxText{G}}}
@@ -425,7 +425,11 @@ Taking this one step further, we may consider the free fall velocities $\particl
   \qquad
   \LidxI = 1,\ldots,\dimConfigSpace.
 \end{align}
-The formulations with $\kineticEnergyInertial$ and $\accEnergyInertial$ are not really useful for the modeling case here, \fixme{FIXME}
+The formulations with $\kineticEnergyInertial$ and $\accEnergyInertial$ are not really important for the modeling case here.
+However, they do give some physical insight: 
+Instead of working with ``absolute'' energies formulated in terms of ``absolute'' acceleration $\particlePosdd{\PidxI}$ and velocity $\particlePosd{\PidxI}$, the quantities $\kineticEnergyInertial$ and $\accEnergyInertial$ are metrics for the deviation of the system from its natural motion, i.e.\ the free fall.
+This is very much the spirit of general relativity and Gauss's principle.
+Furthermore, this will be also be a core concept for the control design in the next chapter where the reference motion will replace the free fall as natural motion.
 
 \subsection{Stiffness}\label{sec:ParticleSysStiffness}
 Consider that \textit{one} particle $\particlePos{\PidxI}$ of the system is connected by a linear spring with stiffness $\particleStiffness{\PidxI}$ to a position $\springHubPos{\PidxI}$.
@@ -449,7 +453,7 @@ The generalized force on the system is
 \end{align}
 In both cases the generalized force can be derived from a potential $\potentialStiff$.
 
-For a system with an arbitrary number of linear springs, one may simply sum up the individual potentials to obtain the stiffness potential $\potentialStiff$ and derive the corresponding generalized force $\genForceStiff = \differential \potentialStiff$. 
+For a system with an arbitrary number of linear springs, one may simply sum up the individual potentials to obtain the stiffness potential $\potentialStiff$ and derive the corresponding generalized force $\genForceStiff = -\differential \potentialStiff$. 
 Note that non-negativity of the spring constants $\particleStiffness{} \geq 0$ implies non-negativity of the potential $\potentialStiff \geq 0$.
 
 
@@ -459,17 +463,17 @@ Note that non-negativity of the spring constants $\particleStiffness{} \geq 0$ i
 %\cite[§81]{Rayleigh:TheoryOfSound}: ''Suppose that each particle of the system is retarded by forces proportional to its component velocities``.
 \subsection{Dissipation}
 Let the system of particles move within a viscous fluid with velocities $\fluidVel{\PidxI}$ at the positions $\particlePos{\PidxI}$ of the particles.
-Then, as proposed in \eqref{eq:ParticleDamping}, each particle is subject to a friction force $\particleForceDiss{\PidxI} = -\particleDamping{\PidxI} (\particlePosd{\PidxI} - \fluidVel{\PidxI})$.
+Then, as proposed in \eqref{eq:ParticleDamping}, each particle is subject to a friction force $\particleForceDiss{\PidxI} = \particleDamping{\PidxI} (\fluidVel{\PidxI} - \particlePosd{\PidxI})$.
 The generalized force on the the system is
 \begin{align}
  \genForceDissCoeff{\LidxI}
  = \sumParticles \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\particleForceDiss{\PidxI}}
- = -\sumParticles \particleDamping{\PidxI} \sProd{\pdiff[\particlePosd{\PidxI}]{\sysVelCoeff{\LidxI}}}{\particlePosd{\PidxI} - \fluidVel{\PidxI}}
+ = \sumParticles \particleDamping{\PidxI} \sProd{\pdiff[\particlePosd{\PidxI}]{\sysVelCoeff{\LidxI}}}{\fluidVel{\PidxI} - \particlePosd{\PidxI}}
  = -\pdiff{\sysVelCoeff{\LidxI}} \underbrace{\Big( \tfrac{1}{2} \sumParticles \particleDamping{\PidxI} \norm{\particlePosd{\PidxI} - \fluidVel{\PidxI}}^2 \Big)}_{\dissFkt}.
 \end{align}
 This dissipative force may be derived from $\dissFkt$, which is commonly called \textit{Rayleigh dissipation function}, e.g.\ \cite[p.\ 24]{Goldstein:ClassicalMechanics}.
 Its dimension is that of power, i.e.\ watts.
-Note that non-negativity of the damping parameters $\particleStiffness{} \geq 0$ implies non-negativity of the dissipation function $\potentialStiff \geq 0$.
+Note that non-negativity of the damping parameters $\particleStiffness{} \geq 0$ implies non-negativity of the dissipation function $\dissFkt \geq 0$.
 
 
 \subsection{Energy}
@@ -509,51 +513,10 @@ Define the \textit{Lagrangian} as $\Lagrangian = \kineticEnergy - \potentialEner
  \Hamiltonian &= \genMomentumCoeff{\LidxI} \sysVelCoeff{\LidxI} - \Lagrangian = \underbrace{\tfrac{1}{2} \sumParticles \particleMass{\PidxI} \norm{\particlePosd{\PidxI}}^2 + \potentialEnergy}_{\totalEnergy} - \sumParticles \particleMass{\PidxI} \sProd{\pdiff[\particlePos{\PidxI}]{t}}{\particlePosd{\PidxI}} 
  .
 \end{align}
+Evidently, for a scleronomic system, the Hamiltonian $\Hamiltonian$ coincides with the total energy $\totalEnergy$. 
 Extending the derivation from \autoref{sec:HamiltonsEquations} with the non-conservative forces $\genForceDiss$ and $\genForceEx$ we find the change of the Hamiltonian along the solutions of the equations of motion as
 \begin{align}
  \dot{\Hamiltonian} &=  \sysVel^\top \big( \genForceEx - \genForceDiss \big) - \pdiff[\Lagrangian]{t}
  = \sysVel^\top \big( \genForceEx - \genForceDiss \big) - \sumParticles \particleMass{\PidxI} \sProd{\pdiff[\particlePosd{\PidxI}]{t}}{\particlePosd{\PidxI}} + \pdiff[\potentialEnergy]{t}
+ .
 \end{align}
-Note that for a scleronomic system, the Hamiltonian $\Hamiltonian$ coincides with the total energy $\totalEnergy$. 
-
-%For the important case that the particle positions have no no explicit time dependency, i.e.\ $\spdiff[\particlePos{\PidxI}]{t} = \tuple{0}$, and consequently $\spdiff[\kineticEnergy]{t} = 0$, the Hamiltonian $\Hamiltonian$ coincides with the total energy $\totalEnergy$.
-
-% several forms:
-% \begin{subequations}
-% \begin{align}
-%  \genForceInertiaCoeff{\LidxI}  &= \sumParticles \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\particleMass{\PidxI} \particlePosdd{\PidxI}},&
-%  \LidxI &= 1,\ldots,\dimConfigSpace
-% \\ 
-%  &= \sumParticles \particleMass{\PidxI} \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\dirDiff{\LidxII} \particlePos{\PidxI} \sysVelCoeffd{\LidxII} + \dirDiff{\LidxIII} \dirDiff{\LidxII} \particlePos{\PidxI} \sysVelCoeff{\LidxIII} \sysVelCoeff{\LidxII} + \particleAccTime{\PidxI}}
-% \\
-%  \label{eq:InertiaForceConnCoeff}
-%  &= \sysInertiaMatCoeff{\LidxI\LidxII} \sysVelCoeffd{\LidxII} + \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII} \sysVelCoeff{\LidxII}\sysVelCoeff{\LidxIII} + \sumParticles \particleMass{\PidxI} \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\particleAccTime{\PidxI}},&
-%  \sysInertiaMatCoeff{\LidxI\LidxII} &= \sumParticles \particleMass{\PidxI} \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\dirDiff{\LidxII} \particlePos{\PidxI}}
-% \\
-%  \label{eq:InertiaForceKinEnergy}
-%  &= \diff{t} \pdiff[\kineticEnergy]{\sysVelCoeff{\LidxI}} + \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \sysVelCoeff{\LidxII} \pdiff[\kineticEnergy]{\sysVelCoeff{\LidxIII}} - \dirDiff{\LidxI} \kineticEnergy,& 
-%  \kineticEnergy &= \tfrac{1}{2} \sumParticles \particleMass{\PidxI} \norm{\particlePosd{\PidxI}}^2
-% \\
-%  \label{eq:InertiaForceAccEnergy}
-%  &= \pdiff[\accEnergy]{\sysVelCoeffd{\LidxI}},&
-%  \accEnergy &= \tfrac{1}{2} \sumParticles \particleMass{\PidxI} \norm{\particlePosdd{\PidxI}}^2
-% \end{align} 
-% \end{subequations}
-% 
-% \begin{subequations}
-% \begin{align}
-%  \particleForceInertia{\PidxI} &= \particleMass{\PidxI} \particlePosdd{\PidxI},&
-%  \genForceInertiaCoeff{\LidxI} &= \sumParticles \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\particleMass{\PidxI} \particlePosdd{\PidxI}} = \pdiff[\accEnergy]{\sysVelCoeffd{\LidxI}},&
-%  \accEnergy &= \tfrac{1}{2} \sumParticles \particleMass{\PidxI} \norm{\particlePosdd{\PidxI}}^2
-% \\
-%  \particleForceGravity{\PidxI} &= \particleMass{\PidxI} \gravityAcc,&
-%  \genForceGravityCoeff{\LidxI} &= \sumParticles \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\particleMass{\PidxI} \gravityAcc} = \dirDiff{\LidxI} \potentialGravity,&
-%  \potentialGravity &= \sumParticles \particleMass{\PidxI} \sProd{\particlePos{\PidxI}}{\gravityAcc}
-% \\
-%  \particleForceStiff{\PidxI} &= \particleStiffness{\PidxI} (\particlePos{\PidxI} - \springHubPos{\PidxI}),&
-%  \genForceStiffCoeff{\LidxI} &= \sumParticles \particleStiffness{\PidxI} \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\particlePos{\PidxI} - \springHubPos{\PidxI}} = \dirDiff{\LidxI} \potentialStiff,&
-%  \potentialStiff &= \tfrac{1}{2} \sumParticles \particleStiffness{\PidxI} \norm{\particlePos{\PidxI} - \springHubPos{\PidxI}}^2
-% \\
-%  \particleForceDiss{\PidxI} &= \particleDamping{\PidxI} (\particlePosd{\PidxI} - \tuple{v}_{\mathsf{D}\PidxI})
-% \end{align} 
-% \end{subequations}

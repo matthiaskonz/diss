@@ -67,7 +67,7 @@ Consequently, the motion of the rigid body is completely captured by the positio
 This is an example par excellence for the use of redundant parameters as discussed in the previous chapter:
 The system of particles has $\numParticles$ has $\numCoord = 3\numParticles$ coordinates, the coefficients of the particle positions $\particlePos{\PidxI}, \PidxI=1,\ldots,\numParticles$, and $\numGeoConst = \tfrac{1}{2} \numParticles(\numParticles-1)$ fixing their distances to each other.
 Actually, just fixing the distances between the particles still allows a mirroring of the rigid body, which from a physical perspective is not permitted. 
-To resolve this there should be additional constraints on the ``handedness'' of the particles.
+To resolve this there should be additional constraints on the ``handedness'' of the particles to each other.
 Even without the ``handedness'' constraints, the number of distance constraints $\numGeoConst$ surpasses the number of coordinates $\numCoord$ for larger number of particles.
 Consequently, the distance constraints cannot be independent.
 All these issues discourage us from working with the particle positions as configuration parameters.
@@ -142,7 +142,7 @@ whose naming will be discussed later.
 
 \subsection{Inertia}
 The previous section derived several formulations for the generalized inertial force $\bodyGenForceInertia{}{}$.
-These will now be applied to the the rigid body and the chosen coordinates.
+These will now be applied to the the rigid body with the chosen coordinates.
 
 \paragraph{Kinetic energy.}
 With the particle velocities $\particlePosd{\PidxI}$ in terms of the chosen coordinates \eqref{eq:RBParticleVel} we obtain the kinetic energy $\kineticEnergy$ of a free rigid body as 
@@ -201,7 +201,7 @@ With the particle accelerations $\particlePosdd{\PidxI}$ in terms of the coordin
  &\qquad+ \tfrac{1}{2} \underbrace{\sumParticles \particleMass{\PidxI}}_{\bodyMass{}{}} \norm{\wedOp(\w)\v}^2
  + \v^\top \wedOp(\w)^2 \underbrace{\sumParticles \particleMass{\PidxI} \wedOp(\particleBodyPos{\PidxI})}_{\bodyMass{}{} \wedOp(\bodyCOM{}{})} \w
 \nonumber\\
- &\qquad+ \tfrac{1}{2} \tr \Big( \underbrace{\sumParticles \particleMass{\PidxI} \particleBodyPos{\PidxI} \particleBodyPos{\PidxI}^\top}_{\bodyMOIp{}{} = \tfrac{1}{2}\tr(\bodyMOI{}{}) \idMat[3] - \bodyMOIp{}{}} \wedOp(\w)^4 \Big)
+ &\qquad+ \tfrac{1}{2} \tr \Big( \underbrace{\sumParticles \particleMass{\PidxI} \particleBodyPos{\PidxI} \particleBodyPos{\PidxI}^\top}_{\bodyMOIp{}{} = \wedMatOp(\bodyMOI{}{})} \wedOp(\w)^4 \Big)
 \end{align}
 Not at all surprisingly, we found the same inertia parameters $\bodyMass{}{}$, $\bodyCOM{}{}$ and $\bodyMOI{}{}$ as for the kinetic energy $\kineticEnergy$ in \eqref{eq:RigidBodyKineticEnergy}.
 Collecting these further in the inertia matrix $\bodyInertiaMat{}{}$ we have
@@ -275,7 +275,7 @@ Using the commutation coefficients $\bodyBoltzSym{}{}{}$ given in \eqref{eq:RBCo
  \bodyConnCoeffL{}{}{5}{4}{5} = \bodyConnCoeffL{}{}{4}{6}{6} \ &= \ \bodyMOICoeffp{}{}{\idxY\idxZ} = -\bodyMOICoeff{}{}{\idxY\idxZ}.
 \end{align}
 \end{subequations}
-Note that the quantity $\bodyMOIp{}{} = \tfrac{1}{2} \tr(\bodyMOI{}{})\idMat[3] - \bodyMOI{}{}$ also appeared above in the formulation of the acceleration energy \eqref{eq:RigidBodyAccEnergy}.
+Note that the quantity $\bodyMOIp{}{} = \wedMatOp(\bodyMOI{}{}) = \tfrac{1}{2} \tr(\bodyMOI{}{})\idMat[3] - \bodyMOI{}{}$ also appeared above in the formulation of the acceleration energy \eqref{eq:RigidBodyAccEnergy}.
 
 Finally, assembling the terms $\genForceInertiaCoeff{\LidxI} = \sysInertiaMatCoeff{\LidxI\LidxII} \sysVelCoeffd{\LidxII} + \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII} \sysVelCoeff{\LidxII}\sysVelCoeff{\LidxIII}$ we may check that this is indeed identical to \eqref{eq:InertiaForceRB}.
 
@@ -353,16 +353,21 @@ Note that there was no specific assumption for the particle and spring distribut
 Consequently, any constellation may be captured by the $1+3+3+9+1=17$ parameters within $(\bodyStiffness{}{}, \bodyCOS{}{}, \tuple{p}, \mat{P}, \potentialStiff_c)$.
 
 \paragraph{Critical points.}
-The time derivatives of the potential may be written as
+% The time derivatives of the potential may be written as
+% \begin{align}\label{eq:RBStiffnessPotentialDifferential}
+%  \tdiff{t} \potentialStiff &= \bodyStiffness{}{} \sProd{\r}{\R\v} + \bodyStiffness{}{} \sProd{\R\v}{\R \bodyCOS{}{}} + \bodyStiffness{}{} \sProd{\r}{\R\wedOp(\w) \bodyCOS{}{}} - \bodyStiffness{}{} \sProd{\R\v}{\tuple{p}} - \tr(\mat{P} \R \wedOp(\w))
+% \nonumber\\
+%  &= \sysVel^\top \underbrace{\begin{bmatrix} \bodyStiffness{}{} (\R^\top (\r - \tuple{p}) + \bodyCOS{}{}) \\ \bodyStiffness{}{} \wedOp(\bodyCOS{}{}) \R^\top \r + \veeTwoOp(\mat{P} \R) \end{bmatrix}}_{\differential \potentialStiff}
+% \\
+%  \tfrac{\d^2}{\d t^2} \potentialStiff 
+%  &= \sysVeld^\top \differential \potentialStiff + \sysVel^\top \underbrace{\begin{bmatrix} \bodyStiffness{}{} \idMat[3] & \bodyStiffness{}{}\wedOp\big(\R^\top (\r - \tuple{p})\big) \\ \bodyStiffness{}{}\wedOp(\bodyCOS{}{}) & \bodyStiffness{}{} \wedOp(\bodyCOS{}{}) \wedOp(\R^\top \r) + \tr(\mat{P} \R)\idMat[3] - (\mat{P} \R)^\top \end{bmatrix}}_{\differential^2 \potentialStiff} \sysVel
+% \end{align}
+We are interested in configurations $\sysCoordR\cong (\rR, \RR)$ at which the potential is stationary, i.e.
 \begin{align}\label{eq:RBStiffnessPotentialDifferential}
- \tdiff{t} \potentialStiff &= \bodyStiffness{}{} \sProd{\r}{\R\v} + \bodyStiffness{}{} \sProd{\R\v}{\R \bodyCOS{}{}} + \bodyStiffness{}{} \sProd{\r}{\R\wedOp(\w) \bodyCOS{}{}} - \bodyStiffness{}{} \sProd{\R\v}{\tuple{p}} - \tr(\mat{P} \R \wedOp(\w))
-\nonumber\\
- &= \sysVel^\top \underbrace{\begin{bmatrix} \bodyStiffness{}{} (\R^\top (\r - \tuple{p}) + \bodyCOS{}{}) \\ \bodyStiffness{}{} \wedOp(\bodyCOS{}{}) \R^\top \r + \veeTwoOp(\mat{P} \R) \end{bmatrix}}_{\differential \potentialStiff}
-\\
- \tfrac{\d^2}{\d t^2} \potentialStiff 
- &= \sysVeld^\top \differential \potentialStiff + \sysVel^\top \underbrace{\begin{bmatrix} \bodyStiffness{}{} \idMat[3] & \bodyStiffness{}{}\wedOp\big(\R^\top (\r - \tuple{p})\big) \\ \bodyStiffness{}{}\wedOp(\bodyCOS{}{}) & \bodyStiffness{}{} \wedOp(\bodyCOS{}{}) \wedOp(\R^\top \r) + \tr(\mat{P} \R)\idMat[3] - (\mat{P} \R)^\top \end{bmatrix}}_{\differential^2 \potentialStiff} \sysVel
+\differential \potentialStiff
+ = \begin{bmatrix} \bodyStiffness{}{} (\R^\top (\r - \tuple{p}) + \bodyCOS{}{}) \\ \bodyStiffness{}{} \wedOp(\bodyCOS{}{}) \R^\top \r + \veeTwoOp(\mat{P} \R) \end{bmatrix} = \tuple{0}
+ .
 \end{align}
-We are interested in configurations $\sysCoordR\cong (\rR, \RR)$ at which the potential is stationary $\differential \potentialStiff(\sysCoordR) = \tuple{0}$:
 From the upper part of \eqref{eq:RBStiffnessPotentialDifferential} we get the condition
 \begin{align}
  \rR = \tuple{p} - \RR \bodyCOS{}{}.

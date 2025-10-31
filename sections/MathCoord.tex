@@ -134,8 +134,9 @@ The resulting kinematic equation $\sysCoordd = \kinMat(\sysCoord) \sysVel$ can b
 \end{align}
 \end{Example}
 
-\paragraph{Pseudoinverse}
-For any matrix $\mat{S}\in\RealNum^{m\times n}$ there exists a unique \textit{(Moore-Penrose) pseudoinverse} $\mat{S}^+ \in \RealNum^{n\times m}$ determined by the following conditions \cite[Theo.\ 1]{Penrose:Pseudoinverse}:
+\paragraph{Pseudoinverse.}
+\cite[Theo.\ 1]{Penrose:Pseudoinverse}:
+For any matrix $\mat{S}\in\RealNum^{m\times n}$ there exists a unique \textit{(Moore-Penrose) pseudoinverse} $\mat{S}^+ \in \RealNum^{n\times m}$ determined by the following conditions:
 \begin{subequations}\label{eq:PenroseConditions}
 \begin{align}
  \mat{S} \mat{S}^+ \mat{S} &= \mat{S},
@@ -152,18 +153,38 @@ Similarly, if $\mat{S}$ has linearly independent rows, its pseudoinverse is $\ma
 Consequently, if $\mat{S}$ is invertible (independent rows and columns) the pseudoinverse coincides with the inverse $\mat{S}^+ = \mat{S}^{-1}$.
 
 \paragraph{Some identities involving the pseudo-inverse.}
-Define $\kinBasisMat(\sysCoord) \in \RealNum^{\dimConfigSpace\times\numCoord}$ as $\kinBasisMat = \kinMat^+ = (\kinMat^\top \kinMat)^{-1} \kinMat^\top$, i.e. the pseudoinverse of the kinematics matrix $\kinMat$.
-Note that this implies $\kinBasisMat \kinMat = \idMat[\dimConfigSpace]$, but $\kinMat \kinBasisMat \neq \idMat[\numCoord]$.
-We also introduce the matrices $\geoConstraintMat = \pdiff[\geoConstraint]{\sysCoord}$ and $\InvGeoConstraintMat = \geoConstraintMat^+$.
-With $\geoConstraintMat\kinMat = \mat{0}$ and the Penrose conditions \eqref{eq:PenroseConditions}, we can show\footnote{$\InvGeoConstraintMat^\top \kinMat = (\InvGeoConstraintMat \geoConstraintMat \InvGeoConstraintMat)^\top \kinMat = \InvGeoConstraintMat^\top (\InvGeoConstraintMat \geoConstraintMat)^\top \kinMat = \InvGeoConstraintMat^\top \InvGeoConstraintMat \geoConstraintMat \kinMat = \mat{0}$} that $\InvGeoConstraintMat^\top \kinMat = \mat{0}$ and $\kinBasisMat^\top \geoConstraintMat = \mat{0}$.
-Furthermore, since $\rank\InvGeoConstraintMat = \rank\geoConstraintMat = \numCoord - \dimConfigSpace$ the columns of $\InvGeoConstraintMat(\sysCoord)$ span the complementary space $(\Tangent[\sysCoord]\configSpace)^\bot$ though they might not be a basis since the columns might not be linearly independent.
+As $\kinMat(\sysCoord) \in \RealNum^{\numCoord\times\dimConfigSpace}$ is has independent columns, its pseudoinverse has the explicit formula $\kinMat^+ = (\kinMat^\top \kinMat)^{-1} \kinMat^\top =: \kinBasisMat$.
+Evidently we have $\kinBasisMat \kinMat = \idMat[\dimConfigSpace]$, but, in general, $\kinMat \kinBasisMat \neq \idMat[\numCoord]$.
+The matrix $\mat{P} = \kinMat \kinBasisMat$ is the unique orthogonal projector, (i.e.\ $\mat{P}^2 = \mat{P} = \mat{P}^\top$, see e.g.\ \cite[p.\ 38]{Horn:MatrixAnalysis}) from $\RealNum^\numCoord$ to the tangent space $\Tangent[\sysCoord]\configSpace$.
 
-The matrix $\mat{P} = \kinMat \kinBasisMat$ is an \textit{orthogonal projector}, i.e.\ $\mat{P}^2 = \mat{P}$ and $\mat{P}^\top = \mat{P}$ which result directly from the Penrose conditions \eqref{eq:PenroseConditions}.
-Since $\InvGeoConstraintMat$ spans the complementary space $(\Tangent[\sysCoord]\configSpace)^\bot$, the unique orthogonal projector from $\RealNum^\numCoord$ to $(\Tangent[\sysCoord]\configSpace)^\bot$ can be expressed as $\mat{P}^\bot = \InvGeoConstraintMat \geoConstraintMat$.
-The identity $\mat{P} + \mat{P}^\bot = \idMat[\numCoord]$ implies
+Introduce the shorthand notation $\geoConstraintMat = \pdiff[\geoConstraint]{\sysCoord}$.
+As stated above, $\geoConstraintMat(\sysCoord) \in \RealNum^{\numGeoConst\times\numCoord}$ is not required to be full rank.
+Consequently, there is no explicit expression for its pseudoinverse $\InvGeoConstraintMat(\sysCoord) = \geoConstraintMat^+(\sysCoord) \in \RealNum^{\numCoord\times\numGeoConst}$.
+Nevertheless $\geoConstraintMat^+$ is unique and obeys the Penrose conditions \eqref{eq:PenroseConditions}.
+With them its straight forward to show that $\mat{P}^\bot = \InvGeoConstraintMat \geoConstraintMat$ is also an orthogonal projection.
+
+%The condition $\geoConstraintMat\kinMat = \mat{0}$ combined with the Penrose conditions \eqref{eq:PenroseConditions} implies\footnote{$\InvGeoConstraintMat^\top \kinMat = (\InvGeoConstraintMat \geoConstraintMat \InvGeoConstraintMat)^\top \kinMat = \InvGeoConstraintMat^\top (\InvGeoConstraintMat \geoConstraintMat)^\top \kinMat = \InvGeoConstraintMat^\top \InvGeoConstraintMat \geoConstraintMat \kinMat = \mat{0}$} that $\InvGeoConstraintMat^\top \kinMat = \mat{0}$ and $\kinBasisMat^\top \geoConstraintMat = \mat{0}$.
+The condition $\geoConstraintMat\kinMat = \mat{0}$ combined with the Penrose conditions \eqref{eq:PenroseConditions} implies $\InvGeoConstraintMat^\top \kinMat = (\InvGeoConstraintMat \geoConstraintMat \InvGeoConstraintMat)^\top \kinMat = \InvGeoConstraintMat^\top (\InvGeoConstraintMat \geoConstraintMat)^\top \kinMat = \InvGeoConstraintMat^\top \InvGeoConstraintMat \geoConstraintMat \kinMat = \mat{0}$ and analog $\kinBasisMat^\top \geoConstraintMat = \mat{0}$.
+Supplementing the fact $\rank\InvGeoConstraintMat = \rank\geoConstraintMat = \numCoord - \dimConfigSpace$ we may conclude that the columns of $\InvGeoConstraintMat$ span the complementary space $(\Tangent[\sysCoord]\configSpace)^\bot$ and $\mat{P}^\bot$ is the unique orthogonal projector from $\RealNum^\numCoord$ to $(\Tangent[\sysCoord]\configSpace)^\bot$.
+As the projectors are related by $\mat{P}^\bot = \idMat - \mat{P}$ we have the identity
 \begin{align}\label{eq:ProjectionIdentity}
- \kinMat \kinBasisMat + \InvGeoConstraintMat \geoConstraintMat = \idMat[\numCoord].
+ \kinMat \kinBasisMat +\, \InvGeoConstraintMat \geoConstraintMat = \idMat[\numCoord].
 \end{align}
+
+The deduction above simplifies significantly if $\geoConstraintMat$ is full rank: Then the columns of $\kinMat$ and $\InvGeoConstraintMat$ form a basis for $\RealNum^\numCoord$ and we can immediately conclude
+\begin{subequations}
+\begin{align}
+ \underbrace{\begin{bmatrix} \kinBasisMat \\ \geoConstraintMat \end{bmatrix}}_{\kinMatSquare^{-1}} \underbrace{[\kinMat \ \InvGeoConstraintMat]}_{\kinMatSquare}
+ &= \begin{bmatrix} \kinBasisMat \kinMat & \kinBasisMat\InvGeoConstraintMat\\ \geoConstraintMat\kinMat & \geoConstraintMat \InvGeoConstraintMat \end{bmatrix} 
+ = \begin{bmatrix} \idMat[\dimConfigSpace] & \mat{0} \\ \mat{0} & \idMat[\numCoord-\dimConfigSpace] \end{bmatrix} 
+\\
+ \underbrace{[\kinMat \ \InvGeoConstraintMat]}_{\kinMatSquare}
+ \underbrace{\begin{bmatrix} \kinBasisMat \\ \geoConstraintMat \end{bmatrix}}_{\kinMatSquare^{-1}}
+ &= \kinMat \kinBasisMat +\, \InvGeoConstraintMat \geoConstraintMat
+ = \idMat[\numCoord]
+\end{align}
+\end{subequations}
+These identities will be important for the next sections. 
 
 % In summary: Given a matrix $\geoConstraintMat \in \RealNum^{\numGeoConst\times\numCoord}$ and a matrix $\kinMat \in \RealNum^{\numCoord\times\dimConfigSpace}$ with full column rank and $\geoConstraintMat\kinMat = \mat{0}$ we have
 % \begin{subequations}

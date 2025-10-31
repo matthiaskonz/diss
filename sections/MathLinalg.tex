@@ -1,7 +1,8 @@
 \section{Linear algebra}
+This section reviews some established notations and introduces some new notation and operators used throughout this work.
 
 \subsection{Matrix sets}
-The following sets of real matrices that are frequently used in the work: 
+The following sets of real matrices are frequently used in the work: 
 \begin{subequations}
 \begin{align}
  &\text{(symmetric)}&
@@ -21,15 +22,15 @@ The following sets of real matrices that are frequently used in the work:
 \\
  &\text{(special orthogonal)}&
  \SpecialOrthogonalGroup(n) &= \{ \mat{R} \in \mathbb{O}(n) \, | \, \det\mat{R} = +1 \},
-% \\
-%  &\text{(special Euclidean)}&
-%  \SpecialEuclideanGroup(n) &= \left\{ \begin{bmatrix} \R & \r \\ \mat{0} & 1 \end{bmatrix} \, \bigg| \, \r \in \RealNum^n, \R \in \SpecialOrthogonalGroup(n) \right\},
-% \\[2ex]
-%  &\text{(skew symmetric)}&
-%  \SpecialOrthogonalAlgebra(n) &= \{ \mat{\Omega} \in \RealNum^{n\times n} \, | \, \mat{\Omega}^\top = -\mat{\Omega} \},
-% \\
-%  &\text{}&
-%  \SpecialEuclideanAlgebra(n) &= \left\{ \begin{bmatrix} \mat{\Omega} & \tuple{v} \\ \mat{0} & 0 \end{bmatrix} \, | \, \mat{\Omega} \in \SpecialOrthogonalAlgebra(n), \tuple{v} \in \RealNum^{n} \right\}.
+\\
+ &\text{(special Euclidean)}&
+ \SpecialEuclideanGroup(n) &= \left\{ \begin{bmatrix} \R & \r \\ \mat{0} & 1 \end{bmatrix} \, \bigg| \, \r \in \RealNum^n, \R \in \SpecialOrthogonalGroup(n) \right\},
+\\[2ex]
+ &\text{(skew symmetric)}&
+ \SpecialOrthogonalAlgebra(n) &= \{ \mat{\Omega} \in \RealNum^{n\times n} \, | \, \mat{\Omega}^\top = -\mat{\Omega} \},
+\\
+ &\text{}&
+ \SpecialEuclideanAlgebra(n) &= \left\{ \begin{bmatrix} \mat{\Omega} & \tuple{v} \\ \mat{0} & 0 \end{bmatrix} \, | \, \mat{\Omega} \in \SpecialOrthogonalAlgebra(n), \tuple{v} \in \RealNum^{n} \right\}.
 \end{align} 
 \end{subequations}
 
@@ -121,7 +122,7 @@ For $\mat{K} = \idMat[n]$, this work uses the shorthand notation
 Define the wedge operator as
 \begin{subequations}\label{eq:DefWedgeOpSO3}
 \begin{align}
- \wedOp : \, \RealNum^3 \rightarrow \RealNum^{3\times3} \, : \, \begin{bmatrix} \omega_1 \\ \omega_2 \\ \omega_3 \end{bmatrix} &\mapsto \begin{bmatrix} 0 & -\omega_3 & \omega_2 \\ \omega_3 & 0 & -\omega_1 \\ -\omega_2 & \omega_1 & 0 \end{bmatrix}
+ \wedOp : \, \RealNum^3 \rightarrow \SpecialOrthogonalAlgebra(3) \, : \, \begin{bmatrix} \omega_1 \\ \omega_2 \\ \omega_3 \end{bmatrix} &\mapsto \begin{bmatrix} 0 & -\omega_3 & \omega_2 \\ \omega_3 & 0 & -\omega_1 \\ -\omega_2 & \omega_1 & 0 \end{bmatrix}
 \end{align}
 \end{subequations}
 Its inverse is denoted $\veeOp(\cdot)$, i.e.\ $\veeOp(\wedOp(\w)=\w$.
@@ -151,6 +152,9 @@ Noting that $\tr(\veeMatOp(\mat{M})) = 2\tr(\mat{M})$, we may write the inverse 
 \begin{align}
  \wedMatOp &: \RealNum^{3\times 3} \!\rightarrow\! \RealNum^{3\times3} \, : \mat{M} \mapsto \tfrac{1}{2}\tr(\mat{M}) \idMat[3] - \mat{M}.
 \end{align}
+
+These operators will appear frequently when working with problems on $\SpecialOrthogonalGroup(3)$ as e.g.\ the next section.
+In \autoref{sec:RBSummary} we will derive the analog operators for $\SpecialEuclideanGroup(3)$.
 
 \paragraph{Identities.}
 For $\tuple{a}, \tuple{b}, \tuple{c} \in \RealNum^{3}$ and $\mat{M}\in\RealNum^{3\times3}$, the following identities may be checked by direct computation:

@@ -1,5 +1,5 @@
 \subsection{Prismatic joint}
-\begin{figure}
+\begin{figure}[h]
  \centering
  \input{graphics/PrismaticJoint.pdf_tex}
  \caption{Model of a prismatic joint (left) and the closed loop (right)}
@@ -40,5 +40,5 @@ The corresponding explicit control law is
 \end{align}
 An interpretation of the closed loop is given on the right side of \autoref{fig:PrismaticJoint}:
 The controlled body can be thought as being connected by a spring (stiffness $\kc$) and a damper (viscosity $\dc$) to its reference position $x_{\idxRef}$.
-The inertial force $\mc \ddot{x}_{\idxErr}$ reacts to the error acceleration, i.e.\ to the acceleration of the body relative to its reference acceleration $\ddot{z}_{\idxRef}$.
+The inertial force $\mc \ddot{x}_{\idxErr}$ reacts to the error acceleration, i.e.\ to the acceleration of the body relative to its reference acceleration $\ddot{x}_{\idxRef}$.
 One could say the body has an inertia w.r.t.\ its reference.

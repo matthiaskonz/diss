@@ -1,10 +1,10 @@
 \section{Approach 3: Inspired by total energy}\label{sec:CtrlApproachEnergy}
-The previous approaches for the design of a closed loop also motived a total energy $\totalEnergyC$.
-Unfortunately, it did, in general, not turn out to be useful for stability analysis.
+The previous approaches for the design of a closed loop also motived a formulation of total energy $\totalEnergyC$.
+Unfortunately, it only served as a Lyapunov function for a constant reference or for specific systems.
 In this section we like to motivate yet another approach for the design of a closed loop dynamics for the tracking problem which is based on the total energy as Lyapunov function.
 
 \subsection{Overall structure}
-The general structure of this approach follows \cite{Bullo:TrackingAutomatica}.
+The general structure of this approach mostly motivated by \cite{Bullo:TrackingAutomatica}.
 
 \paragraph*{Total energy.}
 Initially we drop the rigid body structure of the system and only consider the coordinates $\sysCoord, \sysVel$ and their kinematic relation $\sysCoordd = \kinMat(\sysCoord) \sysVel$.
@@ -12,8 +12,8 @@ Define the ``total error energy'' as
 \begin{align}\label{eq:DefTotalErrorEnergy}
  \totalEnergyC(\sysCoord, \sysVel, \sysCoordR, \sysVelR) = \underbrace{\tfrac{1}{2} \norm[\sysInertiaMatC(\sysCoord)]{\overbrace{\sysVel-\sysTransportMap(\sysCoord, \sysCoordR)\sysVelR}^{\sysVelE}}^2}_{\kineticEnergyC} \ + \ \potentialEnergyC(\sysCoord, \sysCoordR)
 \end{align}
-with the positive definite error potential $\potentialEnergyC: \configSpace \times \configSpace \rightarrow \RealNumP$, $\potentialEnergyC(\sysCoord, \sysCoordR) = 0 \ \Leftrightarrow \ \sysCoord = \sysCoordR$ and the positive definite inertia matrix $\sysInertiaMatC(\sysCoord)\in\SymMatP(\dimConfigSpace)$.
-So far the transport map $\sysTransportMap: \configSpace \times \configSpace \rightarrow \RealNum^{\dimConfigSpace\times\dimConfigSpace}$ may be any regular matrix with $\sysTransportMap(\sysCoord, \sysCoord) = \idMat[\dimConfigSpace]$.
+with the positive definite error potential $\potentialEnergyC: \configSpace \times \configSpace \rightarrow \RealNumSP$, $\potentialEnergyC(\sysCoord, \sysCoordR) = 0 \ \Leftrightarrow \ \sysCoord = \sysCoordR$ and the positive definite inertia matrix $\sysInertiaMatC(\sysCoord)\in\SymMatP(\dimConfigSpace)$.
+So far the so-called transport map $\sysTransportMap: \configSpace \times \configSpace \rightarrow \RealNum^{\dimConfigSpace\times\dimConfigSpace}$ may be any regular matrix with $\sysTransportMap(\sysCoord, \sysCoord) = \idMat[\dimConfigSpace]$.
 Combination of these requirements yields the positive definiteness of the total energy, i.e.
 \begin{align}
  \totalEnergyC(\sysCoord, \sysVel, \sysCoordR, \sysVelR) \geq 0, \quad \totalEnergyC(\sysCoord, \sysVel, \sysCoordR, \sysVelR) = 0 \ \Leftrightarrow \ \sysCoord = \sysCoordR,\, \sysVel = \sysVelR.
@@ -33,26 +33,28 @@ The time derivative of the total energy is
 where $\differentialR = \kinMat^\top(\sysCoordR) \tpdiff{\sysCoordR}$.
 The second term vanishes if we require the transport map $\sysTransportMap$ to fulfill 
 \begin{align}\label{eq:ReqTransportMap}
- \differentialR\potentialEnergyC = -\sysTransportMap^\top \differential\potentialEnergyC.
+ \differentialR\potentialEnergyC = -\sysTransportMap^\top \differential\potentialEnergyC
+ .
 \end{align}
-With a positive definite damping matrix $\sysDissMatC \in \SymMatP(\dimConfigSpace)$ and a yet to define skew symmetric matrix $\accCtrl{\mat{S}} = -\accCtrl{\mat{S}}^\top \in \RealNum^{\dimConfigSpace\times\dimConfigSpace}$ we set the closed loop kinetics as
+To tackle the first term we set the closed loop kinetics as
 \begin{align}\label{eq:CtrlApprochEnergyKineticsFirst}
  \sysInertiaMatC \sysVelEd + \tfrac{1}{2}\sysInertiaMatCd \sysVelE + \differential\potentialEnergyC = -(\sysDissMatC + \accCtrl{\mat{S}})\sysVelE.
 \end{align}
+with a positive definite damping matrix $\sysDissMatC \in \SymMatP(\dimConfigSpace)$ and a yet to define skew symmetric matrix $\accCtrl{\mat{S}} = -\accCtrl{\mat{S}}^\top \in \RealNum^{\dimConfigSpace\times\dimConfigSpace}$.
+
 Plugging the closed loop kinetics \eqref{eq:CtrlApprochEnergyKineticsFirst} and the requirement on the transport map \eqref{eq:ReqTransportMap} into the change of energy \eqref{eq:CtrlApprochEnergyBalanceOfEnergyFirst} we obtain
 \begin{align}
  \totalEnergyCd = -\sysVelE^\top \sysDissMatC \sysVelE = -\norm[\sysDissMatC]{\sysVelE}^2.
 \end{align}
 Since $\tdiff{t} \totalEnergyC$ is only negative semidefinite, we can only conclude stability but not attractiveness.
-One can pursue the prove of attractiveness by adding a cross term as done in \cite[sec.\ 4.2]{Bullo:TrackingAutomatica}.
+One may pursue the prove of attractiveness by adding a cross term as done in \cite[sec.\ 4.2]{Bullo:TrackingAutomatica}.
 
 \paragraph{Covariance of the closed loop.}
 The skew symmetric matrix $\accCtrl{\mat{S}}$ cancels out in the balance of energy, so is of no interest for tuning purposes.
 Instead it is used to ensure that the closed loop \eqref{eq:CtrlApprochEnergyKineticsFirst} is \textit{covariant}, i.e.\ its definition is unchanged under a change of coordinates.
 While the stiffness force $\genForceStiffCoeffC{\LidxI} = \dirDiff{\LidxI} \potentialEnergyC$ and the dissipative force $\genForceDissCoeffC{\LidxI} = \sysDissMatCoeffC{\LidxI\LidxII} \sysVelCoeffE{\LidxII}$ are tensors, the inertia force $\genForceInertiaCoeffC{\LidxI} = \sysInertiaMatCoeffC{\LidxI\LidxII} \sysVelCoeffEd{\LidxII} + \tfrac{1}{2} \dirDiff{\LidxIII} \sysInertiaMatCoeffC{\LidxI\LidxII} \sysVelCoeff{\LidxIII} \sysVelCoeffE{\LidxII} + \accCtrl{S}_{\LidxI\LidxII} \sysVelCoeffE{\LidxII}$ is not.
 A universal way is to derive a transformation law and put it as an additional requirement for the closed loop.
-This would still not lead to a unique definition for $\accCtrl{\mat{S}}$.
-
+For this case here, this would still not lead to a unique definition for $\accCtrl{\mat{S}}$.
 However, regarding $\sysInertiaMatCoeffC{\LidxI\LidxII}$ as the coefficients of a Riemannian metric, there are the coefficients of the unique Levi Civita connection already encountered in \eqref{eq:DefConnCoeffL}:
 \begin{align}
  \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII} &= \tfrac{1}{2}\big( \partial_\LidxIII \sysInertiaMatCoeffC{\LidxI\LidxII} + \partial_\LidxII \sysInertiaMatCoeffC{\LidxI\LidxIII} - \partial_\LidxI \sysInertiaMatCoeffC{\LidxII\LidxIII} + \BoltzSym{\LidxV}{\LidxI}{\LidxII} \sysInertiaMatCoeffC{\LidxV\LidxIII} + \BoltzSym{\LidxV}{\LidxI}{\LidxIII} \sysInertiaMatCoeffC{\LidxV\LidxII} - \BoltzSym{\LidxV}{\LidxII}{\LidxIII} \sysInertiaMatCoeffC{\LidxV\LidxI} \big),
@@ -60,11 +62,11 @@ However, regarding $\sysInertiaMatCoeffC{\LidxI\LidxII}$ as the coefficients of 
  \LidxI, \LidxII, \LidxIII = 1,\ldots,\dimConfigSpace
  .
 \end{align}
-This motivates the inertia force in the clearly covariant form
+This motivates the inertia force in the covariant form
 \begin{align}
  \genForceInertiaCoeffC{\LidxI} = \sysInertiaMatCoeffC{\LidxI\LidxII} \sysVelCoeffEd{\LidxII} + \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII}\sysVelCoeff{\LidxIII} \sysVelCoeffE{\LidxII}.
 \end{align}
-It may be realized by setting $\accCtrl{S}_{\LidxI\LidxII} = \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII}\sysVelCoeff{\LidxIII} - \tfrac{1}{2}\sysInertiaMatCoeffCd{\LidxI\LidxII} = \tfrac{1}{2}(\ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII} - \ConnCoeffLC{\LidxII}{\LidxI}{\LidxIII})\sysVelCoeff{\LidxIII} = -\accCtrl{S}_{\LidxII\LidxI}$ in \eqref{eq:CtrlApprochEnergyKineticsFirst}.
+It is realized by setting $\accCtrl{S}_{\LidxI\LidxII} = \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII}\sysVelCoeff{\LidxIII} - \tfrac{1}{2}\sysInertiaMatCoeffCd{\LidxI\LidxII} = \tfrac{1}{2}(\ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII} - \ConnCoeffLC{\LidxII}{\LidxI}{\LidxIII})\sysVelCoeff{\LidxIII} = -\accCtrl{S}_{\LidxII\LidxI}$ in \eqref{eq:CtrlApprochEnergyKineticsFirst}.
 
 
 %\begin{RedBox}
@@ -159,15 +161,14 @@ The time derivative of the potential is
 \nonumber\\
  &= \underbrace{(\bodyVel{}{} - \Ad{\bodyHomoCoord{}{}^{-1}\bodyHomoCoordR{}{}} \bodyVelR{}{})}_{\sysVelE}\vphantom{|}^\top \underbrace{\veeTwoOp\big( (\idMat[4] - \bodyHomoCoord{}{}^{-1}\bodyHomoCoordR{}{}) \bodyStiffMatCp{}{} \big)}_{\differential \potentialEnergyC}.
 \end{align}
-Recalling the identity $\differential \potentialEnergyC = \spdiff[\dot{\potentialEnergyC}]{\sysVel}$, it is evident that $\sysTransportMap = \Ad{\bodyHomoCoord{}{}^{-1}\bodyHomoCoordR{}{}}$ is a transport map for this potential
+Recalling the identity $\differential \potentialEnergyC = \spdiff[\dot{\potentialEnergyC}]{\sysVel}$, it is evident that $\sysTransportMap = \Ad{\bodyHomoCoord{}{}^{-1}\bodyHomoCoordR{}{}}$ is a transport map for this potential%
 \footnote{
 It should be noted that the transport map given in \eqref{eq:TimeDerivativeRigidBodxPotential} is not unique.
 One can check by direct calculation that the following matrix also fulfills the required relation \eqref{eq:ReqTransportMap}:
 \begin{align}\label{eq:RigidBodyAlternativeTransportMap}
  \sysTransportMap = \begin{bmatrix} \R^\top\RR & \wedOp\hc\,\R^\top\RR - \R^\top\RR \wedOp\hc \\ \mat{0} & \R^\top\RR \end{bmatrix}.
 \end{align}
-}
-.
+}.
 The potential $\potentialEnergyC$ and the resulting force $\genForceStiffC = \differential \potentialEnergyC $ coincides with the ones given for the previous approaches, already explicitly stated in \eqref{eq:GenForceStiffRigidBodyCtrl}.
 % \begin{align}\label{eq:TransportMapRigidBody}
 %  \differentialR \potentialEnergyC = \tpdiff[\dot{\potentialEnergyC}]{\bodyVelR{}{}}
@@ -187,8 +188,7 @@ The potential $\potentialEnergyC$ and the resulting force $\genForceStiffC = \di
 % \end{align}
 
 \paragraph{Damping.}
-Using the same damping matrix $\sysDissMatC = \veeMatOp\bodyDissMatCp{}{}$ with $\bodyDissMatCp{}{} \in \SymMatP(4)$ as with the body based approach, we find the same damping force \eqref{eq:RBCtrlBodyDiss}. 
-
+Using the same damping matrix $\sysDissMatC = \veeMatOp\bodyDissMatCp{}{}$ with $\bodyDissMatCp{}{} \in \SymMatP(4)$ as with the body based approach, we find the same damping force $\genForceDissC$ as is \eqref{eq:RBCtrlBodyDiss}. 
 
 \paragraph{Inertia.}
 Using the same inertia matrix as for the body based approach $\sysInertiaMatC = \veeMatOp\bodyInertiaMatCp{}{}$ with $\bodyInertiaMatCp{}{} \in \SymMatP(4)$ we find the controlled inertial force $\genForceInertiaC$ as
@@ -199,6 +199,14 @@ Using the same inertia matrix as for the body based approach $\sysInertiaMatC = 
 \end{align}
 This result is similar to the previous body based approach \eqref{eq:ClosedLoopRBApproach2}, only differing by replacing $\ConnMatC(\sysVel)$ with $\ConnMatC(\sysVelE)$.
 Consequently with this approach the closed loop dynamics are not autonomous.
+
+\paragraph{Total energy.}
+The total error energy from \eqref{eq:DefTotalErrorEnergy} for the controlled free rigid body is
+\begin{align}
+ \totalEnergyC = \tfrac{1}{2} \norm[\bodyInertiaMatC{}{}]{\sysVel - \Ad{\bodyHomoCoord{}{}^{-1}\bodyHomoCoordR{}{}} \sysVelR}^2 + \tfrac{1}{2} \norm[\bodyStiffMatCp{}{}]{ (\bodyHomoCoord{}{} - \bodyHomoCoordR{}{} )^\top}^2
+ .
+\end{align}
+As shown above, it is a Lyapunov function for any feasible reference trajectory $t\mapsto (\bodyHomoCoordR{}{}, \sysVelR)(t)$.
 
 % \paragraph{Error coordinates and velocity.}
 % Since the norm in \eqref{eq:PotentialRigidBodyAppOne} is invariant to left translation of the argument, it can be stated as
@@ -255,23 +263,46 @@ Consequently with this approach the closed loop dynamics are not autonomous.
 
 \subsection{Rigid body systems}\label{sec:CtrlApproachEnergyRBS}
 As for the previous approaches we use the rigid body structure, i.e.\ the configurations $\bodyHomoCoord{\BidxI}{\BidxII}(\sysCoord)$ and velocities $\bodyVel{\BidxI}{\BidxII}(\sysCoord, \sysVel) = \bodyJac{\BidxI}{\BidxII}(\sysCoord) \sysVel$, as inspiration for controlled kinetics.
-Assigning stiffness, damping and inertia $\bodyStiffMatCp{\BidxI}{\BidxII}, \bodyDissMatCp{\BidxI}{\BidxII}, \bodyInertiaMatCp{\BidxI}{\BidxII} \in \SymMatSP(4)$ to each absolute and relative configuration leads to the following potential energy $\potentialEnergyC$, damping $\sysDissMatC$ and inertia matrix $\sysInertiaMatC$:
+Assigning stiffness, damping and inertia $\bodyStiffMatCp{\BidxI}{\BidxII}, \bodyDissMatCp{\BidxI}{\BidxII}, \bodyInertiaMatCp{\BidxI}{\BidxII} \in \SymMatSP(4)$ to each absolute and relative configuration leads to the following potential energy $\potentialEnergyC$, damping $\sysDissMatC$ and inertia matrix $\sysInertiaMatC$ required above.
+Note that the body matrices do not have to be positive definite, only the resulting system matrices and the potential have to be positive definite to ensure stability.
+
 \begin{RedBox}
+Overall, the desired controlled system for the energy based approach takes the form
 \begin{subequations}\label{eq:CtrlApproachEnergyRBS}
 \begin{align}
- \potentialEnergyC(\sysCoord,\sysCoordR) &= \sumBodiesAB \tfrac{1}{2} \norm[\bodyStiffMatCp{\BidxI}{\BidxII}]{(\bodyHomoCoord{\BidxI}{\BidxII}(\sysCoord) - \bodyHomoCoord{\BidxI}{\BidxII}(\sysCoordR))^\top}^2,&
- \bodyStiffMatCp{\BidxI}{\BidxII} &\in \SymMatSP(4)
- \label{eq:GenForceStiffControlEnergy}
+ \genForceInertiaC + \genForceDissC + \genForceStiffC = \tuple{0}
+\end{align}
+where
+\begin{align}
+ \genForceStiffC
+ &= \differential \potentialEnergyC,&
+% &= \sum\nolimits_{\BidxI,\BidxII} \bodyJac{\BidxI}{\BidxII}^\top \veeTwoOp \big( (\idMat[4] - \bodyHomoCoord{\BidxI}{\BidxII}^{-1}\bodyHomoCoordR{\BidxI}{\BidxII}) \bodyStiffMatCp{\BidxI}{\BidxII} \big),
+ \potentialEnergyC &= \sumBodiesAB \tfrac{1}{2} \norm[\bodyStiffMatCp{\BidxI}{\BidxII}]{(\bodyHomoCoord{\BidxI}{\BidxII} - \bodyHomoCoord{\BidxI}{\BidxII})^\top}^2,&
+ &\differentialR\potentialEnergyC = -\sysTransportMap^\top \differential\potentialEnergyC
+\label{eq:GenForceStiffControlEnergy}\\
+ \genForceDissC &= \sysDissMatC \sysVelE,&
+ \sysDissMatC &= \sum\nolimits_{\BidxI,\BidxII} \bodyJac{\BidxI}{\BidxII}^\top \bodyDissMatC{\BidxI}{\BidxII} \bodyJac{\BidxI}{\BidxII},&
+ &\sysVelE = \sysVel - \sysTransportMap \sysVelR
 \\
- \sysDissMatC(\sysCoord) &= \sumBodiesAB \bodyJac{\BidxI}{\BidxII}^\top(\sysCoord) \, \veeMatOp(\bodyDissMatCp{\BidxI}{\BidxII}) \bodyJac{\BidxI}{\BidxII}(\sysCoord),&
- \bodyDissMatCp{\BidxI}{\BidxII} &\in \SymMatSP(4)
-\\
- \sysInertiaMatC(\sysCoord) &= \sumBodiesAB \bodyJac{\BidxI}{\BidxII}^\top(\sysCoord) \, \veeMatOp(\bodyInertiaMatCp{\BidxI}{\BidxII}) \bodyJac{\BidxI}{\BidxII}(\sysCoord),&
- \bodyInertiaMatCp{\BidxI}{\BidxII} &\in \SymMatSP(4)
-\end{align} 
-\end{subequations}
+ %\genForceInertiaCoeffC{\LidxI} &= \sysInertiaMatCoeffC{\LidxI\LidxII} \sysVelCoeffEd{\LidxII} + \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII}\sysVelCoeff{\LidxIII} \sysVelCoeffE{\LidxII},&
+ \genForceInertiaC &= \sysInertiaMatC \sysVelEd + \gyroForceC,&
+ \sysInertiaMatC &= \sum\nolimits_{\BidxI,\BidxII} \bodyJac{\BidxI}{\BidxII}^\top \bodyInertiaMatC{\BidxI}{\BidxII} \bodyJac{\BidxI}{\BidxII},&
+ &\gyroForceCoeffC{\LidxI} = \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII} \sysVelCoeff{\LidxIII} \sysVelCoeffE{\LidxII}
+\end{align}
+%\vspace{-5ex}
+%\begin{align}
+% \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII} = \tfrac{1}{2}\big( \partial_\LidxIII \sysInertiaMatCoeffC{\LidxI\LidxII} + \partial_\LidxII \sysInertiaMatCoeffC{\LidxI\LidxIII} - \partial_\LidxI \sysInertiaMatCoeffC{\LidxII\LidxIII} + \BoltzSym{\LidxV}{\LidxI}{\LidxII} \sysInertiaMatCoeffC{\LidxV\LidxIII} + \BoltzSym{\LidxV}{\LidxI}{\LidxIII} \sysInertiaMatCoeffC{\LidxV\LidxII} - \BoltzSym{\LidxV}{\LidxII}{\LidxIII} \sysInertiaMatCoeffC{\LidxV\LidxI} \big)
+% .
+% %\LidxI, \LidxII, \LidxIII = 1,\ldots,\dimConfigSpace
+%\end{align}
+The total error energy $\totalEnergyC$ is a Lyapunov function for any feasible reference trajectory
+\begin{align}\label{eq:DefTotalErrorEnergy2}
+ \totalEnergyC = \tfrac{1}{2} \norm[\sysInertiaMatC]{\sysVelE}^2 + \potentialEnergyC
+ .
+\end{align}
+
+\end{subequations} 
 \end{RedBox}
-Note that the body matrices do not have to be positive definite, only the resulting system matrices and the potential have to be positive definite to ensure stability.
 
 \paragraph{Transport map.}
 The potential $\potentialEnergyC$ and the resulting force $\differential \potentialEnergyC$ are identical to the previous approaches, see e.g.\ \eqref{eq:GenForceStiffControlParticles}.
@@ -284,4 +315,3 @@ The condition \eqref{eq:ReqTransportMap} for the transport map $\sysTransportMap
 with the shorthand notation $\bodyHomoCoordE{\BidxI}{\BidxII} = \bodyHomoCoord{\BidxI}{\BidxII}^{-1}(\sysCoordR) \bodyHomoCoordE{\BidxI}{\BidxII}(\sysCoord)$ and $\bodyJacR{\BidxI}{\BidxII} = \bodyJac{\BidxI}{\BidxII}(\sysCoordR)$.
 There is no general solution for this, the transport map $\sysTransportMap$ has to be computed for each example individually.
 A major caveat of this approach is that there is no general guaranty on the existence of a transport map.
-

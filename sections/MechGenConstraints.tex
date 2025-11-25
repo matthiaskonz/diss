@@ -1,9 +1,9 @@
 \section{Additional general constraints}
-So far we dealt with geometric constraints and essentially eliminated them by suitable choice of coordinates.
-This section considers additional constraints that may also depend on velocity and/or even acceleration, but sticks to the chosen coordinates $\sysCoord$ and $\sysVel$.
+So far we only assumed only geometric constraints, and essentially eliminated them by suitable choice of velocity coordinates.
+In this section we consider additional, more general constraints that may also depend on velocity and/or even acceleration, but sticks to the chosen coordinates $\sysCoord$ and $\sysVel$.
 
 \paragraph{Types of constraints.}
-Recall that any smooth constraint is equivalent to its derivative supplemented by the appropriate initial condition.
+Recall from \eqref{eq:DiffConstraint} that any smooth constraint is equivalent to its derivative supplemented by the appropriate initial condition.
 We may consider the following types of constraints
 \begin{subequations}\label{eq:PossibleConstraintsGauss}
 \begin{itemize}
@@ -45,7 +45,7 @@ All these constraints can be formulated as \textit{linear acceleration constrain
 
 \paragraph{Gauss' principle.}
 Let the free system (without these additional constraints) be governed by the acceleration $\sysVeld = \sysInertiaMat^{-1}\sysForce$.
-Then Gauss' principle for the system with the additional constraint states
+Then Gauss' principle states that the equations of motion for the system with the additional constraint states must solve the following minimization problem
 \begin{align}\label{eq:GaussPrincipleAccConstraints}
  \begin{array}{rl}
   \minOp[\sysVeld\in\RealNum^{\dimConfigSpace}] & \GaussianConstraint = \tfrac{1}{2} \sysVeld^\top \sysInertiaMat \sysVeld - \sysVeld^\top \sysForce + \GaussianConstraint_0 \\
@@ -53,12 +53,12 @@ Then Gauss' principle for the system with the additional constraint states
  \end{array}
 \end{align}
 This is a standard quadratic optimization problem with well established solutions.
-Let $\rank\accConstraintMat = c \leq \dimConfigSpace$ and assume that $\accConstraintB$ lies in the column space $\accConstraintMat$, i.e. the constraint equations is solvable.
+Let $\rank\accConstraintMat = c \leq \dimConfigSpace$ and assume that $\accConstraintB$ lies in the column space $\accConstraintMat$, i.e. the constraint equation is solvable.
 For $c=\dimConfigSpace$ the trivial solution is $\sysVel = \accConstraintMat^{-1}\accConstraintB$.
 For the common case $0 < c < \dimConfigSpace$ we may consider two solution approaches:
 
 \paragraph{Solution using null space.}
-Similar to the choice of minimal velocity coordinates above \fixme{[link]} we may formulate \textit{all} solution to the constraint equation as $\sysVeld = \mat{W}\tuple{\alpha} + \tuple{w}$.
+Similar to the choice of minimal velocity coordinates in \autoref{sec:MathCoordinates}, we may formulate \textit{all} solution to the constraint equation as $\sysVeld = \mat{W}\tuple{\alpha} + \tuple{w}$.
 The columns of the matrix $\mat{W}\in\RealNum^{\dimConfigSpace\times c}$ span the null space of $\accConstraintMat$, i.e.\ $\accConstraintMat \mat{W}=\mat{0}$ and $\rank\mat{W} = \dimConfigSpace-c$. 
 The tuple $\tuple{w} \in \RealNum^\dimConfigSpace$ is any solution to the constraint equation, i.e.\ $\accConstraintMat\tuple{w} = \accConstraintB$.
 The variables $\tuple{\alpha} \in \RealNum^{\dimConfigSpace-c}$ may be called the \textit{acceleration coordinates}.
@@ -80,7 +80,7 @@ Finally, the equations of motion of the constrained system are
 \end{align}
 
 \paragraph{Solution using Lagrange multipliers.}
-Another common solution approach to \eqref{eq:GaussPrincipleAccConstraints} utilizes the concept \textit{Lagrange multipliers} (see e.g.\ \cite[ch.\,14]{Luenberger:LinearAndNonlinearProgramming}):
+Another common solution approach to \eqref{eq:GaussPrincipleAccConstraints} utilizes the concept of \textit{Lagrange multipliers} (see e.g.\ \cite[ch.\,14]{Luenberger:LinearAndNonlinearProgramming}):
 Define a \textit{Lagrangian} $\Lagrangian = \GaussianConstraint + \LagrangeMult^\top (\accConstraintMat\sysVeld - \accConstraintB)$ with the Lagrange multipliers $\LagrangeMult \in \RealNum^c$.
 Its critical points are solved from
 \begin{align}\label{eq:EOMMultipliers}
@@ -91,8 +91,8 @@ Its critical points are solved from
  =
  \begin{bmatrix} \sysForce \\ \accConstraintB \end{bmatrix}.
 \end{align}
-Similar to the section on the principle of constraint release, the term $\accConstraintMat^\top \LagrangeMult$ may be interpreted as the generalized reaction force on the system to enforce the constraint.
-
+Similar to \autoref{sec:MechConstrainedFirstPrinciples} on the principle of constraint release, the term $\accConstraintMat^\top \LagrangeMult$ may be interpreted as the generalized reaction force on the system to enforce the constraint.
+ 
 If the constraint matrix $\accConstraintMat$ has full rank, we may use block matrix inversion
 \begin{align}
  \begin{bmatrix} \sysInertiaMat & \accConstraintMat^\top \\ \accConstraintMat & \mat{0} \end{bmatrix}^{-1}
@@ -104,19 +104,21 @@ to eliminate the Lagrange multipliers and obtain the equations of motion as
  \sysCoordd = \kinMat\sysVel, 
 \quad
 % \sysVeld = (\sysInertiaMat^{-1} - \sysInertiaMat^{-1} \accConstraintMat^\top (\accConstraintMat \sysInertiaMat^{-1} \accConstraintMat^\top)^{-1} \accConstraintMat \sysInertiaMat^{-1}) \sysForce + \sysInertiaMat^{-1} \accConstraintMat^\top (\accConstraintMat \sysInertiaMat^{-1} \accConstraintMat^\top)^{-1} \accConstraintB.
- \sysVeld = \sysInertiaMat^{-1} \big( \sysForce + \accConstraintMat^\top (\accConstraintMat \sysInertiaMat^{-1} \accConstraintMat^\top)^{-1} (\accConstraintB - \accConstraintMat \sysInertiaMat^{-1}\sysForce) \big).
+ \sysVeld = \sysInertiaMat^{-1} \big( \sysForce + \accConstraintMat^\top (\accConstraintMat \sysInertiaMat^{-1} \accConstraintMat^\top)^{-1} (\accConstraintB - \accConstraintMat \sysInertiaMat^{-1}\sysForce) \big)
+ .
 \end{align}
 
-\fixme{
-The possibility of handling such a variety of constraints might put Gauß' principle in a superior position compared to other principles as pointed out in \cite[p.\,525]{Hamel:TheoretischeMechanik}.
-The Lagrange-d'Alembert principle handles linear kinematic constraints $\kinConstraintMat \sysCoordd = \tuple{0}$ by requiring $\kinConstraintMat \delta\sysCoord = \tuple{0}$. %motivated by the principle that reaction forces do no work.
-However, there are no real world examples of nonlinear nonholonomic constraints \cite[p.\,499]{Hamel:TheoretischeMechanik}, \cite[ch.\,IV]{Neimark:NonholonomicSystems}, \cite[p.\,96]{Schwertassek:MultibodySystems} and none of acceleration constraints \cite[p.\,505 \& 525]{Hamel:TheoretischeMechanik}, so one should be careful with this context.
-Note for example that for nonlinear kinematic and acceleration constraints the reaction forces $\LagrangeMult$ enter the balance of energy.
-}
+Restricting to geometric constraints and linear velocity constraints, we could derive the same results using d'Alembert's principle \eqref{eq:DAlembertPrinciple}.
+Applying Hamilton's principle \eqref{eq:HamiltonPrinciple} to a system with velocity constraints, i.e.\ constraining the minimizing path by the constraints leads to so-called vakonomic mechanics, a term coined in \cite{Kozlov:vakonomic}.
+These equations of motion differ from the the ones above in the nonholonomic case, i.e. unless the constraints are \textit{integrable}.
+This issue may be mended by imposing the kinematic constraint on the variation, see \cite[pp.\ 208--213]{Bloch:NonholonomicMechanics}.
+
+From the first principles stated in \autoref{sec:MechConstrainedFirstPrinciples}, Gauss' principle is the only one that is applicable for the case of acceleration constraints.
+The possibility of handling such a variety of constraints might put Gauss' principle in a superior position compared to other principles as pointed out in \cite[p.\ 525]{Hamel:TheoretischeMechanik}.
+On the other side, there are no real world examples of nonlinear nonholonomic constraints \cite[p.\ 499]{Hamel:TheoretischeMechanik}, \cite[ch.\ IV]{Neimark:NonholonomicSystems}, \cite[p.\ 96]{Schwertassek:MultibodySystems} and none of acceleration constraints \cite[p.\ 505 \& 525]{Hamel:TheoretischeMechanik}, so there is no way of \textit{physically} validate the resulting equations of motion.
+%Note for example that for nonlinear kinematic and acceleration constraints the reaction forces $\LagrangeMult$ enter the balance of energy.
+
+Gauss suggested in \cite{Gauss:Principle} also the application to inequality constraints which will not be discussed here.
+For a contemporary discussion and applications of this see \cite[sec.\ 6.1]{Pfeiffer:UnilateralContacts}.
+
 %\cite[p.\,96]{Schwertassek:MultibodySystems} \textit{for all known mechanical nonholonomic constraints are linear in the velocity variables: Ref to} \cite{Hamel:TheoretischeMechanik}
-
-\fixme{
-Gauß suggested in \cite{Gauss:Principle} also the application to inequality constraints which will not be discussed here.
-For a contemporary discussion and applications of this see \cite[sec.\,6.1]{Pfeiffer:UnilateralContacts}.
-}
-

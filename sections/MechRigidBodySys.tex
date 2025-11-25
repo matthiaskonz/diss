@@ -203,14 +203,15 @@ with the adjoint representation introduced in \eqref{eq:defAdjointSE3}.
 %  .
 % \end{align*}
 Differentiation of $\bodyHomoCoord{\BidxI}{\BidxII} \bodyHomoCoord{\BidxII}{\BidxI} = \idMat$ yields 
-\begin{align}
+\begin{multline}
  \tdiff{t} \big(\bodyHomoCoord{\BidxI}{\BidxII} \bodyHomoCoord{\BidxII}{\BidxI}\big)
- &= \bodyHomoCoordd{\BidxI}{\BidxII} \bodyHomoCoord{\BidxII}{\BidxI} + \bodyHomoCoord{\BidxI}{\BidxII} \bodyHomoCoordd{\BidxII}{\BidxI}
+ = \bodyHomoCoordd{\BidxI}{\BidxII} \bodyHomoCoord{\BidxII}{\BidxI} + \bodyHomoCoord{\BidxI}{\BidxII} \bodyHomoCoordd{\BidxII}{\BidxI}
  = \bodyHomoCoord{\BidxI}{\BidxII} \wedOp(\bodyVel{\BidxI}{\BidxII}) \bodyHomoCoord{\BidxII}{\BidxI} + \wedOp(\bodyVel{\BidxII}{\BidxI})
- = \mat{0}&
- &\Leftrightarrow&
- \bodyVel{\BidxII}{\BidxI}{} &= -\Ad{\bodyHomoCoord{\BidxI}{\BidxII}{}{}} \bodyVel{\BidxI}{\BidxII}{}
-\end{align}
+ = \mat{0}
+\\
+ \Leftrightarrow\qquad
+ \bodyVel{\BidxII}{\BidxI}{} = -\Ad{\bodyHomoCoord{\BidxI}{\BidxII}{}{}} \bodyVel{\BidxI}{\BidxII}{}
+\end{multline}
 and obviously 
 \begin{align}
  \bodyVel{\BidxI}{\BidxI}{} = \tuple{0}.
@@ -219,7 +220,7 @@ and obviously
 
 \paragraph{System velocity and body Jacobians.}
 Based on their definition \eqref{eq:DefBodyVelocityMulti}, the body velocities $\bodyVel{\BidxI}{\BidxII}$ can be seen as a function of the system coordinates $\sysCoord$ and their derivatives $\sysCoordd = \kinMat(\sysCoord)\sysVel$.
-Crucially the velocity is linear in $\sysCoordd$ and consequently linear in the system velocity $\sysVel$ and we can write
+Crucially, the velocity is linear in $\sysCoordd$ and consequently linear in the system velocity $\sysVel$ and we can write
 \begin{align}\label{eq:DefBodyJacobian}
  \bodyVel{\BidxI}{\BidxII}(\sysCoord, \sysVel) &= \bodyJac{\BidxI}{\BidxII}(\sysCoord) \sysVel,&
  \bodyJac{\BidxI}{\BidxII}(\sysCoord) &= \pdiff[\,\bodyVel{\BidxI}{\BidxII}]{\sysVel}(\sysCoord) = \pdiff{\sysCoordd} \veeOp\Big( \bodyHomoCoord{\BidxII}{\BidxI}(\sysCoord) \diff{t} \big(\bodyHomoCoord{\BidxI}{\BidxII}(\sysCoord) \big) \Big) \kinMat.
@@ -291,7 +292,7 @@ These terms are significantly more cumbersome, so they are not displayed explici
 \subsection{Inertia}\label{sec:RBSInertia}
 \paragraph{Kinetic energy and inertia matrix.}
 The kinetic energy $\kineticEnergy$ of a rigid body system is simply the sum of the kinetic energies of its bodies.
-Combining this with the kinetic energy \eqref{eq:RigidBodyKineticEnergy} of a single free rigid body and the formulation of the absolute body velocities $\bodyVel{0}{\BidxII}$ in terms of the chosen coordinates using the body Jacobian $\bodyJac{0}{\BidxII}$ from \eqref{eq:DefBodyJacobian}, yields
+Combining this with the kinetic energy \eqref{eq:RigidBodyKineticEnergy} of a single free rigid body and the formulation of the absolute body velocities $\bodyVel{0}{\BidxII}$ in terms of the chosen coordinates using the body Jacobian $\bodyJac{0}{\BidxII}(\sysCoord)$ from \eqref{eq:DefBodyJacobian}, yields
 \begin{align}\label{eq:RBSKineticEnergy}
  \kineticEnergy
  &= \sumBodies \tfrac{1}{2} \bodyVel{0}{\BidxII}^\top \bodyInertiaMat{0}{\BidxII}\bodyVel{0}{\BidxII}
@@ -372,15 +373,15 @@ This is
  \gravityAccWrench^\top = [\gravityAcc^\top, \tuple{0}_{1\times3} ],
 \end{align}
 where $\bodyInertiaMatp{0}{\BidxII} = \veeMatOp(\bodyInertiaMat{0}{\BidxII})$ is the body inertia matrix and $\gravityAccWrench$ is Earth's gravity wrench.
-
-Finally, the generalized force of gravity on a rigid body system may be formulated as
+The generalized force of gravity on a rigid body system may be formulated as
 \begin{multline}\label{eq:RBSGenForceGravity}
  \genForceGravity = \differential\potentialGravity
  = \frac{\partial \potentialGravityd}{\partial \sysVel}
  = \frac{\partial}{\partial \sysVel} \sumBodies \tr\big( \bodyHomoCoord{0}{\BidxII} \wedOp(\bodyVel{0}{\BidxII}) \bodyInertiaMatp{0}{\BidxII} \wedOp(\gravityAccWrench)^\top \big)
 \\ 
  = \sumBodies \Big(\frac{\partial \bodyVel{0}{\BidxII}}{\partial \sysVel}\Big)^\top \veeTwoOp\big( \bodyHomoCoord{0}{\BidxII}^\top \wedOp(\gravityAccWrench) \bodyInertiaMatp{0}{\BidxII} \big) 
- = \sumBodies \bodyJac{0}{\BidxII}^\top \bodyInertiaMat{0}{\BidxII} \, \Ad{\bodyHomoCoord{0}{\BidxII}}^{-1} \gravityAccWrench.
+ = \sumBodies \bodyJac{0}{\BidxII}^\top \bodyInertiaMat{0}{\BidxII} \, \Ad{\bodyHomoCoord{0}{\BidxII}}^{-1} \gravityAccWrench
+ .
 \end{multline}
 
 \subsection{Stiffness}
@@ -401,6 +402,7 @@ The total energy is
 \begin{align}
  \potentialStiff
  = \sum_{\BidxI=0}^{\numRigidBodies-1} \sum_{\BidxII=\BidxI+1}^{\numRigidBodies} \bodyPotentialStiff{\BidxI}{\BidxII}
+ .
 \end{align}
 
 Using the results from \autoref{sec:RBStiffness} it may be shown that each potential can be formulated as
@@ -409,8 +411,7 @@ Using the results from \autoref{sec:RBStiffness} it may be shown that each poten
  = \tfrac{1}{2} \norm[\bodyStiffMatp{\BidxI}{\BidxII}]{(\bodyHomoCoordR{\BidxI}{\BidxII}^{-1} \bodyHomoCoord{\BidxI}{\BidxII} - \idMat[4])^\top}^2
 \end{align}
 with the constant parameters $\bodyStiffMatp{\BidxI}{\BidxII} \in \SymMat(4)$ and $\bodyHomoCoordR{\BidxI}{\BidxII}\in \SpecialEuclideanGroup(3)$ resulting from the particular spring distribution between body $\BidxI$ and $\BidxII$.
-
-Finally, the generalized force due to an arbitrary constellation of linear springs on a rigid body system may be formulated as
+Finally, the generalized force due to an arbitrary constellation of linear springs on a rigid body \textit{system} may be formulated as
 \begin{multline}\label{eq:RBSGenForceStiff}
  \genForceStiff = \differential\potentialStiff
  = \frac{\partial \potentialStiffd}{\partial \sysVel}
@@ -421,6 +422,8 @@ Finally, the generalized force due to an arbitrary constellation of linear sprin
 \\
  = \sumBodiesAB \bodyJac{\BidxI}{\BidxII}^\top \veeTwoOp\big((\idMat[4] - \bodyHomoCoord{\BidxI}{\BidxII}^{-1} \bodyHomoCoordR{\BidxI}{\BidxII}) \bodyStiffMatp{\BidxI}{\BidxII} \big)
 \end{multline}
+Note that we obtain the same results for a time variant $\bodyHomoCoordR{\BidxI}{\BidxII}(t)\in \SpecialEuclideanGroup(3)$.
+Only the derivation is slightly more cumbersome.
 
 
 \subsection{Dissipation}
@@ -439,10 +442,10 @@ For system of rigid bodies we have the dissipation function
  = \tfrac{1}{2} \sysVel^\top \underbrace{\sum_{\BidxI=0}^{\numRigidBodies} \sum_{\BidxII=0, \BidxII\neq\BidxI}^{\numRigidBodies} \bodyJac{\BidxI}{\BidxII}^\top \bodyDissMat{\BidxI}{\BidxII} \bodyJac{\BidxI}{\BidxII}}_{\sysDissMat} \sysVel
 \end{align}
 where $\sysDissMat$ is called the system dissipation matrix.
-
 Finally, the generalized force due to viscous friction on a rigid body system may be formulated as
 \begin{align}
  \genForceDiss = \pdiff[\dissFkt]{\sysVel} = \sysDissMat \sysVel
+ .
 \end{align}
 
 \subsection{Summary}\label{sec:MechRBSSummary}
@@ -515,5 +518,6 @@ The explicit equations of motion reads
 \end{align}
 \end{subequations} 
 The first step \eqref{eq:RBSAlgoJacobian} requires differentiation, so must be performed symbolically.
-The remaining steps only require basic linear algebra, so can be preformed numerically.
+The remaining steps only require basic linear algebra, so can be performed numerically.
 For small systems it might be still reasonable to compute $\sysInertiaMat(\sysCoord)$ symbolically, but for larger systems the explicit expressions can be overwhelming even for contemporary computers.
+

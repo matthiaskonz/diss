@@ -11,7 +11,7 @@ is called the \textit{configuration space}.
 We require $\pdiff[\particleGeoConstraint]{\particleCoord}(\particleCoord)$ to have a constant, though not necessarily full rank.
 %The dimension of the configuration space is $\dim\particleConfigSpace = 3\numParticles - \rank\pdiff[\particleGeoConstraint]{\particleCoord} = \dimConfigSpace$.
 
-\subsection{First principles}
+\subsection{First principles}\label{sec:MechConstrainedFirstPrinciples}
 There are several first principles for systems of constrained particles (see \cite{Lanczos:Variational} for a great overview).
 Of course they are mathematically equivalent, i.e.\ lead to the same motion, but each may offer a useful point of view for different problems.
 The following states some of the more popular principles in terms of the notation of this work:
@@ -35,7 +35,7 @@ This principle states (e.g.\ \cite[sec.\ IV.2]{Lanczos:Variational}, \cite[sec.\
 The $\pdiff[\particleGeoConstraint]{\particleCoord} \delta\particleCoord = \tuple{0}$ part is commonly stated as: The \textit{virtual displacements} $\delta \particlePos{\PidxI}$ are tangents to possible motions.
 %For particle positions constrained by $\particleGeoConstraint(\particleCoord) = \tuple{0}$ the displacements have to fulfill $\pdiff[\particleGeoConstraint]{\particleCoord} \delta\particleCoord = \tuple{0}$.
 
-\paragraph{Gauß principle.}
+\paragraph{Gauss principle.}
 Gauss's principle of least constraint was originally described in \cite{Gauss:Principle} in words rather than equations.
 Maybe because of this, one finds somewhat different mathematical formulations in more contemporary sources, e.g.\ \cite[sec.\ 7]{Paesler:PrinzipeDerMechanik}, \cite[sec.\ IV.8]{Lanczos:Variational}, \cite[sec.\,2.2]{Bremer:ElasticMultibodyDynamics}. %\cite[sec.\,VII.8]{Hamel:TheoretischeMechanik} %\cite[p.\,82]{UdwadiaKalaba:AnalyticalDynamics}
 %For some historical background see \cite[§6.6]{Papastavridis:AnalyticalMechanics}.

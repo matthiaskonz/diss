@@ -158,7 +158,7 @@ Using the substitutions defined in \eqref{eq:CtrlGaussPrincipleForces} and $\mat
   - \big( \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII}'(\sysCoordR, \sysCoord) - \varPsi_{\LidxI}^{\LidxV}(\sysCoord, \sysCoordR) \ConnCoeffLC{\LidxV}{\LidxII}{\LidxIII}(\sysCoord)  \big) \sysVelCoeff{\LidxII} \sysVelCoeff{\LidxIII} \big)
 \end{align}
 Obviously the total energy $\totalEnergyC$ is not a Lyapunov function for a general reference trajectory.
-It is, however, for the very special case of $\sysVelR = \tuple{0}$, i.e.\ proves stability for a constant reference configuration $\sysCoordR = \const$. 
+It is, however, for the special case of $\sysVelR = \tuple{0}$, i.e.\ proves stability of a constant reference configuration. 
 
 \subsection{Free rigid body}\label{sec:CtrlApproachParticlesSingleBody}
 Consider the free rigid body discussed in \autoref{sec:RB} as a special case of a particle system.
@@ -197,7 +197,7 @@ The analog holds for the entries of the \textit{desired damping matrix} $\bodyDi
 
 Introduce the translational $\v(t) \in \RealNum^3$ and angular velocity $\w(t)\in \RealNum^3$ merged into $\bodyVel{}{} = [\v^\top, \w^\top]^\top = \veeOp(\bodyHomoCoord{}{}^{-1} \bodyHomoCoordd{}{})$ as velocity coordinates.
 Furthermore, we introduce the \textit{configuration error} $\bodyHomoCoordE{}{} = \bodyHomoCoordR{}{}^{-1} \bodyHomoCoord{}{}$ and exploit the invariance of the norm to left translation of the argument to express the desired energies \eqref{eq:RBCtrlEnergiesParticles} as
-\begin{subequations}
+\begin{subequations}\label{eq:CtrlApproachParticleRBEnergies}
 \begin{align}
 %  \potentialEnergyC(\bodyHomoCoordE{}{}) &= \tfrac{1}{2} \norm[\bodyStiffMatCp{}{}]{\big(\idMat[4] - \bodyHomoCoordE{}{}^{-1}\big)^\top}^2
 % \\
@@ -256,16 +256,16 @@ or more explicitly
  - \begin{bmatrix} \mc\RE^\top\wedOp(\wR) & -\mc\RE^\top\wedOp(\wR)\wedOp(\sc) \\ \mc\wedOp(\sc)\RE^\top\wedOp(\wR) & \wedMatOp(\RE^\top\wedOp(\wR)\veeMatOp(\Jc))\RE^\top \end{bmatrix}  \begin{bmatrix} \vR \\ \wR \end{bmatrix}
 \end{align}
 \end{subequations}
-The closed loop kinetic equation $\genForceInertiaC + \genForceDissC + \genForceStiffC = \tuple{0}$ contains 30 tuning parameters within the matrices $\bodyInertiaMatCp{}{}$, $\bodyDissMatCp{}{}$, $\bodyStiffMatCp{}{} \in \SymMatP(4)$.
+The closed loop kinetic equation is $\genForceInertiaC + \genForceDissC + \genForceStiffC = \tuple{0}$ and the actual controller can be solved by combing this with the model kinetics.
+The total energy $\totalEnergyC = \kineticEnergyC + \potentialEnergyC$ can be obtained from \eqref{eq:CtrlApproachParticleRBEnergies}.
+Even though it contains more structure than the general approach above, it still is not a Lyapunov function for arbitrary reference trajectories.
+
+\fixme{
+The closed loop contains 30 tuning parameters within the matrices $\bodyInertiaMatCp{}{}$, $\bodyDissMatCp{}{}$, $\bodyStiffMatCp{}{} \in \SymMatP(4)$.
 The characteristic polynomial of the first order approximation of the system about any constant configuration $\sysCoordR=\const$ is $\det(\bodyInertiaMatC{}{} \lambda^2 + \bodyDissMatC{}{} \lambda + \bodyStiffMatC{}{})$ where $\bodyInertiaMatC{}{} = \veeMatOp(\bodyInertiaMatCp{}{})$, etc..
-
-\fixme{blah}
-
 In contrast to this, the characteristic polynomial resulting from the computed torque method (see \fixme{sec:ComputedTorque}) for this system is $\det(\idMat[6] \lambda^2 + \mat{K}_1 \lambda + \mat{K}_2)$, which has $\dimConfigSpace(\dimConfigSpace+1) = 42$ tuning parameters within the matrixes $\mat{K}_1,\mat{K}_2\in\SymMatP(6)$.
-
-\fixme{blah}
-
 A possible generalization of the rigid body potential $\potentialEnergyC$ which works with all $\tfrac{1}{2}n(n+1) = 21$ tuning parameters in a matrix $\bodyStiffMatC{}{} \in \SymMatP(6)$ is given in \fixme{sec:GenRigidBodyPotential}.
+}
 
 % \paragraph{Total energy.}
 % \newcommand{\GEbodyVelR}{\mat{\mathsf{\Xi}}_{\idxRef}}
@@ -313,7 +313,7 @@ A possible generalization of the rigid body potential $\potentialEnergyC$ which 
 
 \subsection{Rigid body systems}\label{sec:CtrlApproachParticlesRBS}
 Let the particles belong to a system of $\numRigidBodies$ rigid bodies with the body configurations $\bodyHomoCoord{\BidxI}{\BidxII}$ as discussed in \autoref{sec:RBSRigidBodySys}.
-The potential energy from \eqref{eq:SolCtrlGaussPrinciple} may be formulated as $\potentialEnergyC = \sum_{\BidxII=1}^{\numRigidBodies} \tfrac{1}{2} \norm[\bodyStiffMatCp{0}{\BidxII}]{\big(\bodyHomoCoord{0}{\BidxII} - \bodyHomoCoordR{0}{\BidxII}\big)^\top}^2$ with a body stiffness matrix $\bodyStiffMatCp{0}{\BidxII}$ resulting from \eqref{eq:CtrlMDK} for each body.
+The potential energy from \eqref{eq:SolCtrlGaussPrinciple} may be formulated as $\potentialEnergyC = \sum_{\BidxII=1}^{\numRigidBodies} \tfrac{1}{2} \norm[\bodyStiffMatCp{0}{\BidxII}]{\big(\bodyHomoCoord{0}{\BidxII} - \bodyHomoCoordR{0}{\BidxII}\big)^\top}^2$ with a body stiffness matrices $\bodyStiffMatCp{0}{\BidxII}$ for each body.
 This potential only captures stiffness w.r.t.\ the absolute configurations $\bodyHomoCoord{0}{\BidxII}$.
 Depending on the control objective it may be equally reasonable to consider a stiffness associated with the relative configurations $\bodyHomoCoord{\BidxI}{\BidxII}$ as illustrated in \autoref{fig:DoublePendulumPotentials}.
 \begin{figure}[ht]
@@ -393,3 +393,4 @@ The system inertia matrix $\sysInertiaMatC$ can be recovered from the first term
 \end{align}
 Though the body inertia matrices $\bodyInertiaMatCp{\BidxI}{\BidxII} \in \SymMatSP(4)$ from \eqref{eq:CtrlApproachParticlesRBSaccEnergyC} are only required to be positive semi-definite, the resulting system inertia matrix $\sysInertiaMatC(\sysCoord)\in\SymMatP(\dimConfigSpace)$ is required to be positive definite for the closed loop to be solvable.
 
+This approach will be applied to several examples later in this chapter.

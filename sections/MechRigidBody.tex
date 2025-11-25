@@ -308,7 +308,7 @@ The resulting generalized force is
  \caption{springs attached to a rigid body}
  \label{fig:RBStiffness}
 \end{figure}
-Assume that every particle of the rigid body with position $\particlePos{\PidxI}$ is connected to a position $\springHubPos{\PidxI} \in \RealNum^3$ by a linear spring with stiffness $\particleStiffness{\PidxI} \in\RealNum^{(+)}$, see \autoref{fig:RBStiffness}.
+Assume that every particle of the rigid body with position $\particlePos{\PidxI}$ is connected to a position $\springHubPos{\PidxI} \in \RealNum^3$ by a linear spring with stiffness $\particleStiffness{\PidxI} \in \RealNumSP$, see \autoref{fig:RBStiffness}.
 The resulting potential energy in terms of the rigid body coordinates $\sysCoord \cong (\r, \R)$ is
 \begin{align}\label{eq:RBStiffnessPotential}
  \potentialStiff(\sysCoord) &= \tfrac{1}{2} \sumParticles \particleStiffness{\PidxI} \norm{\r + \R \particleBodyPos{\PidxI} - \springHubPos{\PidxI}}^2.
@@ -399,7 +399,8 @@ Using the results from \autoref{sec:AppendixAttitudePotential} we may conclude t
 \paragraph{Stiffness parameters cont'd.}
 We may use the results above to substitute $\tuple{p}$ and $\mat{P}$ by the minimum configuration $(\rR, \RR)$ and the matrix $\bodyMOSs{}{}$.
 With a rather lengthy calculation we may reformulate the potential form \eqref{eq:RBStiffnessPotential2} as
-\begin{align}\label{eq:RBStiffnessPotential3}
+\begin{subequations}\label{eq:RBStiffnessPotential3}
+\begin{align}
  \potentialStiff(\sysCoord) &= \tfrac{1}{2} \bodyStiffness{}{}\norm{\r\!+\!\R\bodyCOS{}{} - (\rR \!+\! \RR\bodyCOS{}{})}^2
   + \tr\big(\wedMatOp(\bodyMOSs{}{})(\idMat[3]\!-\!\RR^\top \R)\big)
    + \potentialStiff_0
@@ -409,6 +410,7 @@ With a rather lengthy calculation we may reformulate the potential form \eqref{e
  + \tr\big(\wedMatOp(\bodyMOS{}{}) (\idMat[3]\!-\!\RR^\top \R)\big)
  + \potentialStiff_0
 \end{align}
+\end{subequations}
 % \begin{align}
 %  \potentialStiff(\sysCoord) &= \tfrac{1}{2} \bodyStiffness{}{}\norm{\r}^2 + \bodyStiffness{}{} \sProd{\r}{\R \bodyCOS{}{}} - \bodyStiffness{}{} \sProd{\r}{\rR + \RR \bodyCOS{}{}}
 %   - \tr\big((\wedMatOp(\bodyMOSs{}{}) \RR^\top \!+\! \bodyStiffness{}{}\bodyCOS{}{}(\rR \!+\! \RR \bodyCOS{}{})^\top) \R\big)
@@ -796,9 +798,9 @@ Combining the results above, the equations of motion of a free rigid body subjec
 % \bodyInertiaMat{}{}(\bodyVeld{}{}-\Ad{\G}^{-1} \gravityAccWrench) - \ad{\bodyVel{}{}}^\top \bodyInertiaMat{}{} \bodyVel{}{} + \bodyDissMat{}{} \bodyVel{}{} + \veeTwoOp \big( (\idMat[4] - \bodyHomoCoord{}{}^{-1} \bodyHomoCoordR{}{}) \bodyStiffMatp{}{} \big) &= \genForceEx.
 \end{align} 
 \end{subequations}
-Thee are three sets of ingredients:
+There are three sets of ingredients:
 \begin{itemize}
 \item The chosen coordinates are collected within $\bodyHomoCoord{}{}(t)\in\SpecialEuclideanGroup(3)$ and $\bodyVel{}{}(t)\in\RealNum^6$.
-\item The matrices $\bodyInertiaMatp{}{}, \bodyDissMatp{}{}, \bodyStiffMatp{}{} \in \SymMat(4)$ capture the distribution of mass, damping and stiffness.
+\item The matrices $\bodyInertiaMatp{}{}, \bodyDissMatp{}{}, \bodyStiffMatp{}{} \in \SymMatSP(4)$ capture the distribution of mass, damping and stiffness.
 \item External influences are collected within the gravity wrench $\gravityAccWrench^\top = [ \gravityAcc^\top, \tuple{0}_{1\times3} ]$, the equilibrium configuration of the springs $\bodyHomoCoordR{}{}(t) \in \SpecialEuclideanGroup(3)$ and the generalized external force $\genForceEx(t)\in\RealNum^6$.
 \end{itemize}

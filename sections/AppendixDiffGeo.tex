@@ -239,7 +239,7 @@ In the special case of coordinate basis vectors the transformation law \eqref{eq
  \BasisChangeCoeff{\LidxI}{\LidxWI} = \tpdiff[{\genCoordCoeff{\LidxI}}]{\genCoordCoeffW{\LidxWI}}, \ \iBasisChangeCoeff{\LidxWI}{\LidxI} = \tpdiff[{\genCoordCoeffW{\LidxWI}}]{\genCoordCoeff{\LidxI}}, \
  \ConnCoeffW{\LidxWI}{\LidxWIII}{\LidxWII} = \tpdiff[{\genCoordCoeffW{\LidxWI}}]{\genCoordCoeff{\LidxI}} \Big( \tfrac{\partial^2 \genCoordCoeff{\LidxI}}{\partial\genCoordCoeffW{\LidxWII} \partial\genCoordCoeffW{\LidxWIII}} + \ConnCoeff{\LidxI}{\LidxIII}{\LidxII} \tpdiff[{\genCoordCoeff{\LidxIII}}]{\genCoordCoeffW{\LidxWIII}} \tpdiff[{\genCoordCoeff{\LidxII}}]{\genCoordCoeffW{\LidxWII}} \Big)
 \end{align}
-which can be found in \eg \cite[Vol.\,2, p.\,221]{Spivak:DiffGeo} or \cite[p.\,145]{Abraham:FoundationsOfMechanics}.
+which can be found in e.g.\ \cite[Vol.\,2, p.\,221]{Spivak:DiffGeo} or \cite[p.\,145]{Abraham:FoundationsOfMechanics}.
 
 \subsection{Riemannian geometry}
 \paragraph{Riemannian metric.}
@@ -313,7 +313,7 @@ Note that the coordinate expressions for \eqref{eq:LeviCivitaMetric} and \eqref{
 \end{align}
 \end{subequations}
 The only source known to the author that states the result in \eqref{eq:DefConnCoeffLeviCivita} is \cite[eq.\ 8.24]{Misner:Gravitation}, though still restricted to minimal configuration coordinates.
-Most books state the coefficients of the Levi-Civita connection restricted to the case of coordinate basis vector in which case they are called the \textit{Christoffel symbols} (\eg \cite[sec.\,9.2]{Frankel:GeometryOfPhysics}):
+Most books state the coefficients of the Levi-Civita connection restricted to the case of coordinate basis vector in which case they are called the \textit{Christoffel symbols} (e.g.\ \cite[sec.\,9.2]{Frankel:GeometryOfPhysics}):
 \begin{align}
  \dirDiff{\LidxI} = \tpdiff{\genCoordCoeff{\LidxI}}
 \quad \Rightarrow \quad
@@ -335,7 +335,7 @@ With $\isysInertiaMatCoeff{\LidxI\LidxII}$ being the coefficients of the inverse
 \end{align}
 
 \paragraph{Hessian.}
-The Hessian of a scalar function $f$ on a Riemannian manifold may be defined as (\eg \cite[sec.\,6.1.4]{Bullo:GeometricControl})
+The Hessian of a scalar function $f$ on a Riemannian manifold may be defined as (e.g.\ \cite[sec.\,6.1.4]{Bullo:GeometricControl})
 \begin{align}
  (\Hess f)(\vect{u},\vect{v}) = \metricProd{\vect{u}}{\covDiffVect{\vect{v}}{\gradVect f}}.
 \end{align}
@@ -441,7 +441,7 @@ This determines the (Levi-Civita) connection coefficients $\ConnCoeffL{\LidxI}{\
  = \genForceInertiaCoeff{\LidxI},
 \qquad \LidxI = 1\ldots\dimConfigSpace
 \end{align}
-\ie the coefficients $\genForceInertiaCoeff{\LidxI}$ of the generalized inertia force are the projections of the covariant derivative $\covDiffVect{\vect{v}}{\vect{v}}$ of the velocity vector along itself to the tangent vectors $\partialVect_\LidxI$.
+i.e.\ the coefficients $\genForceInertiaCoeff{\LidxI}$ of the generalized inertia force are the projections of the covariant derivative $\covDiffVect{\vect{v}}{\vect{v}}$ of the velocity vector along itself to the tangent vectors $\partialVect_\LidxI$.
 Equivalently we could say $\genForceInertiaCoeff{\LidxI}$ are the coefficients of the co-vector corresponding to $\covDiffVect{\vect{v}}{\vect{v}}$.
 
 The conservative force of a potential $\potentialEnergy(\sysCoord)$ are $\genForcePotentialCoeff{\LidxI} = \metricProd{\partialVect_\LidxI}{\gradVect\potentialEnergy}$.

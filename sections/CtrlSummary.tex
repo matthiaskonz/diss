@@ -3,7 +3,7 @@ We have proposed three approaches for a control law for rigid body systems.
 Each of them formulated a sightly different template for the desired closed loop dynamics.
 The actual control law results from its combination with the model dynamics.
 For a fully actuated system the desired closed loop is achieved exactly.
-For an underactuated system or in the presence of input constraints one achieves closed loop dynamics that are ``as close as possible`` to the desired dynamics in the sense that the resulting acceleration differs the least.
+For an underactuated system or in the presence of input constraints one achieves closed loop dynamics that are ``as close as possible`` to the desired dynamics in the sense that the resulting acceleration differs in the least squares sense.
 
 The implementation of the controller is determined by the rigid body parameterization $\bodyHomoCoord{\BidxI}{\BidxII}(\sysCoord)$, the kinematics $\sysCoordd = \kinMat(\sysCoord) \sysVel$ and the \textit{desired} constitutive parameters $\bodyInertiaMatC{\BidxI}{\BidxII}$, $\bodyDissMatC{\BidxI}{\BidxII}$, $\bodyStiffMatC{\BidxI}{\BidxII}$.
 It is crucial to note that the resulting controlled system is invariant to the chosen coordinates $\sysCoord, \sysVel$ in the same way as the system model:

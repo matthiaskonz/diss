@@ -74,7 +74,7 @@ We may interpret this additional vector\footnote{The coefficients $\tilde{\tuple
 $\tilde{\tuple{b}}(\sysCoord, \sysVel, \sysCoordR, \sysVelR, \sysVelRd) \in \RealNum^{\dimConfigSpace}$ as a force that makes the closed loop kinetics feasible, i.e.\ realizable with the available controls.
 The residual Gaussian constraint is $\GaussianConstraintC_0 = \tfrac{1}{2} \norm[\sysInertiaMatC^{-1}]{\tilde{\sysForce}}^2$.
 
-In general, the value $\GaussianConstraintC_0$ is a measure of how much the resulting closed loop differs from the original desired system \eqref{eq:CtrlClosedLoopUnderactuated}.
+In general, the value $\GaussianConstraintC_0$ is a metric of how much the resulting closed loop differs from the original desired system \eqref{eq:CtrlClosedLoopUnderactuated}.
 One main goal when parameterizing the controller is to make $\GaussianConstraintC_0$ as small as possible.
 Unfortunately the form of $\GaussianConstraintC_0$ in \eqref{eq:UnderactuatedControlledKinetics} is not handy, mainly due to $\rank \mat{P}^\bot = \dimConfigSpace - \numInputs$.
 In the following we like to find a more handy formulation.

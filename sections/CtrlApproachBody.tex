@@ -4,7 +4,7 @@ However, the total energy $\totalEnergy$ does not, in general, serve as a Lyapun
 In this section we attempt to modify the energies to account for this.
 
 \subsection{Free rigid body}\label{sec:CtrlApproachBodySingleBody}
-Using the configuration error $\bodyHomoCoordE{}{} = \bodyHomoCoordR{}{}^{-1} \bodyHomoCoord{}{}$ and its velocity $\bodyVelE{}{} = \bodyHomoCoordE{}{}^{-1} \bodyHomoCoordEd{}{} = \bodyVel{}{} - \Ad{\bodyHomoCoordE{}{}}^{-1} \bodyVelR{}{}$ we modify the energies from \autoref{sec:CtrlApproachParticles} to
+Using the rigid body configuration error $\bodyHomoCoordE{}{} = \bodyHomoCoordR{}{}^{-1} \bodyHomoCoord{}{}$ and its velocity $\bodyVelE{}{} = \bodyHomoCoordE{}{}^{-1} \bodyHomoCoordEd{}{} = \bodyVel{}{} - \Ad{\bodyHomoCoordE{}{}}^{-1} \bodyVelR{}{}$ we modify the energies from \autoref{sec:CtrlApproachParticles} to
 \begin{subequations}\label{eq:RBCtrlEnergiesBody}
 \begin{align}
  \potentialEnergyC 
@@ -83,7 +83,7 @@ The change of the total energy $\totalEnergyC = \kineticEnergyC + \potentialEner
 \end{align}
 Note that $\bodyStiffMatCp{}{}, \bodyDissMatCp{}{}, \bodyInertiaMatCp{}{} \in \SymMatP(4)$ imply the positive definiteness of the total energy $\totalEnergyC$ and the dissipation function $\dissFktC$.
 Using this with the techniques from \cite{Koditschek:TotalEnergy}, one can show that ``almost'' all solutions of \eqref{eq:ClosedLoopRBApproach2} converge to $\bodyHomoCoordE{}{} = \idMat[4]$ and $\bodyVelE{}{} = \tuple{0}$.
-The remaining solutions are the constant ($\bodyVelE{}{} = \tuple{0}$) configurations $\bodyHomoCoordE{}{} \neq \idMat[4]$ which are critical points of the potential $\potentialEnergyC$, see \autoref{sec:RBStiffness}.
+The remaining solutions are the constant ($\bodyVelE{}{} = \tuple{0}$) configurations $\bodyHomoCoordE{}{} \neq \idMat[4]$ which are critical points of the potential $\potentialEnergyC$, see \autoref{sec:AppendixAttitudePotential}.
 Roughly speaking, the configuration in which the body is $180^\circ$ rotated to its reference.
 
 
@@ -142,5 +142,6 @@ where
 \end{subequations} 
 \end{RedBox}
 
-The change of the total energy $\totalEnergyC = \kineticEnergyC + \potentialEnergyC$ along the solutions of \eqref{eq:CtrlApproachBody} does \textit{not} take a similar form to \eqref{eq:CtrlTotalEnergyRBAppraoch2}.
+The change of the total energy $\totalEnergyC = \kineticEnergyC + \potentialEnergyC$ along the solutions of \eqref{eq:CtrlApproachBody} does \textit{not} take a similar form as for the free rigid body \eqref{eq:CtrlTotalEnergyRBAppraoch2}.
 Consequently there is no simple conclusion about stability.
+For a constant reference $\sysCoordR = \const$ this approach \eqref{eq:CtrlApproachBody} coincides with the particle based approach \eqref{eq:CtrlApproachParticles} and, as shown above, $\totalEnergyC$ is a Lyapunov function.

@@ -39,13 +39,13 @@ The design task for a \textit{tracking controller} is:
 Find a function $\sysInput = \sysInput(\sysCoord, \sysVel, \sysCoordR, \sysVelR, \sysVelRd)$ (the controller) such that $t \mapsto \sysCoordR(t)$ is a stable and attractive trajectory of the closed loop which is the combination of model \eqref{eq:CtrlSysMdl2} and controller.
 
 \paragraph{State of the art.}
-This is a pretty general task and may be tackled by various standard approaches from control theory, see e.g.\ \cite[chap.\,7-10]{Spong:RobotModelingAndControl} for some overview.
-For fully actuated systems a popular approach is \textit{computed torque}, see e.g.\ \cite[sec.\,4.5.2]{Murray:Robotic}, also called \textit{inverse dynamics} in \cite[sec.\,8.3]{Spong:RobotModelingAndControl}.
-It can be regarded as a particularly simple case of feedback linearization utilizing the fact that any set of minimal generalized coordinates $\genCoord(t)\in\RealNum^{\dimConfigSpace}$ is a \textit{flat output} of a fully actuated mechanical system \cite[sec.\,7.1]{Martin:FlatSystems}.
+This is a pretty general task and may be tackled by various standard approaches from control theory, see e.g.\ \cite[chap.\ 7-10]{Spong:RobotModelingAndControl} for some overview.
+For fully actuated systems a popular approach is \textit{computed torque}, see e.g.\ \cite[sec.\ 4.5.2]{Murray:Robotic}, also called \textit{inverse dynamics} in \cite[sec.\ 8.3]{Spong:RobotModelingAndControl}.
+It can be regarded as a particularly simple case of feedback linearization utilizing the fact that any set of minimal generalized coordinates $\genCoord(t)\in\RealNum^{\dimConfigSpace}$ is a \textit{flat output} of a fully actuated mechanical system \cite[sec.\ 7.1]{Martin:FlatSystems}.
 
 For underactuated systems there is no standard textbook approach.
-Examples for the flatness-based approach can be found in e.g.\ \cite{RathinamFlatness}, \cite{MurrayFlatCataloge} or \cite[sec.\,7.1]{Martin:FlatSystems}.
-General Lyapunov designs can be found in \cite{OlfatiSaberDiss} and a approach called \textit{controlled Lagrangian} is proposed in \cite{bloch2000controlled}.
+Examples for the flatness-based approach can be found in e.g.\ \cite{RathinamFlatness}, \cite{MurrayFlatCataloge} or \cite[sec.\ 7.1]{Martin:FlatSystems}.
+General Lyapunov designs can be found in \cite{OlfatiSaberDiss} and an approach called \textit{controlled Lagrangian} is proposed in \cite{bloch2000controlled}.
 
 \paragraph{Outline for this chapter.}
 With the computed torque method one might consider the topic to be solved for fully actuated systems.
@@ -54,7 +54,7 @@ Furthermore, applying linear dynamics in these coordinates may result in intrins
 Recalling the satellite example from \autoref{sec:MotivationRigidBodyAttitude}, it should be clear that linear dynamics for the Euler angles would probably not be a good choice, also see \cite{Konz:AT} for further examples.
 
 If linear dynamics are not a general choice, what \textit{is} a good choice for the closed loop dynamics?
-This chapter motivates three approaches for designing a closed loop for fully actuated systems which rely on the underlying rigid body structure.
+This chapter motivates three approaches for designing a closed loop for fully actuated systems which are each motivated by the underlying rigid body structure.
 In addition, the result will be extended to underactuated systems.
 Finally the approach will be applied to several example systems including the tricopter (fully-actuated), the quadcopter (underactuated but flat) and the bicopter (underactuated and probably not flat).
 

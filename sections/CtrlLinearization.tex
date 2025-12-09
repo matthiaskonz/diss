@@ -19,7 +19,7 @@ where
  \differential \potentialEnergyC(\sysCoord, \sysCoordR) &= \sumBodiesAB \big(\bodyJac{\BidxI}{\BidxII}(\sysCoord)\big)^\top \veeTwoOp \big( (\idMat[4] - \bodyHomoCoordE{\BidxI}{\BidxII}^{-1}(\sysCoord,\sysCoordR)) \bodyStiffMatCp{\BidxI}{\BidxII} \big)
 \end{align} 
 \end{subequations}
-The total energy $\totalEnergyC = \tfrac{1}{2} \sysVel^\top \sysInertiaMatC \sysVel + \potentialEnergyC$ is a Lyapunov function if the system inertia matrix $\sysInertiaMatC$ and the potential energy $\potentialEnergyC$ are positive definite, and the system dissipation matrix $\sysDissMatC$ is positive semi-definite. 
+The total energy $\totalEnergyC = \tfrac{1}{2} \sysVel^\top \sysInertiaMatC \sysVel + \potentialEnergyC$ is a Lyapunov function if the system inertia matrix $\sysInertiaMatC$, the system dissipation matrix $\sysDissMatC$ and the potential energy $\potentialEnergyC$ are positive definite. 
 
 \paragraph{Linearization.}
 Assume that the configuration of the system is close to its reference, i.e.\ $\sysCoord \approx \sysCoordR$.
@@ -40,5 +40,5 @@ where
  &= \sumBodiesAB \big(\bodyJac{\BidxI}{\BidxII}(\sysCoordR)\big)^\top \bodyStiffMatC{\BidxI}{\BidxII} \, \bodyJac{\BidxI}{\BidxII}(\sysCoordR)
 \end{alignat} 
 \end{subequations}
-This not shows the similarities between inertia, damping and stiffness.
-Furthermore, the first order approximation can be very insightful for parameter tuning purposes.
+This shows the similarities in the structure of inertia, damping and stiffness.
+Furthermore, the first order approximation can be insightful for parameter tuning purposes.

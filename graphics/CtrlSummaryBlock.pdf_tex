@@ -1,0 +1,88 @@
+%% Creator: Inkscape 1.4 (86a8ad7, 2024-10-11), www.inkscape.org
+%% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
+%% Accompanies image file 'CtrlSummaryBlock.pdf' (pdf, eps, ps)
+%%
+%% To include the image in your LaTeX document, write
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics{<filename>.pdf}
+%% To scale the image, write
+%%   \def\svgwidth{<desired width>}
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics[width=<desired width>]{<filename>.pdf}
+%%
+%% Images with a different path to the parent latex file can
+%% be accessed with the `import' package (which may need to be
+%% installed) using
+%%   \usepackage{import}
+%% in the preamble, and then including the image with
+%%   \import{<path to file>}{<filename>.pdf_tex}
+%% Alternatively, one can specify
+%%   \graphicspath{{<path to file>/}}
+%% 
+%% For more information, please see info/svg-inkscape on CTAN:
+%%   http://tug.ctan.org/tex-archive/info/svg-inkscape
+%%
+\begingroup%
+  \makeatletter%
+  \providecommand\color[2][]{%
+    \errmessage{(Inkscape) Color is used for the text in Inkscape, but the package 'color.sty' is not loaded}%
+    \renewcommand\color[2][]{}%
+  }%
+  \providecommand\transparent[1]{%
+    \errmessage{(Inkscape) Transparency is used (non-zero) for the text in Inkscape, but the package 'transparent.sty' is not loaded}%
+    \renewcommand\transparent[1]{}%
+  }%
+  \providecommand\rotatebox[2]{#2}%
+  \newcommand*\fsize{\dimexpr\f@size pt\relax}%
+  \newcommand*\lineheight[1]{\fontsize{\fsize}{#1\fsize}\selectfont}%
+  \ifx\svgwidth\undefined%
+    \setlength{\unitlength}{445.00195313bp}%
+    \ifx\svgscale\undefined%
+      \relax%
+    \else%
+      \setlength{\unitlength}{\unitlength * \real{\svgscale}}%
+    \fi%
+  \else%
+    \setlength{\unitlength}{\svgwidth}%
+  \fi%
+  \global\let\svgwidth\undefined%
+  \global\let\svgscale\undefined%
+  \makeatother%
+  \begin{picture}(1,0.3971804)%
+    \lineheight{1}%
+    \setlength\tabcolsep{0pt}%
+    \put(0,0){\includegraphics[width=\unitlength,page=1]{CtrlSummaryBlock.pdf}}%
+    \put(0.74156978,0.23595401){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{0}\smash{\begin{tabular}[t]{c}compute\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=2]{CtrlSummaryBlock.pdf}}%
+    \put(0.50561576,0.31179638){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{0}\smash{\begin{tabular}[t]{c}kinetics\end{tabular}}}}%
+    \put(0.04213465,0.26460557){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}\macSysCoord\end{tabular}}}}%
+    \put(0.00842693,0.19719014){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}\macBodyCoord\end{tabular}}}}%
+    \put(0.50561576,0.35393102){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{0}\smash{\begin{tabular}[t]{c}model\end{tabular}}}}%
+    \put(0.00842693,0.38258258){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}\macPlantParamOne\end{tabular}}}}%
+    \put(0.50561576,0.07584236){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{0}\smash{\begin{tabular}[t]{c}kinetics\end{tabular}}}}%
+    \put(0.50561576,0.117977){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{0}\smash{\begin{tabular}[t]{c}desired\end{tabular}}}}%
+    \put(0.27808867,0.19381937){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{0}\smash{\begin{tabular}[t]{c}kinematics\end{tabular}}}}%
+    \put(0.27808867,0.23595401){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{0}\smash{\begin{tabular}[t]{c}RBS\end{tabular}}}}%
+    \put(0.00842693,0.34044794){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}\macPlantParamTwo\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=3]{CtrlSummaryBlock.pdf}}%
+    \put(0.00842693,0.12134777){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}\macCtrlParamOne\end{tabular}}}}%
+    \put(0.04213465,0.07921313){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}\macCtrlParamTwo\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=4]{CtrlSummaryBlock.pdf}}%
+    \put(0.36235796,0.23089786){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}\macBodyJac\end{tabular}}}}%
+    \put(0.74156978,0.19381937){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{0}\smash{\begin{tabular}[t]{c}controller\end{tabular}}}}%
+    \put(0.59831198,0.34887487){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}\macPlantKineticsMats\end{tabular}}}}%
+    \put(0.59831198,0.11292085){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}\macClosedLoopKineticsMats\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=5]{CtrlSummaryBlock.pdf}}%
+    \put(0.91853529,0.24775171){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}\macCtrlOut\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=6]{CtrlSummaryBlock.pdf}}%
+    \put(0.83258062,0.19381937){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}\macMatchingOut\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=7]{CtrlSummaryBlock.pdf}}%
+    \put(0.43482955,0.00168538){\color[rgb]{0,0,0}\makebox(0,0)[rt]{\lineheight{0}\smash{\begin{tabular}[t]{r}\macTransportMapIn\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=8]{CtrlSummaryBlock.pdf}}%
+    \put(0.78370443,0.10112314){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{0}\smash{\begin{tabular}[t]{l}\macMatchingIn\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=9]{CtrlSummaryBlock.pdf}}%
+    \put(0.65730049,0.0589885){\color[rgb]{0,0,0}\makebox(0,0)[rt]{\lineheight{0}\smash{\begin{tabular}[t]{r}\macTotalEnergyOut\end{tabular}}}}%
+  \end{picture}%
+\endgroup%

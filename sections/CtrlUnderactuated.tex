@@ -55,9 +55,6 @@ Elimination of the acceleration $\sysVeld = \sysInertiaMat^{-1}(\sysInputMat \sy
 The control law, i.e.\ the solution of the minimization problem, is obviously $\sysInput = \sysInput_0$.
 %For the formulation of $\GaussianConstraintC_0$ it is crucial to note that $\mat{P}^\bot$ is a projection matrix, which will be exploited in the next subsection.
 
-For the special case of a fully actuated system, i.e.\ $\sysInputMat$ is invertible, the control law simplifies to $\sysInput_0 = \sysInputMat^{-1} (\sysForce - \sysInertiaMat \sysInertiaMatC^{-1}\sysForceC)$ as already stated above.
-Furthermore, for this case, we have $\mat{P}^\bot = \mat{0}$ and consequently $\GaussianConstraintC_0=0$.
-
 \paragraph{Feasible closed loop kinetics.}
 Plugging $\sysInput = \sysInput_0$ into the model \eqref{eq:CtrlSysMdlUnderactuated} we obtain the actual closed loop kinetics:
 \begin{align}\label{eq:UnderactuatedControlledKinetics}
@@ -78,6 +75,10 @@ In general, the value $\GaussianConstraintC_0$ is a metric of how much the resul
 One main goal when parameterizing the controller is to make $\GaussianConstraintC_0$ as small as possible.
 Unfortunately the form of $\GaussianConstraintC_0$ in \eqref{eq:UnderactuatedControlledKinetics} is not handy, mainly due to $\rank \mat{P}^\bot = \dimConfigSpace - \numInputs$.
 In the following we like to find a more handy formulation.
+
+\paragraph{Fully actuated case.}
+For the special case of a fully actuated system, i.e.\ $\sysInputMat$ is invertible, the control law simplifies to $\sysInput_0 = \sysInputMat^{-1} (\sysForce - \sysInertiaMat \sysInertiaMatC^{-1}\sysForceC)$ as already stated above.
+Furthermore, for this case, we have $\mat{P}^\bot = \mat{0}$ and consequently $\GaussianConstraintC_0=0$, $\tilde{\sysForce}=\tuple{0}$.
 
 \subsection{Matching condition}\label{sec:MatchingCondition}
 Instead of eliminating the accelerations $\sysVeld$ we may also eliminate the controls $\sysInput$ from \eqref{eq:MinProbUnderactuated}.

@@ -1,4 +1,4 @@
-\section{A possible generalization of the rigid body energies}\label{sec:GenRigidBodyPotential}
+\chapter{A possible generalization of the rigid body energies}\label{sec:GenRigidBodyPotential}
 Note that any symmetric, positive matrix $\protoK \in \SymMatP(6)$ can be decomposed into
 \begin{align}
  \protoK
@@ -9,7 +9,7 @@ Note that any symmetric, positive matrix $\protoK \in \SymMatP(6)$ can be decomp
 \end{align}
 where $\protoKr, \protoKR \in \SymMatP(3)$ and $\protoH \in \RealNum^{3\times3}$.
 For variables $\protox_i \in \RealNum^3$ and $\protoY_i \in \RealNum^{3\times3}$ collected in the square matrix $\protoXi_i = \left[\begin{smallmatrix} \protoY_i & \protox_i \\ \mat{0} & 0 \end{smallmatrix}\right]$ define the inner product as
-\begin{align}\label{eq:DefGenRogodBodyInnerProduct}
+\begin{align}\label{eq:DefGenRogodBodyInnerProduct} 
  \sProd[\protoK]{\protoXi_1}{\protoXi_2} &= \tilde{\protox}_1^\top \protoKr \tilde{\protox}_2 + \tr(\protoY_1 \veeMatOp(\protoKR) \protoY_2^\top),
 \end{align}
 where $\tilde{\protox}_i = \protox_i + \tfrac{1}{2} \protoY_i\veeTwoOp(\protoH) + \tfrac{1}{4}(\protoH+\protoH^\top)\veeTwoOp(\protoY_i)$.

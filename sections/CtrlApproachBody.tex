@@ -4,7 +4,7 @@ However, the total energy $\totalEnergy$ does not, in general, serve as a Lyapun
 In this section we attempt to modify the energies to account for this.
 
 \subsection{Free rigid body}\label{sec:CtrlApproachBodySingleBody}
-Using the rigid body configuration error $\bodyHomoCoordE{}{} = \bodyHomoCoordR{}{}^{-1} \bodyHomoCoord{}{}$ and its velocity $\bodyVelE{}{} = \bodyHomoCoordE{}{}^{-1} \bodyHomoCoordEd{}{} = \bodyVel{}{} - \Ad{\bodyHomoCoordE{}{}}^{-1} \bodyVelR{}{}$ we modify the energies from \autoref{sec:CtrlApproachParticles} to
+Using the rigid body configuration error $\bodyHomoCoordE{}{} = \bodyHomoCoordR{}{}^{-1} \bodyHomoCoord{}{}$ and its velocity $\bodyVelE{}{} = \veeOp\big(\bodyHomoCoordE{}{}^{-1} \bodyHomoCoordEd{}{}\big) = \bodyVel{}{} - \Ad{\bodyHomoCoordE{}{}}^{-1} \bodyVelR{}{}$ we modify the energies from \autoref{sec:CtrlApproachParticles} to
 \begin{subequations}\label{eq:RBCtrlEnergiesBody}
 \begin{align}
  \potentialEnergyC 
@@ -64,13 +64,16 @@ Using $\spdiff[\bodyVelE{}{}]{\bodyVel{}{}} = \idMat[6]$ we have
 %  +  \underbrace{\begin{bmatrix} \mc \wedOp(\wE) & -\mc \wedOp(\wE) \wedOp(\sc) \\ \mc \wedOp(\sc) \wedOp(\wE) & \wedOp(\veeMatOp(\Jc)\wE) \end{bmatrix}}_{\ConnMatC(\sysVelE)} \begin{bmatrix} \vE \\ \wE \end{bmatrix}
 % \end{align} 
 % \end{subequations}
+Note that the stiffness potential and force are identical to the previous, particle based approach.
+The dissipation function and corresponding force differ from the particle based approach, but coincide with the model of a body moving inside a viscous fluid, see \autoref{sec:DampingSE3} and \eqref{eq:RBDissFkt}.
+
 A crucial result of this approach is that the resulting closed loop equations can be written as \textit{autonomous} equations for the configuration $\bodyHomoCoordE{}{}$ and velocity error $\sysVelE{}{}$ as
 \begin{align}\label{eq:ClosedLoopRBApproach2}
- \bodyHomoCoordEd{}{} = \bodyHomoCoord{}{} \wedOp(\bodyVelE{}{}),
+ \bodyHomoCoordEd{}{} = \bodyHomoCoordE{}{} \wedOp(\bodyVelE{}{}),
 \qquad
  \bodyInertiaMatC{}{} \bodyVelEd{}{} - \ad{\bodyVelE{}{}}^\top \bodyInertiaMatC{}{} \bodyVelE{}{} + \bodyDissMatC{}{} \bodyVelE{}{} + \veeTwoOp \big( (\idMat[4] - \bodyHomoCoordE{}{}^{-1}) \bodyStiffMatCp{}{} \big) = \tuple{0}.
 \end{align}
-A quite similar (though restricted to $\bodyCOM{}{}=\bodyCOD{}{}=\bodyCOS{}{}=\tuple{0}$) closed loop for the free rigid body is proposed in \cite{Koditschek:TotalEnergy}, though motivated from a Lie group point of view.
+A quite similar (though restricted to $\bodyCOM{}{}=\bodyCOD{}{}=\bodyCOS{}{}=\tuple{0}$) closed loop for the free rigid body is proposed in \cite{Koditschek:TotalEnergy}, but motivated and derived very differently.
 
 \paragraph{Total energy.}
 The change of the total energy $\totalEnergyC = \kineticEnergyC + \potentialEnergyC$ along the solutions of the closed loop \eqref{eq:ClosedLoopRBApproach2} is 

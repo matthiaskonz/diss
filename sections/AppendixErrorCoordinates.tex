@@ -1,18 +1,23 @@
-\section{On error coordinates}
+\chapter{On error coordinates}
+
+This work used a scalar potential/metric $\potentialEnergyC$ to encode the control objective.
+On the other hand, many control approaches use a set of error coordinates $\sysCoordE$ to encode the control objective, e.g.\ $\sysCoordE = \sysCoord - \sysCoordR$ for the computed torque approach shown in \autoref{sec:ComputedTorque}.
+Here, we like to show how these two approaches are related and how the transport map $\sysTransportMap$ can be derived using error coordinates $\sysCoordE$.
+
 \paragraph{Error coordinates.}
 Introduce (possibly redundant) error coordinates $\sysCoordE \in \RealNum^{\numCoordE}$ as
 \begin{align}
- \sysCoordE = \sysCoordFktE(\sysCoord, \sysCoordR), \qquad \geoConstraintE(\sysCoordE) = 0.
+ \sysCoordE = \sysCoordFktE(\sysCoord, \sysCoordR), \qquad \geoConstraintE(\sysCoordE) = \tuple{0}
 \end{align}
 and require that this relation is invertible with $\sysCoord = \sysCoordFkt(\sysCoordE, \sysCoordR)$, i.e.\ $\sysCoordFkt(\sysCoordFktE(\sysCoord, \sysCoordR), \sysCoordR) = \sysCoord \, \forall \, \sysCoord \in \configSpace$.
 The inverse function theorem now implies that the differential $\differential \sysCoordFktE = \pdiff[\sysCoordFktE]{\sysCoord} \kinMat $ has full rank: $\rank(\differential \sysCoordFktE) = \dim \configSpace = \dimConfigSpace$.
 
 Let $\geoConstraintMatE$ be the linear independent rows of $\spdiff[\geoConstraintE]{\sysCoordE}$.
-Then the derivative of the geometric constraint $\geoConstraintEd = 0$ implies
+Then the derivative of the geometric constraint $\geoConstraintEd = \tuple{0}$ implies
 \begin{align}
- \geoConstraintMatE \differential \sysCoordFktE = 0,
+ \geoConstraintMatE \differential \sysCoordFktE = \tuple{0},
 \qquad
- \geoConstraintMatE \differentialR \sysCoordFktE = 0,
+ \geoConstraintMatE \differentialR \sysCoordFktE = \tuple{0},
 \end{align}
 Since the matrices $\differential \sysCoordFktE$ and $\geoConstraintMatE$ have full rank, their pseudo-inverses are
 \begin{align}
@@ -22,7 +27,7 @@ Since the matrices $\differential \sysCoordFktE$ and $\geoConstraintMatE$ have f
  \geoConstraintMatE^+ &= \geoConstraintMatE^\top \big( \geoConstraintMatE \geoConstraintMatE^\top \big)^{-1},&
  \geoConstraintMatE \geoConstraintMatE^+ &= \idMat[\numCoordE - \dimConfigSpace].
 \end{align}
-Furthermore, due to the orthogonality $\geoConstraintMatE \differential \sysCoordFktE = 0$ we have
+Furthermore, due to the orthogonality $\geoConstraintMatE \differential \sysCoordFktE = \tuple{0}$ we have
 \begin{align}
  (\differential \sysCoordFktE) (\differential \sysCoordFktE)^+ + \geoConstraintMatE^+ \geoConstraintMatE = \idMat[\numCoordE].
 \end{align}
@@ -47,14 +52,28 @@ which has the simple solution
 \begin{align}\label{eq:DefErrorTransportMap}
  \sysTransportMap = -(\differential \sysCoordFktE)^+ (\differentialR \sysCoordFktE).
 \end{align}
+So, if the potential may be written as a function of the error coordinates $\sysCoordE$ alone, then we have an explicit formula for the transport map $\sysTransportMap$.
 
 \paragraph{Error kinematics.}
 With the same approach as above we can derive a kinematic relation between the error coordinates $\sysCoordE$ and the error velocity $\sysVelE = \sysVel - \sysTransportMap \sysVelR$ as
-\begin{align}
+\begin{align}\label{eq:ErrorCoordKinematics}
  \sysCoordEd &= (\differential \sysCoordFktE) \sysVel + (\differentialR \sysCoordFktE) \sysVelR
 \nonumber\\
  &= (\differential \sysCoordFktE) \sysVel + \underbrace{\big( (\differential \sysCoordFktE) (\differential \sysCoordFktE)^+ + \geoConstraintMatE^+ \geoConstraintMatE \big)}_{\idMat[\numCoordE]} \differentialR \sysCoordFktE \sysVelR
 \nonumber\\
- &= (\differential \sysCoordFktE) \underbrace{\big( \sysVel + (\differential \sysCoordFktE)^+ (\differentialR \sysCoordFktE) \sysVelR \big)}_{\sysVelE}
- +\,\geoConstraintMatE^+ \underbrace{\geoConstraintMatE (\differentialR \sysCoordFktE)}_{0} \sysVelR
+ &= \underbrace{(\differential \sysCoordFktE)}_{\kinMat_\idxErr} \underbrace{\big( \sysVel + (\differential \sysCoordFktE)^+ (\differentialR \sysCoordFktE) \sysVelR \big)}_{\sysVelE} +\,\geoConstraintMatE^+ \underbrace{\geoConstraintMatE (\differentialR \sysCoordFktE)}_{0} \sysVelR
 \end{align}
+In many cases the kinematics matrix $\kinMat_\idxErr$ may be fomrulated in terms of the error coordinates $\sysCoordE$ alone. 
+This was e.g.\ the case for the free rigid body in \autoref{sec:CtrlApproachBodySingleBody}.
+
+\paragraph{Error kinetics.}
+With a constant inertia $\sysInertiaMatC$ and damping matrix $\sysDissMatC$ we may propose the following error dynamics
+\begin{align}\label{eq:ErrorCoordKinetics}
+ \sysInertiaMatC \sysVelEd + \ad{\sysVelE{}{}}^\top \sysInertiaMatC{}{} \sysVelE{}{} + \sysDissMatC \sysVelE + \kinMat_\idxErr^\top \pdiff[\potentialEnergyC_\idxErr]{\sysCoordE} = \tuple{0}.
+\end{align}
+The combination of error kinematics \eqref{eq:ErrorCoordKinematics} and kinetics \eqref{eq:ErrorCoordKinetics} may serve as a closed loop template simlarly to the propsed approaches.
+Assuming $\sysInertiaMatC$, $\sysDissMatC$ and $\potentialEnergyC_\idxErr$ to be positive definite, the error dynamics is globally asymptotically stable with a Lyapunov function $\totalEnergyC_\idxErr(\sysCoordE, \sysVelE) = \frac{1}{2} \sysVelE^\top \sysInertiaMatC \sysVelE + \potentialEnergyC_\idxErr(\sysCoordE)$.
+
+We have seen a special case of this for the free rigid body in \autoref{sec:CtrlApproachBodySingleBody}.
+For the general case of interconnected rigid bodies it is, however, questionable if the system inertia should be independent of the system configuration.
+

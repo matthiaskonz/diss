@@ -1,5 +1,6 @@
 \chapter{Summary and Conclusions}
 
+\paragraph{Summary and contribution.}
 This work discussed the modeling and tracking control of rigid body systems.
 Both subjects are well covered in the dedicated literature.
 However, the literature is somewhat split into two viewpoints:
@@ -14,7 +15,7 @@ The way e.g.\ the moment of stiffness matrix $\bodyMOS{}{}$ was derived here, it
 
 For control design, it is a common approach to design the desired closed loop dynamics and derive the actually required control law from it.
 Flatness based control formalizes this approach but the vast majority combines it with linear error dynamics, thus treating the system as if its configuration manifold is $\RealNum^\numInputs$.
-This work proposes desired closed loop dynamics based on a general mechanical model of a rigid body system.
+This work proposed desired closed loop dynamics based on a general mechanical model of a rigid body system.
 As a result, the closed loop dynamics are invariant to the choice of coordinates in the same way as the motion of a mechanical system is unchanged by the choice of coordinates with which it is parameterized.
 Furthermore, all control parameters have intrinsic mechanical interpretation, so should be intuitive for tuning.
  
@@ -24,7 +25,7 @@ When dealing with the stabilization of a constant reference, the three approache
 For this case, the total energy is a Lyapunov function.
 For tracking a general reference trajectory, only the third approach guarantees stability.
 In contrast, this approach has the drawback of requiring an additional ingredient, the transport map, whose existence is not guaranteed.
-Though not necessarily being a Lyapunov function, each approach comes with a formulation for a total energy that is positive definite, i.e.\ positive and zero if, and only if, the tracking objective is fulfilled, usually $\sysCoord=\sysCoordR$ and $\sysVel = \sysVelR$.
+Though not necessarily being a Lyapunov function, each approach comes with a formulation for a total energy that is positive definite, i.e.\ positive and zero if, and only if, the tracking objective is fulfilled.
 
 The three control approaches were applied to various examples of rigid body systems and tested in simulation with reasonable reference trajectories and initial conditions.
 While the total energy was not always monotonically decreasing, it always eventually converged to zero.
@@ -35,6 +36,10 @@ The realization also required trajectory generation, state estimation and underl
 From a coding perspective, the actual rigid body controller is less than 1\,\% of the microcontroller C code.
 The presented experiments show the viability of the proposed control design in a practical environment with imperfect measurements and disturbances.
 The quadcopter showed good tracking performance even while following aerobatic trajectories like loops and flips.
+
+\paragraph{Conclusions and possible extensions.}
+
+
 
 % \cite{Konz:Mathmod}
 % \cite{Konz:Mathmod2018}

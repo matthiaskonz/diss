@@ -73,9 +73,9 @@ The potential energy may have various origins, some of them will be discussed la
 %For this context of mechanics it can be derived from Lagrange-d'Alembert's principle \eqref{eq:DAlembertPrinciple}, see \eg \cite[ch.\,V.1]{Lanczos:Variational}.
 %However, the remarkable quality of the principle of stationary action is that it is used interdisciplinary:
 
-The remarkable quality of Hamilton's principle is that analog principles have since been found for all branches of physics:
+The remarkable quality of Hamilton's principle is that analogous principles have since been found for all branches of physics:
 With appropriate formulation of the Lagrangian $\Lagrangian$ the \textit{principle of stationary action} can be found in e.g.\ electromagnetic field theory \cite[ch.\ 4]{Landau:Fields}, general relativity \cite{Einstein:HamiltonsPrinciple} or optics, the original context of Hamilton \cite[p.\,192]{Klein:EntwicklungDerMathematik}.
-Apart form physics, there is optimal control that builds up on essentially the same idea, see e.g.\ \cite{Bryson:AppliedOptimalControl}.
+Apart from physics, there is optimal control that builds up on essentially the same idea, see e.g.\ \cite{Bryson:AppliedOptimalControl}.
 
 % \cite[S.\ 233]{Hamel:TheoretischeMechanik} Prinzip der kleinsten Wirkung
 % \cite[S.61]{Szabo:HM},
@@ -84,7 +84,7 @@ Apart form physics, there is optimal control that builds up on essentially the s
 % \cite[p.\,92]{Arnold:MathematicalMethodsOfClassicalMechanics} In mechanics, tangent vectors to the configuration manifold are called virtual variations.
 
 For the context of this work, the statement above is actually not that useful since it does not allow for generic impressed forces $\particleForceImpressed{\PidxI}$.
-To mend this one finds a similar statement in e.g.\ \cite[eq.\,12.2.14]{Lurie:AnalyticalMechanics} or \cite[sec.\ I.3]{Szabo:HM}:
+To address this one finds a similar statement in e.g.\ \cite[eq.\,12.2.14]{Lurie:AnalyticalMechanics} or \cite[sec.\ I.3]{Szabo:HM}:
 \begin{align}\label{eq:HamiltonPrinciple}
  \delta'\mathcal{A} = \int_{t_1}^{t_2} \big( \delta \kineticEnergy - \delta'\mathcal{W} \big) \d t = 0, 
 \qquad
@@ -102,7 +102,7 @@ What is more crucial, but usually implicit, is that they have to be independent 
 Whenever used in this work, these coordinates are referred to as \textit{minimal} generalized coordinates $\genCoord\in\RealNum^\dimConfigSpace$.
 
 \paragraph{Redundant configuration coordinates and velocity coordinates.} 
-As motivated in \autoref{sec:MathCoordinates}                                                     , in some cases it can be beneficial to use use a slightly larger number of \textit{redundant} generalized coordinates $\sysCoord(t) \in \configSpace = \{ \sysCoord \in \RealNum^{\numCoord} \, | \, \geoConstraint(\sysCoord) = \tuple{0} \}$ and \textit{minimal} velocity coordinates $\sysVel(t) \in \RealNum^{\dimConfigSpace}$ related by $\sysCoordd = \kinMat \sysVel$.
+As motivated in \autoref{sec:MathCoordinates}, in some cases it can be beneficial to use a slightly larger number of \textit{redundant} generalized coordinates $\sysCoord(t) \in \configSpace = \{ \sysCoord \in \RealNum^{\numCoord} \, | \, \geoConstraint(\sysCoord) = \tuple{0} \}$ and \textit{minimal} velocity coordinates $\sysVel(t) \in \RealNum^{\dimConfigSpace}$ related by $\sysCoordd = \kinMat \sysVel$.
 Of course this includes common minimal parameterization $\sysCoord = \genCoord \in \RealNum^{\dimConfigSpace}$ and $\sysVel=\genCoordd \in \RealNum^{\dimConfigSpace}$ as the special case $\configSpace=\RealNum^{\dimConfigSpace}$ and $\kinMat=\idMat[\dimConfigSpace]$.
 
 \paragraph{Particle parameterization.}
@@ -192,7 +192,7 @@ Overall, the motion of the system may be expressed through the explicit ordinary
 \end{align}
 
 \paragraph{Application to the Lagrange-d'Alembert principle.}
-Analog to the velocity, we may parameterize virtual displacements as $\delta \particlePos{\PidxI} = \dirDiff{\LidxI} \particlePos{\PidxI} \varCoordCoeff{\LidxI}, \PidxI = 1,\ldots,\numParticles$ in terms of \textit{minimal} displacements coordinates $\varCoord\in\RealNum^\dimConfigSpace$.
+Analogous to the velocity, we may parameterize virtual displacements as $\delta \particlePos{\PidxI} = \dirDiff{\LidxI} \particlePos{\PidxI} \varCoordCoeff{\LidxI}, \PidxI = 1,\ldots,\numParticles$ in terms of \textit{minimal} displacement coordinates $\varCoord\in\RealNum^\dimConfigSpace$.
 Plugging this into \eqref{eq:DAlembertPrinciple} we get
 \begin{align}\label{eq:DAlembertPrincipleBasis}
  \varCoordCoeff{\LidxI} \sumParticles \sProd{\dirDiff{\LidxI} \particlePos{\PidxI} }{\particleForceImpressed{\PidxI} - \particleMass{\PidxI}\particlePosdd{\PidxI}} = 0 \qquad \forall \quad \varCoord\in\RealNum^\dimConfigSpace.

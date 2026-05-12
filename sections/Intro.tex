@@ -8,7 +8,7 @@ The procedure for physical modeling is illustrated in \autoref{fig:ModelingIllus
 It starts by approximating the system under consideration with a mechanical model.
 The mathematical part requires the choice of coordinates $\sysState$ to capture the state (positions and velocities) of the model.
 Combining this with principles of mechanics, we may derive a set of ordinary differential equations that capture its motion.
-This work mainly deals with this second part, i.e., the derivation of \textit{equations of motion}.
+This work is concerned with this second part, i.e., the derivation of \textit{equations of motion}.
 
 \begin{figure}[ht]
  \centering
@@ -46,7 +46,7 @@ However, the structure of the left-hand side of \eqref{eq:introEqOfMotion} can b
 
 \paragraph{Feedback Control.}
 From a mathematical point of view, a feedback controller is a map $\sysInput = \tuple{g}(\sysState,\tuple{r})$ that computes the control input $\sysInput$ based on the measured system state $\sysState$ and a reference input $\tuple{r}$.
-The goal is for the resulting controlled system $\dot{\sysState} = \tuple{f}(\sysState,\tuple{g}(\sysState,\tuple{r})) = \bar{\tuple{f}}(\sysState,\tuple{r})$ to have desirable properties.
+The goal is for the resulting controlled system $\dot{\sysState} = \tuple{f}(\sysState,\tuple{g}(\sysState,\tuple{r})) = \bar{\tuple{f}}(\sysState,\tuple{r})$ to satisfy design objectives.
 
 \begin{figure}[ht]
  \centering
@@ -171,7 +171,7 @@ For the previous example of aerobatic motions it is evident that singularities o
 %Consequently this model is neither suited for a global simulation nor for application of computed torque control.
 
 \paragraph{Euler's rotation equations.}
-For the particular example of the rigid body orientation, one finds another formulation of the equations of motion directly in most textbooks on mechanics, e.g.\ \cite[p.\,143]{Arnold:MathematicalMethodsOfClassicalMechanics} or \cite[p.\,145]{Schwertassek:MultibodySystems}:
+For the particular example of the rigid body orientation, one finds another formulation of the equations of motion directly in most textbooks on mechanics, e.g., \cite[p.\,143]{Arnold:MathematicalMethodsOfClassicalMechanics} or \cite[p.\,145]{Schwertassek:MultibodySystems}:
 %They are commonly called \textit{Euler's rotation equations}:
 \begin{subequations}\label{eq:ExampleEulerEq}
 \begin{align}
@@ -197,7 +197,7 @@ For the particular example of the rigid body orientation, one finds another form
 The 9 coefficients of the matrix $\R$ have to obey the constraint $\R^\top \R = \idMat[3]$.
 However, it can be shown that if this is fulfilled for the initial condition $\R(t_0)$, then the kinematic equation \eqref{eq:ExampleEulerEqKinematics} ensures that the condition remains fulfilled.
 This formulation has no singularities and is well suited for global simulation.
-Moreover, loosely speaking, its mathematical structure reflects the physical symmetries of the model.
+Moreover, its mathematical structure reflects the physical symmetries of the model.
 The obvious draw-back is that due to the lack of generalized coordinates, its unclear how a method like computed torque could be applied.
 
 \paragraph{Discussion.}

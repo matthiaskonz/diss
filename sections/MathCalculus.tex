@@ -3,7 +3,7 @@ This section reviews some of the established tools of calculus for the context o
 
 \subsection{Directional derivative and Hessian}
 Consider a function $\potentialEnergy : \RealNum^{\numCoord} \rightarrow \RealNum$ and a curve $\sysCoord : \RealNum \rightarrow \configSpace$.
-Since $\configSpace \subset \RealNum^{\numCoord}$, their composition $\potentialEnergy \circ \sysCoord = f : \RealNum \rightarrow \RealNum$ is a scalar function and has the the Taylor expansion
+Since $\configSpace \subset \RealNum^{\numCoord}$, their composition $\potentialEnergy \circ \sysCoord = f : \RealNum \rightarrow \RealNum$ is a scalar function and has the Taylor expansion
 \begin{multline}
  \underbrace{\potentialEnergy(\sysCoord(t))}_{f(t)}
  = \underbrace{\potentialEnergy(\sysCoord(0))}_{f(0)}
@@ -77,7 +77,7 @@ Then we have the useful relations
  .
 \end{align}
 \end{subequations}
-Analog, with $\differential = [\dirDiff{1}, \ldots ,\dirDiff{\dimConfigSpace}]^\top$ we have the matrix notation:
+Similarly, with $\differential = [\dirDiff{1}, \ldots ,\dirDiff{\dimConfigSpace}]^\top$ we have the matrix notation:
 \begin{subequations}
 \begin{align}
  \differential \potentialEnergy &= \pdiff[\dot{\potentialEnergy}]{\sysVel},
@@ -105,7 +105,7 @@ Consequently, we investigate the following commutation relation
  &= \bigg(\kinMatCoeff{\GidxII}{\LidxI} \pdiff[\kinMatCoeff{\GidxI}{\LidxII}]{\sysCoordCoeff{\GidxII}} - \kinMatCoeff{\GidxII}{\LidxII} \pdiff[\kinMatCoeff{\GidxI}{\LidxI}]{\sysCoordCoeff{\GidxII}}\bigg) \pdiff[\potentialEnergy]{\sysCoordCoeff{\GidxI}}
  .
 \end{align}
-Now using the identity \eqref{eq:ProjectionIdentity} with $\geoConstraintMatCoeff{\CidxI}{\GidxI} = \pdiff[\geoConstraintCoeff{\CidxI}]{\sysCoordCoeff{\GidxI}}$ and $\geoConstraintMatCoeff{\CidxI}{\GidxI} \kinMatCoeff{\GidxI}{\LidxI} = 0 \, \Rightarrow \, \geoConstraintMatCoeff{\CidxI}{\GidxI} \pdiff[\kinMatCoeff{\GidxI}{\LidxI}]{\sysCoordCoeff{\GidxII}} = -\pdiff[\geoConstraintMatCoeff{\CidxI}{\GidxI}]{\sysCoordCoeff{\GidxII}} \kinMatCoeff{\GidxI}{\LidxI}$ to shape this expressions a bit further
+Now using the identity \eqref{eq:ProjectionIdentity} with $\geoConstraintMatCoeff{\CidxI}{\GidxI} = \pdiff[\geoConstraintCoeff{\CidxI}]{\sysCoordCoeff{\GidxI}}$ and $\geoConstraintMatCoeff{\CidxI}{\GidxI} \kinMatCoeff{\GidxI}{\LidxI} = 0 \, \Rightarrow \, \geoConstraintMatCoeff{\CidxI}{\GidxI} \pdiff[\kinMatCoeff{\GidxI}{\LidxI}]{\sysCoordCoeff{\GidxII}} = -\pdiff[\geoConstraintMatCoeff{\CidxI}{\GidxI}]{\sysCoordCoeff{\GidxII}} \kinMatCoeff{\GidxI}{\LidxI}$ to shape these expressions a bit further
 \allowdisplaybreaks
 \begin{align}\label{eq:DerivationCommCoeff2}
  \dirDiff{\LidxI} \dirDiff{\LidxII} \potentialEnergy - \dirDiff{\LidxII} \dirDiff{\LidxI} \potentialEnergy 
@@ -161,7 +161,7 @@ From the way $\BoltzSym{\LidxIII}{\LidxI}{\LidxII}$ is defined here, this naming
 
 The case of redundant configuration coordinates and consequently a non-square matrix $\kinMat$ as derived above, is not established in the literature to the best of the author's knowledge.
 
-It is worth noting that the commutation coefficients are \textit{invariant} to the choice of configuration coordinates $\sysCoord$, even though the coordinates appear explicitly in the definition:
+It is worth noting that the commutation coefficients are \textit{invariant} under the choice of configuration coordinates $\sysCoord$, even though the coordinates appear explicitly in the definition:
 For a change of configuration coordinates $\sysCoord = f(\sysCoordW)$, the commutation symbols transform like $\BoltzSymW{\LidxIII}{\LidxI}{\LidxII}(\sysCoordW) = \BoltzSym{\LidxIII}{\LidxI}{\LidxII}(f(\sysCoordW))$.
 This might be obvious from a geometric point of view, but can also be checked by explicit calculation.
 It will even turn out that for most of our examples (like the one above) the coefficients will be constants.
@@ -176,13 +176,13 @@ The commutation coefficients $\BoltzSym{\LidxI}{\LidxII}{\LidxIII}$ vanish if th
 &\Rightarrow&
  \pdiff[\kinBasisMatCoeff{\LidxI}{\GidxI}]{\sysCoordCoeff{\GidxII}}
  &= \frac{\partial^2 \pi^i}{\partial \sysCoordCoeff{\GidxII} \partial \sysCoordCoeff{\GidxI}}
- = \pdiff[\kinBasisMatCoeff{\LidxI}{\beta}]{\sysCoordCoeff{\GidxI}},&
+ = \pdiff[\kinBasisMatCoeff{\LidxI}{\GidxII}]{\sysCoordCoeff{\GidxI}},&
 &\Rightarrow&
  \BoltzSym{\LidxI}{\LidxII}{\LidxIII} &= 0.
 \end{align}
 This is not the case in general.
 Nevertheless, the quantities $\pi$ are introduced as \textit{nonholonomic coordinates} in \cite{Boltzmann:NonholCoord} or as \textit{quasi coordinates} in \cite[sec.\,1.5]{Lurie:AnalyticalMechanics}.
-Then we could write $\partial_\LidxI (\partial_\LidxII f) - \partial_\LidxII (\partial_\LidxI f) = \sfrac{\partial^2 f}{\partial \pi^\LidxI \partial \pi^\LidxII} - \sfrac{\partial^2 f}{\partial \pi^\LidxII \partial \pi^\LidxI} \neq 0$, what might lead to the conception that partial derivatives do not commute.
+Then we could write $\partial_\LidxI (\partial_\LidxII f) - \partial_\LidxII (\partial_\LidxI f) = \sfrac{\partial^2 f}{\partial \pi^\LidxI \partial \pi^\LidxII} - \sfrac{\partial^2 f}{\partial \pi^\LidxII \partial \pi^\LidxI} \neq 0$, which might lead to the impression that partial derivatives do not commute.
 The commutativity clearly holds.
 The issue is rather $\pi$ are no proper coordinates.
 To avoid confusion of this kind we do not pick up this notation here.
@@ -195,7 +195,7 @@ For a small deviation $\sysCoord \approx \sysCoordB$ with $\sysCoord \in \config
 \begin{align}
  \geoConstraint(\sysCoord) \approx \underbrace{\geoConstraint(\sysCoordB)}_{=\,\tuple{0}} + \pdiff[\geoConstraint]{\sysCoord}(\sysCoordB) (\sysCoord - \sysCoordB) = \tuple{0}.
 \end{align}
-Since this constraint is affine w.r.t.\ $\sysCoord$, it is reasonable to use a the basis $\LinErrorCoord(t) \in \RealNum^{\dimConfigSpace}$ for the deviated configuration coordinates:
+Since this constraint is affine w.r.t.\ $\sysCoord$, it is reasonable to use a basis $\LinErrorCoord(t) \in \RealNum^{\dimConfigSpace}$ for the deviated configuration coordinates:
 \begin{align}
  \sysCoord = \sysCoordB + \kinMat(\sysCoordB) \LinErrorCoord,
 \qquad
@@ -249,7 +249,7 @@ Evidently, the expressions simplify significantly if the velocity coordinates ar
 
 
 \subsection{Calculus of variations}\label{sec:CalculusOfVariations}
-The calculus of variations is concerned with the extremas of functionals, i.e., functions of functions. %\cite[sec.\,12]{Arnold:MathematicalMethodsOfClassicalMechanics}.
+The calculus of variations is concerned with the extrema of functionals, i.e., functions of functions. %\cite[sec.\,12]{Arnold:MathematicalMethodsOfClassicalMechanics}.
 For the particular context of classical mechanics, we are interested in the curves $t \mapsto \sysCoord(t)$ for which the functional
 \begin{align}\label{eq:Functional}
  \mathcal{J}[\sysCoord] = \int_{t_1}^{t_2} \Lagrangian(\sysCoord(t), \sysVel(t), t) \, \d t
@@ -258,22 +258,22 @@ For the particular context of classical mechanics, we are interested in the curv
 for given boundary conditions $\sysCoord(t_1)$ and $\sysCoord(t_2)$ is \textit{stationary}.
 The \textit{Lagrangian} $\Lagrangian$ may be any sufficiently smooth function of the configuration coordinates $\sysCoord$, its derivatives $\sysCoordd = \kinMat \sysVel$ parameterized in the velocity coordinates $\sysVel$ and may depend explicitly on the time $t$ as well.
 
-For the standard case, $\sysCoord = \genCoord$ and $\sysVel = \genCoordd$, a derivation of may be found in e.g. \cite[chap.\,4, §3]{CourantHilbert1}, \cite[ch.\,II]{Lanczos:Variational} or \cite[sec.\,12]{Arnold:MathematicalMethodsOfClassicalMechanics}.
-For the present case we modify the well known derivation slightly:
+For the standard case, $\sysCoord = \genCoord$ and $\sysVel = \genCoordd$, a derivation may be found in e.g. \cite[chap.\,4, §3]{CourantHilbert1}, \cite[ch.\,II]{Lanczos:Variational} or \cite[sec.\,12]{Arnold:MathematicalMethodsOfClassicalMechanics}.
+For the present case we modify the well-known derivation slightly:
 Suppose that $\sysCoord : [t_1, t_2] \mapsto \configSpace$ is the solution to the variational problem.
 With the function $\varFkt(t) \in \RealNum^{\numCoord}$ and the parameter $\varParam\in\RealNum$ we define a perturbation to it by
 \begin{align}
  \sysCoordB = \sysCoord + \varParam\varFkt.
 \end{align}
 We need $\sysCoordB(t) \in \configSpace$ and consequently $\geoConstraint(\sysCoordB)=\tuple{0}$.
-Assuming $\varParam$ to be sufficiently small, we may use the first order approximation analog to \autoref{sec:LinAboutTraj}:
+Assuming $\varParam$ to be sufficiently small, we may use the first order approximation analogous to \autoref{sec:LinAboutTraj}:
 With the \textit{variation coordinates} $\varCoord : [t_1,t_2] \rightarrow \RealNum^{\dimConfigSpace}$ we parameterize $\varFkt = \kinMat(\sysCoord)\varCoord$.
 Using the inverse kinematic relation $\sysVel = \kinBasisMat(\sysCoord)\sysCoordd$ we can write the functional for the varied path as
 \begin{align}
  \mathcal{J}[\sysCoordB] = \int_{t_1}^{t_2} \Lagrangian\big(\sysCoord + \varParam\kinMat(\sysCoord)\varCoord, \kinBasisMat(\sysCoord + \varParam\kinMat(\sysCoord)\varCoord) \tdiff{t}(\sysCoord + \varParam\kinMat(\sysCoord)\varCoord), t\big) \, \d t =: \mathcal{P}(\varParam)
 \end{align}
-Now if $\sysCoord(t)$ is indeed the solution to the variational problem, then $\mathcal{P}(\varParam)$ must have a minimum at $\mathcal{P}(0)$ and consequently $\spdiff[\mathcal{P}]{\varParam}(0) = 0$.
-Evaluation of this ``ordinary'' differentiation yields
+Now if $\sysCoord(t)$ is indeed the solution to the variational problem, then $\mathcal{P}(\varParam)$ must be stationary at $\mathcal{P}(0)$ and consequently $\spdiff[\mathcal{P}]{\varParam}(0) = 0$.
+Evaluation of this ordinary differentiation yields
 \begin{align}
  0 = \pdiff[\mathcal{P}]{\varParam} \Big|_{\varParam=0} &= \int_{t_1}^{t_2} \bigg( \pdiff[\Lagrangian]{\sysCoordCoeff{\GidxI}} \kinMatCoeff{\GidxI}{\LidxI} \varCoordCoeff{\LidxI} + \pdiff[\Lagrangian]{\sysVelCoeff{\LidxI}} \bigg( \pdiff[\kinBasisMatCoeff{\LidxI}{\GidxI}]{\sysCoordCoeff{\GidxII}} \kinMatCoeff{\GidxII}{\LidxII} \varCoordCoeff{\LidxII} \sysCoordCoeffd{\GidxI} + \kinBasisMatCoeff{\LidxI}{\GidxI} \pdiff[\kinMatCoeff{\GidxI}{\LidxII}]{\sysCoordCoeff{\GidxII}} \varCoordCoeff{\LidxII} \sysCoordCoeffd{\GidxII} + \varCoordCoeffd{\LidxI}\bigg) \bigg) \, \d t
 \nonumber\\
@@ -397,7 +397,7 @@ With this we can express the Euler-Lagrange equation \eqref{eq:MyEulerLagrange} 
 For the special case of minimal configuration coordinates $\genCoord$ and velocity coordinates $\sysVel = \genCoordd$ we have $\kinMat = \idMat[\dimConfigSpace]$ and \eqref{eq:HamiltonsCanonicalEquations} is called \textit{Hamilton's canonical equations}.
 
 \paragraph{Conservation law.}
-The time derivative of the Hamiltonian along the the solutions of \eqref{eq:HamiltonsCanonicalEquations} is
+The time derivative of the Hamiltonian along the solutions of \eqref{eq:HamiltonsCanonicalEquations} is
 \begin{align}\label{eq:BalanceHamiltonian}
  \diff[\Hamiltonian]{t} = \pdiff[\Hamiltonian]{\sysCoordCoeff{\GidxI}} \sysCoordCoeffd{\GidxI} + \pdiff[\Hamiltonian]{\genMomentumCoeff{\LidxI}} \genMomentumCoeffd{\LidxI} + \pdiff[\Hamiltonian]{t}
  = \underbrace{\pdiff[\Hamiltonian]{\sysCoordCoeff{\GidxI}} \kinMatCoeff{\GidxI}{\LidxI} \pdiff[\Hamiltonian]{\genMomentumCoeff{\LidxI}}
@@ -409,7 +409,7 @@ and consequently
 \begin{align}
  \diff[\Hamiltonian]{t} &= \pdiff[\Hamiltonian]{t} = -\pdiff[\Lagrangian]{t}.
 \end{align}
-This is the well known conservation law for the Hamiltonian, see e.g.\ \cite[ch.\,VI.6]{Lanczos:Variational}.
+This is the well-known conservation law for the Hamiltonian, see e.g.\ \cite[ch.\,VI.6]{Lanczos:Variational}.
 The remarkable aspect of the conservation law (and for the Legendre transformation) is that there is no particular assumption on the structure of the Lagrangian $\Lagrangian$.
 
 

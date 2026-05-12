@@ -21,10 +21,10 @@ It allows for a quite general parameterization as motivated in the previous sect
 \end{figure}
 
 \paragraph{Configuration coordinates.}
-As motivated for the single rigid body, let there be a body fixed frame for each body of the system as illustrated in \autoref{fig:RBSConfigurations}.
+As motivated in the single rigid body case, let there be a body fixed frame for each body of the system as illustrated in \autoref{fig:RBSConfigurations}.
 The components of the position of the $\BidxII\text{-th}$ body w.r.t.\ the inertial frame are $\bodyPos{0}{\BidxII} \in \RealNum^3$ and the components of its attitude are $\bodyRot{0}{\BidxII} = [\bodyRotx{0}{\BidxII}, \bodyRoty{0}{\BidxII}, \bodyRotz{0}{\BidxII}] \in \SpecialOrthogonalGroup(3)$.
 
-The configuration can also be expressed w.r.t.\ any other body: $\bodyPos{\BidxI}{\BidxII}$ is the position of the $\BidxII\text{-th}$ frame w.r.t.\ the frame of the $\BidxI\text{-th}$ body and analog of the attitude $\bodyRot{\BidxI}{\BidxII}$.
+The configuration can also be expressed w.r.t.\ any other body: $\bodyPos{\BidxI}{\BidxII}$ is the position of the $\BidxII\text{-th}$ frame w.r.t.\ the frame of the $\BidxI\text{-th}$ body and analog for the attitude $\bodyRot{\BidxI}{\BidxII}$.
 The left side indices are used for readability but also to emphasize their different nature compared to the right side indices.
 The sum convention does not apply to these indices.
 For the positions and attitudes we have the following relations
@@ -58,7 +58,7 @@ Then \eqref{eq:rigidBodyRelCoordRules} is equivalent to
 \end{align}
 \end{subequations}
 For a system of $\numRigidBodies$ body fixed frames and a reference frame there are $(\numRigidBodies+1)^2$ transformations, but due to the rules \eqref{eq:rigidBodyRelCoordRules2}, only $\numRigidBodies$ of them can be independent.
-So, a RBS can have at most $6\numRigidBodies$ degrees of freedom, which is only the case if there are no constraints (like joints) between the bodies.
+Thus, an RBS can have at most $6\numRigidBodies$ degrees of freedom, which is only the case if there are no constraints (like joints) between the bodies.
 Constraints of a joint between body $a$ and $b$ can be captured inside the corresponding transformation $\bodyHomoCoord{\BidxI}{\BidxII}{}{}$.
 %The description of a rigid body system by a set of transformations is shown in the following example.
 We will discuss this in the following example.
@@ -98,7 +98,7 @@ This is reflected by the configuration
  \begin{bmatrix}
   \bodyRotxx{1}{2} & \bodyRotxy{1}{2} & \bodyRotxz{1}{2} & 0 \\
   \bodyRotyx{1}{2} & \bodyRotyy{1}{2} & \bodyRotyz{1}{2} & 0 \\
-  \bodyRotzx{1}{2} & \bodyRotzz{1}{2} & \bodyRotzz{1}{2} & \LoadHeight \\
+  \bodyRotzx{1}{2} & \bodyRotzy{1}{2} & \bodyRotzz{1}{2} & \LoadHeight \\
   0 & 0 & 0 & 1
  \end{bmatrix}.
 \end{align}
@@ -132,7 +132,7 @@ The configuration w.r.t.\ the corresponding arm is
  k = 1,\ldots,3.
 \end{align}
 \end{subequations}
-The set of configurations $\HomoCoordGraph_0 = \{ \bodyHomoCoord{0}{1}, \bodyHomoCoord{1}{2}, \bodyHomoCoord{1}{3}, \bodyHomoCoord{3}{4}, \bodyHomoCoord{1}{5}, \bodyHomoCoord{5}{6}, \bodyHomoCoord{1}{7}, \bodyHomoCoord{7}{8} \}$ form a directed graph as shown at the bottom of \autoref{fig:TriV3ConfigGraph}.
+The set of configurations $\HomoCoordGraph_0 = \{ \bodyHomoCoord{0}{1}, \bodyHomoCoord{1}{2}, \bodyHomoCoord{1}{3}, \bodyHomoCoord{3}{4}, \bodyHomoCoord{1}{5}, \bodyHomoCoord{5}{6}, \bodyHomoCoord{1}{7}, \bodyHomoCoord{7}{8} \}$ forms a directed graph as shown at the bottom of \autoref{fig:TriV3ConfigGraph}.
 With them and the rules from \eqref{eq:rigidBodyRelCoordRules2} we can compute the configuration $\bodyHomoCoord{\BidxI}{\BidxII}$ of any body w.r.t.\ any other body or the reference frame.
 
 The configurations can be seen as functions $\bodyHomoCoord{\BidxI}{\BidxII}(\sysCoord)$ of the system coordinates
@@ -163,8 +163,8 @@ The configuration space of the rigid body system is
  \configSpace = \{ \sysCoord \in \RealNum^{30} \, | \, \geoConstraint(\sysCoord) = 0 \} \ \cong \ \SpecialEuclideanGroup(3) \times \SpecialOrthogonalGroup(3) \times \RealNum^3 \times (\Sphere^1)^3.
 \end{align}
 
-This example was mainly chosen as the Tricopter will be discussed in the following chapters.
-However, it is also an example of a system that is complex enough that one probably does not want to derive the equations of motion without a formalism.
+This example was mainly chosen because the Tricopter will be discussed in the following chapters.
+However, it is also complex enough that one probably does not want to derive the equations of motion without a formalism.
 It also covers the most common manifolds encountered in rigid body mechanics.
 Even though the revolute joints for the propeller tilt and the propeller spinning axes both imply a $\Sphere^1$ manifold, the local parameterization by the angle $\aServo[k],k=1,2,3$ is chosen.
 This has a practical motivation: The tilt mechanism also twists the cables to the propeller motor and so $\aServo[k] = 0$ and $\aServo[k] = 2\pi$ are really different situations in practice.
@@ -182,7 +182,7 @@ All we need for the following is that any configuration $\bodyHomoCoord{\BidxI}{
 
 \paragraph{Body velocity.}
 The previous section motivated particular velocity coordinates $\bodyVel{}{} = [\v^\top, \w^\top]^\top$ for the free rigid body, which did lead to a convenient mathematical expressions.
-In the context of rigid body systems we may associate a \textit{body velocity} $\bodyVel{\BidxI}{\BidxII} = [\bodyLinVel{\BidxI}{\BidxII}^\top, \bodyAngVel{\BidxI}{\BidxII}^\top]^\top$ with any configuration $\bodyHomoCoord{\BidxI}{\BidxII}, \BidxI,\BidxII = 0,\ldots,\numRigidBodies$ defined by 
+In the context of rigid body systems we may associate a \textit{body velocity} $\bodyVel{\BidxI}{\BidxII} = [\bodyLinVel{\BidxI}{\BidxII}^\top, \bodyAngVel{\BidxI}{\BidxII}^\top]^\top$ with any configuration $\bodyHomoCoord{\BidxI}{\BidxII}, \BidxI,\BidxII = 0,\ldots,\numRigidBodies$, defined by 
 \begin{align}\label{eq:DefBodyVelocityMulti}
  \bodyVel{\BidxI}{\BidxII} = \veeOp\big(\bodyHomoCoord{\BidxII}{\BidxI} \bodyHomoCoordd{\BidxI}{\BidxII}{}{} \big), \quad \BidxI,\BidxII = 0,\ldots,\numRigidBodies.
 \end{align}
@@ -271,7 +271,7 @@ The body velocities associated with the configuration matrices from \eqref{eq:co
 \quad k=1,2,3.
 \end{align}
 \end{subequations}
-From this it should clear how the corresponding body Jacobians look like, e.g.\ $\bodyJac{0}{1} = [\idMat[6] \ 0]$.
+From this it should be clear how the corresponding body Jacobians look, e.g.\ $\bodyJac{0}{1} = [\idMat[6] \ 0]$.
 
 For the formulation of the kinetic energy in the following subsection we will need the body Jacobians $\bodyJac{0}{\BidxII}, \BidxII=1,\ldots,\numRigidBodies$.
 From the graph structure and the rules \eqref{eq:rulesBodyJacobian} we can compute them iteratively as
@@ -436,7 +436,7 @@ The corresponding dissipation function $\bodyDissFkt{\BidxI}{\BidxII}$ was deriv
 with the body dissipation matrix $\bodyDissMat{\BidxI}{\BidxII}$.
 Notice that in contrast to stiffness, the dissipation is, in general, not symmetric in the sense $\bodyDissFkt{\BidxI}{\BidxII} \neq \bodyDissFkt{\BidxII}{\BidxI}$.
 But due to $\bodyVel{\BidxI}{\BidxI} = \tuple{0}$ we have $\bodyDissFkt{\BidxI}{\BidxI}=0$.
-For system of rigid bodies we have the dissipation function
+For a system of rigid bodies we have the dissipation function
 \begin{align}
  \dissFkt = \sum_{\BidxI=0}^{\numRigidBodies} \sum_{\BidxII=0, \BidxII\neq\BidxI}^{\numRigidBodies} \bodyDissFkt{\BidxI}{\BidxII}
  = \tfrac{1}{2} \sysVel^\top \underbrace{\sum_{\BidxI=0}^{\numRigidBodies} \sum_{\BidxII=0, \BidxII\neq\BidxI}^{\numRigidBodies} \bodyJac{\BidxI}{\BidxII}^\top \bodyDissMat{\BidxI}{\BidxII} \bodyJac{\BidxI}{\BidxII}}_{\sysDissMat} \sysVel
@@ -509,7 +509,7 @@ It may be summarized as
 \end{align}
 \end{subequations} 
 \end{enumerate}
-The explicit equations of motion reads
+The explicit equations of motion read
 \begin{subequations}
 \begin{align}
  \sysCoordd &= \kinMat \sysVel, 

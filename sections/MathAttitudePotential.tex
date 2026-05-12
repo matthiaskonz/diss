@@ -28,7 +28,7 @@ Each of these problems essentially asks for an $\R\in\SpecialOrthogonalGroup(3)$
 Solutions to Wahba's problem are given in \cite{Davenport:QMethod} using attitude quaternions and in \cite{Kabsch:SSVD} using the singular value decomposition.
 A proof of a unique minimum in \cite{Bullo:TrackingAutomatica} relies on $\mat{P}$ having distinct singular values.
 Within this work we will encounter similar problems.
-In the following we extend theses results in that, we do not impose assumptions on $\mat{P}$ and are also interested other extrema of $\potentialEnergy$.
+In the following, we extend these results: we do not impose assumptions on $\mat{P}$, and we are also interested in other extrema of $\potentialEnergy$.
 
 \paragraph{Problem definition.}
 Given a matrix $\mat{P} \in \RealNum^{3\times3}$, what are the extrema and their nature of the function
@@ -49,7 +49,7 @@ As proposed in \cite{Kabsch:SSVD}, define
  \bar{\mat{\varSigma}} &= \diag(\sigma_1, \sigma_2, \bar{\sigma}_3), \ \bar{\sigma}_3 = \det\mat{X}\det\mat{Y} \sigma_3 .
 \end{align} 
 \end{subequations}
-This means flipping the direction of the eigenvectors corresponding to the smallest singular value $\sigma_3$, if the corresponding matrix $\mat{X}, \mat{Y}$ contains a reflection.
+This means flipping the direction of the singular vectors corresponding to the smallest singular value $\sigma_3$ if either $\mat{X}$ or $\mat{Y}$ contains a reflection.
 This yields a decomposition $\mat{P} = \bar{\mat{X}} \bar{\mat{\varSigma}} \bar{\mat{Y}}^\top$ with proper rotations.
 Using the cyclic permutation property of the trace we get
 \begin{align}\label{eq:AttitudePotentialTrafo}
@@ -64,14 +64,14 @@ Using the operators defined above, we may formulate the differential of the tran
 \begin{align}
  \differential \bar{\potentialEnergy}(\bar{\R}) &= \veeTwoOp(\bar{\mat{\varSigma}} \bar{\R}).
 \end{align}
-For a critical point $\bar{\R}_0 : \differential \bar{\potentialEnergy}(\bar{\R}_0)=\tuple{0}$ we need the matrix $\bar{\mat{\varSigma}} \bar{\R}_0$ to be symmetric.
-As $\bar{\mat{\varSigma}}$ is diagonal, this implies that $\bar{\R}_0$ must be symmetric.
+For a critical point $\bar{\R}_0$ (i.e., $\differential \bar{\potentialEnergy}(\bar{\R}_0)=\tuple{0}$), the matrix $\bar{\mat{\varSigma}} \bar{\R}_0$ must be symmetric.
+Since $\bar{\mat{\varSigma}}$ is diagonal, this implies that $\bar{\R}_0$ must be symmetric.
 The Hessian at a critical point is
 \begin{align}
  \differential^2 \bar{\potentialEnergy}(\bar{\R}_0) &= \veeMatOp(\bar{\mat{\varSigma}} \bar{\R}_0).
 \end{align}
 
-For the following it will be useful to substitute the entries/eigenvalues of $\veeMatOp(\bar{\mat{\varSigma}}) = \diag(\lambda_1, \lambda_2, \lambda_3) = \mat{\Lambda}$ as
+For what follows it will be useful to substitute the entries/eigenvalues of $\veeMatOp(\bar{\mat{\varSigma}}) = \diag(\lambda_1, \lambda_2, \lambda_3) = \mat{\Lambda}$ as
 \begin{align}
  \left.\begin{matrix}[1.2]
  \lambda_1 = \sigma_2 + \bar{\sigma}_3, \\
@@ -85,7 +85,7 @@ For the following it will be useful to substitute the entries/eigenvalues of $\v
  \bar{\sigma}_3 = \tfrac{1}{2} (\lambda_1 + \lambda_2 - \lambda_3)\hphantom{,}  
  \end{matrix}\right.
 \end{align} 
-Its crucial to notice that $\sigma_1 \geq \sigma_2 \geq |\bar{\sigma}_3| \geq 0$ implies $\lambda_3 \geq \lambda_2 \geq \lambda_1 \geq 0$.
+It is crucial to notice that $\sigma_1 \geq \sigma_2 \geq |\bar{\sigma}_3| \geq 0$ implies $\lambda_3 \geq \lambda_2 \geq \lambda_1 \geq 0$.
 Depending on the constellation of the eigenvalues we have the following critical points:
 \begin{subequations}
 \begin{itemize}
@@ -132,7 +132,7 @@ so $\bar{\R}_{0}$ is a minimum, $\bar{\R}_{1}$ and $\bar{\R}_{2}$ are saddle poi
 \end{align}
 which includes the points $\bar{\R}_{1}$ and $\bar{\R}_{2}$.
 
-\item Double eigenvalue: $\lambda_3 = \lambda_2 > \lambda_1 > 0$: Analog to above we have a minimum at $\bar{\R}_{0}$, a saddle at $\bar{\R}_{1}$ and a maximum on the circular manifold 
+\item Double eigenvalue: $\lambda_3 = \lambda_2 > \lambda_1 > 0$: Analogous to above, we have a minimum at $\bar{\R}_{0}$, a saddle at $\bar{\R}_{1}$ and a maximum on the circular manifold 
 \begin{align}
  \bar{\R}_{5} &= \begin{bmatrix} -1 & 0 & 0 \\ 0 & c & s \\ 0 & s & -c \end{bmatrix}, \ c^2+s^2=1 \ : 
 \nonumber\\
@@ -177,7 +177,7 @@ Furthermore we have a saddle point at $\bar{\R}_{2}$ and a maximum at $\bar{\R}_
 which includes $\bar{\R}_{0}$, $\bar{\R}_{1}$ and $\bar{\R}_{2}$ and corresponds to an arbitrary rotation about an axis $[\quatx, \quaty, 0]^\top$.
 Furthermore we have a maximum at $\bar{\R}_{3}$.
 
-\item All zero eigenvalues: $\lambda_3 = \lambda_2 = \lambda_1 = 0$: for this we have $\bar{\mat{\varSigma}} = \mat{P} = \mat{0}$ and the function is $\potentialEnergy = 0$.
+\item All zero eigenvalues: $\lambda_3 = \lambda_2 = \lambda_1 = 0$: For this case we have $\bar{\mat{\varSigma}} = \mat{P} = \mat{0}$ and the function is $\potentialEnergy = 0$.
 
 \end{itemize}
 \end{subequations}
@@ -211,8 +211,8 @@ Using the \textit{special singular value decomposition} from \eqref{eq:DefSSVD} 
  = \underbrace{\bar{\mat{X}} \bar{\mat{Y}}^\top}_{\R} \wedMatOp\big(\underbrace{\bar{\mat{Y}} \veeMatOp(\bar{\mat{\varSigma}}) \bar{\mat{Y}}^\top}_{\mat{K}}\big).
 \end{align}
 From this we may conclude:
-For any matrix $\mat{M} \in\RealNum^{3\times3}$ there is a matrix $\R \in \SpecialOrthogonalGroup(3)$ and a unique, positive semidefinite matrix $\mat{K} \in \SymMatSP(3)$, such that $\mat{M} = \R \wedMatOp(\mat{K})$.
-The matrix $\R$ is unique if, and only if, the matrix $\mat{K}$ is positive definite.
+For any matrix $\mat{M} \in\RealNum^{3\times3}$ there is a matrix $\R \in \SpecialOrthogonalGroup(3)$ and a unique, positive semidefinite matrix $\mat{K} \in \SymMatSP(3)$ such that $\mat{M} = \R \wedMatOp(\mat{K})$.
+The matrix $\R$ is unique if and only if $\mat{K}$ is positive definite.
 Within this work, this will be called the \textit{special polar decomposition}.
 Note that the matrix $\wedMatOp(\mat{K})$ is, in general, indefinite.
 

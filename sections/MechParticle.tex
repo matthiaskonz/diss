@@ -1,25 +1,25 @@
 \section{A single free particle}
 \cite[§1]{Landau:Mechanics}: \textit{One of the fundamental concepts of mechanics is that of a \textit{particle}. By this we mean a body whose dimensions may be neglected in describing its motion.}
-Its motion obeys Newton's second law \cite[p.\ 13, lex II]{Newton:Principia}, english translation \cite[p.\ 83]{Newton:PrincipiaEnglish}: \textit{The alternation of motion is ever proportional to the motive force impressed; and is made in the direction of the right line in which that force is impressed}. 
+Its motion obeys Newton's second law \cite[p.\ 13, lex II]{Newton:Principia}, English translation \cite[p.\ 83]{Newton:PrincipiaEnglish}: \textit{The alternation of motion is ever proportional to the motive force impressed; and is made in the direction of the right line in which that force is impressed}. 
 The contemporary version reads (e.g.\ \cite[eq.\ 1.3]{Goldstein:ClassicalMechanics} or \cite[eq.\ 6.1.1]{Lurie:AnalyticalMechanics})
 \begin{align}\label{eq:NewtonsSecondLaw}
  \particleMass{} \particlePosdd{} &= \particleForceImpressed{}.
 \end{align}
-where $\particleMass{}\in \RealNum^+$ is the particles mass, $\particlePos{}(t)\in\RealNum^3$ its Cartesian position, $\particlePosdd{} \equiv \sfrac{\d^2 \particlePos{}}{\d t^2}$ is Newton's notation of differentiation and the applied force $\particleForceImpressed{}(t)\in\RealNum^3$ collects all other (non inertial) influences on the particle.
+where $\particleMass{}\in \RealNum^+$ is the particle's mass, $\particlePos{}(t)\in\RealNum^3$ its Cartesian position, $\particlePosdd{} \equiv \sfrac{\d^2 \particlePos{}}{\d t^2}$ is Newton's notation for differentiation and the applied force $\particleForceImpressed{}(t)\in\RealNum^3$ collects all other (non inertial) influences on the particle.
 In this work we will investigate three sources of applied forces: gravity, linear springs and viscous friction.
 
 \paragraph{Gravity.}
-For far most engineering applications we are dealing with systems that move close to the surface of the Earth and where Galilei's gravitation principle \cite[Day 3]{Galileo:TwoNewSciences} holds.
+For most engineering applications we are dealing with systems that move close to the surface of the Earth and where Galilei's gravitation principle \cite[Day 3]{Galileo:TwoNewSciences} holds.
 In a contemporary formulation it states that a particle with mass $\particleMass{\PidxI}$ is subject to the gravitational force
 \begin{align}\label{eq:ParticleGravity}
  \particleForceGravity{} = \particleMass{} \gravityAcc
 \end{align}
 where $\gravityAcc$ are the coefficients of the gravitational acceleration of the earth w.r.t.\ the chosen reference frame.
-Commonly the reference frame is chosen such that the $\ez$ axis is opposing gravity and we have $\gravityAcc = [0,0,-\gravityAccConst]^\top$ with the \textit{gravity of earth} $\gravityAccConst = 9.8\,\tfrac{\unit{m}}{\unit{s}^2}$.
+Commonly the reference frame is chosen such that the $\ez$ axis is opposed to gravity and we have $\gravityAcc = [0,0,-\gravityAccConst]^\top$ with the \textit{gravity of earth} $\gravityAccConst = 9.8\,\tfrac{\unit{m}}{\unit{s}^2}$.
 
 \paragraph{Linear spring.}
 Let the particle be connected with a spring to a point $\particlePos{0}$.
-The simplest model of a spring is that of Hooke's law \cite{Hooke:OfSprings}: The force $\particleForceStiff{}$ on the particle is opposite and proportional by a factor $\particleStiffness{} \in \RealNum^+$ to the spring displacement $\particlePos{} - \particlePos{0}$, i.e.\
+The simplest model of a spring is that of Hooke's law \cite{Hooke:OfSprings}: The force $\particleForceStiff{}$ on the particle is proportional to, but opposite in direction to, the spring displacement $\particlePos{} - \particlePos{0}$, with proportionality factor $\particleStiffness{} \in \RealNum^+$, i.e.\
 \begin{align}\label{eq:ParticleStiffness}
  \particleForceStiff{} &= -\particleStiffness{} (\particlePos{} - \particlePos{0})
  .
@@ -27,7 +27,7 @@ The simplest model of a spring is that of Hooke's law \cite{Hooke:OfSprings}: Th
 
 \paragraph{Viscous friction.}
 \cite[§81]{Rayleigh:TheoryOfSound}: \textit{There is another group of forces whose existence is often advantageous to recognize specially, namely those arising from friction or viscosity. [..] we suppose that each particle is retarded by forces proportional to its component velocities.}
-We may think of the particle to be immersed in a viscous fluid which, at the particle position, has the velocity $\tuple{\mathfrak{v}}_0$.
+We may think of the particle as being immersed in a viscous fluid which, at the particle position, has the velocity $\tuple{\mathfrak{v}}_0$.
 With the damping parameter $\particleDamping{} \in \RealNum^+$ the force on the particle is
 \begin{align}\label{eq:ParticleDamping}
  \particleForceDiss{} = -\particleDamping{} (\particlePosd{} - \tuple{\mathfrak{v}}_0)
@@ -36,25 +36,25 @@ With the damping parameter $\particleDamping{} \in \RealNum^+$ the force on the 
 
 
 \paragraph{Equation of motion.}
-A single free particle that is subject to all the aforementioned forces and a general, not further specified external force $\particleForceEx{}$, i.e.\ $\particleForceImpressed{} = \particleForceGravity{} + \particleForceStiff{} + \particleForceDiss{} + \particleForceEx{}$, has the equation of motion 
+A single free particle that is subject to all the aforementioned forces and a general, unspecified external force $\particleForceEx{}$, i.e.\ $\particleForceImpressed{} = \particleForceGravity{} + \particleForceStiff{} + \particleForceDiss{} + \particleForceEx{}$, has the equation of motion 
 \begin{align}\label{eq:ParticleEoM}
  \particleMass{} (\particlePosdd{} - \gravityAcc) + \particleDamping{} (\particlePosd{} - \tuple{\mathfrak{v}}_0) + \particleStiffness{} (\particlePos{} - \particlePos{0}) &= \particleForceEx{}.
 \end{align}
 
 \paragraph{Control engineering.}
-From a control engineering perspective the structure of this system is already nice enough to consider it as a desired closed loop dynamics:
-If we want the particle to track a sufficiently smooth reference trajectory $t\mapsto\particlePosR{}(t)$ a reasonable desired closed loop dynamics is
+From a control engineering perspective the structure of this system is already nice enough to consider it as a desired closed-loop dynamics:
+If we want the particle to track a sufficiently smooth reference trajectory $t\mapsto\particlePosR{}(t)$ a reasonable desired closed-loop dynamics is
 \begin{align}\label{eq:ParticleDesiredClosedLoop}
  \particlePosE{} = \particlePos{} - \particlePos{0},
 \qquad
  \particleMass{} \particlePosEdd{} + \particleDampingC{} \particlePosEd{} + \particleStiffnessC{} \particlePosE{} &= \tuple{0}.
 % \particleMass{} (\particlePosdd{} - \particlePosRdd{}) + \particleDampingC{} (\particlePosd{} - \particlePosRd{}) + \particleStiffnessC{} (\particlePos{} - \particlePosR{}) &= \tuple{0}.
 \end{align}
-This is essentially the same as above \eqref{eq:ParticleEoM}, but we replaced the spring origin $\particlePos{0}$ with the reference position $\particlePosR{}$, the fluid velocity $\tuple{\mathfrak{v}}_0$ with the reference velocity $\particlePosRd{}$ and the free-fall acceleration $\gravityAcc$ with the reference acceleration $\particlePosRdd{}$.
-Furthermore, we replaced the spring stiffness $\particleStiffness{}$ and viscosity $\particleDamping{}$ by analog tuning parameters $\particleStiffnessC{}, \particleDampingC{} \in \RealNum^+$.
+This is essentially the same as above \eqref{eq:ParticleEoM}, but we replace the spring origin $\particlePos{0}$ with the reference position $\particlePosR{}$, the fluid velocity $\tuple{\mathfrak{v}}_0$ with the reference velocity $\particlePosRd{}$ and the free-fall acceleration $\gravityAcc$ with the reference acceleration $\particlePosRdd{}$.
+Furthermore, we replace the spring stiffness $\particleStiffness{}$ and viscosity $\particleDamping{}$ by analogous tuning parameters $\particleStiffnessC{}, \particleDampingC{} \in \RealNum^+$.
 Plugging the desired dynamics \eqref{eq:ParticleDesiredClosedLoop} into the plant dynamics \eqref{eq:ParticleEoM} yields the required control law
 \begin{align}
- \particleForceEx{} &= \particleMass{} (\particlePosRdd{} - \gravityAcc) + \particleDamping{} (\particlePosd{} - \tuple{\mathfrak{v}}_0) + \particleStiffness{} (\particlePos{} - \particlePos{0}) - \particleDampingC{} (\particlePosd{} - \particlePosRd{}) - \particleStiffnessC{} (\particlePos{} - \particlePosR{}) -\particleMass{}\gravityAcc.
+ \particleForceEx{} &= \particleMass{} (\particlePosRdd{} - \gravityAcc) + \particleDamping{} (\particlePosd{} - \tuple{\mathfrak{v}}_0) + \particleStiffness{} (\particlePos{} - \particlePos{0}) - \particleDampingC{} (\particlePosd{} - \particlePosRd{}) - \particleStiffnessC{} (\particlePos{} - \particlePosR{}).
 \end{align}
 As this control approach is so closely related to basic mechanics, it could be more intuitive for an engineer than other generic mathematical approaches.
 

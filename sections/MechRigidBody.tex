@@ -33,7 +33,7 @@
 % }
 
 \section{A single free rigid body}\label{sec:RB}
-Established textbooks on physics (e.g.\ \cite[chap. 4]{Goldstein:ClassicalMechanics}, \cite[§31]{Landau:Mechanics} or \cite[§44]{Boltzmann:PrincipeDerMechanik}) define a \textit{rigid body} as a a system of a \textit{finite} number $\numParticles$ particles such that the distances $d_{\PidxI\PidxII} = \norm{\particlePos{\PidxI} - \particlePos{\PidxII}}$ between their positions $\particlePos{\PidxI}$ are constant.
+Established textbooks on physics (e.g.\ \cite[chap. 4]{Goldstein:ClassicalMechanics}, \cite[§31]{Landau:Mechanics} or \cite[§44]{Boltzmann:PrincipeDerMechanik}) define a \textit{rigid body} as a system of a \textit{finite} number $\numParticles$ particles such that the distances $d_{\PidxI\PidxII} = \norm{\particlePos{\PidxI} - \particlePos{\PidxII}}$ between their positions $\particlePos{\PidxI}$ are constant.
 Textbooks that are more focused on engineering like \cite[sec.\ 8, § 1]{Hamel:TheoretischeMechanik}, \cite[sec.\ 4.1]{Bremer:ElasticMultibodyDynamics} or \cite[sec.\ 6.1.1]{Schwertassek:MultibodySystems} rather define a rigid body as a rigid volume over which mass is continuously distributed.
 Both modeling assumptions eventually lead to the same equations of motion when using the same generalized coordinates.
 They differ in the computation of the inertial parameters of total mass, center of mass and moment of inertia:
@@ -41,7 +41,7 @@ The physics perspective uses a finite sum over the particles, whereas the engine
 This work will consider a finite number of particles.
 
 In contrast to the sources mentioned above, this section will investigate apart from inertia and gravitation, also stiffness and damping for a rigid body.
-In particular for the latter two parts, the model of concentrated particles is more intuitive in the authors humble opinion.
+In particular, for the latter two parts, the model of concentrated particles is more intuitive in the author's humble opinion.
 
 
 \subsection{Coordinates}
@@ -64,7 +64,7 @@ Consequently, the motion of the rigid body is completely captured by the positio
 
 \paragraph*{Usefulness of these particular coordinates.}
 This is an example par excellence for the use of redundant parameters as discussed in the previous chapter:
-The system of particles has $\numParticles$ has $\numCoord = 3\numParticles$ coordinates, the coefficients of the particle positions $\particlePos{\PidxI}, \PidxI=1,\ldots,\numParticles$, and $\numGeoConst = \tfrac{1}{2} \numParticles(\numParticles-1)$ fixing their distances to each other.
+The system of particles has $\numParticles$ particles with $\numCoord = 3\numParticles$ coordinates, the coefficients of the particle positions $\particlePos{\PidxI}, \PidxI=1,\ldots,\numParticles$, and $\numGeoConst = \tfrac{1}{2} \numParticles(\numParticles-1)$ fixing their distances to each other.
 Actually, just fixing the distances between the particles still allows a mirroring of the rigid body, which from a physical perspective is not permitted. 
 To resolve this there should be additional constraints on the ``handedness'' of the particles to each other.
 Even without the ``handedness'' constraints, the number of distance constraints $\numGeoConst$ surpasses the number of coordinates $\numCoord$ for larger number of particles.
@@ -97,7 +97,7 @@ With this we may express the velocity and accelerations of the body particles as
 \end{subequations}
 
 \paragraph*{Compliance with the framework.}
-In order to comply to the framework from the previous chapter we may group the configuration coordinates as $\sysCoord = [\r^\top, \Rx^\top, \Ry^\top, \Rz^\top]^\top \in \configSpace \subset\RealNum^{12}$ and their geometric constraint as $\geoConstraint(\sysCoord) = \tuple{0}$ are the constraints of $\SpecialOrthogonalGroup(3)$ as given in \eqref{eq:constraintSO3}.
+In order to comply with the framework from the previous chapter we may group the configuration coordinates as $\sysCoord = [\r^\top, \Rx^\top, \Ry^\top, \Rz^\top]^\top \in \configSpace \subset\RealNum^{12}$ and the geometric constraints as $\geoConstraint(\sysCoord) = \tuple{0}$ are the constraints of $\SpecialOrthogonalGroup(3)$ as given in \eqref{eq:constraintSO3}.
 The vector form of the kinematic relation \eqref{eq:RBKinematicEq1} is 
 \begin{align}\label{eq:RBKinematicEq2}
  \underbrace{\begin{bmatrix} \rd \\ \Rxd \\ \Ryd \\ \Rzd  \end{bmatrix}}_{\sysCoordd}
@@ -141,7 +141,7 @@ whose naming will be discussed later.
 
 \subsection{Inertia}
 The previous section derived several formulations for the generalized inertial force $\bodyGenForceInertia{}{}$.
-These will now be applied to the the rigid body with the chosen coordinates.
+These will now be applied to the rigid body with the chosen coordinates.
 
 \paragraph{Kinetic energy.}
 With the particle velocities $\particlePosd{\PidxI}$ in terms of the chosen coordinates \eqref{eq:RBParticleVel} we obtain the kinetic energy $\kineticEnergy$ of a free rigid body as 
@@ -172,7 +172,7 @@ Actually many textbooks, e.g.\ \cite[p.\,167]{Murray:Robotic} or \cite[p.\,153]{
 In the next section on rigid body systems we will see that it can be quite useful to use \textit{geometrically} meaningful body fixed frames rather than restricting to the center of mass.
 }.
 
-Plugging the the kinetic energy \eqref{eq:RigidBodyKineticEnergy} into the corresponding formulation \eqref{eq:InertiaForceKinEnergy} of the generalized inertia force and using the commutation symbols from \eqref{eq:RBCommutationCoeffAd} yields
+Plugging the kinetic energy \eqref{eq:RigidBodyKineticEnergy} into the corresponding formulation \eqref{eq:InertiaForceKinEnergy} of the generalized inertia force and using the commutation symbols from \eqref{eq:RBCommutationCoeffAd} yields
 \begin{align}\label{eq:InertiaForceRB}
  \genForceInertia &=
  \underbrace{\begin{bmatrix} \bodyMass{}{}\idMat[3] & \bodyMass{}{} \wedOp(\bodyCOM{}{})^\top \\ \bodyMass{}{} \wedOp(\bodyCOM{}{}) & \bodyMOI{}{} \end{bmatrix}}_{\bodyInertiaMat{}{}}

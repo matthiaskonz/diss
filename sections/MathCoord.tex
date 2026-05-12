@@ -8,7 +8,7 @@ If interested in a global parameterization of a $\dimConfigSpace$ dimensional no
  As this is the common way of defining a smooth manifold, this is always possible.
  \item Choose one parameterization with \textit{redundant} coordinates $\sysCoord \in \RealNum^{\numCoord}$, i.e. coordinates that are constrained by smooth equations of the form $\geoConstraint(\sysCoord) = \tuple{0}$.
  E.g. the coefficients of the rotation matrix as done in \eqref{eq:ExampleEulerEq}.
- \textit{Whitney embedding theorem} states that this is always possible with at least $\numCoord = 2\dimConfigSpace$ coordinates.
+ The \textit{Whitney embedding theorem} states that such a parameterization with redundant coordinates is always possible with at least $\numCoord = 2\dimConfigSpace$ coordinates.
 \end{enumerate}
 Both approaches have benefits and drawbacks depending on the application, but the first approach and the use of minimal coordinates is far more dominant in the literature.
 This work utilizes the second approach.
@@ -34,7 +34,7 @@ For this work, it essentially guarantees the existence of a global parameterizat
 
 
 \subsection{Minimal velocity coordinates}\label{sec:secMathMinVelCoord}
-For the following it is crucial to note that a geometric constraint is equivalent to its derivative supplemented with a suitable initial condition
+For what follows, it is crucial to note that a geometric constraint is equivalent to its derivative supplemented with a suitable initial condition
 \begin{subequations}\label{eq:DiffConstraint}
 \begin{align}
  \label{eq:GeoConstraint}
@@ -58,10 +58,10 @@ where $\sysCoord_0 = \sysCoord(t_0)$.
 Even though \eqref{eq:GeoConstraint} might be nonlinear, its derivative \eqref{eq:DiffGeoConstraint} is always \textit{linear} in the velocities $\sysCoordd$.
 So here it is reasonable to choose \textit{minimal velocity coordinates}:
 Let $\kinMat(\sysCoord) \in \RealNum^{\numCoord\times\dimConfigSpace}$ be a matrix with the properties $\pdiff[\geoConstraint]{\sysCoord} \kinMat = \mat{0}$ and $\rank \kinMat = \dimConfigSpace$.
-The first property of $\kinMat(\sysCoord)$ is that these columns of $\kinMat(\sysCoord)$ are orthogonal to the rows of $\pdiff[\geoConstraint]{\sysCoord}(\sysCoord)$.
+The first property is that the columns of $\kinMat(\sysCoord)$ are orthogonal to the rows of $\pdiff[\geoConstraint]{\sysCoord}(\sysCoord)$.
 The second property implies that the columns of $\kinMat(\sysCoord)$ are linearly independent.
 So the columns of $\kinMat(\sysCoord)$ can be interpreted as \textit{basis vectors} for the tangent space $\Tangent[\sysCoord] \configSpace$.
-We can capture all allowed velocities $\sysCoordd(t)$ by the minimal velocity coordinates $\sysVel(t) \in \RealNum^{\dimConfigSpace}$ through
+We can represent all allowed velocities $\sysCoordd(t)$ using the minimal velocity coordinates $\sysVel(t) \in \RealNum^{\dimConfigSpace}$ via
 \begin{align}\label{eq:MyKinematics}
  \sysCoordd = \kinMat(\sysCoord) \sysVel
 \end{align}
@@ -109,10 +109,10 @@ The constraints $\R^\top \R = \idMat[3]$ and $\det\R = 1$ read
  \end{bmatrix}
  = \tuple{0}.
 \end{align}
-The 9 conditions $\R^\top \R = \idMat[3]$ yields due to symmetry only 6 constraints and already imply $\det\R = \pm 1$.
+The 9 conditions from $\R^\top \R = \idMat[3]$ yield due to symmetry only 6 constraints and already imply $\det\R = \pm 1$.
 Since the determinant is a smooth function, the corresponding manifold must consist of two disjoint components, one with $\det\R = +1$ (proper rotations) and one with $\det\R=-1$ (rotations with reflection).
 So the additional constraint $\det\R = +1$ does not change the dimension of the configuration space.
-Formally this means $\rank\pdiff[\geoConstraint]{\sysCoord} = 6$ and consequently $\dim\configSpace = 9-6 = 3$.
+Formally, this means $\rank\pdiff[\geoConstraint]{\sysCoord} = 6$ and consequently $\dim\configSpace = 9-6 = 3$.
 A kinematics matrix with $\pdiff[\geoConstraint]{\sysCoord} \kinMat = \mat{0}$ and $\rank\kinMat = 3$ is given by
 \begin{align}\label{eq:KinMatSO3}
  \mat{A}(\sysCoord) =
@@ -128,7 +128,7 @@ A kinematics matrix with $\pdiff[\geoConstraint]{\sysCoord} \kinMat = \mat{0}$ a
   -\Rzy & \Rzx & 0
  \end{bmatrix}.
 \end{align}
-The resulting kinematic equation $\sysCoordd = \kinMat(\sysCoord) \sysVel$ can be reordered to the matrix equation $\Rd = \R \wedOp(\sysVel)$ by introducing the \textit{wedge operator} defined as
+The resulting kinematic equation $\sysCoordd = \kinMat(\sysCoord) \sysVel$ can be reformulated as the matrix equation $\Rd = \R \wedOp(\sysVel)$ by introducing the \textit{wedge operator} defined as
 \begin{align}
  \wedOp \begin{bmatrix} \sysVelCoeff{1} \\ \sysVelCoeff{2} \\ \sysVelCoeff{3} \end{bmatrix} = \begin{bmatrix} 0 & -\sysVelCoeff{3} & \sysVelCoeff{2} \\ \sysVelCoeff{3} & 0 & -\sysVelCoeff{1} \\ -\sysVelCoeff{2} & \sysVelCoeff{1} & 0 \end{bmatrix}.
 \end{align}
@@ -152,26 +152,26 @@ If the matrix $\mat{S}$ has linearly independent columns, its pseudoinverse is $
 Similarly, if $\mat{S}$ has linearly independent rows, its pseudoinverse is $\mat{S}^+ = \mat{S}^\top (\mat{S} \mat{S}^\top)^{-1}$.
 Consequently, if $\mat{S}$ is invertible (independent rows and columns) the pseudoinverse coincides with the inverse $\mat{S}^+ = \mat{S}^{-1}$.
 
-\paragraph{Some identities involving the pseudo-inverse.}
+\paragraph{Some identities involving the pseudoinverse.}
 As $\kinMat(\sysCoord) \in \RealNum^{\numCoord\times\dimConfigSpace}$ has independent columns, its pseudoinverse has the explicit formula $\kinMat^+ = (\kinMat^\top \kinMat)^{-1} \kinMat^\top =: \kinBasisMat$.
 Evidently we have $\kinBasisMat \kinMat = \idMat[\dimConfigSpace]$, but, in general, $\kinMat \kinBasisMat \neq \idMat[\numCoord]$.
-The matrix $\mat{P} = \kinMat \kinBasisMat$ is the unique orthogonal projector, (i.e.\ $\mat{P}^2 = \mat{P} = \mat{P}^\top$, see e.g.\ \cite[p.\ 38]{Horn:MatrixAnalysis}) from $\RealNum^\numCoord$ to the tangent space $\Tangent[\sysCoord]\configSpace$.
+The matrix $\mat{P} = \kinMat \kinBasisMat$ is the unique orthogonal projector (i.e., $\mat{P}^2 = \mat{P} = \mat{P}^\top$; see e.g.\ \cite[p.\ 38]{Horn:MatrixAnalysis}) from $\RealNum^\numCoord$ to the tangent space $\Tangent[\sysCoord]\configSpace$.
 
 Introduce the shorthand notation $\geoConstraintMat = \pdiff[\geoConstraint]{\sysCoord}$.
 As stated above, $\geoConstraintMat(\sysCoord) \in \RealNum^{\numGeoConst\times\numCoord}$ is not required to be full rank.
 Consequently, there is no explicit expression for its pseudoinverse $\InvGeoConstraintMat(\sysCoord) = \geoConstraintMat^+(\sysCoord) \in \RealNum^{\numCoord\times\numGeoConst}$.
-Nevertheless $\geoConstraintMat^+$ is unique and obeys the Penrose conditions \eqref{eq:PenroseConditions}.
-With them its straight forward to show that $\mat{P}^\bot = \InvGeoConstraintMat \geoConstraintMat$ is also an orthogonal projection.
+Nevertheless, $\geoConstraintMat^+$ is unique and obeys the Penrose conditions \eqref{eq:PenroseConditions}.
+With these, it is straightforward to show that $\mat{P}^\bot = \InvGeoConstraintMat \geoConstraintMat$ is also an orthogonal projection.
 
 %The condition $\geoConstraintMat\kinMat = \mat{0}$ combined with the Penrose conditions \eqref{eq:PenroseConditions} implies\footnote{$\InvGeoConstraintMat^\top \kinMat = (\InvGeoConstraintMat \geoConstraintMat \InvGeoConstraintMat)^\top \kinMat = \InvGeoConstraintMat^\top (\InvGeoConstraintMat \geoConstraintMat)^\top \kinMat = \InvGeoConstraintMat^\top \InvGeoConstraintMat \geoConstraintMat \kinMat = \mat{0}$} that $\InvGeoConstraintMat^\top \kinMat = \mat{0}$ and $\kinBasisMat^\top \geoConstraintMat = \mat{0}$.
-The condition $\geoConstraintMat\kinMat = \mat{0}$ combined with the Penrose conditions \eqref{eq:PenroseConditions} implies $\InvGeoConstraintMat^\top \kinMat = (\InvGeoConstraintMat \geoConstraintMat \InvGeoConstraintMat)^\top \kinMat = \InvGeoConstraintMat^\top (\InvGeoConstraintMat \geoConstraintMat)^\top \kinMat = \InvGeoConstraintMat^\top \InvGeoConstraintMat \geoConstraintMat \kinMat = \mat{0}$ and analog $\kinBasisMat^\top \geoConstraintMat = \mat{0}$.
-Supplementing the fact $\rank\InvGeoConstraintMat = \rank\geoConstraintMat = \numCoord - \dimConfigSpace$ we may conclude that the columns of $\InvGeoConstraintMat$ span the complementary space $(\Tangent[\sysCoord]\configSpace)^\bot$ and $\mat{P}^\bot$ is the unique orthogonal projector from $\RealNum^\numCoord$ to $(\Tangent[\sysCoord]\configSpace)^\bot$.
+The condition $\geoConstraintMat\kinMat = \mat{0}$ combined with the Penrose conditions \eqref{eq:PenroseConditions} implies $\InvGeoConstraintMat^\top \kinMat = (\InvGeoConstraintMat \geoConstraintMat \InvGeoConstraintMat)^\top \kinMat = \InvGeoConstraintMat^\top (\InvGeoConstraintMat \geoConstraintMat)^\top \kinMat = \InvGeoConstraintMat^\top \InvGeoConstraintMat \geoConstraintMat \kinMat = \mat{0}$ and analogously $\kinBasisMat^\top \geoConstraintMat = \mat{0}$.
+Given that $\rank\InvGeoConstraintMat = \rank\geoConstraintMat = \numCoord - \dimConfigSpace$, we can conclude that the columns of $\InvGeoConstraintMat$ span the complementary space $(\Tangent[\sysCoord]\configSpace)^\bot$ and $\mat{P}^\bot$ is the unique orthogonal projector from $\RealNum^\numCoord$ to $(\Tangent[\sysCoord]\configSpace)^\bot$.
 As the projectors are related by $\mat{P}^\bot = \idMat - \mat{P}$, we have the identity
 \begin{align}\label{eq:ProjectionIdentity}
  \kinMat \kinBasisMat +\, \InvGeoConstraintMat \geoConstraintMat = \idMat[\numCoord].
 \end{align}
 
-The deduction above simplifies significantly if $\geoConstraintMat$ is full rank: then the combination of the columns of $\kinMat$ and $\InvGeoConstraintMat$ form a basis for $\RealNum^\numCoord$ and we can immediately deduce the following idientities:
+The deduction above simplifies significantly if $\geoConstraintMat$ is full rank: then the columns of $\kinMat$ and $\InvGeoConstraintMat$ form a basis for $\RealNum^\numCoord$ and we can immediately deduce the following identities:
 \begin{subequations}
 \begin{align}
  \underbrace{\begin{bmatrix} \kinBasisMat \\ \geoConstraintMat \end{bmatrix}}_{\kinMatSquare^{-1}} \underbrace{[\kinMat \ \InvGeoConstraintMat]}_{\kinMatSquare}

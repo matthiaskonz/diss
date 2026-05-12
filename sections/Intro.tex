@@ -3,12 +3,12 @@
 \section{Context and state of the art}
 
 \paragraph{Modeling.}
-As the title suggests this work deals with modeling and control of rigid body systems.
-The procedure of physical modeling is illustrated in \autoref{fig:ModelingIllustration}.
-It starts by approximating the system under consideration by a mechanical model.
+As the title suggests, this work deals with the modeling and control of rigid body systems.
+The procedure for physical modeling is illustrated in \autoref{fig:ModelingIllustration}.
+It starts by approximating the system under consideration with a mechanical model.
 The mathematical part requires the choice of coordinates $\sysState$ to capture the state (positions and velocities) of the model.
-Combining this with principles of mechanics, we may derive a set of ordinary differential equations that capture its motion.
-This work mainly deals with this second part, i.e.\ the derivation of \textit{equations of motion}.
+Combining this with principles of mechanics, we can derive a set of ordinary differential equations that capture its motion.
+This work mainly deals with this second part, i.e., the derivation of \textit{equations of motion}.
 
 \begin{figure}[ht]
  \centering
@@ -20,33 +20,33 @@ This work mainly deals with this second part, i.e.\ the derivation of \textit{eq
  \label{fig:ModelingIllustration}
 \end{figure}
 
-A very common approach for deriving equations of motion of finite-dimensional, holonomic mechanical systems is the so called \textit{Lagrange formalism}:
-First, the system is parameterized by so called \textit{generalized coordinates} $\genCoord$.
-Then the kinetic energy $\kineticEnergy$, the potential energy $\potentialEnergy$ and virtual work $\delta \mathcal{W}$ of external forces are formulated in terms of these coordinates and their derivatives $\genCoordd = \sfrac{\d \genCoord}{\d t}$:
+A very common approach for deriving equations of motion for finite-dimensional, holonomic mechanical systems is the so-called \textit{Lagrange formalism}:
+First, the system is parameterized by so-called \textit{generalized coordinates} $\genCoord$.
+Then, the kinetic energy $\kineticEnergy$, the potential energy $\potentialEnergy$, and the virtual work $\delta \mathcal{W}$ of external forces are formulated in terms of these coordinates and their derivatives $\genCoordd = \sfrac{\d \genCoord}{\d t}$:
 \begin{align}
  \Lagrangian(\genCoord, \genCoordd) = \kineticEnergy(\genCoord, \genCoordd) - \potentialEnergy(\genCoord),
 \qquad
  \delta\mathcal{W}^{\text{E}} = (\delta\genCoord)^\top \genForceEx.
 \end{align}
-The equations of motion are derived from the Lagrangian $\Lagrangian$ as
+The equations of motion are derived from the Lagrangian $\Lagrangian$ as follows:
 \begin{align}\label{eq:LagrangeEq}
  \diff{t} \pdiff[\Lagrangian]{\genCoordd} - \pdiff[\Lagrangian]{\genCoord} = \genForceEx.
 \end{align}
-The kinetic energy for a time-invariant, mechanical system is always strictly quadratic $\kineticEnergy = \tfrac{1}{2} \genCoordd^\top \sysInertiaMat(\genCoord)\genCoordd$.
-Furthermore, we assume that the external forces $\genForceEx$ is an affine function of the control inputs $\sysInput$.
-Then the equations of motion take the structure
+The kinetic energy for a time-invariant mechanical system is always strictly quadratic $\kineticEnergy = \tfrac{1}{2} \genCoordd^\top \sysInertiaMat(\genCoord)\genCoordd$.
+Furthermore, we assume that the external forces $\genForceEx$ are an affine function of the control inputs $\sysInput$.
+Then, the equations of motion take the following structure
 \begin{align}\label{eq:introEqOfMotion}
  \sysInertiaMat(\genCoord)\genCoorddd + \sysForce(\genCoord,\genCoordd) = \sysInputMat(\genCoord) \sysInput
 \qquad \Leftrightarrow \qquad
  \tdiff{t} \underbrace{\begin{bmatrix} \genCoord \\ \genCoordd \end{bmatrix}}_{\sysState}
  = \underbrace{\begin{bmatrix} \genCoordd \\ \sysInertiaMat^{-1}(\genCoord)(\sysInputMat(\genCoord) \sysInput - \sysForce(\genCoord,\genCoordd)) \end{bmatrix}}_{\tuple{f}(\sysState,\sysInput)}
 \end{align}
-The right hand side of \eqref{eq:introEqOfMotion} is a standard form for simulation, i.e.\ numerical solution, or general control design.
-However, the structure of the left hand side of \eqref{eq:introEqOfMotion} can be exploited for a particular control design.
+The right-hand side of \eqref{eq:introEqOfMotion} is a standard form for simulation (i.e., numerical solution) or general control design.
+However, the structure of the left-hand side of \eqref{eq:introEqOfMotion} can be exploited for a particular control design.
 
 \paragraph{Feedback Control.}
-From a mathematical point of view, a feedback controller is some map $\sysInput = \tuple{g}(\sysState,\tuple{r})$ that computes the control input $\sysInput$ based on the measured system state $\sysState$ and some reference input $\tuple{r}$.
-The goal is that the resulting controlled system $\dot{\sysState} = \tuple{f}(\sysState,\tuple{g}(\sysState,\tuple{r})) = \bar{\tuple{f}}(\sysState,\tuple{r})$ has desirable properties.
+From a mathematical point of view, a feedback controller is a map $\sysInput = \tuple{g}(\sysState,\tuple{r})$ that computes the control input $\sysInput$ based on the measured system state $\sysState$ and a reference input $\tuple{r}$.
+The goal is for the resulting controlled system $\dot{\sysState} = \tuple{f}(\sysState,\tuple{g}(\sysState,\tuple{r})) = \bar{\tuple{f}}(\sysState,\tuple{r})$ to have desirable properties.
 
 \begin{figure}[ht]
  \centering
@@ -76,9 +76,9 @@ Combining this with the model \eqref{eq:introEqOfMotion} yields the control law
 \end{align}
 
 \paragraph{Multicopters.}
-In contrast to conventional helicopters, multicopters are aerial vehicles that use several rigid (fixed pitch) propellers to generate lift and maneuver.
+In contrast to conventional helicopters, multicopters are aerial vehicles that use several rigid (fixed-pitch) propellers to generate lift and maneuver.
 They are usually small and unmanned and are used to carry cameras or other sensors.
-In particular, the four propeller quadcopter configuration has became quite popular over the last two decades.
+In particular, the four-propeller quadcopter configuration has become quite popular over the last two decades.
 
 \begin{figure}[ht]
  \centering
@@ -89,7 +89,7 @@ In particular, the four propeller quadcopter configuration has became quite popu
 
 The \textit{Chair of Systems Theory and Control Engineering} at Saarland University has developed realizations of a quadcopter and a tricopter with three tiltable propellers (see \autoref{fig:introLsrMulticopters}).
 A bicopter with two tiltable and inclined propellers has been studied through simulations.
-In particular the lsr-quadcopter has an excellent thrust to weight ratio and is consequently well suited for aggressive, aerobatic maneuvers, e.g. a looping as shown in \autoref{fig:introQuadLoopSnapshots}.
+In particular, the lsr-quadcopter has an excellent thrust-to-weight ratio and is consequently well suited for aggressive, aerobatic maneuvers, e.g., a looping as shown in \autoref{fig:introQuadLoopSnapshots}.
 
 \begin{figure}[ht]
  \centering
@@ -98,22 +98,22 @@ In particular the lsr-quadcopter has an excellent thrust to weight ratio and is 
  \label{fig:introQuadLoopSnapshots}
 \end{figure}
 
-From a mechanical point of view, these multicopters may be modelled as a free rigid body moving within Earth's gravity.
-The difference between them is only the placement of the actuators:
-the tricopter is fully-actuated, so it poses the easiest control task.
-The quadcopter only has four actuators for its six degrees of freedom, i.e. it is underactuated.
-However, its model is well known to be a configuration flat system and corresponding standard control design approaches may be applied.
-The bicopter is (probably) not a flat system and consequently, poses the toughest control task.
+From a mechanical point of view, these multicopters may be modeled as a free rigid body moving within Earth's gravity.
+The difference between them is only in the placement of the actuators:
+The tricopter is fully-actuated, so it poses the easiest control task.
+The quadcopter only has four actuators for its six degrees of freedom, i.e., it is underactuated.
+However, its model is well known to be a configuration flat system, and corresponding standard control design approaches may be applied.
+The bicopter is (probably) not a flat system and consequently poses the toughest control task.
 
 
 \section{Motivation example}\label{sec:MotivationRigidBodyAttitude}
-Consider a free rigid body as illustrated in the middle of \autoref{fig:ModelingIllustration}, but fixed at its center of mass, i.e.\ it may only rotate about this point.
-For simplicity, we also assume that the chosen frame coincides with its principle axis and there are three independent control torques about these axis.
-Then the coefficients of inertia are $\J = \diag(\Jx,\Jy,\Jz)$.
+Consider a free rigid body as illustrated in the middle of \autoref{fig:ModelingIllustration}, but fixed at its center of mass, i.e., it may only rotate about this point.
+For simplicity, we also assume that the chosen frame coincides with its principle axes and that there are three independent control torques about these axes.
+Then, the coefficients of inertia are $\J = \diag(\Jx,\Jy,\Jz)$.
 
 \paragraph{Lagrange's equation.}
-For application of the Lagrange formalism we need to parameterize the system by minimal generalized coordinates.
-A popular choice for the rigid body orientation are Euler angles in the \textit{roll-pitch-yaw} convention:
+To apply the Lagrange formalism, we need to parameterize the system with minimal generalized coordinates.
+A popular choice for the rigid body orientation is Euler angles in the \textit{roll-pitch-yaw} convention:
 \begin{subequations}\label{eq:EulerAngleParam}
 \begin{align}
  \R(\genCoord) &=
@@ -134,8 +134,8 @@ A popular choice for the rigid body orientation are Euler angles in the \textit{
  \label{eq:EulerAngleParamW}
 \end{align}
 \end{subequations}
-The shortcut notation $\syaw := \sin(\yaw)$ and $\cyaw := \cos(\yaw)$ used here, will be used throughout this text.
-With this, we may formulate the kinetic energy $\kineticEnergy(\genCoord, \genCoordd) = \tfrac{1}{2} (\w(\genCoord, \genCoordd))^\top \J \w(\genCoord, \genCoordd)$ which coincides with the Lagrangian since there is no potential energy.
+The shortcut notation $\syaw := \sin(\yaw)$ and $\cyaw := \cos(\yaw)$, used here, will be used throughout this text.
+With this, we may formulate the kinetic energy $\kineticEnergy(\genCoord, \genCoordd) = \tfrac{1}{2} (\w(\genCoord, \genCoordd))^\top \J \w(\genCoord, \genCoordd)$, which coincides with the Lagrangian since there is no potential energy.
 % \begin{align}
 %  \kineticEnergy(\genCoord, \genCoordd)
 %  = \tfrac{1}{2} (\w(\genCoord, \genCoordd))^\top \J \, \w(\genCoord, \genCoordd)

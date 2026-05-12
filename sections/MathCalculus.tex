@@ -91,9 +91,9 @@ Analog, with $\differential = [\dirDiff{1}, \ldots ,\dirDiff{\dimConfigSpace}]^\
 
 
 \subsection{Commutation coefficients}\label{sec:CommutationCoeff}
-For a function $\potentialEnergy : \RealNum^{\numCoord} \rightarrow \RealNum$ we are used to the fact that partial derivatives commute, i.e.\ $\sfrac{\partial^2 \potentialEnergy}{\partial \sysCoordCoeff{\GidxI} \partial \sysCoordCoeff{\GidxII}} = \sfrac{\partial^2 \potentialEnergy}{\partial \sysCoordCoeff{\GidxII} \partial \sysCoordCoeff{\GidxI}}$.
-Unfortunately this is (in general) not the case for a directional derivatives like $\dirDiff{\LidxI}$ defined in \eqref{eq:DefBasisDiff}.
-Consequently we investigate the following commutation relation
+For a function $\potentialEnergy : \RealNum^{\numCoord} \rightarrow \RealNum$ we are used to the fact that partial derivatives commute, i.e., $\sfrac{\partial^2 \potentialEnergy}{\partial \sysCoordCoeff{\GidxI} \partial \sysCoordCoeff{\GidxII}} = \sfrac{\partial^2 \potentialEnergy}{\partial \sysCoordCoeff{\GidxII} \partial \sysCoordCoeff{\GidxI}}$.
+Unfortunately, this is (in general) not the case for directional derivatives like $\dirDiff{\LidxI}$ defined in \eqref{eq:DefBasisDiff}.
+Consequently, we investigate the following commutation relation
 \allowdisplaybreaks
 \begin{align}\label{eq:DerivationCommCoeff1}
  \dirDiff{\LidxI} \dirDiff{\LidxII} \potentialEnergy - \dirDiff{\LidxII} \dirDiff{\LidxI} \potentialEnergy 
@@ -118,7 +118,7 @@ Now using the identity \eqref{eq:ProjectionIdentity} with $\geoConstraintMatCoef
  - \kinMatCoeff{\GidxII}{\LidxII} \kinMatCoeff{\GidxI}{\LidxI} \underbrace{\bigg(\frac{\partial^2\geoConstraintCoeff{\CidxI}}{\partial\sysCoordCoeff{\GidxI}\partial\sysCoordCoeff{\GidxII}} - \frac{\partial^2\geoConstraintCoeff{\CidxI}}{\partial\sysCoordCoeff{\GidxII}\partial\sysCoordCoeff{\GidxI}} \bigg)}_{=\,0} \InvGeoConstraintMatCoeff{\GidxIII}{\CidxI} \pdiff[\potentialEnergy]{\sysCoordCoeff{\GidxIII}}
  .
 \end{align}
-As this relation holds for any function $\potentialEnergy$ we can state it in operator form and introduce the \textit{commutation coefficients} $\BoltzSym{\LidxIII}{\LidxI}{\LidxII}$ as
+As this relation holds for any function $\potentialEnergy$, we can state it in operator form and introduce the \textit{commutation coefficients} $\BoltzSym{\LidxIII}{\LidxI}{\LidxII}$ as
 \begin{align}\label{eq:DefCommutationCoeff}
  \dirDiff{\LidxI} \dirDiff{\LidxII} - \dirDiff{\LidxII} \dirDiff{\LidxI} = \BoltzSym{\LidxIII}{\LidxI}{\LidxII} \dirDiff{\LidxIII},
 \qquad
@@ -159,14 +159,14 @@ In the contemporary literature on this context, the quantities $\BoltzSym{\LidxI
 The left hand side of \eqref{eq:DefCommutationCoeff} appears in the context of tensor algebra in \cite[Box 8.4]{Misner:Gravitation} where $\BoltzSym{\LidxIII}{\LidxI}{\LidxII}$ are called the \textit{commutation coefficients}.
 From the way $\BoltzSym{\LidxIII}{\LidxI}{\LidxII}$ is defined here, this naming seems most fitting and will be used throughout this work. 
 
-The case of redundant configuration coordinates and consequently a non-square matrix $\kinMat$ as derived above, is not established in the literature to the best of the authors knowledge.
+The case of redundant configuration coordinates and consequently a non-square matrix $\kinMat$ as derived above, is not established in the literature to the best of the author's knowledge.
 
 It is worth noting that the commutation coefficients are \textit{invariant} to the choice of configuration coordinates $\sysCoord$, even though the coordinates appear explicitly in the definition:
-For a change of configuration coordinates $\sysCoord = f(\sysCoordW)$ the commutation symbols transform like $\BoltzSymW{\LidxIII}{\LidxI}{\LidxII}(\sysCoordW) = \BoltzSym{\LidxIII}{\LidxI}{\LidxII}(f(\sysCoordW))$.
-This might be obvious from a geometric point of view, but the explicit calculation of the coordinate transformation is shown in see \fixme{[sec:TrafoRules]}.
-It will even turn out that for most of our examples the coefficients will be constants.
+For a change of configuration coordinates $\sysCoord = f(\sysCoordW)$, the commutation symbols transform like $\BoltzSymW{\LidxIII}{\LidxI}{\LidxII}(\sysCoordW) = \BoltzSym{\LidxIII}{\LidxI}{\LidxII}(f(\sysCoordW))$.
+This might be obvious from a geometric point of view, but can also be checked by explicit calculation.
+It will even turn out that for most of our examples (like the one above) the coefficients will be constants.
 
-The commutation coefficients $\BoltzSym{\LidxI}{\LidxII}{\LidxIII}$ vanish if the corresponding velocity coordinates $\sysVelCoeff{\LidxI}$ are \textit{integrable}, i.e.\
+The commutation coefficients $\BoltzSym{\LidxI}{\LidxII}{\LidxIII}$ vanish if the corresponding velocity coordinates $\sysVelCoeff{\LidxI}$ are \textit{integrable}, i.e.,
 \begin{align}
  \exists \ \pi^\LidxI \, : \, \dot{\pi}^\LidxI &= \sysVelCoeff{\LidxI} = \kinBasisMatCoeff{\LidxI}{\GidxI} \sysCoordCoeffd{\GidxI}&
  &\Rightarrow&
@@ -181,9 +181,10 @@ The commutation coefficients $\BoltzSym{\LidxI}{\LidxII}{\LidxIII}$ vanish if th
  \BoltzSym{\LidxI}{\LidxII}{\LidxIII} &= 0.
 \end{align}
 This is not the case in general.
-Nevertheless the quantities $\pi$ are introduced as \textit{nonholonomic coordinates} in \cite{Boltzmann:NonholCoord} or as \textit{quasi coordinates} in \cite[sec.\,1.5]{Lurie:AnalyticalMechanics}.
-Then we could write $\partial_\LidxI (\partial_\LidxII f) - \partial_\LidxII (\partial_\LidxI f) = \sfrac{\partial^2 f}{\partial \pi^\LidxI \partial \pi^\LidxII} - \sfrac{\partial^2 f}{\partial \pi^\LidxII \partial \pi^\LidxI} \neq 0$ what might lead to the conception that partial derivatives do not commute.
-The commutativity clearly holds, the issue is rather $\pi$ are no proper coordinates.
+Nevertheless, the quantities $\pi$ are introduced as \textit{nonholonomic coordinates} in \cite{Boltzmann:NonholCoord} or as \textit{quasi coordinates} in \cite[sec.\,1.5]{Lurie:AnalyticalMechanics}.
+Then we could write $\partial_\LidxI (\partial_\LidxII f) - \partial_\LidxII (\partial_\LidxI f) = \sfrac{\partial^2 f}{\partial \pi^\LidxI \partial \pi^\LidxII} - \sfrac{\partial^2 f}{\partial \pi^\LidxII \partial \pi^\LidxI} \neq 0$, what might lead to the conception that partial derivatives do not commute.
+The commutativity clearly holds.
+The issue is rather $\pi$ are no proper coordinates.
 To avoid confusion of this kind we do not pick up this notation here.
 See also \cite{Hamel:virtuelleVerschiebungen} for an extensive discussion on this topic.
 
@@ -194,7 +195,7 @@ For a small deviation $\sysCoord \approx \sysCoordB$ with $\sysCoord \in \config
 \begin{align}
  \geoConstraint(\sysCoord) \approx \underbrace{\geoConstraint(\sysCoordB)}_{=\,\tuple{0}} + \pdiff[\geoConstraint]{\sysCoord}(\sysCoordB) (\sysCoord - \sysCoordB) = \tuple{0}.
 \end{align}
-Since this constraint is affine w.r.t.\ $\sysCoord$ it is reasonable to use a the basis $\LinErrorCoord(t) \in \RealNum^{\dimConfigSpace}$ for the deviated configuration coordinates:
+Since this constraint is affine w.r.t.\ $\sysCoord$, it is reasonable to use a the basis $\LinErrorCoord(t) \in \RealNum^{\dimConfigSpace}$ for the deviated configuration coordinates:
 \begin{align}
  \sysCoord = \sysCoordB + \kinMat(\sysCoordB) \LinErrorCoord,
 \qquad
@@ -248,8 +249,8 @@ Evidently, the expressions simplify significantly if the velocity coordinates ar
 
 
 \subsection{Calculus of variations}\label{sec:CalculusOfVariations}
-The calculus of variations is concerned with the extremas of functionals, i.e. functions of functions. %\cite[sec.\,12]{Arnold:MathematicalMethodsOfClassicalMechanics}.
-For the particular context of classical mechanics we are interested in the curves $t \mapsto \sysCoord(t)$ for which the functional
+The calculus of variations is concerned with the extremas of functionals, i.e., functions of functions. %\cite[sec.\,12]{Arnold:MathematicalMethodsOfClassicalMechanics}.
+For the particular context of classical mechanics, we are interested in the curves $t \mapsto \sysCoord(t)$ for which the functional
 \begin{align}\label{eq:Functional}
  \mathcal{J}[\sysCoord] = \int_{t_1}^{t_2} \Lagrangian(\sysCoord(t), \sysVel(t), t) \, \d t
 % \tag{$\bigstar$}

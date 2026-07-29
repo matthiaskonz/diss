@@ -1,5 +1,5 @@
 \chapter{Tracking control of rigid body systems}\label{chap:Ctrl}
-This chapter motivates and discusses several approaches for a model based design of a tracking controller for a rigid body system by static feedback.
+This chapter motivates and discusses several approaches for a model-based design of a tracking controller for a rigid body system by static feedback.
 
 \paragraph{System model.}
 The previous chapter discussed the equations of motion of rigid body systems:
@@ -24,7 +24,7 @@ We may assume any model of the form
 \end{align}
 where $\kinMat(\sysCoord) \in \RealNum^{\numCoord\times\dimConfigSpace}$ and $\sysInputMat(\sysCoord) \in \RealNum^{\dimConfigSpace\times\numInputs}$ are full rank, the system inertia matrix $\sysInertiaMat(\sysCoord) \in \SymMatP(\dimConfigSpace)$ is symmetric, positive definite, and $\sysForce(\sysCoord, \sysVel) \in \RealNum^{\dimConfigSpace}$ collects the remaining terms of the kinetic equation.
 The system is called \textit{fully-actuated} for $\numInputs = \dimConfigSpace$ and \textit{underactuated} for $0 < \numInputs < \dimConfigSpace$.
-Firstly we will restrict to fully-actuated systems and later try to expand the approach to underactuated systems.
+First, we will restrict to fully-actuated systems and later try to expand the approach to underactuated systems.
 
 % \paragraph{Reference trajectory.}
 % The goal of a \textit{tracking controller} is to achieve controlled dynamics for which the actual configuration $\sysCoord(t)$ converges to a predefined \textit{reference trajectory} $t \mapsto \sysCoordR(t)$.
@@ -36,7 +36,7 @@ It must be feasible, i.e.\ $\sysCoordR(t)\in\configSpace$, and sufficiently smoo
 For the underactuated case we also require the kinetic equation $\sysInertiaMat(\sysCoordR) \sysVelRd + \sysForce(\sysCoordR,\sysVelR) = \sysInputMat(\sysCoordR)\sysInputR$ to have a solution for $\sysInputR$.
 
 The design task for a \textit{tracking controller} is: 
-Find a function $\sysInput = \sysInput(\sysCoord, \sysVel, \sysCoordR, \sysVelR, \sysVelRd)$ (the controller) such that $t \mapsto \sysCoordR(t)$ is a stable and attractive trajectory of the closed loop which is the combination of model \eqref{eq:CtrlSysMdl2} and controller.
+Find a function $\sysInput = \sysInput(\sysCoord, \sysVel, \sysCoordR, \sysVelR, \sysVelRd)$ (the controller) such that $t \mapsto \sysCoordR(t)$ is a stable and attractive trajectory of the closed-loop which is the combination of model \eqref{eq:CtrlSysMdl2} and controller.
 
 \paragraph{State of the art.}
 This is a pretty general task and may be tackled by various standard approaches from control theory, see e.g.\ \cite[chap.\ 7-10]{Spong:RobotModelingAndControl} for some overview.
@@ -49,14 +49,14 @@ General Lyapunov designs can be found in \cite{OlfatiSaberDiss} and an approach 
 
 \paragraph{Outline for this chapter.}
 With the computed torque method one might consider the topic to be solved for fully actuated systems.
-However, for system whose configuration space is not isomorph to $\RealNum^{\dimConfigSpace}$ it is only local due to the requirement of minimal coordinates $\genCoord(t)\in\RealNum^{\dimConfigSpace}$.
-Furthermore, applying linear dynamics in these coordinates may result in intrinsic singularities for the closed loop.
+However, for systems whose configuration space is not isomorphic to $\RealNum^{\dimConfigSpace}$ it is only local due to the requirement of minimal coordinates $\genCoord(t)\in\RealNum^{\dimConfigSpace}$.
+Furthermore, applying linear dynamics in these coordinates may result in intrinsic singularities for the closed-loop.
 Recalling the satellite example from \autoref{sec:MotivationRigidBodyAttitude}, it should be clear that linear dynamics for the Euler angles would probably not be a good choice, also see \cite{Konz:AT} for further examples.
 
-If linear dynamics are not a general choice, what \textit{is} a good choice for the closed loop dynamics?
-This chapter motivates three approaches for designing a closed loop for fully actuated systems which are each motivated by the underlying rigid body structure.
+If linear dynamics are not a general choice, what \textit{is} a good choice for the closed-loop dynamics?
+This chapter motivates three approaches for designing a closed-loop for fully actuated systems which are each motivated by the underlying rigid body structure.
 In addition, the result will be extended to underactuated systems.
-Finally the approach will be applied to several example systems including the tricopter (fully-actuated), the quadcopter (underactuated but flat) and the bicopter (underactuated and probably not flat).
+Finally, the approach will be applied to several example systems including the tricopter (fully-actuated), the quadcopter (underactuated but flat) and the bicopter (underactuated and probably not flat).
 
 
 % In the next three sections we will motivate three possible answers which all share the structure

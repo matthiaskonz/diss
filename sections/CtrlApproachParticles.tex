@@ -29,7 +29,7 @@ As the next best thing we can get as close as possible by formulation of the fol
   \text{subject to} & \particleGeoConstraint(\particlePos{1},\ldots,\particlePos{\numParticles}) = \tuple{0}
  \end{array}.
 \end{align}
-Note that we also replaced the particle masses $\particleMass{\PidxI}$ by \textit{desired masses} $\particleMassC{\PidxI}$ as a additional design parameters.
+Note that we also replaced the particle masses $\particleMass{\PidxI}$ by \textit{desired masses} $\particleMassC{\PidxI}$ as additional design parameters.
 This will turn out crucial for control of underactuated systems.
 
 % But we can get as close as possible in the sense of minimizing the corresponding Gaussian with the free particle acceleration $\particlePosdd{\PidxI}^{\idxText{F}}$ given by \eqref{eq:MotivationGaussianCtrl}.
@@ -256,7 +256,7 @@ or more explicitly
  - \begin{bmatrix} \mc\RE^\top\wedOp(\wR) & -\mc\RE^\top\wedOp(\wR)\wedOp(\sc) \\ \mc\wedOp(\sc)\RE^\top\wedOp(\wR) & \wedMatOp(\RE^\top\wedOp(\wR)\veeMatOp(\Jc))\RE^\top \end{bmatrix}  \begin{bmatrix} \vR \\ \wR \end{bmatrix}
 \end{align}
 \end{subequations}
-The closed loop kinetic equation is $\genForceInertiaC + \genForceDissC + \genForceStiffC = \tuple{0}$ and the actual controller can be solved by combing this with the model kinetics.
+The closed loop kinetic equation is $\genForceInertiaC + \genForceDissC + \genForceStiffC = \tuple{0}$ and the actual controller can be solved by combining this with the model kinetics.
 The total energy $\totalEnergyC = \kineticEnergyC + \potentialEnergyC$ can be obtained from \eqref{eq:CtrlApproachParticleRBEnergies}.
 Even though it contains more structure than the general approach above, it still is not a Lyapunov function for arbitrary reference trajectories.
 

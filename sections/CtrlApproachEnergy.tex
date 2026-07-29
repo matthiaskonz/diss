@@ -1,5 +1,5 @@
 \section{Approach 3: Inspired by total energy}\label{sec:CtrlApproachEnergy}
-The previous approaches for the design of a closed loop also motived a formulation of total energy $\totalEnergyC$.
+The previous approaches for the design of a closed loop also motivated a formulation of total energy $\totalEnergyC$.
 Unfortunately, it only served as a Lyapunov function for a constant reference or for specific systems.
 In this section we like to motivate yet another approach for the design of a closed loop dynamics for the tracking problem which is based on the total energy as Lyapunov function.
 
@@ -47,7 +47,7 @@ Plugging the closed loop kinetics \eqref{eq:CtrlApprochEnergyKineticsFirst} and 
  \totalEnergyCd = -\sysVelE^\top \sysDissMatC \sysVelE = -\norm[\sysDissMatC]{\sysVelE}^2.
 \end{align}
 Since $\tdiff{t} \totalEnergyC$ is only negative semidefinite, we can only conclude stability but not attractiveness.
-One may pursue the prove of attractiveness by adding a cross term as done in \cite[sec.\ 4.2]{Bullo:TrackingAutomatica}.
+One may pursue the proof of attractiveness by adding a cross term as done in \cite[sec.\ 4.2]{Bullo:TrackingAutomatica}.
 
 \paragraph{Covariance of the closed loop.}
 The skew symmetric matrix $\accCtrl{\mat{S}}$ cancels out in the balance of energy, so is of no interest for tuning purposes.
@@ -101,7 +101,7 @@ It is realized by setting $\accCtrl{S}_{\LidxI\LidxII} = \ConnCoeffLC{\LidxI}{\L
 \subsection{Special cases}\label{sec:ComputedTorque}
 \paragraph{Euclidean space.}
 The existing literature on control of mechanical systems uses almost exclusively minimal generalized coordinates $\genCoord \in \RealNum^\dimConfigSpace$ and the velocity coordinates $\genCoordd$.
-Then the model can we written as
+Then the model can be written as
 \begin{align}
  \sysInertiaMat(\genCoord) \genCoorddd + \ConnMat(\genCoord, \genCoordd) \genCoordd = \genForceImpressed 
 \end{align}

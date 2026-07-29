@@ -1,12 +1,12 @@
 \section{Experimental results}
-In this section finally discusses results of actual flight tests.
+This section finally discusses results of actual flight tests.
 The task for the experiments is to track different reference trajectories while using the same controller and parameter values.
-As the tracking errors for the following experiments were small, there was no distinguishable difference between the particle, body and energy based approaches.
-The data for the presented figures were recorded while using the body based control approach.
+As the tracking errors for the following experiments were small, there was no distinguishable difference between the particle-, body-, and energy-based approaches.
+The data for the presented figures were recorded using the body-based control approach.
 
 The controller parameters for the following experiments are summarized in \autoref{tab:ParamTriQuadCtrl}.
-Note that the values for inertia etc.\ are w.r.t.\ the body fixed frame and not w.r.t.\ the (closed loop) center of mass as done in \autoref{sec:CtrlExampleQuadcopter}.
-Consequently the some values differ from what the matching conditions in \eqref{eq:CtrlExampleQuatMatchedParam} would suggest.
+Note that the values for inertia etc.\ are with respect to the body-fixed frame and not with respect to the (closed loop) center of mass as in \autoref{sec:CtrlExampleQuadcopter}.
+Consequently, some values differ from what the matching conditions in \eqref{eq:CtrlExampleQuatMatchedParam} would suggest.
 
 \begin{table}
  \centering
@@ -29,8 +29,8 @@ Consequently the some values differ from what the matching conditions in \eqref{
   \\[.3ex]
   $\quad\kc\quad$ & $8$&$\tfrac{\unit{kg}}{\unit{s}^2}$ & $8$&$\tfrac{\unit{kg}}{\unit{s}^2}$ & translation stiffness \\
   $\hcz$ & $ 0 $&$\unit{m}$ & $ 0.255$&$\unit{m}$ & center of stiffness \\
-  $\kapcxx=\kapcyy$ & $1.7$&$\tfrac{\unit{kg}\,\unit{m}^2}{\unit{s}}$& $2.6$&$\tfrac{\unit{kg}\,\unit{m}^2}{\unit{s}}$ & tilt stiffness \\
-  $\kapczz$ & $0.7$&$\tfrac{\unit{kg}\,\unit{m}^2}{\unit{s}}$ & $0.2$&$\tfrac{\unit{kg}\,\unit{m}^2}{\unit{s}}$ & yaw stiffness \\
+  $\kapcxx=\kapcyy$ & $1.7$&$\tfrac{\unit{kg}\,\unit{m}^2}{\unit{s}^2}$& $2.6$&$\tfrac{\unit{kg}\,\unit{m}^2}{\unit{s}^2}$ & tilt stiffness \\
+  $\kapczz$ & $0.7$&$\tfrac{\unit{kg}\,\unit{m}^2}{\unit{s}^2}$ & $0.2$&$\tfrac{\unit{kg}\,\unit{m}^2}{\unit{s}^2}$ & yaw stiffness \\
   \midrule
   $\PropObsGainVel$  & \multicolumn{4}{c}{$0.1$} & propeller obs.\ gain 1 \\
   $\PropObsGainBias$  & \multicolumn{4}{c}{$0.01\,\unit{Hz}$} & propeller obs.\ gain 2 \\
@@ -73,9 +73,9 @@ The attitude error $e_{\R}$ is the angle of the rotation matrix $\RE$ which rota
 The heading error $e_{\head}$ is roughly the yaw angle of the error attitude $\RE$.
 
 There are two reasons for considering the heading error $e_{\head}$ in addition to the attitude error $e_{\R}$:
-Firstly the copters behave differently for the tilting degree of freedom and the heading.
-This is also reflected by the different controller parameters for the respective directions.
-Secondly, for the quadcopter, the tilting is used to compensate a horizontal position error.
+Firstly, the copters behave differently for the tilting degree of freedom and for heading.
+This is also reflected by different controller parameters for the respective directions.
+Secondly, for the quadcopter, tilting is used to compensate a horizontal position error.
 A horizontal bias force implies a tilt error and consequently an attitude error.
 %Based on the arguments from \autoref{sec:RealizationRefGenFlatness} one could say that the heading error $e_{\head}$ captures the part of the attitude error that is ``orthogonal'' to the tilt error.
 Note that there is the relation $e_{\R} \geq e_{\head}$.
@@ -92,7 +92,7 @@ and in the same way the maximal acceleration $\max(\norm{\vRd})$, the maximal an
 
 The resulting values for the following four experiments are collected in \autoref{tab:MulticopterExperimentStatistics}.
 Evidently, the quadcopter experiments are much more dynamic.
-This is due to the fact that the quadcopter has a much better thrust to mass and torque to inertia ratio.
+This is due to the fact that the quadcopter has a much better thrust-to-mass and torque-to-inertia ratio.
 
 \begin{table}[htb]
  \centering
@@ -122,26 +122,26 @@ This is due to the fact that the quadcopter has a much better thrust to mass and
 \autoref{fig:TriManeuver42Result} shows measurements of the tricopter tracking polynomial transitions between constant configurations.
 A video of this experiment is available here\footnote{\url{https://youtu.be/oS5PHr6H0K4}}.
 
-In the first $10\,\unit{s}$ the tricopter does some horizontal movement while maintaining the attitude and height.
-For the next $10\,\unit{s}$ it tracks similar trajectories, but this time using the body tilt to generate the necessary horizontal force.
+In the first $10\,\unit{s}$ the tricopter performs horizontal movement while maintaining attitude and height.
+For the next $10\,\unit{s}$ it tracks similar trajectories, but this time uses body tilt to generate the necessary horizontal force.
 The difference between the approaches is obvious in the trajectories for the servo angles for the first case and the roll and pitch angle for the second case.
 Furthermore a $90^\circ$ heading transition is added to the last two position transitions.
-In the last third of the maneuver the tricopter tilts while maintaining its position.
-One can see that for a body tilt of $15^\circ$ the servos have to tilt more than $30^\circ$.
-The last transition is a $360^\circ$ heading rotation and $1\,\unit{m}$ height transition in $2\,\unit{s}$.
-This is the part where we have the maximal attitude error of about $5^\circ$.
-Here in particular one can see that the heading error $e_{\head}$ is the mayor part of the attitude error $e_{\R}$.
+In the last third of the maneuver, the tricopter tilts while maintaining its position.
+One can see that for a body tilt of $15^\circ$, the servos must tilt more than $30^\circ$.
+The last transition is a $360^\circ$ heading rotation and $1\,\unit{m}$ height change in $2\,\unit{s}$.
+This is where we observe the maximum attitude error of about $5^\circ$.
+Here in particular, the heading error $e_{\head}$ is the major part of the attitude error $e_{\R}$.
 
-Comparing the performance of this tricopter experiment with the following quadcopter experiments, see \autoref{tab:MulticopterExperimentStatistics}, one can see that the tricopter has the lowest position and attitude error.
-However, the comparison is not really fair since the quadcopter trajectories are much more dynamic.
+Comparing the performance of this tricopter experiment with the following quadcopter experiments in \autoref{tab:MulticopterExperimentStatistics}, the tricopter has the lowest position and attitude error.
+However, the comparison is not really fair, since the quadcopter trajectories are much more dynamic.
 
 \paragraph{Quadcopter transitions.}
 \autoref{fig:QuadManeuver42Result} shows measurements of the quadcopter tracking polynomial transitions between constant configurations.
 A video of this and the following experiments is available here\footnote{\url{https://youtu.be/x66sua3M6RQ}}.
 
-The reference trajectories are very similar to the previous transitions for the tricopter, but with reduced transitions times.
-The maximal velocity and acceleration, see \autoref{tab:MulticopterExperimentStatistics}, are achieved at about $12\,\unit{s}$, for a $2\,\unit{m}$ horizontal transition in $1.5\,\unit{s}$.
-Since the tilt here is almost $45^\circ$ it is evident that the acceleration must be almost $\norm{\gravityAcc}$.
+The reference trajectories are very similar to the previous transitions for the tricopter, but with reduced transition times.
+The maximal velocity and acceleration, see \autoref{tab:MulticopterExperimentStatistics}, are achieved at about $12\,\unit{s}$ for a $2\,\unit{m}$ horizontal transition in $1.5\,\unit{s}$.
+Since the tilt here is almost $45^\circ$, it is evident that the acceleration must be almost $\norm{\gravityAcc}$.
 The last transition is a $360^\circ$ heading rotation in $4\,\unit{s}$, which is much slower as the corresponding maneuver for the tricopter due to the limited control torque of the quadcopter.
 On the other hand the heading error $e_{\head}$ during this maneuver is much better as with the tricopter.
 This might be a positive result of the sophisticated thrust controller from \autoref{sec:RealizationForceVectorControl}.
@@ -151,9 +151,9 @@ This might be a positive result of the sophisticated thrust controller from \aut
 The reference trajectory for $\rx$ and $\rz$ is essentially a vertical circle with $2\,\unit{m}$ diameter, see \autoref{fig:introQuadLoopSnapshots}.
 The individual looping takes about $3\,\unit{s}$ from rest to rest.
 
-This is the first maneuver which involves that the quadcopter is upside down, i.e.\ $\RR \ez = -\ez$, so an appropriate method for the heading reference generation is required here.
-Though the accelerations are quite high as well, this experiment has in comparison to the the others the highest translational velocity.
-The fact that it has largest position and attitude errors could suggest that there are large model errors and/or unknown disturbances related to higher translational velocity.
+This is the first maneuver that involves the quadcopter being upside down, i.e.\ $\RR \ez = -\ez$, so an appropriate method for heading reference generation is required.
+Though the accelerations are quite high as well, this experiment has, compared to the others, the highest translational velocity.
+The fact that it has the largest position and attitude errors could suggest that there are large model errors and/or unknown disturbances related to higher translational velocity.
 
 % \begin{figure}
 %  \centering
@@ -169,13 +169,13 @@ The maneuver here requires a vertical clearance of less than $1\,\unit{m}$ and j
 The individual flip takes less than $2\,\unit{s}$ from rest to rest.
 
 This maneuver contains the largest translational and angular accelerations of the four experiments.
-The maximal linear acceleration of $17.5\,\tfrac{\unit{m}}{\unit{s}^2}$ obviously appears when the quadcopter is upside down.
+The maximal linear acceleration of $17.5\,\tfrac{\unit{m}}{\unit{s}^2}$ occurs when the quadcopter is upside down.
 Here gravity pulls it with $9.81\,\tfrac{\unit{m}}{\unit{s}^2}$ and the propellers generate significant thrust in the same direction.
 
-Successful experimental results for aerobatic maneuvers with quadcopters have been shown in the dedicated literature:
-In \cite{Lupashin:QuadrocopterMultiFlips} shows a triple loop is shown achieved by open loop control and iterative learning techniques.
-In \cite{MellingerIJRR12} shows case studies of tracking aggressive trajectories planned through iterative refinement and controlled by switching controllers for different segments of the trajectory.
-In contrast to this, the results here were achieved with one controller and constant parameters.
+Successful experimental results for aerobatic maneuvers with quadcopters have been shown in the literature:
+In \cite{Lupashin:QuadrocopterMultiFlips}, a triple loop is achieved by open-loop control and iterative learning techniques.
+In \cite{MellingerIJRR12}, case studies show tracking aggressive trajectories planned through iterative refinement and controlled by switching controllers for different trajectory segments.
+In contrast, the results here were achieved with one controller and constant parameters.
 
 \begin{figure}
  \centering

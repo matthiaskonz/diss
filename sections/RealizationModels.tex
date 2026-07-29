@@ -7,9 +7,9 @@ The resulting models are the basis for simulation and controller design.
 
 \paragraph{Propeller motor.}
 A multicopter propeller is mounted on a small brushless DC motor (BLDC) which is controlled by dedicated driver electronics.
-This driver implements the electronic commutation and a digital current control with sampling frequency of $64\,\unit{kHz}$.
-It receives the desired, torque generating current $\BLDCCurr$ from the main controller with the sampling frequency of $200\,\unit{Hz}$. 
-Consequently we assume that all electrical dynamics of the propeller drive are negligible on the timescale of the main controller and the motor torque on the propeller is proportional to its current as
+This driver implements the electronic commutation and a digital current control with a sampling frequency of $64\,\unit{kHz}$.
+It receives the desired torque-generating current $\BLDCCurr$ from the main controller at a sampling frequency of $200\,\unit{Hz}$.
+Consequently, we assume that all electrical dynamics of the propeller drive are negligible on the timescale of the main controller and that the motor torque on the propeller is proportional to its current as
 \begin{align}
  \BLDCTorque = \BLDCTorqueConstant \BLDCCurr.
 \end{align}
@@ -22,12 +22,12 @@ However, at the main controller sampling frequency, $200\,\unit{Hz}$, the fast i
 \begin{align}
  \ServoTorque = \ServoKP (\aServoR - \aServo) - \ServoKD \aServod.
 \end{align}
-Comparison of the resulting model and actual measurements in \autoref{fig:ServoSimRes}, show that this assumption is valid here.
+Comparison of the resulting model and actual measurements in \autoref{fig:ServoSimRes} shows that this assumption is valid here.
 
 \paragraph{Propeller aerodynamics.}
-Propellers are designed to generate a force in its spinning direction.
-A general theory of propellers is quite sophisticated, see e.g.\ \cite{Johnson:HelicopterTheory}.
-However, for the small, rigid propellers used on the LSR quad and tricopter a simple model, which is also common in the corresponding literature e.g.\ \cite{Mahony:Quadrotor2002}, \cite{MellingerIJRR12} or \cite{Fritsch:Diss}, is sufficient:
+Propellers are designed to generate a force in their spinning direction.
+A general theory of propellers is quite sophisticated; see, e.g., \cite{Johnson:HelicopterTheory}.
+However, for the small, rigid propellers used on the LSR quadcopter and tricopter, a simple model that is also common in the corresponding literature (e.g.\ \cite{Mahony:Quadrotor2002}, \cite{MellingerIJRR12}, \cite{Fritsch:Diss}) is sufficient:
 \begin{align}\label{eq:RealizationModelPropeller}
  \PropForce = \kappaF \PropVel^2,
 \qquad
@@ -37,11 +37,11 @@ where $\PropVel$ is the angular velocity of the propeller.
 The propeller thrust $\PropForce$ is directed along its spinning direction and the propeller drag $\PropTorque$ acts opposing the spinning direction.
 The model parameters $\kappaF$ and $\kappaT$ arise from the propeller geometry but will be identified in dedicated experiments.
 
-In \cite{Bristeau:Propeller} and \cite{Martin:AccelerometerFeedback} a more sophisticated aerodynamic model for a quadcopter of about the same size as the one used here is proposed.
-It mainly adds dissipative forces that are bilinear in the propeller velocities $\PropVel$ and the rigid body velocities $\v$ and $\w$.
-For this it introduces 8 additional constant model parameters.
-Even though their model has a nice physical motivation, it does not fit to the experimental observations done for this work.
-It does, however, motivate linear drag force and torques on the multicopter body.
+In \cite{Bristeau:Propeller} and \cite{Martin:AccelerometerFeedback}, a more sophisticated aerodynamic model for a quadcopter of about the same size as the one used here is proposed.
+It mainly adds dissipative forces that are bilinear in the propeller velocities $\PropVel$ and the rigid-body velocities $\v$ and $\w$.
+This introduces eight additional constant model parameters.
+Even though their model has a nice physical motivation, it does not fit the experimental observations made for this work.
+It does, however, motivate linear drag forces and torques on the multicopter body.
 
 \paragraph{Dissipative forces.}
 We assume a general linear damping model for the overall multicopter as motivated in \autoref{sec:DampingSE3}
@@ -55,8 +55,8 @@ where the parameters $\mat{D}_v = \diag(\dvx, \dvx, \dvz)$, $\bodyCOD{}{}{} = [0
 
 
 \subsection{Rigid body model}
-A rigid body model for a tricopter with tiltable propellers has been discussed in \autoref{sec:RBSRigidBodySys}.
-Here we like to present a generic model for a multicopter with $\numProp$ tiltable propellers.
+A rigid-body model for a tricopter with tiltable propellers has been discussed in \autoref{sec:RBSRigidBodySys}.
+Here we present a generic model for a multicopter with $\numProp$ tiltable propellers.
 The specific model for a quadcopter and a tricopter arises by application of special parameter values.
 
 \paragraph{Coordinates and Kinematics.}
@@ -66,7 +66,7 @@ Recalling from \autoref{sec:RBSRigidBodySys}, we choose the configuration coordi
 \end{align}
 where $\r \in \RealNum^3$ is the position of the center body, $\R \in \SpecialOrthogonalGroup(3)$ its orientation matrix, $\tuple{\PropTilt} = [\PropTilt[1], \ldots, \PropTilt[\numProp]]^\top \in \RealNum^{\numProp}$ the arm tilt angles and $\tuple{\PropAngle} = [\PropAngle[1],\ldots,\PropAngle[\numProp]]^\top \in \RealNum^{\numProp}$ the angles of the propellers, see \autoref{fig:TricopterInputs}.
 Note that the propellers are designed only for either clockwise or counter-clockwise rotation, and will only rotate in this direction during operation.
-The propeller angles $\PropAngle[k]$ are defined, such that $\PropAngled[k] > 0$ during operation.
+The propeller angles $\PropAngle[k]$ are defined such that $\PropAngled[k] > 0$ during operation.
 To recover the spinning directions we use the parameter $\PropDir[k] = 1$ for a positive/counter-clockwise and $\PropDir[k] = -1$ for a negative/clockwise spinning propeller.
 
 \begin{figure}
@@ -90,22 +90,22 @@ related to the configuration coordinates by
 \end{align}
 
 \paragraph{Assumptions on the mass distribution.}
-The algorithm proposed in \autoref{sec:RBSRigidBodySys} does of course handle general mass distributions of the rigid bodies, but the resulting kinetic equations are far too cumbersome to display here explicitly.
-Instead we motivate some assumptions on the body inertia matrices that will lead to a greatly condensed system inertia matrix:
-Assume that the combined center of mass of one arms and its propeller lies on the tilt axis.
-This implies that the overall center of mass $\bodyCOM{}{}{} \in \RealNum^{3}$ of the complete system is constant w.r.t.\ the body fixed frame.
+The algorithm proposed in \autoref{sec:RBSRigidBodySys} does, of course, handle general mass distributions of the rigid bodies, but the resulting kinetic equations are far too cumbersome to display here explicitly.
+Instead, we motivate some assumptions on the body inertia matrices that will lead to a greatly condensed system inertia matrix.
+Assume that the combined center of mass of one arm and its propeller lies on the tilt axis.
+This implies that the overall center of mass $\bodyCOM{}{}{} \in \RealNum^{3}$ of the complete system is constant with respect to the body-fixed frame.
 This was one goal during the construction process of the Tricopter.
 Furthermore, we assume that the combined moment of inertia of one arm and propeller is symmetric about the tilt axis.
 This is not the case for the real inertia parameters.
 However, it is justified by the fact that the overall inertia $\bodyMOI{}{}{}$ changes only slightly depending on the arm tilts $\PropTilt$ or the propeller angles $\PropAngle$.  
 
-A crucial part to get the overall dynamics right, is to explicitly consider the rotor of the servo motor.
+A crucial part of getting the overall dynamics right is to explicitly consider the rotor of the servo motor.
 The relevant moment of inertia $\bodyMOISym_{\textsf{Sxx}}$ might be very small, but since it is located behind a gearbox with transmission ratio $c_{\mathsf{S}} = 625$ its contribution to the system inertia matrix is significant.
 This is reflected in the different values within $\JAC$ which contains $c_{\mathsf{S}} \bodyMOISym_{\textsf{Sxx}}$ and $\JA$ which contains $c_{\mathsf{S}}^2 \bodyMOISym_{\textsf{Sxx}}$.
 The validity of the model with these assumptions will be discussed later by comparison to experimental data.
 
 \paragraph{Kinetic equation.}
-With the above assumptions, and the propeller model \eqref{eq:RealizationModelPropeller}, the kinetic equation for a multicopter takes the form
+With the above assumptions and the propeller model \eqref{eq:RealizationModelPropeller}, the kinetic equation for a multicopter takes the form
 \begin{align}\label{eq:RealizationMulticopterKinetics}
  \sysInertiaMat(\tuple{\PropTilt}) \sysVeld + \gyroForce(\tuple{\PropTilt}, \sysVel) + \sysDissMat \sysVel + \genForceGravity(\R) &= \genForceProp(\tuple{\PropTilt}, \PropVel) + \genForceInput(\BLDCTorque, \ServoTorque) + \genForceBias
 \end{align}
@@ -187,7 +187,7 @@ To get the rigid body model equations for the tricopter (displayed in \autoref{f
 %  \PropDir[2] = \PropDir[3] = 1.
  \PropDir = [-1, +1, +1]^\top.
 \end{align}
-The model equations do not simplify too much and the special result is not displayed explicitly here.
+The model equations do not simplify much, and the special result is not displayed explicitly here.
 
 \paragraph{Quadcopter.}
 For the quadcopter model we have the parameters (see \autoref{fig:QuadcopterInputs})
@@ -208,8 +208,8 @@ For the quadcopter model we have the parameters (see \autoref{fig:QuadcopterInpu
  \PropTilt = [0, 0, 0, 0]^\top.
 \end{align}
 Here the model equations simplify significantly:
-Since the propellers do not tilt $\PropTilt = 0$, the corresponding equations can be regarded as definition of reaction torques $\ServoTorque$ and dropped from the model equations.
-Overall the model for the quadcopter is
+Since the propellers do not tilt ($\PropTilt = 0$), the corresponding equations can be regarded as definitions of reaction torques $\ServoTorque$ and dropped from the model equations.
+Overall, the model for the quadcopter is
 \begin{subequations}
 \begin{align}
  \sysInertiaMat &=
@@ -256,15 +256,15 @@ The same model up to different dissipative forces, requiring $\bodyCOM{}{}{}=\tu
 
 
 \subsection{Parameter identification}
-The preceding mathematical model for the multicopters contains various constant parameters of which only the total mass $\m$ and the arm radius $\ArmRadius$ can be measured directly.
-Some crucial parameters are identified in dedicated experimental setups which will be discussed in the following.
-The remaining parameters are estimated by the method of least squares based on the system model and actual in-flight measurements.
+The preceding mathematical model for the multicopters contains various constant parameters, of which only the total mass $\m$ and the arm radius $\ArmRadius$ can be measured directly.
+Some crucial parameters are identified in dedicated experimental setups, which are discussed below.
+The remaining parameters are estimated by least squares based on the system model and actual in-flight measurements.
 
 %As mentioned before the overall rigid body system has a constant total mass $\m \in \RealNum$, combined center of mass $\bodyCOM{}{}{} \in \RealNum^3$ and combined moment of inertia $\bodyMOI{}{}{}=\bodyMOI{}{}{}^\top \in\RealNum^{3\times3}$.
 
 \paragraph{Propeller and servo drive.}
-For the identification of the propeller drive and its tilting mechanism we use a dedicated test bench, see \autoref{fig:PropellerTestBench}.
-It is essentially one tricopter arm with additional absolute encoder for the tilt angle $\PropTilt$ and an incremental encoder for the propeller velocity $\PropVel$.
+For the identification of the propeller drive and its tilting mechanism, we use a dedicated test bench (see \autoref{fig:PropellerTestBench}).
+It is essentially one tricopter arm with an additional absolute encoder for the tilt angle $\PropTilt$ and an incremental encoder for the propeller velocity $\PropVel$.
 
 \begin{figure}
  \centering
@@ -279,19 +279,19 @@ The equations of motion for the test bench are
 \\
  \aServodd + \underbrace{\tfrac{\ServoKD}{\JA}}_{\ServoParam[1]} \aServod + \underbrace{\tfrac{\ServoKP}{\JA}}_{\ServoParam[0]} \aServo &= \underbrace{\tfrac{\ServoKP}{\JA}}_{\ServoParam[0]} \aServoU
 \end{align}
-The equations are normalized, yielding the parameters $\PropParam[1]$, $\PropParam[2]$, $\PropParam[3]$ and $\ServoParam[0]$, $\ServoParam[1]$, which will become more convenient later.
-These parameters can be directly estimated from measured timeseries using Savitzky-Golay derivative estimation and the method of least squares.
+The equations are normalized, yielding the parameters $\PropParam[1]$, $\PropParam[2]$, $\PropParam[3]$ and $\ServoParam[0]$, $\ServoParam[1]$, which are more convenient later.
+These parameters can be directly estimated from measured time series using Savitzky-Golay derivative estimation and least squares.
 The inertia parameters $\JP$ and $\JA$ are computed from a detailed CAD model of the multicopters.
-With them one could recover the original parameters $\kappaT$, $\ServoKP$, etc.. 
+With them, one could recover the original parameters $\kappaT$, $\ServoKP$, etc.
 The identified parameter values are summarized in \autoref{tab:ParamTriQuad}.
 
 The accuracy of the proposed model and its identified parameters can be seen from the results in \autoref{fig:ServoSimRes} and \autoref{fig:PropCtrlRes} in \autoref{sec:RealizationForceVectorControl}.
 An online estimation of the bias parameter $\PropParam[3]$ by means of an observer will be discussed there as well.
 
 \paragraph*{Propeller thrust.}
-For identification of the thrust constant $\kappaF$, a propeller drive was mounted horizontally on a $1\,\unit{m}$ tall pole.
-The pole in turn stands on a digital scale and the ``weight'' was recorded at different propeller speeds $\PropVel$.
-From this ``weight'' we can compute the corresponding propeller thrust $\PropForce$.
+For identification of the thrust constant $\kappaF$, a propeller drive was mounted horizontally on a $1\,\unit{m}$-tall pole.
+The pole stands on a digital scale, and the ``weight'' was recorded at different propeller speeds $\PropVel$.
+From this ``weight,'' we can compute the corresponding propeller thrust $\PropForce$.
 The measurements are displayed in \autoref{fig:PropVel2Thrust} together with the model $\PropForce = \kappaF \PropVel^2$ with the identified parameter value $\kappaF = 1.44 \cdot 10^{-5}\,\unit{N}\,\unit{s}^2$.
 
 \begin{figure}
@@ -304,10 +304,10 @@ The measurements are displayed in \autoref{fig:PropVel2Thrust} together with the
 \end{figure}
 
 \paragraph*{Rigid body inertia.}
-A dedicated experiment was conducted for identification of the inertia parameters $\Jxx$, $\Jyy$ and $\Jzz$ for quad and tricopter.
-The body is suspended by two strings as shown on the left side of \autoref{fig:QuadPendulumIdent}.
-The basic idea is that a rotation of the body about the vertical axis results in a upward movement of the body which is countered by gravity.
-So we basically have a torsional spring, which, together with the inertia forms an oscillator whose frequency is proportional to the moment of inertia.
+A dedicated experiment was conducted for identification of the inertia parameters $\Jxx$, $\Jyy$, and $\Jzz$ for the quadcopter and tricopter.
+The body is suspended by two strings, as shown on the left side of \autoref{fig:QuadPendulumIdent}.
+The basic idea is that a rotation of the body about the vertical axis results in an upward movement of the body, which is countered by gravity.
+Thus we effectively have a torsional spring that, together with the inertia, forms an oscillator whose frequency is proportional to the moment of inertia.
 
 \begin{figure}
  \centering
@@ -324,30 +324,30 @@ The equation of motion for the vertical rotation with angle $\alpha$ in this set
 \begin{align}\label{eq:PendulumIdent}
  \bodyMOISym \ddot{\alpha} + \bodyMODSym \dot{\alpha} + \m \gravityAccConst \frac{d^2 \sin\alpha}{4\sqrt{h^2 - \tfrac{d^2}{2}(1-\cos\alpha)}} = 0.
 \end{align}
-Here $\m$ indicated the total mass of the copter, $\gravityAccConst = 9.81\,\sfrac{\unit{m}}{\unit{s}^2}$ is the gravitational acceleration, $d$ and $h$ are the distance and length of the strings.
+Here $\m$ indicates the total mass of the copter, $\gravityAccConst = 9.81\,\sfrac{\unit{m}}{\unit{s}^2}$ is the gravitational acceleration, and $d$ and $h$ are the distance and length of the strings.
 From the measured trajectory $t\mapsto\alpha$ of the twist angle we can estimate the inertia $\bodyMOISym$ and damping $\bodyMODSym$ about the corresponding axis.
 
 On the right side of \autoref{fig:QuadPendulumIdent}, the acceleration $\ddot{\alpha}$ computed from the model \eqref{eq:PendulumIdent} with the estimated parameters is plotted against the measured acceleration, computed from the onboard gyroscope readings.
 
-This test was conducted for all three axis, i.e.\ for $\Jxx$, $\Jyy$ and $\Jzz$ for Tri- and Quadcopter and the resulting parameters are given in \autoref{tab:ParamTriQuad}.
+This test was conducted for all three axes, i.e.\ for $\Jxx$, $\Jyy$, and $\Jzz$ for tricopter and quadcopter, and the resulting parameters are given in \autoref{tab:ParamTriQuad}.
 The identified parameters match the values computed from a detailed CAD model by $\pm 10\%$.
 
 \paragraph*{Parameter identification from flight test.}
-The model \eqref{eq:RealizationMulticopterKinetics} still contains several so far unknown parameters:
-The coordinates of the center of mass $\bodyCOM{}{}{} = [\sx, \sy, \sz]^\top$, the off-diagonal entries $\Jxy$, $\Jxz$ and $\Jyz$, the translational damping $\dvx$, $\dvz$, the rotational damping $\sigx$, $\sigz$ and the coordinate $\lz$ of the center of damping.
+The model \eqref{eq:RealizationMulticopterKinetics} still contains several unknown parameters.
+These include the coordinates of the center of mass $\bodyCOM{}{}{} = [\sx, \sy, \sz]^\top$, the off-diagonal inertia entries $\Jxy$, $\Jxz$, and $\Jyz$, the translational damping $\dvx$, $\dvz$, the rotational damping $\sigx$, $\sigz$, and the coordinate $\lz$ of the center of damping.
 
-With some auxiliary transformation ($\lzp = \dvx\lz$, $\sigxp = \sigx + \dvz\lz^2$) the first 6 model equations \eqref{eq:RealizationMulticopterKinetics} are linear in the remaining unknown parameters.
-So we can identify these by the method of least squares from flight test measurements.
+With some auxiliary transformations ($\lzp = \dvx\lz$, $\sigxp = \sigx + \dvz\lz^2$), the first six model equations \eqref{eq:RealizationMulticopterKinetics} are linear in the remaining unknown parameters.
+Thus we can identify these by least squares from flight-test measurements.
 \autoref{tab:ParamTriQuad} summarizes the identified parameter values from this flight test as well as the ones from the previously discussed dedicated experiments.
 These are the values that are used for the simulator.
 
-From this experiment we have the first estimate for the overall center of mass $\bodyCOM{}{}{}$ of tri- and quadcopter.
-The identified value $\sz$ is then used to adjust the body fixed frame in the vertical direction such that $\sz=0\,\unit{m}$.
-For the Tricopter this determines also the parameter $\ArmHeight$.
+From this experiment, we obtain the first estimate for the overall center of mass $\bodyCOM{}{}{}$ of the tricopter and quadcopter.
+The identified value $\sz$ is then used to adjust the body-fixed frame in the vertical direction such that $\sz=0\,\unit{m}$.
+For the tricopter, this also determines the parameter $\ArmHeight$.
 The values for $\sx$ and $\sy$ are small so we stick to the geometric center in the horizontal directions.
 
-The damping parameter values for the tricopter are greater than the ones for the quadcopter.
-This could be explained by the model from \cite{Martin:AccelerometerFeedback} and the fact that the propellers of the Tricopter nominally spin $40\%$ faster than on the Quadcopter.
+The damping parameter values for the tricopter are greater than those for the quadcopter.
+This could be explained by the model from \cite{Martin:AccelerometerFeedback} and by the fact that the propellers of the tricopter nominally spin $40\%$ faster than those of the quadcopter.
 Also the identified value for $\lz$ is roughly the distance from the body fixed frame to the propeller plane which fits well to their model.
 On the other hand, the identified translational damping $\dvz$ in the vertical direction is greater than the horizontal damping $\dvx$.
 This contradicts the model proposed in \cite{Martin:AccelerometerFeedback} which would imply $\dvz = 0$.
@@ -451,9 +451,9 @@ The dashed red lines are the accelerations computed in the same way but from a s
  \label{fig:ValidationTricopter}
 \end{figure}
 
-For the simplified model of the tricopter we drop all off diagonal entries in the system inertia matrix $\sysInertiaMat$.
-This means in particular $\bodyCOM{}{}{} = 0$ and $\bodyMOI{}{}{} = \diag(\Jx, \Jy, \Jz)$.
-Furthermore we drop the damping parameters $\lz=0$, $\sigx=\sigz=0$ and assume isotropic translational damping $D_v = \DampingSym \idMat[3]$ with $\DampingSym = \tfrac{1}{3}(2\dvx + \dvz)$.
+For the simplified model of the tricopter, we drop all off-diagonal entries in the system inertia matrix $\sysInertiaMat$.
+This means in particular that $\bodyCOM{}{}{} = 0$ and $\bodyMOI{}{}{} = \diag(\Jx, \Jy, \Jz)$.
+Furthermore, we drop the damping parameters $\lz=0$, $\sigx=\sigz=0$ and assume isotropic translational damping $D_v = \DampingSym \idMat[3]$ with $\DampingSym = \tfrac{1}{3}(2\dvx + \dvz)$.
 The resulting model equations are summarized as follows:
 
 \begin{RedBox}
@@ -502,15 +502,15 @@ Servo dynamics
 \end{subequations}
 \end{RedBox}
 
-Comparing the computed accelerations flight test in \autoref{fig:ValidationTricopter} one finds the following observations: % that the simplified model is as good or bad as the full model.
-For the translational $\vxd$, $\vzd$ and the propeller acceleration $\PropVeld[1]$ the two models can not be distinguished and they match the measured accelerations quite well.
-For the angular accelerations $\wxd$ and $\wzd$ the models differ slightly.
-Unfortunately, one cannot say that the full model matches the measured accelerations better than the simplified.
-This means that there are unmodeled effects that have a greater influence than the ones we dropped for the simplified model.
-Overall the simplified model \eqref{eq:TricopterSimpModel} captures the Tricopter dynamics reasonably well and is due to its simplicity a good starting point for the model based control design.
+Comparing the computed accelerations from the flight test in \autoref{fig:ValidationTricopter} yields the following observations.
+For the translational $\vxd$, $\vzd$, and the propeller acceleration $\PropVeld[1]$, the two models cannot be distinguished and they match the measured accelerations quite well.
+For the angular accelerations $\wxd$ and $\wzd$, the models differ slightly.
+Unfortunately, one cannot say that the full model matches the measured accelerations better than the simplified model.
+This implies that there are unmodeled effects with greater influence than the ones we dropped for the simplified model.
+Overall, the simplified model \eqref{eq:TricopterSimpModel} captures the tricopter dynamics reasonably well and, due to its simplicity, is a good starting point for model-based control design.
 
 \paragraph*{Quadcopter.}
-As simplifications for the quadcopter model we neglect the inertial couplings between the center body and propeller except $\PropInertia \mat{H}_1 \PropVeld$.
+As simplifications for the quadcopter model, we neglect the inertial couplings between the center body and propellers except $\PropInertia \mat{H}_1 \PropVeld$.
 Furthermore, we assume $\bodyCOM{}{}{} = 0$ and $\bodyMOI{}{}{} = \diag(\Jx, \Jx, \Jz)$.
 The resulting model reads:
 

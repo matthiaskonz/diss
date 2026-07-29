@@ -3,7 +3,7 @@ The rigid body controller requires the current rigid body state (position, veloc
 The subject of this section is the estimation of these values based on the available measurements from IMU and motion capturing system.
 
 \paragraph{Rigid body dynamics.}
-The rigid body attitude may be parameterized by a unit quaternion $\quat = [\quatw, \quatx, \quaty, \quatz] \in \Sphere^3$ which allows for a more efficient implementation of the microcontroller and is pretty common in this field.
+The rigid body attitude may be parameterized by a unit quaternion $\quat = [\quatw, \quatx, \quaty, \quatz] \in \Sphere^3$, which allows for a more efficient implementation on the microcontroller and is common in this field.
 The corresponding kinematics may be derived as proposed in \autoref{sec:MathCoordinates}.
 Furthermore, using the velocity coefficients $\rd$ w.r.t. the reference frame, the rigid body dynamics are
 \begin{subequations}\label{eq:RealizationStateDyn}
@@ -34,17 +34,17 @@ with
 
 \paragraph{IMU measurements.}
 The \textsc{VectorNav VN100s} contains a 3-axis accelerometer, gyroscope and magnetometer connected to microcontroller which implements an extended Kalman filter to estimate the attitude quaternion and gyroscope biases.
-While the attitude estimate is used for outdoor applications with the multicopter, it is not used here, as in the lab the more precise estimate from the motion capturing system available.
+While the attitude estimate is used for outdoor applications with the multicopter, it is not used here because in the lab the more precise estimate from the motion capturing system is available.
 %Nevertheless, we will use the bias compensated gyroscope measurement.
 
 Gyroscope and accelerometer measure the \textit{inertial} angular velocity and acceleration.
 While for tactical and navigation grade IMUs the angular velocity of the Earth is an integral part of the navigation algorithms, see e.g.\ \cite{Savage:Strapdown1}, for the consumer grade IMU here, it cannot be distinguished from the reminiscent bias in gyroscope.
 Similarly, the coriolis acceleration on the accelerometer may be ignored and the only external parameter is Earth's gravity $\gravityAcc$ at the current position.
 
-The IMU is mounted to the corresponding multicopter to roughly align with its body fixed frame, more precisely the body fixed frame determined by the reflective markers for the motion capture.
-We will call the remaining, constant misalignment $\RIMUBR \in \SpecialOrthogonalGroup(3)$.
+The IMU is mounted to the corresponding multicopter to roughly align with its body-fixed frame, more precisely the body-fixed frame determined by the reflective markers for the motion capture.
+We call the remaining constant misalignment $\RIMUBR \in \SpecialOrthogonalGroup(3)$.
 While the gyroscope bias is compensated, the accelerometer contains a noticeable slowly varying bias $\aIMUB \in \RealNum^3$.
-Furthermore, both sensors contain a noticeable noise $\wIMUN[k], \aIMUN[k] \in \RealNum^3$ which is not further investigated here.
+Furthermore, both sensors contain noticeable noise $\wIMUN[k], \aIMUN[k] \in \RealNum^3$, which is not further investigated here.
 Overall, with a constant sampling time $\Ts=0.005\,\unit{s}$, we assume the IMU measurements $\wIMU$ and $\aIMU$ to be related to the rigid body state by:
 \begin{align}\label{eq:RealizationImuModel}
  \wIMU[k] &= \RIMUBR \w(k\Ts) + \wIMUN[k],
@@ -57,8 +57,8 @@ Overall, with a constant sampling time $\Ts=0.005\,\unit{s}$, we assume the IMU 
 The \textsc{VICON} motion capturing system measures the position $\r$ and the attitude, reported as quaternion $\quat$, by means of tracking the reflective markers on the multicopters.
 The reference frame of the system was carefully adjusted to align with gravity using a pendulum with reflective markers.
 
-In contrast to the IMU measurements, there is no evidence for systematic errors in the measurements for the VICON system.
-However, their processing and transmission to to the multicopter processor results in a substantial latency, i.e.\ measurements corresponding to time $t$ are available to the controller only after time $t+\TVICD$.
+In contrast to the IMU measurements, there is no evidence for systematic errors in the VICON measurements.
+However, their processing and transmission to the multicopter processor results in substantial latency, i.e.\ measurements corresponding to time $t$ are available to the controller only after time $t+\TVICD$.
 Furthermore, as non-realtime systems are involved, the latency varies slightly.
 Mostly due to bandwidth limitations on the wireless transmission, the sampling time is only $\TsVIC=0.1\,\unit{s}$ while the main controller runs at $\Ts=0.005\,\unit{s}$.
 The measurements $\rVIC$ and $\qVIC$ are related to the rigid body state by
@@ -77,7 +77,7 @@ The measurements $\rVIC$ and $\qVIC$ are related to the rigid body state by
 
 \paragraph{Overall observer design.}
 Instead of designing one large observer, the estimation problem is split into smaller subproblems as illustrated in \autoref{fig:StateEstimationBlock}.
-The the following subsections will discuss these.
+The following subsections discuss these.
 
 
 
@@ -88,12 +88,12 @@ For a static $\sysCoord=\const$ multicopter the accelerometer model reads
  \aIMU[k] &=  -\RIMUBR \R^\top \gravityAcc + \aIMUB + \aIMUN[k].
 \end{align} 
 Here we are interested in the value $\RIMUBR$, but for the estimation proposed here we also need to estimate the accelerometer bias $\aIMUN$.
-For a short time measurement ($\Delta t<10\,\unit{min}$) is can be assumed to be constant.
-Taking into account that the reference frame was carefully aligned, and the official gravitation value for Saarland, we have $\gravityAcc = [0, 0, -9.8107]^\top \tfrac{\unit{m}}{\unit{s}^2}$.
+For a short measurement interval ($\Delta t<10\,\unit{min}$), it can be assumed to be constant.
+Taking into account the carefully aligned reference frame and the official gravitational value for Saarland, we have $\gravityAcc = [0, 0, -9.8107]^\top \tfrac{\unit{m}}{\unit{s}^2}$.
 
-The multicopter is placed in different random orientations while the accelerometer measurements $\aIMU$ and the attitude $\R$ is recorded.
-To compensate the noise $\aIMUN[k]$ we take the mean value $\bar{\tuple{a}}_{\idxText{M}}$ over $10\,\unit{s}$.
-For each measurement with index $i$ and different attitudes $\bar{\R}[i]$ we have the mean accelerometer measurement $\bar{\tuple{a}}_{\idxText{M}}[i]$.
+The multicopter is placed in different random orientations while the accelerometer measurements $\aIMU$ and the attitude $\R$ are recorded.
+To compensate for the noise $\aIMUN[k]$, we take the mean value $\bar{\tuple{a}}_{\idxText{M}}$ over $10\,\unit{s}$.
+For each measurement index $i$ and attitude $\bar{\R}[i]$, we obtain the mean accelerometer measurement $\bar{\tuple{a}}_{\idxText{M}}[i]$.
 With this, we estimate the values for misalignment $\RIMUBR$ and bias $\aIMUB$ as the ones that minimize the sum over the squared errors of the experiments:
 \begin{align}
  \mathcal{J}(\RIMUBR, \aIMUB) = \tfrac{1}{2} \sum_i \norm{ \bar{\tuple{a}}_{\idxText{M}}[i] + \RIMUBR \bar{\R}^\top[i] \gravityAcc + \aIMUB }^2
@@ -181,10 +181,10 @@ The configuration measurement $(\rVIC, \qVIC)$ is done by a \textsc{Vicon} motio
 This measurement relies on the optical tracking of reflective markers fixed on the multicopters by infrared cameras mounted at the walls of the lab and connected to the ground station, a Windows 7 PC.
 The groundstation software is written in \textsc{Matlab}.
 It runs a timer at $\TsVIC = 0.1\,\unit{ms}$ which reads the measurement, validates and forwards it to the xBee radio module.
-Finally, the multicopter microcontroller receives the measurements through its ratio module.
+Finally, the multicopter microcontroller receives the measurements through its radio module.
 The radio module also handles other transmissions like receiving commands and sending measurements to the groundstation.
 
-As a result of this chain of non realtime elements, the latency at which the configuration measurements are available to the multicopter is \textit{not} constant, but varies by several main sampling steps $\Ts$ in addition to its average value.
+Because this chain involves non-realtime elements, the latency at which the configuration measurements are available to the multicopter is \textit{not} constant, but varies by several main sampling steps $\Ts$ in addition to its average value.
 Actual timings of these measurements are presented in \autoref{fig:ViconDelayIllustrate} for actual measurements.
 The estimation of the resulting \textit{variable time delay} $\TVICD[k']$ is the subject of this subsection.
 
@@ -211,7 +211,7 @@ It serves as a reference for the yaw-angle and is assumed to have negligible lat
 The encoder signal and the yaw-angle from the motion capture system are recorded by the multicopter microcontroller.
 The experimental data here is about $1\,\unit{min}$ long and captures about $K' = 600$ \textsc{Vicon} frames.
 Now we can plot the reference encoder angle $\yaw[k]$ at the sampling points $t = k\Ts$ and the yaw angle $\yawVIC[k']$ received from the Vicon system at the shifted time $\tVICp[k'] + \text{mean}(\tRec[1,\ldots,K'] - \tVICp[1,\ldots,K'])$.
-If the previous assumption \eqref{eq:meanTPC} hold theses signals should be similar up to a shift of the mean delay $\meanTVICD$.
+If the previous assumption \eqref{eq:meanTPC} holds, these signals should be similar up to a shift of the mean delay $\meanTVICD$.
 
 \begin{figure}[ht]
  \centering
@@ -221,7 +221,7 @@ If the previous assumption \eqref{eq:meanTPC} hold theses signals should be simi
 \end{figure}
 
 \autoref{fig:ViconDelayIdent} shows a small sample of the measured yaw angle and the correlations of the two measurements.
-The identified average delay is where the cross-correlation has its maximum at $\meanTVICD = 0.034\,\unit{s}$.
+The identified average delay is the lag at which the cross-correlation attains its maximum, $\meanTVICD = 0.034\,\unit{s}$.
 In order to achieve this resolution the measurements were up-sampled to $1\,\unit{ms}$ by cubic interpolation.
 
 
@@ -275,7 +275,7 @@ We have a accurate but low sampled and delayed position measurement $\rVIC$ and 
 From this we want to estimate the current position $\r$ and velocity $\rd$ required for the controller implementation.
 
 The differential relation between position and accelerometer measurement is given in \eqref{eq:RealizationImuModel}. 
-For the following we assume a constant bias $\aIMUBd = \tuple{0}$ and drop the noise term $\aIMUN = \tuple{0}$.
+For the following, we assume a constant bias $\aIMUBd = \tuple{0}$ and drop the noise term $\aIMUN = \tuple{0}$.
 Furthermore, the IMU misalignment has already been corrected, i.e.\ $\RIMUBR = \idMat[3]$.
 Introducing the state $\tuple{z} = [\r^\top, \rd^\top, \aIMUB^\top]^\top \in \RealNum^9$ we may write 
 %\begin{subequations}
@@ -335,7 +335,7 @@ Finally, the state estimate \textit{for current time} is again integrated from \
 
 
 \paragraph{Error dynamics and tuning.}
-To chose reasonable correction gains $\mat{L}_r$, $\mat{L}_v$ and $\mat{L}_a$ we investigate the resulting error dynamics of the estimation algorithm above.
+To choose reasonable correction gains $\mat{L}_r$, $\mat{L}_v$ and $\mat{L}_a$, we investigate the resulting error dynamics of the estimation algorithm above.
 Assuming the attitude is constant and perfectly known $\RObs = \bar{\R}$ the matrix $A$ in the continuous model \eqref{eq:AccelerometerDynamicsState} is constant and is denoted by $\bar{\mat{A}}$.
 
 From measurement time $\tVIC[k']$ till the next one at $\tVIC[k'+1]$ there are several prediction steps \eqref{eq:PosPredictor}:

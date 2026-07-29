@@ -1,18 +1,18 @@
 \section{Control of the generalized force}\label{sec:RealizationForceVectorControl}
 The rigid body controller computes a \textit{desired} generalized force $\genForceD$ for the corresponding multicopter.
-This force cannot be realized instantaneously as its subject to its own actuator dynamics, see \autoref{sec:RealizationModels}.
-This section describes a control approach for the generalized force $\genForce$
+This force cannot be realized instantaneously, since it is subject to its own actuator dynamics; see \autoref{sec:RealizationModels}.
+This section describes a control approach for the generalized force $\genForce$.
 
-Since the force $\genForce$ itself is subject , it is not possible to realize it instantaneously.
-However, we can pursue to realize it reasonably fast, which is the subject of this section.
-At the same time we need an accurate estimate for the current generalized force for the rigid body observer.
+Because the force $\genForce$ is itself subject to actuator dynamics, it is not possible to realize it instantaneously.
+However, we can aim to realize it reasonably fast, which is the subject of this section.
+At the same time we need an accurate estimate of the current generalized force for the rigid body observer.
 The coarse structure was already given in \autoref{fig:StructureMulticopterAgent}.
 
 \subsection{Servo simulation}
 The integrated servo controller uses an internal angle measurement but this is not available for the main controller.
-A dedicated test bench (see \autoref{fig:PropellerTestBench}) with an absolute encoder for the tilt angle $\aServo$ was used for validation of the servo dynamics \eqref{eq:TriModelServoDynamics} and identification of its parameters $\ServoParam[0]$ and $\ServoParam[1] $.
-Since the model is asymptotically stable, a simple online simulation of the model with the known servo setpoint $\aServoU[][k]$ is sufficient to get an estimate of the current servo angle.
-For this a simple forward Euler discretization of \eqref{eq:TriModelServoDynamics} is implemented on the main controller
+A dedicated test bench (see \autoref{fig:PropellerTestBench}) with an absolute encoder for the tilt angle $\aServo$ was used to validate the servo dynamics \eqref{eq:TriModelServoDynamics} and identify its parameters $\ServoParam[0]$ and $\ServoParam[1]$.
+Since the model is asymptotically stable, a simple online simulation of the model with the known servo setpoint $\aServoU[][k]$ is sufficient to estimate the current servo angle.
+For this, a simple forward Euler discretization of \eqref{eq:TriModelServoDynamics} is implemented on the main controller
 \begin{subequations}\label{eq:ServoSimulator}
 \begin{align}
  \aServoObs[][k\!+\!1] &= \aServoObs[][k] + \Ts \aServoObsd[][k]
@@ -26,10 +26,10 @@ For this a simple forward Euler discretization of \eqref{eq:TriModelServoDynamic
 %  p_{\textsf{S}0} = \tfrac{K_P}{\ArmInertia}, \
 %  p_{\textsf{S}1} = \tfrac{K_D}{\ArmInertia}
 % \end{align}
-In \autoref{fig:ServoSimRes} its result is compared to the measurement of the encoder.
-To be close to the real application on the Tricopter, the propeller on the test bench is spinning with about $70\,\unit{Hz}$ during the experiment.
+In \autoref{fig:ServoSimRes} the simulation result is compared to the encoder measurement.
+To be close to the real application on the tricopter, the propeller on the test bench is spinning at about $70\,\unit{Hz}$ during the experiment.
 This explains the vibration seen in the encoder measurements.
-If the propeller is switched off, the estimation error is always less than $\pm 0.5\,\unit{DEG}$.
+If the propeller is switched off, the estimation error remains within $\pm 0.5\,\unit{DEG}$.
 
 \begin{figure}
  \centering
@@ -67,7 +67,7 @@ So the estimate corresponds to the mean velocity between the current and the las
 
 \paragraph*{Observer.}
 The velocity estimate $\PropVelMeas$ from the BLDC driver is quite noisy, so it should not be used directly in a feedback.
-The scaled model \eqref{eq:PropDynamics} also contains the a friction parameter $\PropParam[3] = \tfrac{\BLDCFriction}{\PropInertia}$ which we like to estimate online for each propeller drive individually.
+The scaled model \eqref{eq:PropDynamics} also contains a friction parameter $\PropParam[3] = \tfrac{\BLDCFriction}{\PropInertia}$, which we estimate online for each propeller drive individually.
 To address these two aspects, an observer for each propeller drive is implemented on the main controller.
 It is essentially a copy of the discrete model \eqref{eq:PropDynamics} supplemented with a linear error feedback
 \begin{subequations}\label{eq:PropObserver}
@@ -80,7 +80,7 @@ It is essentially a copy of the discrete model \eqref{eq:PropDynamics} supplemen
 \end{align}
 \end{subequations}
 where $\PropObsGainVel, \PropObsGainBias \in \RealNum$ are the feedback gains.
-For quantitative analysis of the observer we consider the linearization of the observer error dynamics about a general expansion point $\PropVel = \PropVelStat > 0$.
+For quantitative analysis of the observer, we consider the linearization of the observer error dynamics about a general expansion point $\PropVel = \PropVelStat > 0$.
 Its characteristic polynomial is
 \begin{align}
  \lambda^3 
@@ -120,7 +120,7 @@ Plugging the control law \eqref{PropCtrlLaw} into the model \eqref{eq:PropDynami
 \begin{align}
  e[k\!+\!1] + \big( \Ts (2 \PropParam[1] \PropVel[][k] + \PropCtrlGain) - 1 \big) e[k] + \Ts \PropParam[1] \big( e[k] \big)^2 = 0.
 \end{align}
-For a the linearization about the expansion point $e = 0$, $\PropVel = \PropVelStat$ the corresponding characteristic polynomial has the root
+For the linearization about the expansion point $e = 0$, $\PropVel = \PropVelStat$, the corresponding characteristic polynomial has the root
 \begin{align}
  \lambda = 1 - \Ts (2 \PropParam[1] \PropVelStat + \PropCtrlGain).
 \end{align}
@@ -191,13 +191,13 @@ and $J$ is the Jacobian matrix of the force transformation \eqref{eq:TriActuator
 \end{align}
 Note that $\PropForceStat$ cancels out in \eqref{eq:TriActuatorTransferFunction}, i.e.\ $\GenForceTransferFunction$ is independent of it.
 
-From the structure of $\GenForceTransferFunction$ in \eqref{eq:TriActuatorTransferFunction} it is clear that its entries are linear combinations of the transfer functions the the thrust and the servos, $\ThrustTransferFunction$ and $\ServoTransferFunction$.
-Also it is evident that if $\ThrustTransferFunction = \ServoTransferFunction$, then $\GenForceTransferFunction$ would be diagonal.
+From the structure of $\GenForceTransferFunction$ in \eqref{eq:TriActuatorTransferFunction}, it is clear that its entries are linear combinations of the transfer functions of the thrust and the servos, $\ThrustTransferFunction$ and $\ServoTransferFunction$.
+Also, if $\ThrustTransferFunction = \ServoTransferFunction$, then $\GenForceTransferFunction$ would be diagonal.
 Since this is not the case we do have off-diagonal entries in the transfer matrix $\GenForceTransferFunction$.
 This so-called crosstalk between the components of the generalized force $\genForce$ depends mainly on the expansion point of the servo angles $\aServoStat$.
 
-For a better quantitative analysis of the off-diagonal entries of $\GenForceTransferFunction$, the transfer function is normalized as $\GenForceTransferFunctionNorm = S^{-1} \GenForceTransferFunction S $ where $S = \diag(F_{\mathsf{x,Max}}, \ldots, \tau_{\mathsf{z,Max}})$ contains the maximal magnitudes of the corresponding forces and torques.
-\autoref{fig:BodeTriActorDyn} shows exemplary the bode magnitude plot of $\GenForceTransferFunctionNorm$ for the hover case $\aServoStat = [0,0,0]^\top$ (left) and for a forward force with $\aServoStat = [\sfrac{\pi}{4},0,-\sfrac{\pi}{4}]^\top$ (right).
+For a better quantitative analysis of the off-diagonal entries of $\GenForceTransferFunction$, the transfer function is normalized as $\GenForceTransferFunctionNorm = S^{-1} \GenForceTransferFunction S$, where $S = \diag(F_{\mathsf{x,Max}}, \ldots, \tau_{\mathsf{z,Max}})$ contains the maximal magnitudes of the corresponding forces and torques.
+\autoref{fig:BodeTriActorDyn} shows an exemplary Bode magnitude plot of $\GenForceTransferFunctionNorm$ for the hover case $\aServoStat = [0,0,0]^\top$ (left) and for a forward force with $\aServoStat = [\sfrac{\pi}{4},0,-\sfrac{\pi}{4}]^\top$ (right).
 In the hover case the diagonal entries for $\Fz$, $\taux$ and $\tauy$ coincide with the thrust dynamics $\ThrustTransferFunction$, whereas the diagonal entries for $\Fx$ and $\Fy$ coincide with the servo dynamics $\ServoTransferFunction$.
 The diagonal entry for $\tauz$ is dominated by the servo dynamics $\ServoTransferFunction$ but also has a small influence from $\ThrustTransferFunction$ due to the propeller drag (terms involving $\kappaT$ in \eqref{eq:TriActuatorTrafo}).
 The propeller drag is also responsible for the small off-diagonal entries in the hover case.

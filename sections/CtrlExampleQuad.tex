@@ -10,7 +10,7 @@
 
 \paragraph{Model.}
 Mechanically, a quadcopter is a free 3d rigid body subject to gravity and the specific actuation as illustrated in \autoref{fig:QuadModel}.
-It is reasonable to chose the center of mass as the reference point and assume that the body frame coincides with the principle axes of inertia.
+It is reasonable to choose the center of mass as the reference point and assume that the body frame coincides with the principal axes of inertia.
 %\begin{align}\label{eq:QuadcopterKinematics}
 % \rd = \R\v, \quad \Rd = \R\wedOp(\w)
 %\end{align}
@@ -56,11 +56,11 @@ With this, the matching condition for the reference from \eqref{eq:MatchingForce
  \tuple{\lambda}^{\text{ZeroError}} = m \begin{bmatrix} \vxRd + \vzR\wyR-\vyR\wzR + \RRzx\gravityAccConst \\ \vyRd + \vxR\wzR-\vzR\wxR + \RRzy \gravityAccConst \end{bmatrix} = \tuple{0}
  .
 \end{align}
-This may be easily resolved by formulating the reference trajectory in terms of the systems flat output $\r$ and some parameterization of the orientation about the body fixed z-axis as done in \cite{Konz:QuadrotorMovingFrame}.
+This may be easily resolved by formulating the reference trajectory in terms of the system's flat output $\r$ and a parameterization of the orientation about the body-fixed z-axis, as done in \cite{Konz:QuadrotorMovingFrame}.
 
 \paragraph{Closed loop template.}
 As the quadcopter is just a free rigid body with a particular actuation, the closed loop templates coincide with the ones given in \autoref{sec:CtrlApproachParticlesSingleBody}, \autoref{sec:CtrlApproachBodySingleBody} and \autoref{sec:CtrlApproachEnergySingleBody}.
-Due to symmetry considerations we set $\scx = \scy = 0$, $\Jcxx=\Jcyy$, $\Jcxy=\Jcxz=\Jcyz=0$ and analog for the stiffness and damping parameters.
+Due to symmetry considerations we set $\scx = \scy = 0$, $\Jcxx=\Jcyy$, $\Jcxy=\Jcxz=\Jcyz=0$, and analogously for the stiffness and damping parameters.
 
 \paragraph{Matching.}
 The explicit matching conditions are too cumbersome to be displayed here.
@@ -157,7 +157,7 @@ Consequently we use the same solution
 \end{align}
 which leaves the tuning parameters $\mc, \dc, \kc, \scz, \hcz$ and $\Jcz, \sigcz, \kapcz$.
 
-Even with the linearized matching conditions fulfilled, the nonlinear matching condition is still to cumbersome to be displayed here.
+Even with the linearized matching conditions fulfilled, the nonlinear matching condition is still too cumbersome to be displayed here.
 For the case of a constant reference velocity $\vRd = \tuple{0}$ and its implications on the reference attitude, $\wRx=\wRy=0$, we have the residual matching force
 \begin{align} 
  \tilde{\sysForce} = \frac{\mc}{\m\hcz}\begin{bmatrix} \Jcz\wx\wz - \tfrac{1}{2}\kapcz(\RExz+\REzx) \\ \Jcz\wy\wz - \tfrac{1}{2}\kapcz(\REyz+\REzy) \\ 0 \\ 0 \\ 0 \\ 0 \end{bmatrix}
@@ -168,8 +168,8 @@ For the case of a constant reference velocity $\vRd = \tuple{0}$ and its implica
 The first set of parameters $\mc, \dc, \kc, \scz, \hcz$ may be tuned just as presented for the PVTOL, see \autoref{fig:PVTOLPendulum}.
 The parameters associated with the heading control may be set to $\sigcz=2\Jcz\zeta\omega_0$ and $\kapcz=\Jcz\omega_0^2$ to obtain a desired bandwidth $\omega_0$ and damping ratio $\zeta$.
 The corresponding moment of inertia $\Jcz > 0$ may be adjusted in relation to $\Jcx$ as a priority factor between heading control and tilt control.
-This is most crucial if the quadcopter propellers are at their constraints and the control has to find a trade-off between maintaining its tilt (and consequently its position), or the heading.
-For most applications heading is less important than tilt so one may set $\Jcz = 0.1\,\Jcx$ as was done for the experiments with the LSR quadcopter presented in the next section.
+This is most crucial if the quadcopter propellers are at their constraints and the control has to trade off maintaining its tilt (and consequently its position) against the heading.
+For most applications, heading is less important than tilt, so one may set $\Jcz = 0.1\,\Jcx$ as was done for the experiments with the LSR quadcopter presented in the next section.
 
 
 \paragraph{Simulation results.}

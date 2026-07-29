@@ -1,6 +1,6 @@
 \subsection{Two masses connected by a spring}
-In order to illustrate the control approach for underactuated systems we consider the minimal example:
-Two bodies in prismatic joints connected by a linear spring but where only one is directly actuated by the force $F$ as illustrated in \autoref{fig:TwoMassSpring}.
+In order to illustrate the control approach for underactuated systems, we consider the minimal example:
+two bodies in prismatic joints connected by a linear spring, where only one is directly actuated by the force $F$, as illustrated in \autoref{fig:TwoMassSpring}.
 \begin{figure}[ht]
  \centering
  \input{graphics/TwoMassSpring.pdf_tex}
@@ -10,7 +10,7 @@ Two bodies in prismatic joints connected by a linear spring but where only one i
 
 \paragraph{Model.}
 We choose the absolute positions of the bodies as configuration coordinates $\sysCoord = [z_1, z_2]^\top$ and their derivative as velocity coordinates $\sysVel = \sysCoordd$.
-With this the body configurations are
+With this, the body configurations are
 \begin{align}
  \bodyHomoCoord{0}{1} = \begin{bmatrix} 1 & 0 & 0 & z_1 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1\end{bmatrix},
 \qquad
@@ -58,7 +58,7 @@ The matching condition \eqref{eq:MatchingCondition} for this example may be writ
 \begin{align}
  \tuple{\lambda} = (\sysInputMatLComp)^\top (\sysInertiaMat \sysInertiaMatC^{-1} (-\sysInertiaMatC \sysCoordRdd + \sysDissMatC (\sysCoordd-\sysCoordRd) + \sysStiffMatC (\sysCoord-\sysCoordR)) - \sysStiffMat \sysCoord) &= \tuple{0}.
 \end{align}
-Since this equation is linear in the system coordinates we can separate the into
+Since this equation is linear in the system coordinates, we can separate it into
 \begin{subequations}
 \begin{align}
  (\sysInputMatLComp)^\top (\sysInertiaMat \sysCoordRdd + \sysStiffMat \sysCoordR) &= \tuple{0}.
@@ -68,7 +68,7 @@ Since this equation is linear in the system coordinates we can separate the into
  (\sysInputMatLComp)^\top \sysInertiaMat \sysInertiaMatC^{-1} (\sysStiffMatC - \sysStiffMat) &= \mat{0},
 \end{align}
 \end{subequations}
-Choosing $\sysInputMatLComp = [0, 1]^\top$ this is explicitly
+Choosing $\sysInputMatLComp = [0, 1]^\top$, this is explicitly
 \begin{subequations}
 \begin{align}
  &\ddot{z}_{2\idxRef} + \varpi (z_{2\idxRef} - z_{1\idxRef}) = 0
@@ -87,7 +87,7 @@ Choosing $\sysInputMatLComp = [0, 1]^\top$ this is explicitly
 \end{subequations}
 where $\varpi = \sfrac{\bodyStiffness{1}{2}}{\bodyMass{0}{2}}$ is the sole model parameter relevant for the matching condition.
 The first part \eqref{eq:TwoMassSpringFlatnessCondition} is a constraint on the reference trajectory as it is independent of tunable parameters.
-It can be resolved by acknowledging that $z_2$ is a \textit{flat output} of the system and planing the reference trajectory accordingly, i.e.
+It can be resolved by acknowledging that $z_2$ is a \textit{flat output} of the system and planning the reference trajectory accordingly, i.e.
 \begin{align}
  z_{1\idxRef} = z_{2\idxRef} - \sfrac{\ddot{z}_{2\idxRef}}{\varpi}. 
 \end{align}
@@ -141,5 +141,5 @@ In order to conclude $\sysInertiaMatC > 0$, $\sysDissMatC \geq 0$ and $\sysStiff
 
 \paragraph{Conclusions.}
 The resulting controller is equivalent to one that could be designed by standard linear state-feedback methods.
-However, this approach here might give some \textit{physical} insight to the resulting closed loop system.
-For example that the closed loop system must have an inertial coupling ($\bodyMassC{1}{2} \neq 0$) of the two bodies, if one wants to tune all 4 poles.
+However, this approach may give additional \textit{physical} insight into the resulting closed-loop system.
+For example, the closed-loop system must have an inertial coupling ($\bodyMassC{1}{2} \neq 0$) of the two bodies if one wants to tune all four poles.

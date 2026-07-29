@@ -1,7 +1,7 @@
 \subsection{Planar rigid body}\label{sec:CtrlPlanarRigidBody}
-A planar rigid body is a free rigid body in two dimensional space, i.e.\ it can translate in two dimensions and rotate about an perpendicular axis as illustrated in \autoref{fig:PlanarRigidBody}.
-The model equations as well as the closed loop equations could be directly derived from the three dimensional rigid body by setting e.g.\ $\vz=0$, $\wx=\wy=0$ and removing the trivial equations.
-However it might be still instructive to display the resulting equations.
+A planar rigid body is a free rigid body in two-dimensional space, i.e.\ it can translate in two dimensions and rotate about an axis perpendicular to the plane as illustrated in \autoref{fig:PlanarRigidBody}.
+The model equations as well as the closed-loop equations could be derived directly from the three-dimensional rigid body by setting e.g.\ $\vz=0$, $\wx=\wy=0$ and removing the trivial equations.
+However, it may still be instructive to display the resulting equations.
 
 \begin{figure}[ht]
  \centering
@@ -11,9 +11,9 @@ However it might be still instructive to display the resulting equations.
 \end{figure}
 
 \paragraph{Coordinates and kinematics.}
-As configuration coordinates $\sysCoord$ we use the position $\rx,\ry$ and the sine $\sa$ and cosine $\ca$ of the angle $\alpha$.
-Consequently we have to impose the constraint $\ca^2+\sa^2-1 = 0$ on the configuration coordinates.
-As velocity coordinates $\sysVel$ we use the components $\vx, \vy$ of the translational velocity w.r.t.\ the body fixed frame as illustrated in \autoref{fig:PlanarRigidBody} and the angular velocity $\wz=\dot{\alpha}$.
+As configuration coordinates $\sysCoord$, we use the position $\rx,\ry$ and the sine $\sa$ and cosine $\ca$ of the angle $\alpha$.
+Consequently, we impose the constraint $\ca^2+\sa^2-1 = 0$ on the configuration coordinates.
+As velocity coordinates $\sysVel$, we use the components $\vx, \vy$ of the translational velocity with respect to the body-fixed frame as illustrated in \autoref{fig:PlanarRigidBody} and the angular velocity $\wz=\dot{\alpha}$.
 This kinematic relation is
 \begin{align}
  \ddt
@@ -30,8 +30,8 @@ The rigid body configuration $\bodyHomoCoord{0}{1}$ and the resulting body Jacob
 \end{align}
 
 \paragraph{Kinetic equation.}
-Let the rigid body have the total mass $\m$, the moment of inertia $\Jz$ and the coordinates $\sx,\sy$ of the center of mass w.r.t.\ the body fixed frame.
-As control input consider the forces $\Fx, \Fy$ and the torque $\tauz$ as displayed in \autoref{fig:PlanarRigidBody}.
+Let the rigid body have total mass $\m$, moment of inertia $\Jz$, and center of mass coordinates $\sx,\sy$ with respect to the body-fixed frame.
+As control inputs, consider the forces $\Fx, \Fy$ and the torque $\tauz$ as displayed in \autoref{fig:PlanarRigidBody}.
 The resulting kinetic equation is
 \begin{align}
  \underbrace{\begin{bmatrix} \m & 0 & -\m\sy \\ 0 & \m & \m\sx \\ -\m\sy & \m\sx & \Jz \end{bmatrix}}_{\sysInertiaMat}
@@ -47,7 +47,7 @@ The resulting kinetic equation is
 \end{align}
 
 \paragraph{Control parameters.}
-For the controlled kinetics we chose the following non-zero parameters
+For the controlled kinetics we choose the following non-zero parameters
 \begin{align}\label{eq:CtrlParamPlanarRigidBody}
  \bodyMassC{0}{1}, \bodyDamping{0}{1}, \bodyStiffness{0}{1} \in \RealNum^+,
 \quad
@@ -58,7 +58,7 @@ For the controlled kinetics we chose the following non-zero parameters
 Since all parameters are associated with the configuration $\bodyHomoCoord{0}{1}$, we drop the indices in the following, i.e.\ $\mc = \bodyMassC{0}{1}$.
 
 \paragraph{Potential.}
-The potential, resulting from the chosen parameters \eqref{eq:CtrlParamPlanarRigidBody}, and its derivatives are
+The potential resulting from the chosen parameters \eqref{eq:CtrlParamPlanarRigidBody} and its derivatives are
 \begin{subequations}
 \begin{align}
  \potentialEnergyC &= \tfrac{1}{2} \kc (\rx\!-\!\rxR)^2 + \tfrac{1}{2} \kc (\ry\!-\!\ryR)^2 + \kapcz (1-\caE)
@@ -116,7 +116,7 @@ An alternative transport map corresponding to \eqref{eq:RigidBodyAlternativeTran
 }
 
 \paragraph{Particle-based approach.}
-The damping and inertia force using the particle based approach are:
+The damping and inertia forces in the particle-based approach are:
 \begin{subequations}
 \begin{align}
  \genForceDissC &=
@@ -141,10 +141,10 @@ The damping and inertia force using the particle based approach are:
  \begin{bmatrix} -\mc((\vyR + \scx\wzR)\caE - (\vxR-\scy\wzR)\saE) \wzR \\ \mc((\vyR + \scx\wzR)\saE + (\vxR-\scy\wzR)\caE) \wzR \\ \mc((\scx\vxR+\scy\vyR)\caE - (\scy\vxR-\scx\vyR)\saE)\wzR + \Jcz\saE\wzR^2 \end{bmatrix}.
 \end{align}
 \end{subequations}
-The corresponding total energy as defined in \eqref{eq:SolCtrlGaussPrinciple}, is not a Lyapunov function for the closed loop. 
+The corresponding total energy as defined in \eqref{eq:SolCtrlGaussPrinciple} is not a Lyapunov function for the closed loop.
 
 \paragraph{Body-based approach.}
-The damping and inertia force using the body-based approach are:
+The damping and inertia forces in the body-based approach are:
 \begin{subequations}
 \begin{align}
  \genForceDissC &= \underbrace{\begin{bmatrix} \dc & 0 &-\dc\,\lcy \\ 0 & \dc & \dc\,\lcx \\ -\dc\,\lcy & \dc\,\lcx & \sigcz \end{bmatrix}}_{\sysDissMat}
@@ -160,7 +160,7 @@ where the velocity error $\sysVelE$ was defined in \eqref{eq:sysVelEPlanarRigidB
 The total energy $\totalEnergyC = \tfrac{1}{2} \sysVelE^\top \sysInertiaMat \sysVelE + \potentialEnergyC$ is a Lyapunov function for the closed loop.
 
 \paragraph{Energy-based approach.}
-The damping and inertia forces using the energy-based approach are:
+The damping and inertia forces in the energy-based approach are:
 \begin{subequations}
 \begin{align}
  \genForceDissC &= \underbrace{\begin{bmatrix} \dc & 0 &-\dc\,\lcy \\ 0 & \dc & \dc\,\lcx \\ -\dc\,\lcy & \dc\,\lcx & \sigcz \end{bmatrix}}_{\sysDissMat}
@@ -173,7 +173,7 @@ The damping and inertia forces using the energy-based approach are:
 \end{align} 
 \end{subequations}
 The total energy $\totalEnergyC = \tfrac{1}{2} \sysVelE^\top \sysInertiaMat \sysVelE + \potentialEnergyC$ coincides with the total energy for the body-based approach and is a Lyapunov function for this closed loop as well.
-Note that the two approaches do differ in the gyroscopic terms, so do lead to different solutions of the closed loop dynamics.
+Note that the two approaches differ in their gyroscopic terms and thus lead to different solutions of the closed loop dynamics.
 
 \paragraph{Simulation result.}
 In \autoref{sec:DecouplingRigidBody} we will give and discuss a simulation result for the special parameter choice $\scx=\lcx=\hcx=0$ and $\scy=\lcy=\hcy=0$.

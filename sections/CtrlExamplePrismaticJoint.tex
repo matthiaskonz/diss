@@ -7,7 +7,7 @@
 \end{figure}
 
 \paragraph{Model.}
-Probably the simplest example of a rigid body system is a single body moving in a prismatic joint, i.e. can only translate on one axis as illustrated on the left of \autoref{fig:PrismaticJoint}.
+Probably the simplest example of a rigid body system is a single body moving in a prismatic joint, i.e. can only translate along one axis as illustrated on the left of \autoref{fig:PrismaticJoint}.
 The corresponding rigid body transformation is simply
 \begin{align}
  \bodyHomoCoord{0}{1} = \begin{bmatrix} 1 & 0 & 0 & x \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1\end{bmatrix}.
@@ -18,9 +18,9 @@ With the trivial choice of the velocity coordinate $\sysVel = \dot{x}$, i.e. $\k
 \end{align}
 
 \paragraph{Closed loop.}
-Due to the geometry of the model, only the controlled total mass $\bodyMass{0}{1}$ within the controlled body inertia matrix $\bodyInertiaMat{0}{1}$ contributes to the controlled kinetics and analog for the dissipation and stiffness.
-For the sake of readability we drop the body indices for the following examples of single bodies.
-So the only parameters contributing to the controlled kinetics are $\mc, \dc, \kc \in \RealNum > 0$.
+Due to the geometry of the model, only the controlled total mass $\bodyMass{0}{1}$ within the controlled body inertia matrix $\bodyInertiaMat{0}{1}$ contributes to the controlled kinetics, and similarly for dissipation and stiffness.
+For the sake of readability, we drop the body indices for the following examples of single bodies.
+Thus the only parameters contributing to the controlled kinetics are $\mc, \dc, \kc \in \RealNum > 0$.
 
 For this example all three proposed control approaches are identical.
 With the displacement error $x_{\idxErr} = x - x_{\idxRef}$ the resulting energies are
@@ -41,4 +41,4 @@ The corresponding explicit control law is
 An interpretation of the closed loop is given on the right side of \autoref{fig:PrismaticJoint}:
 The controlled body can be thought as being connected by a spring (stiffness $\kc$) and a damper (viscosity $\dc$) to its reference position $x_{\idxRef}$.
 The inertial force $\mc \ddot{x}_{\idxErr}$ reacts to the error acceleration, i.e.\ to the acceleration of the body relative to its reference acceleration $\ddot{x}_{\idxRef}$.
-One could say the body has an inertia w.r.t.\ its reference.
+One could say the body has inertia with respect to its reference motion.

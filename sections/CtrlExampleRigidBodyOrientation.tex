@@ -9,7 +9,7 @@
 \paragraph{Model.}
 Consider a rigid body fixed at one point $\bodyPos{}{} = \const$ as illustrated in \autoref{fig:RigidBodyOrientation}.
 Its orientation may be parameterized by the coefficients of the rotation matrix $\R = [\Rx,\Ry,\Rz] \in \SpecialOrthogonalGroup(3)$.
-With the angular velocity $\w = \veeMatOp(\R^\top\Rd)$ as velocity coordinates, the inertia matrix $\J$ and the control torques $\tuple{\tau}$ about the body fixed axes, the equations of motion may be written as
+Using the angular velocity $\w = \veeMatOp(\R^\top\Rd)$ as velocity coordinates, and denoting the inertia matrix by $\J$ and the control torques about the body-fixed axes by $\tuple{\tau}$, the equations of motion may be written as
 \begin{align}
  \Rd = \R \wedOp(\w)
 \qquad
@@ -17,8 +17,8 @@ With the angular velocity $\w = \veeMatOp(\R^\top\Rd)$ as velocity coordinates, 
 \end{align}
 
 \paragraph{Potential energy.}
-Only the parameters $\Jc$, $\sigc$ and $\bodyMOSC{}{}$ contribute to the closed loop kinetics.
-Using the attitude error $\RE = \RR^\top \R$ the error potential, its differential and Hessian are
+Only the parameters $\Jc$, $\sigc$, and $\bodyMOSC{}{}$ contribute to the closed loop kinetics.
+Using the attitude error $\RE = \RR^\top \R$, the error potential, its differential, and its Hessian are
 \begin{subequations}
 \begin{align}
  \potentialEnergyC &= \tr\big( \wedMatOp(\bodyMOSC{}{}) (\idMat[3] - \RE) \big),
@@ -28,10 +28,10 @@ Using the attitude error $\RE = \RR^\top \R$ the error potential, its differenti
  (\differential^2 \potentialEnergyC)|_{\R=\RR} &= \bodyMOSC{}{}.
 \end{align} 
 \end{subequations}
-The potential has the transport map $\sysTransportMap = \RE^\top$, so the velocity error for the energy based approach is $\wE = \w - \RE^\top \wR$ which coincides with the body velocity error.
+The potential has the transport map $\sysTransportMap = \RE^\top$, so the velocity error for the energy-based approach is $\wE = \w - \RE^\top \wR$, which coincides with the body velocity error.
 
 \paragraph{Particle-based approach.}
-The particle-based approach \eqref{eq:CtrlApproachParticles} leads to
+The particle-based approach \eqref{eq:CtrlApproachParticles} leads to:
 \begin{subequations}
 \begin{align}
  \genForceInertiaC &= \Jc \wdot - \veeMatOp(\RE^\top \wedMatOp(\Jc)) \RE^\top \wRd
@@ -56,7 +56,7 @@ The corresponding control law coincides with the one proposed in \cite{Koditsche
 The total energy $\totalEnergyC = \tfrac{1}{2} \wE^\top \Jc \wE + \potentialEnergyC$ with $\totalEnergyCd = -\wE^\top \sigc \wE$ serves as a Lyapunov function for the closed loop.
 
 \paragraph{Energy-based approach.}
-For the energy-based approach \eqref{eq:CtrlApprochEnergyKineticsFirst} leads to
+For the energy-based approach, \eqref{eq:CtrlApprochEnergyKineticsFirst} leads to
 \begin{subequations}
 \begin{align}
  \genForceInertiaC &= \Jc \wEd + \wedOp(\wedMatOp(\Jc) \w) \wE
@@ -65,8 +65,8 @@ For the energy-based approach \eqref{eq:CtrlApprochEnergyKineticsFirst} leads to
 \end{align} 
 \end{subequations}
 The corresponding control law coincides with one proposed in \cite{Bullo:TrackingAutomatica}.
-The total energy is the same as the one for the body based approach.
-The two approaches only differ in the gyroscopic terms.
+The total energy coincides with that of the body-based approach.
+The two approaches differ only in the gyroscopic terms.
 % \begin{align}
 %  \gyroForceC 
 % % &= \big[ \ConnCoeffLC{\LidxI}{\LidxII}{\LidxIII} \sysVelCoeff{\LidxIII} \sysVelCoeffE{\LidxII} \big]
@@ -95,13 +95,11 @@ The two approaches only differ in the gyroscopic terms.
 % %  &\qquad- \sigc (\w - \R^\top \RR \wR) - 2 \veeOp(\kappc \RR^\top \R)
 % \end{align}
 
-
 \paragraph{Linearization.}
-For a small error to the reference we have
+As proposed in \autoref{sec:CtrlLinearization}, for small errors we write $\R = \RR(\idMat + \wedOp(\LinErrorCoord))$ and $\w = \wR + \LinErrorCoordd$.
+If we additionally assume that $\wR$ is small, the linear approximations for the closed loop of each approach coincide as
 \begin{align}
- \R = \RR + \RR \wedOp(\LinErrorCoord),
-\qquad
- \w = \wR + \LinErrorCoordd,
-\qquad
  \Jc \LinErrorCoorddd + \sigc \LinErrorCoordd + \kapc \LinErrorCoord = 0.
 \end{align}
+The desired controlled inertia matrix $\Jc$ should be an intuitive parameter for tuning.
+The desired controlled damping matrix $\sigc$ and stiffness matrix $\kapc$ might not be as established, but as shown above, should be just as intuitive. 

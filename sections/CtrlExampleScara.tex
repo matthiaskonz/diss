@@ -1,7 +1,7 @@
 \subsection{SCARA robot}\label{sec:CtrlScara}
-As a simple example of a multi-body system we consider a SCARA robot as displayed in \autoref{fig:Scara}.
-For the sake of demonstration we neglect the vertical axis and the tool orientation.
-The remaining two axis are sufficient to position a tool (red point in \autoref{fig:Scara}) in the workspace (green shaded area).
+As a simple example of a multi-body system, we consider a SCARA robot as displayed in \autoref{fig:Scara}.
+For the sake of demonstration, we neglect the vertical axis and the tool orientation.
+The remaining two axes are sufficient to position a tool (red point in \autoref{fig:Scara}) in the workspace (green shaded area).
 
 \begin{figure}[ht]
  \centering
@@ -11,8 +11,8 @@ The remaining two axis are sufficient to position a tool (red point in \autoref{
 \end{figure}
 
 \paragraph{Model.}
-The model consists of two rigid bodies constraint by two revolute joints.
-A reasonable choice of coordinates are the relative joint angles $\sysCoord = [\jointAngle[1], \jointAngle[2]]^\top$ and their derivatives $\sysVel = [\jointAngled[1], \jointAngled[2]]^\top$.
+The model consists of two rigid bodies constrained by two revolute joints.
+A reasonable choice of coordinates is the relative joint angles $\sysCoord = [\jointAngle[1], \jointAngle[2]]^\top$ and their derivatives $\sysVel = [\jointAngled[1], \jointAngled[2]]^\top$.
 The rigid body configurations are
 \begin{subequations}
 \begin{align}
@@ -109,12 +109,12 @@ For the first parameterization the non-zero parameters are
  \bodyMODCoeffC{1}{2}{\idxZ},
  \bodyMOICoeffC{1}{2}{\idxZ} \in \RealNum > 0.
 \end{align}
-These parameters are directly associated with the errors $\jointAngleE[i] = \jointAngle[i] - \jointAngleR[i], i=1,2$ of the joint angles.
+These parameters are directly associated with the joint-angle errors $\jointAngleE[i] = \jointAngle[i] - \jointAngleR[i],\; i=1,2$.
 The resulting potential is
 \begin{align}
  \potentialEnergyC = \bodyMOSCoeffC{0}{1}{\idxZ} \big( 1-\cos \jointAngleE[1] \big) + \bodyMOSCoeffC{1}{2}{\idxZ}\big( 1-\cos\jointAngleE[2] \big).
 \end{align}
-and obeys the transport map $\sysTransportMap = \idMat[2]$.
+It obeys the transport map $\sysTransportMap = \idMat[2]$.
 
 The resulting controlled kinetics for the body and energy-based approach are
 \begin{align}\label{eq:ScaraClosedLoop11}
@@ -134,11 +134,11 @@ The controlled kinetics for the particle based approach yield
 \\
  i=1,2.
 \end{multline}
-With this parameterization the controlled kinetics coincide with two copies of the kinetics of the revolute joint discussed in \autoref{sec:CtrlExampleRevoluteJoint}.
+With this parameterization, the controlled kinetics coincide with two copies of the kinetics of the revolute joint discussed in \autoref{sec:CtrlExampleRevoluteJoint}.
 
 
 \paragraph{Controller parameterization 2.}
-The non-zero parameters for another interesting parameterization of the controller are
+The non-zero parameters for another interesting parameterization of the controller are:
 \begin{align}
  \bodyStiffnessC{0}{2}, \bodyDampingC{0}{2}, \bodyMassC{0}{2} \in \RealNum > 0,
 \quad
@@ -172,7 +172,7 @@ Using the \textit{tool position error} $\sysCoordE(\sysCoord, \sysCoordR) = \too
 % Note that the symbols $\jointAngleE[i]$ are used only for readability, they have nothing to do with the error velocity $\sysVelE = \sysVel - \sysTransportMap\sysVelR $ in this case.
 The determinant of the differential $\det\differential\toolPos(\sysCoord) = \sin\jointAngle[2]$ reflects the well known singularity of the SCARA inverse kinematics, see e.g.\ \cite[example 3.6]{Murray:Robotic}.
 
-The closed loop kinetics for the particle and energy-based approach in terms of the model coordinates $\sysCoord$ and the error velocity $\sysVelE = \sysVel - \sysTransportMap\sysVelR$ are
+The closed loop kinetics for the particle- and energy-based approaches, in terms of the model coordinates $\sysCoord$ and the error velocity $\sysVelE = \sysVel - \sysTransportMap\sysVelR$, are
 \begin{subequations}
 \begin{multline}
  \underbrace{\bodyMassC{0}{2} \begin{bmatrix}
@@ -216,18 +216,18 @@ In terms of the tool position error $\sysCoordE$ this is equivalent to the much 
 \label{eq:ScaraParamTwoError}
 \end{align}
 \end{subequations}
-With the body-based approach we get a similar closed loop that is not displayed or discussed here.
+With the body-based approach we obtain a similar closed loop that is not displayed or discussed here.
 
 As mentioned above, the transport map $\sysTransportMap$ contains terms with $\sfrac{1}{\sin\jointAngle[2]}$. 
 Fortunately these terms cancel out in $\sysInertiaMatC\sysTransportMap$ and $\sysDissMatC\sysTransportMap$ in the closed loop equation \eqref{eq:ScaraParamTwo}, so this singularity actually does not hurt in practice.
 This could also be expected since the particle based approach, which does not rely on the transport map, leads to the same closed loop.
 
 A singularity that does hurt, is the inertia matrix with $\det\sysInertiaMatC = (\bodyMassC{0}{2} l_1 l_2 \sin\jointAngle[2])^2$.
-This means that one can not compute the control law if $\sin\jointAngle[2] = 0$.
-Recalling the mechanical model of the SCARA \autoref{fig:Scara}, this singularity is evident from a geometric point of view: 
-If $\sin\jointAngle[2] = 0$ the tool can only move in a tangential direction to the boundary of the workspace but not radial.
+This means that one cannot compute the control law if $\sin\jointAngle[2] = 0$.
+Recalling the mechanical model of the SCARA \autoref{fig:Scara}, this singularity is evident from a geometric point of view:
+If $\sin\jointAngle[2] = 0$, the tool can only move tangentially to the boundary of the workspace but not radially.
 However, it should be stressed that this singularity is not a consequence of unsuitable configuration coordinates $\sysCoord = [\jointAngle[1], \jointAngle[2]]^\top$.
-It is rather an intrinsic one resulting from forcing dynamics suitable for $\RealNum^2$ on a system that has the configuration space $\Sphere^2$. 
+It is rather an intrinsic singularity resulting from forcing dynamics suitable for $\RealNum^2$ on a system that has the configuration space $\Sphere^2$.
  
 
 % tool position \cite{Alshamasin:Scara}
@@ -256,12 +256,12 @@ It is rather an intrinsic one resulting from forcing dynamics suitable for $\Rea
 % \end{align}
 
 \paragraph{Simulation result.}
-\autoref{fig:ScaraSimRes} and \autoref{fig:ScaraSimSnapshots} show a simulation results for the SCARA robot with the two proposed parameterizations.
+\autoref{fig:ScaraSimRes} and \autoref{fig:ScaraSimSnapshots} show simulation results for the SCARA robot with the two proposed parameterizations.
 The robot starts in a rather random initial configuration.
 The reference configuration is constant till $t=1\,\unit{s}$, then follows a straight line for the tool position till $t=4\,\unit{s}$ and remains constant thereafter.
 
 For both parameterizations the controlled total energy $\totalEnergyC$ converges.
-The crucial difference between the two parameterizations is, though the tool position $\toolPos$ tracks its reference in both cases, the joint angles $\jointAngle[1], \jointAngle[2]$ do not for the second parameterization.
+The crucial difference between the two parameterizations is that, although the tool position $\toolPos$ tracks its reference in both cases, the joint angles $\jointAngle[1], \jointAngle[2]$ do not track their references for the second parameterization.
 The reason for this is best understood when looking at the controlled potential energy $\potentialEnergyC$ illustrated in \autoref{fig:SCARAPotentials}:
 For parameterization 2 the potential has two minima $\potentialEnergyC=0$ for which the tool is at its reference position, but with different joint angles.
 This is true for any tool position except the ones on the boundary of the workspace where $\jointAngle[2]=0$ or $\jointAngle[2]=\pi$.

@@ -1,5 +1,5 @@
 \section{Underactuated systems}\label{sec:CtrlUnderactuated}
-The first three sections of this chapter motivated different desired closed loop dynamics which share the structure
+The first three sections of this chapter motivated different desired closed-loop dynamics which share the structure
 \begin{align}\label{eq:CtrlClosedLoopUnderactuated}
  \sysCoordd = \kinMat(\sysCoord) \sysVel, 
 \quad
@@ -69,7 +69,7 @@ Plugging $\sysInput = \sysInput_0$ into the model \eqref{eq:CtrlSysMdlUnderactua
 \end{align}
 We may interpret this additional vector\footnote{The coefficients $\tilde{\tuple{b}}$ do indeed transform like a tensor, even though $\sysForce$ and $\sysForceC$ do not.}
 $\tilde{\tuple{b}}(\sysCoord, \sysVel, \sysCoordR, \sysVelR, \sysVelRd) \in \RealNum^{\dimConfigSpace}$ as a force that makes the closed loop kinetics feasible, i.e.\ realizable with the available controls.
-The residual Gaussian constraint is $\GaussianConstraintC_0 = \tfrac{1}{2} \norm[\sysInertiaMatC^{-1}]{\tilde{\sysForce}}^2$.
+With this, we may rewrite the residual Gaussian constraint from \eqref{eq:GaussianUnderactuated} as $\GaussianConstraintC_0 = \tfrac{1}{2} \norm[\sysInertiaMatC^{-1}]{\tilde{\sysForce}}^2$.
 
 In general, the value $\GaussianConstraintC_0$ is a metric of how much the resulting closed loop differs from the original desired system \eqref{eq:CtrlClosedLoopUnderactuated}.
 One main goal when parameterizing the controller is to make $\GaussianConstraintC_0$ as small as possible.
@@ -81,9 +81,9 @@ For the special case of a fully actuated system, i.e.\ $\sysInputMat$ is inverti
 Furthermore, for this case, we have $\mat{P}^\bot = \mat{0}$ and consequently $\GaussianConstraintC_0=0$, $\tilde{\sysForce}=\tuple{0}$.
 
 \subsection{Matching condition}\label{sec:MatchingCondition}
-Instead of eliminating the accelerations $\sysVeld$ we may also eliminate the controls $\sysInput$ from \eqref{eq:MinProbUnderactuated}.
+When solving \eqref{eq:MinProbUnderactuated}, instead of eliminating the accelerations $\sysVeld$, we may also eliminate the controls $\sysInput$:
 Let $\sysInputMatLComp \in \RealNum^{\dimConfigSpace\times(\dimConfigSpace-\numInputs)}$ be any orthogonal complement to $\sysInputMat$, i.e.\ $\rank \sysInputMatLComp = \dimConfigSpace-\numInputs$ and $\sysInputMat^\top \sysInputMatLComp = \mat{0}$.
-With this \eqref{eq:MinProbUnderactuated} is equivalent to
+With this, \eqref{eq:MinProbUnderactuated} is equivalent to
 \begin{align}\label{eq:MinProbUnderactuatedMatch}
  \begin{array}{rl}
   \text{minimize} & \GaussianConstraintC \, = \, \tfrac{1}{2} \norm[\sysInertiaMatC]{\sysVeld + \sysInertiaMatC^{-1} \sysForceC}^2
@@ -131,14 +131,14 @@ The best case is, of course, if we achieve
 i.e.\ the desired closed loop is realized exactly.
 An approach based on this is discussed in \cite{bloch2000controlled}.
 A condition similar to \eqref{eq:MatchingCondition} is therein called the \textit{the matching condition} and is required to be fulfilled exactly.
-However, the examples for which this approach is demonstrated restricts to stabilization tasks $\sysVelR = \tuple{0}$ for small academic systems.
+However, the examples for which this approach is demonstrated restrict to stabilization tasks $\sysVelR = \tuple{0}$ for small academic systems.
 
 An advantage of the presented approach is that the control law $\sysInput = \sysInput_0$ is defined independently of whether the matching condition is fulfilled or not.
 Instead the quantity $\tuple{\lambda}$, which we will call the \textit{matching force} in the following, ensures that the control law is realizable.
 
 \subsection{Approximations}
-The matching force \eqref{eq:MatchingCondition} may become very cumbersome for complex systems and might even be impossible to vanish with the given parameters.
-It might be instructive to analyze it for particular situations.
+The matching force \eqref{eq:MatchingCondition} may become very cumbersome for complex systems and might even be impossible to eliminate with the given parameters.
+It may be instructive to analyze it for particular situations.
 
 \paragraph{Zero error.}
 Assume that the controller tracks the reference perfectly, i.e.\ $\sysCoord = \sysCoordR$ and $\sysVel=\sysVelR$.
@@ -154,7 +154,7 @@ A very useful approach here is to formulate the reference trajectory in terms of
 The first step for a systematic construction of a flat output is commonly the elimination of the control inputs (see e.g.\ \cite{Schlacher:ConstructionOfFlatOutputs}) i.e.\ $\tuple{\lambda}^{\text{ZeroError}}=\tuple{0}$.
 
 \paragraph{Small error.}
-Assume that we a small error $\LinErrorCoord = \kinMat^+(\sysCoordR)(\sysCoord-\sysCoordR)$ to a constant reference $\sysVelR=\tuple{0}$ as already considered in \autoref{sec:CtrlLinearization}.
+Assume that we have a small error $\LinErrorCoord = \kinMat^+(\sysCoordR)(\sysCoord-\sysCoordR)$ to a constant reference $\sysVelR=\tuple{0}$ as already considered in \autoref{sec:CtrlLinearization}.
 Then the model and the closed loop template may be approximated by
 \begin{subequations}
 \begin{align}
@@ -172,11 +172,11 @@ and the matching force $\tuple{\lambda}^{\text{SmallError}}$ for this special ca
 \end{align}
 As $\LinErrorCoord$ and $\LinErrorCoordd$ can be arbitrary, the matrices $\mat{\Lambda}_{\sysStiffMat}$ and $\mat{\Lambda}_{\sysDissMat}$ have to vanish, for $\tuple{\lambda}^{\text{SmallError}}$ to vanish.
 For the following examples it will turn out that we can always find suitable parameters within $\sysInertiaMatCLin$, $\sysDissMatCLin$ and $\sysStiffMatCLin$ such that $\mat{\Lambda}_{\sysStiffMat} = \mat{\Lambda}_{\sysDissMat} = \mat{0}$.
-Thus ensuring that at least the first order approximation of the actual matching force $\tuple{\lambda}$ vanishes.
+Thus ensuring that at least the first-order approximation of the actual matching force $\tuple{\lambda}$ vanishes.
 
 
 \subsection{Systems with input constraints}
-In most control systems the control inputs $\sysInput$ can not take arbitrary values, but due to practical limitations are required to be e.g. $\sysInputCoeff{a} \in [-\sysInputCoeff{a}^{\idxMax}, \sysInputCoeff{a}^{\idxMax}], a=1,\ldots,\numInputs$.
+In most control systems the control inputs $\sysInput$ cannot take arbitrary values, but due to practical limitations are required to be, for example, $\sysInputCoeff{a} \in [-\sysInputCoeff{a}^{\idxMax}, \sysInputCoeff{a}^{\idxMax}], a=1,\ldots,\numInputs$.
 More generally we assume that the constraints can be written as $\sysInputConstMat \sysInput \leq \sysInputConstVec$ where the inequality is understood componentwise.
 Adding this constraint to the original problem \eqref{eq:MinProbUnderactuated} is
 \begin{align}\label{eq:MinProbUnderactuatedInputConst}

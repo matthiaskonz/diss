@@ -21,12 +21,12 @@
  \label{fig:CtrlSummaryBlock}
 \end{figure}
 
-This chapter motivated three approaches for desired closed loop dynamics for the tracking control task for rigid body systems.
+This chapter motivated three approaches for desired closed-loop dynamics for the tracking control task for rigid body systems.
 The complete procedure for computing the resulting controller may be summarized in \autoref{fig:CtrlSummaryBlock} and as follows:
 \begin{enumerate}
 \item \textbf{RBS kinematics.}
 Let the rigid body system be parameterized by a set of configurations $\{\bodyHomoCoord{\BidxI}{\BidxII}\}$ formulated in terms of the chosen coordinates $\sysCoord$ as discussed in \autoref{sec:RBSParameterization}.
-Let change of configuration coordinates be captured by the system velocity $\sysVel$ such that $\sysCoordd = \kinMat \sysVel$ as discussed in \autoref{sec:secMathMinVelCoord}.
+Let changes in the configuration coordinates be captured by the system velocity $\sysVel$ such that $\sysCoordd = \kinMat \sysVel$ as discussed in \autoref{sec:secMathMinVelCoord}.
 Given these ingredients, we may use the rules from \autoref{sec:RBSParameterization} to compute any absolute or relative configurations $\{\bodyHomoCoord{\BidxI}{\BidxII}\}$ and the corresponding body Jacobians $\{\bodyJac{\BidxI}{\BidxII}\}$.
 
 \item \textbf{Model kinetics.}
@@ -35,7 +35,7 @@ The computation of the model kinetics $\sysInertiaMat \sysVeld + \sysForce = \sy
 \item \textbf{Desired kinetics.}
 The terms $\sysInertiaMatC, \sysForceC$ of the desired kinetics $\sysInertiaMatC\sysVeld + \sysForceC=\tuple{0}$ are computed by the particle based approach \eqref{eq:CtrlApproachParticles}, the body based approach \eqref{eq:CtrlApproachBody} or the energy based approach \eqref{eq:CtrlApproachEnergyRBS}.
 In each case they are completely determined by the kinematic terms $\{\bodyHomoCoord{\BidxI}{\BidxII}, \bodyJac{\BidxI}{\BidxII}, \bodyJacd{\BidxI}{\BidxII}\}$, the desired rigid body parameters $\{\bodyInertiaMatC{\BidxI}{\BidxII}, \bodyDissMatC{\BidxI}{\BidxII}, \bodyStiffMatC{\BidxI}{\BidxII}\}$ and the reference trajectory $t\mapsto(\sysCoordR, \sysVelR, \sysVelRd)(t)$.
-Only the energy based approach requires additionally a transport map $\sysTransportMap$.
+Only the energy-based approach additionally requires a transport map $\sysTransportMap$.
 
 Furthermore, these ingredients determine the total energy $\totalEnergyC$ that may be regarded as a metric of how good the tracking task is fulfilled.
 For the energy based approach it is a Lyapunov function.
@@ -44,8 +44,8 @@ For the energy based approach it is a Lyapunov function.
 The actual control $\sysInput = \sysInput_0$ is computed from the model and the desired kinematics as discussed in \autoref{sec:CtrlUnderactuated}.
 For the fully actuated case ($\rank\sysInputMat=\dimConfigSpace$) the desired kinetics are realized exactly. 
 
-For the underactuated case ($\rank\sysInputMat<\dimConfigSpace$) the control input is computed such that the resulting system acceleration $\sysVeld$ deflects the least from the desired acceleration $-\sysInertiaMatC^{-1}\sysForceC$ in the least squares sense withe the weights $\sysInertiaMatC$.
-For a given left complement $\sysInputMatLComp$ we may also compute the matching force $\tuple{\lambda}$ which gives insight in how to adjust the control parameters $\{\bodyInertiaMatC{\BidxI}{\BidxII}, \bodyDissMatC{\BidxI}{\BidxII}, \bodyStiffMatC{\BidxI}{\BidxII}\}$ to minimize or even eliminate this deflection.
+For the underactuated case ($\rank\sysInputMat<\dimConfigSpace$) the control input is computed such that the resulting system acceleration $\sysVeld$ deviates least from the desired acceleration $-\sysInertiaMatC^{-1}\sysForceC$ in the least squares sense with weights $\sysInertiaMatC$.
+For a given left complement $\sysInputMatLComp$ we may also compute the matching force $\tuple{\lambda}$ which gives insight into how to adjust the control parameters $\{\bodyInertiaMatC{\BidxI}{\BidxII}, \bodyDissMatC{\BidxI}{\BidxII}, \bodyStiffMatC{\BidxI}{\BidxII}\}$ to minimize or even eliminate this deflection.
 
 \end{enumerate}
 

@@ -7,8 +7,8 @@
 \end{figure}
 
 \paragraph{Model.}
-Another elemental case is the revolute joint, i.e.\ a rigid body constrained to rotate about an axis as illustrated on the left side of \autoref{fig:RevoluteJoint}.
-With the joint angle $\jointAngle$ the rigid body configuration may be written as
+Another elementary case is the revolute joint, i.e. a rigid body constrained to rotate about an axis as illustrated on the left side of \autoref{fig:RevoluteJoint}.
+Using the joint angle $\jointAngle$, the rigid body configuration may be written as
 \begin{align}
  \bodyHomoCoord{0}{1} = \begin{bmatrix} \cos\jointAngle & -\sin\jointAngle & 0 & 0 \\ \sin\jointAngle & \cos\jointAngle & 0 & 0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1\end{bmatrix}.
 \end{align}
@@ -24,7 +24,7 @@ With the angle error $\jointAngleE = \jointAngle - \jointAngleR$ the potential m
  \potentialEnergyC = \kapczz (1 - \cos\jointAngleE).
 \end{align}
 It has the obvious transport map $\sysTransportMap = 1$.
-The potential could be realized by attaching a single linear spring with stiffness $\sfrac{\kapczz}{\hcz^2}$ between desired configuration and actual configuration at a distance $\hcz$ as illustrated on the right side of \autoref{fig:RevoluteJoint}.
+The potential can be realized by attaching a single linear spring with stiffness $\sfrac{\kapczz}{\hcz^2}$ between the desired configuration and the actual configuration at a distance $\hcz$, as illustrated on the right side of \autoref{fig:RevoluteJoint}.
 This also gives a vivid interpretation of the maximum on the potential at $\jointAngleE = \pm\pi$.
 
 \paragraph{Approach 1.}
@@ -60,7 +60,7 @@ The total energy $\totalEnergyC$ and its time derivative are
  &\qquad + \Jcz \jointAngleRd \big( \jointAngleRdd (1-\cos^2 \jointAngleE) + (\jointAngled^2  - \jointAngleRd^2 \cos\jointAngleE) \sin\jointAngleE \big)
 \end{align} 
 \end{subequations}
-Without further assumptions on the reference trajectory $t \mapsto \jointAngleR(t)$ the total energy is \textit{not} a Lyapunov function for the closed loop.
+Without further assumptions on the reference trajectory $t \mapsto \jointAngleR(t)$, the total energy is \textit{not} a Lyapunov function for the closed loop.
 The linear approximation $\jointAngle \approx \jointAngleR$ of \eqref{eq:RevoluteJointClosedLoopApproachParticles} has the characteristic polynomial
 \begin{align}
  \lambda^2 + \tfrac{\sigcz}{\Jcz} \lambda + \big( \tfrac{\kapcz}{\Jcz} - \jointAngleRd^2 \big).
@@ -77,9 +77,9 @@ For this example the body-based and energy-based approaches lead to identical en
  \Jczz \jointAngleEdd + \sigczz \jointAngleEd + \kapczz \sin \jointAngleE = 0.
 \label{eq:RevoluteJointClosedLoopApproachEnergy}
 \end{align}
-The total energy $\totalEnergyC = \kineticEnergyC + \potentialEnergyC$, $\totalEnergyCd = -2\dissFktC$ con be used to conclude that the system converges for \textit{almost} all initial conditions $(\jointAngleE(0), \jointAngleEd(0))$.
-The remaining initial condition $\jointAngleE(0) = \pm\pi$ and $\jointAngleEd(0)=0$ is instable, see \autoref{fig:PhasePlotSO2}.
-As a physical interpretation: the controlled dynamics coincide with the dynamics of a damped physical pendulum.
+The total energy $\totalEnergyC = \kineticEnergyC + \potentialEnergyC$, $\totalEnergyCd = -2\dissFktC$ can be used to conclude that the system converges for \textit{almost} all initial conditions $(\jointAngleE(0), \jointAngleEd(0))$.
+The remaining initial condition $\jointAngleE(0) = \pm\pi$ and $\jointAngleEd(0)=0$ is an unstable equilibrium, see \autoref{fig:PhasePlotSO2}.
+As a physical interpretation, the controlled dynamics coincide with the dynamics of a damped physical pendulum.
 
 \begin{figure}
  \centering
@@ -101,8 +101,8 @@ Since the model \eqref{eq:RevoluteJointModel} is a linear differential equation,
 \begin{align}\label{eq:RevoluteJointCtrlLin}
  \Jczz \jointAngleEdd + \sigczz \jointAngleEd + \kapczz \jointAngleE = 0.
 \end{align}
-The difference between the closed loop \eqref{eq:RevoluteJointClosedLoopApproachEnergy} and \eqref{eq:RevoluteJointCtrlLin} may be visualized by the corresponding phase plots, see \autoref{fig:PhasePlotSO2}:
-The linear control law leads to non-smooth phase curves at $\jointAngle = \pm\pi$, which is the consequence of the linear design for a system whose configuration space is actually $\Sphere^1 \ncong \RealNum$.
+The difference between the closed loop \eqref{eq:RevoluteJointClosedLoopApproachEnergy} and \eqref{eq:RevoluteJointCtrlLin} can be visualized by the corresponding phase plots in \autoref{fig:PhasePlotSO2}.
+The linear control law leads to non-smooth phase curves at $\jointAngle = \pm\pi$, which is a consequence of the linear design for a system whose configuration space is actually $\Sphere^1$, not $\RealNum$.
 See \cite[sec.\ 1.2]{Konz:AT} for a deeper discussion.
 
 

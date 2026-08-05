@@ -1,5 +1,5 @@
 \section{Coordinates}\label{sec:MathCoordinates}
-The example of the rigid body orientation showed that, though its degree of freedom is $\dimConfigSpace=3$, it cannot be \textit{globally} parameterized by 3 coordinates without having singularities.
+The example of the rigid body orientation in \autoref{sec:MotivationRigidBodyAttitude} showed that, though its degree of freedom is $\dimConfigSpace=3$, it cannot be \textit{globally} parameterized by 3 coordinates without having singularities.
 In other words, the configuration space of the rigid body orientation is not isomorphic to $\RealNum^3$ and is called a nonlinear manifold.
 
 If interested in a global parameterization of a $\dimConfigSpace$ dimensional nonlinear manifold, there are two common approaches:
@@ -171,7 +171,8 @@ As the projectors are related by $\mat{P}^\bot = \idMat - \mat{P}$, we have the 
  \kinMat \kinBasisMat +\, \InvGeoConstraintMat \geoConstraintMat = \idMat[\numCoord].
 \end{align}
 
-The deduction above simplifies significantly if $\geoConstraintMat$ is full rank: then the columns of $\kinMat$ and $\InvGeoConstraintMat$ form a basis for $\RealNum^\numCoord$ and we can immediately deduce the following identities:
+The deduction above simplifies significantly if $\geoConstraintMat$ is full rank: then the columns of $\kinMat$ and $\InvGeoConstraintMat$ form an invertible matrix $\kinMatSquare$, and consequently a basis for $\RealNum^\numCoord$.
+Then we can deduce the identities above immediately from:
 \begin{subequations}
 \begin{align}
  \underbrace{\begin{bmatrix} \kinBasisMat \\ \geoConstraintMat \end{bmatrix}}_{\kinMatSquare^{-1}} \underbrace{[\kinMat \ \InvGeoConstraintMat]}_{\kinMatSquare}
@@ -184,7 +185,6 @@ The deduction above simplifies significantly if $\geoConstraintMat$ is full rank
  = \idMat[\numCoord]
 \end{align}
 \end{subequations}
-These identities will be important for the next sections. 
 
 % In summary: Given a matrix $\geoConstraintMat \in \RealNum^{\numGeoConst\times\numCoord}$ and a matrix $\kinMat \in \RealNum^{\numCoord\times\dimConfigSpace}$ with full column rank and $\geoConstraintMat\kinMat = \mat{0}$ we have
 % \begin{subequations}

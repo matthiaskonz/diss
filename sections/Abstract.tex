@@ -1,0 +1,38 @@
+\thispagestyle{plain}
+\section*{Abstract}
+Many machines, vehicles, and robots may be modeled as rigid body systems, that is, as a collection of interconnected, undeformable bodies subject to inertia, gravity, and other forces.
+Energy-based methods for deriving their equations of motion, such as the Lagrange formalism, are standard in engineering education and well established in the literature.
+These algorithms commonly rely on a minimal set of generalized coordinates.
+This is perfectly appropriate for systems containing only one-dimensional joints, such as industrial manipulators.
+Unfortunately, for systems whose configuration space is nonlinear, such as the rigid-body attitude of aerial robots, the use of minimal coordinates necessarily leads to singularities.
+A common example is the gimbal-lock singularity of Euler angles.
+More generally, differential geometry typically approaches this problem by using several overlapping charts of minimal coordinates.
+
+In contrast, this work tackles this problem by the allowing redundant configuration coordinates (e.g.\ the coefficients of a unit quaternion or rotation matrix) and nonholonomic velocity coordinates (e.g.\ the components of the angular velocity vector).
+The second chapter reviews and potentially extends established mathematical tools for this domain, e.g.\ directional derivatives, commutation coefficients and the calculus of vartiations.
+
+The third chapter combines these tools with the first principles of mechanics.
+This results in extended versions of the established formalisms of analytical mechanics, such as Lagrange's equation, whose more general parameterizations may be used to avoid singularities, but may also lead to more intuitive equations of motion.
+Although inertia is the crucial part of the dynamics, this work investigates dissipation and stiffness with equal priority.
+The purpose of this chapter is twofold: 
+first, to provide a unified framework for deriving the global equations of motion of general rigid body systems; 
+and second, to gain insight into the structure of a stable dissipative rigid body system that serves as an inspiration for natural control design.
+
+%The literature states that computed torque is a standard approach for tracking control of fully actuated mechanical systems.
+%However, this recipe relies on minimal coordinates and consequently suffers from the problems mentioned above.
+%There is no established ``standard'' approach for the control of underactuated systems.
+
+The fourth chapter presents three algorithms for tracking control of general rigid body systems using static state feedback.
+Each proposes a slightly different desired closed-loop template, whose combination with the model equations yields the required explicit control law.
+For underactuated systems and systems with input constraints, the control law is derived from a static optimization problem inspired by Gauss' principle of least constraint.
+The closed-loop templates share the geometry and kinematics of the actual model but have different constitutive properties (inertia, damping, stiffness) as tuning parameters.
+For each case, the closed-loop template and the actual control law are invariant under the chosen coordinates; that is, each approach is covariant.
+%However, so far, there is no general proof of stability.
+
+The proposed modeling and control design are discussed using several examples and simulation results.
+These include fully actuated systems (SCARA manipulator, robotic arm, tricopter) and underactuated systems (PVTOL, quadcopter, bicopter).
+
+The fifth chapter presents the experimental realization of the control approach on two small UAVs, the tricopter and quadcopter.
+It discusses the hardware and software design, underlying actuator control, rigid-body parameter identification, and state estimation.
+The overall control performance is demonstrated on tracking of several aerobatic maneuvers.
+

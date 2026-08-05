@@ -226,7 +226,13 @@ Crucially, the velocity is linear in $\sysCoordd$ and consequently linear in the
  \bodyJac{\BidxI}{\BidxII}(\sysCoord) &= \pdiff[\,\bodyVel{\BidxI}{\BidxII}]{\sysVel}(\sysCoord) = \pdiff{\sysCoordd} \veeOp\Big( \bodyHomoCoord{\BidxII}{\BidxI}(\sysCoord) \diff{t} \big(\bodyHomoCoord{\BidxI}{\BidxII}(\sysCoord) \big) \Big) \kinMat.
 \end{align}
 The matrix $\bodyJac{\BidxI}{\BidxII}(\sysCoord) \in \RealNum^{6\times\dimConfigSpace}$ that maps the system velocity $\sysVel$ to the body velocity $\bodyVel{\BidxI}{\BidxII}$ is commonly called the \textit{body Jacobian}.
-\fixme{An alternative formula for the body Jacobian, which might give additional geometric insight, is given in [eq:AppendixDefBodyJac].} 
+
+If use the notation $\bodyCoord{\BidxI}{\BidxII}(\sysCoord)$ and $\bodyKinMat{\BidxI}{\BidxII}(\sysCoord)$ for the body coordinates in tuple form as defined in \eqref{eq:RBKinematicEq2}, then we may also express the body Jacobian as
+\begin{align}
+ \bodyJac{\BidxI}{\BidxII} = \bodyKinMat{\BidxI}{\BidxII}^+ \pdiff[\bodyCoord{\BidxI}{\BidxII}]{\sysCoord} \kinMat
+ .
+\end{align}
+
 The following rules emerge directly from \eqref{eq:rulesBodyVelocity}:
 \begin{align}\label{eq:rulesBodyJacobian}
  \bodyJac{\BidxI}{\BidxIII} &= \Ad{\bodyHomoCoord{\BidxIII}{\BidxII}} \bodyJac{\BidxI}{\BidxII} + \bodyJac{\BidxII}{\BidxIII},&
@@ -302,19 +308,26 @@ Recall from the previous section, that the constant \textit{body} inertia matrix
 The matrix $\sysInertiaMat(\sysCoord) \in \RealNum^{\dimConfigSpace\times\dimConfigSpace}$ is called the \textit{system} inertia matrix.
 
 \paragraph{Connection coefficients.}
-\fixme{
-With a rather cumbersome computation (see [eq: ??]), it can be shown that the connection coefficients $\ConnCoeffL{\LidxI}{\LidxII}{\LidxIII}$ associated to the system inertia matrix $\sysInertiaMat$ from \eqref{eq:RBSKineticEnergy} can be expressed in terms of the body Jacobians $\bodyJac{0}{\BidxII}$, the body inertia matrices $\bodyInertiaMat{0}{\BidxII}$ and the body connection coefficients $\bodyConnCoeffL{0}{\BidxII}{\LBidxI}{\LBidxII}{\LBidxIII}$ from \eqref{eq:RBConnCoeffRes} or the body commutation coefficients $\bodyBoltzSym{\LBidxIV}{\LBidxI}{\LBidxII}$ from \eqref{eq:RBCommutationCoeff} as
-\begin{align}\label{eq:RBSConnCoeff}
- \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII}
- &= \sumBodies \bodyJacCoeff{0}{\BidxII}{\LBidxI}{\LidxI} \big( \bodyInertiaMatCoeff{0}{\BidxII}{\LBidxI\LBidxII} \dirDiff{\LidxIII} \bodyJacCoeff{0}{\BidxII}{\LBidxII}{\LidxII} + \underbrace{\tfrac{1}{2} \big( \bodyBoltzSym{\LBidxIV}{\LBidxI}{\LBidxII} \bodyInertiaMatCoeff{0}{\BidxII}{\LBidxIV\LBidxIII} + \bodyBoltzSym{\LBidxIV}{\LBidxI}{\LBidxIII} \bodyInertiaMatCoeff{0}{\BidxII}{\LBidxIV\LBidxII} - \bodyBoltzSym{\LBidxIV}{\LBidxII}{\LBidxIII} \bodyInertiaMatCoeff{0}{\BidxII}{\LBidxIV\LBidxI} \big)}_{\bodyConnCoeffL{0}{\BidxII}{\LBidxI}{\LBidxII}{\LBidxIII}} \bodyJacCoeff{0}{\BidxII}{\LBidxII}{\LidxII} \bodyJacCoeff{0}{\BidxII}{\LBidxIII}{\LidxIII} \big)
+With a quite cumbersome computation that is not stated here, one may show that the connection coefficients $\ConnCoeffL{\LidxI}{\LidxII}{\LidxIII}$ associated to the system inertia matrix $\sysInertiaMat$ from \eqref{eq:RBSKineticEnergy} and the commutation coefficients $\BoltzSym{\LidxI}{\LidxII}{\LidxIII}$ of the chosen parmeterisation, can also be expressed as
+\begin{subequations}\label{eq:RBSConnCoeff}
+\begin{align}
+ \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII} 
+ &= \tfrac{1}{2}\big( \dirDiff{\LidxIII} \sysInertiaMatCoeff{\LidxI\LidxII} + \dirDiff{\LidxII} \sysInertiaMatCoeff{\LidxI\LidxIII} - \dirDiff{\LidxI} \sysInertiaMatCoeff{\LidxII\LidxIII} + \BoltzSym{\LidxV}{\LidxI}{\LidxII} \sysInertiaMatCoeff{\LidxV\LidxIII} + \BoltzSym{\LidxV}{\LidxI}{\LidxIII} \sysInertiaMatCoeff{\LidxV\LidxII} - \BoltzSym{\LidxV}{\LidxII}{\LidxIII} \sysInertiaMatCoeff{\LidxV\LidxI} \big)
+\\
+ &\ \ \vdots \nonumber
+\\
+ &= \sumBodies \bodyJacCoeff{0}{\BidxII}{\LBidxI}{\LidxI} \big( \bodyInertiaMatCoeff{0}{\BidxII}{\LBidxI\LBidxII} \dirDiff{\LidxIII} \bodyJacCoeff{0}{\BidxII}{\LBidxII}{\LidxII} + \tfrac{1}{2} \big( \bodyBoltzSym{\LBidxIV}{\LBidxI}{\LBidxII} \bodyInertiaMatCoeff{0}{\BidxII}{\LBidxIV\LBidxIII} + \bodyBoltzSym{\LBidxIV}{\LBidxI}{\LBidxIII} \bodyInertiaMatCoeff{0}{\BidxII}{\LBidxIV\LBidxII} - \bodyBoltzSym{\LBidxIV}{\LBidxII}{\LBidxIII} \bodyInertiaMatCoeff{0}{\BidxII}{\LBidxIV\LBidxI} \big) \bodyJacCoeff{0}{\BidxII}{\LBidxII}{\LidxII} \bodyJacCoeff{0}{\BidxII}{\LBidxIII}{\LidxIII} \big)
+\\
+ &= \sumBodies \bodyJacCoeff{0}{\BidxII}{\LBidxI}{\LidxI} \big( \bodyInertiaMatCoeff{0}{\BidxII}{\LBidxI\LBidxII} \dirDiff{\LidxIII} \bodyJacCoeff{0}{\BidxII}{\LBidxII}{\LidxII} + \bodyConnCoeffL{0}{\BidxII}{\LBidxI}{\LBidxII}{\LBidxIII} \bodyJacCoeff{0}{\BidxII}{\LBidxII}{\LidxII} \bodyJacCoeff{0}{\BidxII}{\LBidxIII}{\LidxIII} \big)
+ \label{eq:RBSConnCoeffL3}
 \end{align}
-% With this we can state the gyroscopic terms as 
-% \begin{align}\label{eq:RBSGyroCoeff}
-%  \gyroForceCoeff{\LidxI}
-%  &= \ConnCoeffL{\LidxI}{\LidxII}{\LidxIII} \sysVelCoeff{\LidxII} \sysVelCoeff{\LidxIII}
-%   = \sumBodies \bodyJacCoeff{0}{\BidxII}{\LBidxI}{\LidxI} \big( \bodyInertiaMatCoeff{0}{\BidxII}{\LBidxI\LBidxII} \dirDiff{\LidxIII} \bodyJacCoeff{0}{\BidxII}{\LBidxII}{\LidxII} + \bodyJacCoeff{0}{\BidxII}{\LBidxII}{\LidxII} \bodyBoltzSym{\LBidxIV}{\LBidxI}{\LBidxII} \bodyInertiaMatCoeff{0}{\BidxII}{\LBidxIV\LBidxIII} \bodyJacCoeff{0}{\BidxII}{\LBidxIII}{\LidxIII} \big) \sysVelCoeff{\LidxII} \sysVelCoeff{\LidxIII}
-% \end{align}
-}
+\end{subequations}
+in terms of the body inertia $\bodyInertiaMat{0}{\BidxII}$, the body Jacobians $\bodyJac{0}{\BidxII}$, the body commutation coefficients $\bodyBoltzSym{}{}{}$ (see \eqref{eq:RBCommutationCoeff}) or the the body connection coefficients $\bodyConnCoeffL{0}{\BidxII}{}{}{}$ (see \eqref{eq:RBConnCoeffRes}).
+As $\bodyInertiaMat{0}{\BidxII}$, $\bodyBoltzSym{}{}{}$, $\bodyConnCoeffL{0}{\BidxII}{}{}{}$ are constants, this shows again that the body Jacobians $\bodyJac{0}{\BidxII}$ completely capture the geometric information about the system.
+
+The individual sum terms in \eqref{eq:RBSConnCoeffL3} resemble the basis transformation rule for connection coefficients (see e.g.\ \cite[Vol.\,2, p.\,221]{Spivak:DiffGeo} or \cite[p.\,145]{Abraham:FoundationsOfMechanics} for the special case of Christoffel symbols).
+Loosly speaking: If we regard $\bodyJac{0}{\BidxII}^\top$ as the projection from $\Tangent[\bodyHomoCoord{0}{\BidxI}(\sysCoord)] \SpecialEuclideanGroup(3)$ to $\Tangent[\sysCoord]\configSpace$, then \eqref{eq:RBSConnCoeffL3} resembles the sum of the projections of the body connection coefficients $\bodyConnCoeffL{0}{\BidxII}{}{}{}$.
+We have seen this above for the inertia matrix $\sysInertiaMat$ in \eqref{eq:RBSKineticEnergy}, and will see it for the inertial forces $\genForceInertia$ in \eqref{eq:RBSInertiaForceProj}.
 
 \paragraph{Acceleration energy.}
 As with the kinetic energy, the acceleration energy of a rigid body system is simply the sum of the acceleration energies of its bodies.
@@ -354,7 +367,15 @@ Each of these approaches will yield
  = \underbrace{\sumBodies \bodyJac{0}{\BidxII}^\top \bodyInertiaMat{0}{\BidxII} \bodyJac{0}{\BidxII}}_{\sysInertiaMat} \sysVeld
  + \underbrace{\sumBodies \bodyJac{0}{\BidxII}^\top \big(\bodyInertiaMat{0}{\BidxII} \bodyJacd{0}{\BidxII} - \ad{\bodyJac{0}{\BidxII}\sysVel}^\top \bodyInertiaMat{0}{\BidxII}\bodyJac{0}{\BidxII} \big) \sysVel}_{\gyroForce}.
 \end{align}
-Similar results are called \textit{the projection equation} in \cite[sec.\ 4.2.5]{Bremer:ElasticMultibodyDynamics} and \textit{the Kane equations} \cite[chap.\ 6]{Kane:Dynamics}.
+For interpretation, we may rearange this to
+\begin{align}\label{eq:RBSInertiaForceProj}
+ \genForceInertia = \sumBodies \bodyJac{0}{\BidxII}^\top \underbrace{\Big( \bodyInertiaMat{0}{\BidxII} \ddt(\bodyJac{0}{\BidxII} \sysVel) - \ad{\bodyJac{0}{\BidxII}\sysVel}^\top \bodyInertiaMat{0}{\BidxII}\bodyJac{0}{\BidxII} \sysVel \Big)}_{\bodyGenForceInertia{0}{\BidxII}}
+ .
+\end{align}
+So the generalized inertia force $\genForceInertia$ of the rigid body system can be regarded as the sum of the projections of the individual body inertia forces $\bodyGenForceInertia{0}{\BidxII}$, see \eqref{eq:InertiaForceRB}, using the body Jacobians $\bodyJac{0}{\BidxII}$.
+This resembles the original definition \eqref{eq:ConstraintReleaseEliminated} of the generalized inertia force $\genForceInertiaCoeff{\LidxI} = \sumParticles \sProd{\dirDiff{\LidxI} \particlePos{\PidxI}}{\particleMass{\PidxI} \particlePosdd{\PidxI}}$ as the sum over the projections of the inertial force of the individual particles.
+
+Similar results \eqref{eq:RBSInertiaForce} are called \textit{the projection equation} in \cite[sec.\ 4.2.5]{Bremer:ElasticMultibodyDynamics} and \textit{the Kane equations} \cite[chap.\ 6]{Kane:Dynamics}.
 There is some controversy (starting in \cite{Desloge:KaneAppell}) about the naming, since the equations result rather directly (as shown above) from the Gibbs-Appell formulation.
 See \cite{Lesser:GeometricInterpretationOfKanesEquations} or \cite[p.\ 714]{Papastavridis:AnalyticalMechanics} for an overview.
 

@@ -1,7 +1,7 @@
 \section{An important function on the special orthogonal group}\label{sec:AppendixAttitudePotential}
 \paragraph{Motivation.}
 \begin{itemize}
-\item In the context of satellite navigation, the following problem \cite{Wahba:WahbaProblem} arose, now commonly called \textit{Wahba's problem}: given $\tuple{u}_k, \tuple{v}_k \in \RealNum^3$, find $\R \in \SpecialOrthogonalGroup(3)$ that minimizes
+\item In the context of satellite navigation, the following problem \cite{Wahba:WahbaProblem} arose, now commonly called \textit{Wahba's problem}: given $\tuple{u}_k, \tuple{v}_k \in \RealNum^3$, find a rotation matrix $\R \in \SpecialOrthogonalGroup(3)$ that minimizes
 \begin{multline}
  \potentialEnergy_1(\R) = \sum_k \norm{\tuple{u}_k - \R \tuple{v}_k}^2
  = \sum_k \big( \norm{\tuple{u}_k}^2 + \norm{\tuple{v}_k}^2 - \sProd{\tuple{u}_k}{\R \tuple{v}_k} \big)
@@ -9,12 +9,12 @@
  = \underbrace{\sum_k \big( \norm{\tuple{u}_k}^2 + \norm{\tuple{v}_k}^2 \big)}_{\const} - \tr\big( \R \underbrace{\sum_k \tuple{v}_k \tuple{u}_k^\top}_{\mat{P}_1} \big).
 \end{multline}
 
-\item In \cite{Koditschek:TotalEnergy} the following function with parameters $\mat{K}\in\SymMatP(3)$ and $\RR\in\SpecialOrthogonalGroup(3)$ is called a \textit{navigation function on} $\SpecialOrthogonalGroup(3)$:
+\item In \cite{Koditschek:TotalEnergy}, the following function, with parameters $\mat{K}\in\SymMatP(3)$ and $\RR\in\SpecialOrthogonalGroup(3)$, is called a \textit{navigation function on} $\SpecialOrthogonalGroup(3)$:
 \begin{align}
  \potentialEnergy_2(\R) = \tr\big(\mat{K}(\idMat[3] - \RR^\top\R)\big) = \underbrace{\tr\mat{K}}_{\const} - \tr(\underbrace{\mat{K}\RR^\top}_{\mat{P}_2}\R).
 \end{align}
 
-\item Using the metric from \eqref{eq:DefMatrixMetric} with a weight $\mat{K}\in\SymMatP(3)$ we may ask for the rotation matrix $\R \in \SpecialOrthogonalGroup(3)$ which is closest to a given matrix $\mat{Q}\in\RealNum^{3\times3}$, i.e.\ which minimizes
+\item Using the metric from \eqref{eq:DefMatrixMetric} with a weight $\mat{K}\in\SymMatP(3)$, we may ask for the rotation matrix $\R \in \SpecialOrthogonalGroup(3)$ that is closest to a given matrix $\mat{Q}\in\RealNum^{3\times3}$, i.e.\ that minimizes
 \begin{multline}
  \potentialEnergy_3(\R) = \tfrac{1}{2} \metricSq[\mat{K}]{\mat{Q}}{\R} 
  = \tfrac{1}{2} \tr\big( (\mat{Q}-\R)^\top \mat{K} (\mat{Q}-\R) \big)
@@ -23,23 +23,23 @@
 \end{multline}
 \end{itemize}
 
-Each of these problems essentially asks for an $\R\in\SpecialOrthogonalGroup(3)$ which minimizes $\potentialEnergy = -\tr(\mat{P} \R)$ for some given $\mat{P}\in\RealNum^{3\times3}$.
+Each of these problems essentially asks for an $\R\in\SpecialOrthogonalGroup(3)$ that minimizes $\potentialEnergy = -\tr(\mat{P} \R)$ for some given $\mat{P}\in\RealNum^{3\times3}$.
 
 Solutions to Wahba's problem are given in \cite{Davenport:QMethod} using attitude quaternions and in \cite{Kabsch:SSVD} using the singular value decomposition.
-A proof of a unique minimum in \cite{Bullo:TrackingAutomatica} relies on $\mat{P}$ having distinct singular values.
-Within this work we will encounter similar problems.
-In the following, we extend these results: we do not impose assumptions on $\mat{P}$, and we investigate all extrema of $\potentialEnergy$.
+A proof of the uniqueness of the minimum in \cite{Bullo:TrackingAutomatica} relies on $\mat{P}$ having distinct singular values.
+Throughout this work, we will encounter similar problems.
+In what follows, we extend these results by imposing no assumptions on $\mat{P}$ and by investigating all extrema of $\potentialEnergy$.
 
 \paragraph{Problem definition.}
-Given a matrix $\mat{P} \in \RealNum^{3\times3}$, what are the extrema and their nature of the function
+Given a matrix $\mat{P}\in\RealNum^{3\times3}$, what are the extrema of the function and what is their nature?
 \begin{align}
  \potentialEnergy: \SpecialOrthogonalGroup(3) \rightarrow \RealNum \, : \, \R \mapsto -\tr(\mat{P} \R).
 \end{align}
 
 
 \paragraph{Coordinate transformation.}
-Let $\mat{P} = \mat{X} \mat{\varSigma} \mat{Y}^\top$ be a singular value decomposition with $\mat{X}, \mat{Y} \in \OrthogonalGroup(3)$ and $\mat{\varSigma} = \diag(\sigma_1, \sigma_2, \sigma_3)$, $\sigma_1 \geq \sigma_2 \geq \sigma_3 \geq 0$.
-As proposed in \cite{Kabsch:SSVD}, define 
+Let $\mat{P} = \mat{X} \mat{\varSigma} \mat{Y}^\top$ be a singular value decomposition, where $\mat{X}, \mat{Y} \in \OrthogonalGroup(3)$ and $\mat{\varSigma} = \diag(\sigma_1, \sigma_2, \sigma_3)$ with $\sigma_1 \geq \sigma_2 \geq \sigma_3 \geq 0$.
+As proposed in \cite{Kabsch:SSVD}, define
 \begin{subequations}\label{eq:DefSSVD}
 \begin{align}
  \bar{\mat{X}} &= \mat{X} \diag(1, 1, \det\mat{X}) \in \SpecialOrthogonalGroup(3),
@@ -47,15 +47,15 @@ As proposed in \cite{Kabsch:SSVD}, define
  \bar{\mat{Y}} &= \mat{Y} \diag(1, 1, \det\mat{Y}) \in \SpecialOrthogonalGroup(3),
 \\
  \bar{\mat{\varSigma}} &= \diag(\sigma_1, \sigma_2, \bar{\sigma}_3), \ \bar{\sigma}_3 = \det\mat{X}\det\mat{Y} \sigma_3 .
-\end{align} 
+\end{align}
 \end{subequations}
-This means flipping the direction of the singular vectors corresponding to the smallest singular value $\sigma_3$ if either $\mat{X}$ or $\mat{Y}$ contains a reflection.
+This means flipping the directions of the singular vectors corresponding to the smallest singular value $\sigma_3$ whenever either $\mat{X}$ or $\mat{Y}$ contains a reflection.
 This yields a decomposition $\mat{P} = \bar{\mat{X}} \bar{\mat{\varSigma}} \bar{\mat{Y}}^\top$ with proper rotations.
-Using the cyclic permutation property of the trace we get
+Using the cyclic permutation property of the trace, we get
 \begin{align}\label{eq:AttitudePotentialTrafo}
  \potentialEnergy(\R) = -\tr( \bar{\mat{X}} \bar{\mat{\varSigma}} \bar{\mat{Y}}^\top \R) = -\tr( \bar{\mat{\varSigma}} \underbrace{\bar{\mat{Y}}^\top \R \bar{\mat{X}}}_{\bar{\R}}) =: \bar{\potentialEnergy}(\bar{\R})
 \end{align}
-Since the SVD is not unique in general, the transformed function $\bar{\potentialEnergy}$ is neither.
+Since the SVD is not unique in general, the transformed function $\bar{\potentialEnergy}$ is not unique either.
 However, since the coordinate transformation $\R = \bar{\mat{Y}} \bar{\R} \bar{\mat{X}}^\top$ is bijective, no information is lost here.
 %The SVD is also the most robust approach for the numerical solution of the problem \cite{Markley:Wahba}.
 
@@ -64,14 +64,14 @@ Using the operators defined above, we may formulate the differential of the tran
 \begin{align}
  \differential \bar{\potentialEnergy}(\bar{\R}) &= \veeTwoOp(\bar{\mat{\varSigma}} \bar{\R}).
 \end{align}
-For a critical point $\bar{\R}_0$ (i.e., $\differential \bar{\potentialEnergy}(\bar{\R}_0)=\tuple{0}$), the matrix $\bar{\mat{\varSigma}} \bar{\R}_0$ must be symmetric.
+At a critical point $\bar{\R}_0$ (i.e., $\differential \bar{\potentialEnergy}(\bar{\R}_0)=\tuple{0}$), the matrix $\bar{\mat{\varSigma}} \bar{\R}_0$ must be symmetric.
 Since $\bar{\mat{\varSigma}}$ is diagonal, this implies that $\bar{\R}_0$ must be symmetric.
 The Hessian at a critical point is
 \begin{align}
  \differential^2 \bar{\potentialEnergy}(\bar{\R}_0) &= \veeMatOp(\bar{\mat{\varSigma}} \bar{\R}_0).
 \end{align}
 
-For what follows it will be useful to substitute the entries/eigenvalues of $\veeMatOp(\bar{\mat{\varSigma}}) = \diag(\lambda_1, \lambda_2, \lambda_3) = \mat{\Lambda}$ as
+For what follows, it will be useful to substitute the entries/eigenvalues of $\veeMatOp(\bar{\mat{\varSigma}}) = \diag(\lambda_1, \lambda_2, \lambda_3) = \mat{\Lambda}$ as
 \begin{align}
  \left.\begin{matrix}[1.2]
  \lambda_1 = \sigma_2 + \bar{\sigma}_3, \\
@@ -85,8 +85,8 @@ For what follows it will be useful to substitute the entries/eigenvalues of $\ve
  \bar{\sigma}_3 = \tfrac{1}{2} (\lambda_1 + \lambda_2 - \lambda_3)\hphantom{,}  
  \end{matrix}\right.
 \end{align} 
-It is crucial to notice that $\sigma_1 \geq \sigma_2 \geq |\bar{\sigma}_3| \geq 0$ implies $\lambda_3 \geq \lambda_2 \geq \lambda_1 \geq 0$.
-Depending on the constellation of the eigenvalues we have the following critical points:
+It is crucial to note that $\sigma_1 \geq \sigma_2 \geq |\bar{\sigma}_3| \geq 0$ implies $\lambda_3 \geq \lambda_2 \geq \lambda_1 \geq 0$.
+Depending on the constellation of the eigenvalues, we obtain the following critical points:
 \begin{subequations}
 \begin{itemize}
 \item Distinct eigenvalues: $\lambda_3 > \lambda_2 > \lambda_1 > 0$: We have the critical points
@@ -212,40 +212,40 @@ Using the \textit{special singular value decomposition} from \eqref{eq:DefSSVD} 
 \end{align}
 From this we may conclude:
 For any matrix $\mat{M} \in\RealNum^{3\times3}$ there is a matrix $\R \in \SpecialOrthogonalGroup(3)$ and a unique, positive semidefinite matrix $\mat{K} \in \SymMatSP(3)$ such that $\mat{M} = \R \wedMatOp(\mat{K})$.
-The matrix $\R$ is unique if and only if $\mat{K}$ is positive definite.
+The results above imply that the matrix $\R$ is unique if and only if $\mat{K}$ is positive definite.
 Within this work, this will be called the \textit{special polar decomposition}.
 Note that the matrix $\wedMatOp(\mat{K})$ is, in general, indefinite.
 
+\paragraph{Prototype for a positive definite function.}
+When working on problems on $\RealNum^\dimConfigSpace$ we often have functions of a form that resembles the square of the weighted metric from \autoref{sec:MathLinalgInnerNormMetric}:
+\begin{align}
+ \potentialEnergy_{\text{pos}} \ &: \ \RealNum^\dimConfigSpace \times \RealNum^\dimConfigSpace \times \SymMatP(\dimConfigSpace) \ \rightarrow \ \RealNum^+ 
+\nonumber\\
+ &: \ (\r,\r_0, \mat{K}) \ \mapsto \ \tfrac{1}{2} \metricSq[\mat{K}]{\r}{\r_0} 
+ = \tfrac{1}{2} (\r-\r_0)^\top \mat{K}(\r-\r_0) 
+\end{align}
+We regard the first argument as the variable, while the second and third arguments are rather constant parameters.
+Then $\potentialEnergy_{\text{pos}}(\r)$ is convex and has an obvious minimum $\differential\potentialEnergy_{\text{pos}}(\r_0) = \tuple{0}$ at $\r=\r_0$ with curvature $\differential^2\potentialEnergy_{\text{pos}}(\r_0) = \mat{K}$.
 
-% \paragraph{Prototype for a positive definite function.}
-% Subtracting the minimal value $\potentialEnergy(\R_0)$ from the function we obtain
-% \begin{subequations}
-% \begin{align}
-%  \hat{\potentialEnergy}(\R) &= \potentialEnergy(\R) - \potentialEnergy(\R_0)
-% \nonumber\\
-%  &= -\tr(\bar{\mat{X}} \wedMatOp(\mat{\Lambda}) \bar{\mat{Y}}^\top \R) + \tfrac{1}{2}\tr(\mat{\Lambda})
-% \nonumber\\
-%  &= -\tr(\bar{\mat{X}} \wedMatOp(\mat{\Lambda}) \bar{\mat{X}}^\top \R_0^\top \R) + \tr(\wedMatOp(\mat{K}))
-% \nonumber\\
-% \label{eq:NavFunctionSO3}
-%  &= \tr\big(\wedMatOp(\mat{K})(\idMat[3] - \R_0^\top \R)\big)
-% \\
-%  &= \tfrac{1}{2} \tr\big(\wedMatOp(\mat{K})(\R - \R_0)^\top (\R - \R_0)\big)
-% \nonumber\\
-%  &= \tfrac{1}{2}\norm[\wedMatOp(\mat{K})]{\R-\R_0}^2.
-% \end{align}
-% \end{subequations}
-% We have the properties
-% \begin{subequations}
-% \begin{align}
-%  \mat{K} &\geq 0& 
-%  &\Leftrightarrow&
-%  \hat{\potentialEnergy}(\R) &\geq 0
-% \\
-%  \mat{K} &> 0& 
-%  &\Leftrightarrow&
-%  \hat{\potentialEnergy}(\R) &\geq 0 \ \wedge \ \hat{\potentialEnergy}(\R) = 0 \, \Leftrightarrow \, \R = \R_0.
-% \end{align}
-% \end{subequations}
-% The form \eqref{eq:NavFunctionSO3} is called the \textit{navigation function} for $\SpecialOrthogonalGroup(3)$ in \cite{Koditschek:TotalEnergy}.
-% From its properties $\hat{\potentialEnergy}$ is an $\SpecialOrthogonalGroup(3)$ analog to $\tfrac{1}{2}(\tuple{x}-\tuple{x}_0)^\top\mat{K}(\tuple{x}-\tuple{x}_0), \tuple{x},\tuple{x}_0\in\RealNum^3$.
+For $\SpecialOrthogonalGroup(3)$ we define
+\begin{align}
+ \potentialEnergy_{\text{rot}} \ &: \ \SpecialOrthogonalGroup(3) \times \SpecialOrthogonalGroup(3) \times \SymMatP(3) \ \rightarrow \ \RealNum^+ 
+\\
+ &: \ (\R,\R_0, \mat{K}) \ \mapsto \ \tfrac{1}{2} \metricSq[\wedMatOp(\mat{K})]{\R^\top}{\R_0^\top} 
+ = \tfrac{1}{2} \tr\big( (\R-\R_0) \wedMatOp(\mat{K}) (\R-\R_0)^\top \big) 
+.
+\nonumber
+% &\hspace{20em}
+% = \tr\big( \mat{K}(\idMat[3] - \R_0^\top\R ) \big) 
+\end{align}
+Using the results from above we have
+\begin{align}
+ \potentialEnergy_{\text{rot}}(\R) &= \tr\big( \wedMatOp(\mat{K})(\idMat[3] - \R_0^\top\R ) \big),&
+ \differential \potentialEnergy_{\text{rot}}(\R_0) &= \tuple{0},&
+ \differential^2 \potentialEnergy_{\text{rot}}(\R_0) &= \mat{K}. 
+\end{align}
+So $\potentialEnergy_{\text{rot}}(\R)$ is a positive function with a unique minimum at $\R=\R_0$ with curvature $\mat{K}$.
+In contrast to $\potentialEnergy_{\text{pos}}$, $\potentialEnergy_{\text{rot}}$ is only convex around the minimum, as extensively discussed above.
+This should not be regarded as a drawback, due to compactness of $\SpecialOrthogonalGroup(3)$ there is no globally convex function on $\SpecialOrthogonalGroup(3)$.
+
+So if one asks what the $\SpecialOrthogonalGroup(3)$ analogue of the ubiquitous quadratic potential $\potentialEnergy_{\text{pos}}$ on $\RealNum^\dimConfigSpace$ is, then $\potentialEnergy_{\text{rot}}$ is probably as close as it gets.

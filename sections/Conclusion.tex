@@ -1,11 +1,93 @@
 \chapter{Summary and Conclusions}
 
-\paragraph{Summary and contribution.}
+\paragraph{Summary.}
+This treatise has presented a comprehensive, unified framework for the modeling and tracking control of general rigid body systems.
+In contrast to established methods that rely on minimal coordinates, this framework allows redundant configuration coordinates and nonholonomic velocity coordinates.
+This is crucial for the derivation of equations of motion (modeling) and the formulation of desired closed-loop dynamics (control design) in a global and singularity-free manner.
 
+Using insights from the modeling of a generic rigid body system, the proposed control design defines a template for the desired closed-loop dynamics that shares the model geometry and kinematics while having generic kinetic parameters that serve as tuning values.
+These are the established inertia parameters---total mass, center of mass, and moment of inertia---as well as the analogous, though not yet established, parameters for damping and stiffness.
+While suitable closed-loop dynamics for a static reference are evident, natural closed-loop dynamics for tracking an accelerated reference trajectory are not.
+This work presented three possible formulations, motivated by a particle distribution, the individual rigid bodies, and the total error energy.
+For fully actuated systems, the desired closed-loop dynamics can be realized exactly.
+For the case of underactuated systems or the presence of input inequality constraints, a static optimization approach inspired by Gauss' principle of least constraint still leads to an explicit control law.
 
-\paragraph{Conclusions and possible extensions.}
+The proposed modeling and control approach is demonstrated and discussed using academic examples such as a prismatic joint, a rotary joint, or the PVTOL.
+However, the true benefit of a systematic framework becomes apparent for larger systems whose equations of motion are far too cumbersome to be analyzed individually.
+The examples of a 6-DoF robotic arm and a bicopter concept were discussed through simulation results.
+Finally, the practical feasibility was demonstrated through flight tests with the custom-developed tricopter and quadcopter while tracking aerobatic maneuvers.
 
+%\clearpage
 
+\paragraph{Contribution.}
+\fixme{
+    The primary contributions of this research span across mathematical extensions, theoretical mechanics formalisms, control design synthesis, and experimental validation:
+}
+\begin{itemize}
+\item \textbf{Coordinates in mechanics:}
+The established literature on analytical mechanics is somewhat split: textbooks focused on engineering address formulations for general rigid body systems but restrict themselves to classical calculus with minimal generalized coordinates, e.g.\ \cite{Schwertassek:MultibodySystems}.
+On the other hand, texts with a physics focus utilize modern methods from Lie group theory to derive natural formulations, but are usually only applied to small academic examples, e.g.\ \cite{Marsden:MechanicsAndSymmetry}.
+The second and third chapters of this work are an attempt to combine these by formulating the central tools of analytical mechanics in a form that allows for a natural parameterization while requiring only elementary calculus in their application.
+
+Many of these tools, such as the directional derivative, the Hessian matrix, or the calculus of variations, also find application in other fields of physics and mathematics.
+%The second and third chapter reviewed several established tools of mathematics and mechanics that commonly require formulation in terms of minimal coordinates, like directional derivatives, Hessian matrix or calculus of variations.
+%It was demonstrated that these also admit a parameterization with redundant coodrinates and minimal nonholonomic velocity coordinates with little to no extension when using a suitable notation.
+%While many of these results might seem obvious from a Lie-group theoretic point of view, this treatise did intensionally not require any tools from this field that is not accesible to most engineers.
+
+\item \textbf{Rigid body damping and stiffness:}
+While inertia is arguably the most crucial part of kinetics, this work investigated damping and stiffness with equal focus.
+It was shown that any constellation of linear springs between two rigid bodies can be represented by a potential with 10 parameters that are defined completely analogously to the established inertia parameters.
+From the point of view of this text, if the very established formulation of the rigid body kinetic energy in terms of total mass, center of mass, and moment of inertia is standard, then the proposed formulation of the stiffness potential in terms of total stiffness, center of stiffness, and moment of stiffness should be equally standard.
+
+The rigid body potential can generally be useful as a natural cost function for optimization problems over $\SpecialEuclideanGroup(3)$, e.g.\ in an extension of Wahba's problem that is omnipresent in navigation.
+
+\item \textbf{Rigid body system formalism:}
+Application of the extended tools for analytical mechanics and the modeling of inertia, gravitation, damping, and stiffness leads to a unified framework for the derivation of equations of motion for general rigid body systems.
+The final section of the third chapter presents an implementation-ready recipe.
+In contrast to established formalisms (e.g.\ Denavit-Hartenberg), it allows for redundant configuration coordinates and minimal nonholonomic velocity coordinates.
+Furthermore, there is no restriction on the choice of body-fixed frames.
+
+\item \textbf{Rigid body system closed-loop template.}
+The fourth chapter proposed three slightly different templates for desired closed-loop dynamics.
+The first two are completely determined by the rigid body structure of the model, so for application we only need to assign reasonable values to the constitutive parameters to achieve the desired tuning.
+The definitions of the closed-loop dynamics are completely invariant to the choice of coordinates; i.e., the closed-loop dynamics are covariant.
+The only need for a choice of coordinates is for practical implementation.
+
+One may also regard the results of this part as one possible answer to the question: ``What is a natural, asymptotically stable, second-order dynamics on the given configuration manifold $\configSpace \subseteq (\SpecialEuclideanGroup(3))^\numRigidBodies$?''
+
+\item \textbf{Control of underactuated systems.}
+For the case of underactuated systems and/or input constraints, this work proposed an optimization scheme for the system acceleration to be as close as possible to the acceleration computed by the closed-loop template in the sense of minimizing the Gaussian constraint.
+Though no general proof of stability was found for this approach, simulation results with the PVTOL and the bicopter, as well as the actual flight tests with the quadcopter, show the feasibility of this approach.
+For each of these cases, it was crucial to allow for inertial and stiffness cross-couplings, parameterized by distinct values for the center of mass and center of stiffness, as introduced above in the rigid body potential.
+
+\item \textbf{Multicopter realization.}
+While the focus of this treatise is clearly the theory of rigid body control, the experimental realization of the tricopter and quadcopter is equally challenging.
+The fifth chapter shows just an excerpt of the many little topics that have to be addressed until they may be used as a test bench for rigid body dynamics.
+
+\end{itemize}
+
+\paragraph{Conclusions.}
+% The theoretical developments and experimental outcomes detailed in this work confirm that modeling physical systems via redundant coordinates is not merely a mathematically elegant exercise, but a robust engineering solution for highly agile robotics. 
+% While classical methods avoid redundancy to simplify calculation, they inadvertently introduce mathematical artifacts like the gimbal-lock singularity, which cripple control performance during complex spatial rotations. 
+% By accepting a higher dimension of configuration space, the framework established in this treatise ensures global numerical stability, unifies the treatment of diverse systems (from industrial manipulators to aerial vehicles), and yields control architectures that inherently align with natural physical properties.
+% 
+% \paragraph{Possible extensions.}
+% Despite the comprehensive nature of this treatise, several promising avenues persist for future exploration and extension of this framework:
+% 
+% \begin{itemize}
+% \item \textbf{Extension to Flexible and Multi-Body Systems.}
+% The current formulation assumes rigid body dynamics. Extending the extended Lagrange and Hamiltonian frameworks to encompass flexible structures, continuum mechanics, or soft-robotic systems would broaden the applicability to modern compliant mechanisms.
+% \item \textbf{Dynamic Optimization and Model Predictive Control}
+% The current static optimization approach leverages Gauss' principle to resolve input constraints and underactuation instantaneously. 
+% Integrating this geometric structure into a prospective, multi-step Model Predictive Control (MPC) framework could yield superior tracking and constraint satisfaction over longer horizons.
+% \item \textbf{Advanced Coordinate-Invariant State Estimation}
+% While Chapter 5 successfully implements reliable estimators to achieve aerobatic maneuvers, the core state estimation filters could be further harmonized with the main thesis by explicitly deriving them as intrinsic, covariant observers directly on Lie groups like \(\mathrm{SE}(3)\).
+% \item \textbf{Robustness and Adaptive Control Parameters}
+% Future investigations could explore adaptive tuning laws for the constitutive parameters (damping and stiffness matrices) within the closed-loop templates.
+% This would enable the system to dynamically counteract unmodeled aerodynamic disturbances or parameter variations, such as payload changes during flight.
+% \end{itemize}
+% 
+% nonholomic
 
 % \cite{Konz:Mathmod}
 % \cite{Konz:Mathmod2018}
